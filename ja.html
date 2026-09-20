@@ -406,7 +406,7 @@ function veil(){ $('#veil').style.opacity = clamp(S.blue,0,100)/150; }
 function updHUD(showAtt){
   hud.hidden = false;
   const dd = DATES[S.day] || DATES[3];
-  $('#h-date').textContent = dd.md; $('#h-dday').textContent = '開浦 ' + dd.d;
+  $('#h-date').textContent = dd.md; $('#h-dday').textContent = '予告 ' + dd.d;
   $('#h-phase').textContent = ({morning:'朝', shift:'勤務', evening:'夕方', night:'夜', diary:'日記'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '手紙まであと' + (4 - S.day) + '晩' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '階';
   $('#h-blue').style.width = clamp(S.blue,0,100) + '%';

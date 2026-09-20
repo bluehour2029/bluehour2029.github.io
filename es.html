@@ -406,7 +406,7 @@ function veil(){ $('#veil').style.opacity = clamp(S.blue,0,100)/150; }
 function updHUD(showAtt){
   hud.hidden = false;
   const dd = DATES[S.day] || DATES[3];
-  $('#h-date').textContent = dd.md; $('#h-dday').textContent = 'Gaepo ' + dd.d;
+  $('#h-date').textContent = dd.md; $('#h-dday').textContent = 'Aviso ' + dd.d;
   $('#h-phase').textContent = ({morning:'Mañana', shift:'Turno', evening:'Tarde', night:'Noche', diary:'Diario'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? 'Carta en ' + (4 - S.day) + (S.day === 3 ? ' noche' : ' noches') : '';
   $('#h-hrv').textContent = dec(S.hrv, 1); $('#h-floor').textContent = 'piso ' + floorOf();
   $('#h-blue').style.width = clamp(S.blue,0,100) + '%';

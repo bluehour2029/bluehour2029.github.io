@@ -406,7 +406,7 @@ function veil(){ $('#veil').style.opacity = clamp(S.blue,0,100)/150; }
 function updHUD(showAtt){
   hud.hidden = false;
   const dd = DATES[S.day] || DATES[3];
-  $('#h-date').textContent = dd.md; $('#h-dday').textContent = '개포 ' + dd.d;
+  $('#h-date').textContent = dd.md; $('#h-dday').textContent = '예고일 ' + dd.d;
   $('#h-phase').textContent = ({morning:'아침', shift:'근무', evening:'저녁', night:'밤', diary:'일기'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '편지까지 ' + (4 - S.day) + '밤' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '층';
   $('#h-blue').style.width = clamp(S.blue,0,100) + '%';
