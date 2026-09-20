@@ -960,7 +960,7 @@ const JOB_LINES = {
   'Caregiver':'Care-worker registration has been renewed. Work that touches the body remains a residual item.',
   'Plumber / Electrician':'The ban on human entry to tower utilities remains. Permit limited to the district below.'
 };
-const JOB_NIGHT = ['The third file today was your 2026 occupation. You signed. The number did not change. That was the purpose of the file.', 'The third file today was your 2026 occupation. You refused. Three seconds later someone else stamped it. The name of the one who refused stays. It is yours.', 'The third file today was your 2026 occupation. You let it pass. Most people do.'];
+const JOB_NIGHT = ['The third file today was your own occupation. You signed. The number did not move. That was the purpose of the file.', 'The third file today was your own occupation. You refused. Three seconds later someone else stamped it. The name of the one who refused stays.', 'The third file today was your own occupation. You let it pass. Most people do.'];
 function jobDoc(){
   const J = JOBS[S.job] || DEFAULT_JOB(S.job); const jl = JOB_LINES[S.job] || ('Assessment note: ' + J.why);
   return J.end
@@ -970,6 +970,9 @@ function jobDoc(){
 function jobNightLine(){ const f = S.flags.jobdoc; return line(NAMES.on, f === 'signed' ? JOB_NIGHT[0] : f === 'refused' ? JOB_NIGHT[1] : JOB_NIGHT[2]); }
 function jobLetterLine(){ const J = JOBS[S.job] || DEFAULT_JOB(S.job); const r = S.flags.jobdoc === 'refused';
   return J.end ? (r ? `On the second day, my 2026 occupation file came through. ‘${S.job}’. I refused. Three seconds later someone else stamped it. But on that file my name stays as the one who refused. That may be all I have.` : `On the second day, my 2026 occupation file came through. ‘${S.job}’. I signed. The number did not change. That was the point of the file: to make what I used to do into “Other.”`) : (r ? `On the second day, my occupation file came through. ‘${S.job}’. Work that still exists, work that cannot be done inside the tower. I refused. It was true, and that made it worse.` : `On the second day, my occupation file came through. ‘${S.job}’. Work that still exists, work that cannot be done inside the tower. I signed. It was true.`); }
+/* v40: 온의 첫 말풍선 */
+const ON_INTRO = 'I am ON. The agent bound to you.';
+function onIntroLine(){ return line(NAMES.on, ON_INTRO); }
 /* ===================== Flow: title / intro ===================== */
 function title(){
   leave(); S.stage = 'title'; mode('city'); hud.hidden = true; $('#menu-btn').hidden = false;
@@ -977,7 +980,7 @@ function title(){
   const canCont = saved && saved.name && saved.stage !== 'title';
   stage.innerHTML = `<section class="title fade">
     <div class="hero" style="background-image:url('img/title.jpg')"><div class="hero-text">
-    <div class="eyebrow">New York · December 21 · The Enforcement Date is Christmas Eve, three days away</div>
+    <div class="eyebrow">December 21 · Enforcement Date: Christmas Eve, three days away</div>
     <h1>BLUE HOUR<span>New York · December 2029</span></h1>
     <p class="langs top">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
     </div></div>
@@ -1058,7 +1061,8 @@ function morning(){
   const d = S.day, ate = S.meals.filter(m => m.day === d-1).map(m => m.who);
   let items = [];
   if(d === 1) items = [
-    line(NAMES.on,'I am ON, the agent bound to you. Good morning, {name}. It is 6:40 and 12 degrees. The queue is 412 today. Year-end is always heavy.'),
+    onIntroLine(),
+    line(NAMES.on,'Good morning, {name}. It is 6:40 and 12 degrees. The queue is 412 today. Year-end is always heavy.'),
     line(NAMES.on,'Your HRV is ' + S.hrv.toFixed(1) + '. Up 0.3 from yesterday. You are doing well.'),
     {choice:[
       {label:'What does doing well mean?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'It means your delay rate is low relative to cases signed.'), line(NAMES.on,'…That is not what you wanted to hear. I know.'), line(NAMES.on,'That was a 0.6 second pause. I delete the company answer first. It happens every time.')]},
@@ -1551,7 +1555,7 @@ ${HASHTAGS}`;
         await navigator.share(files ? {files, text: shareText, url: GAME_URL + '?src=share'} : {title:'BLUE HOUR', text: shareText, url: GAME_URL + '?src=share'}); return;
       }
     }catch(e){ if(e && e.name === 'AbortError') return; }
-    try{ await navigator.clipboard.writeText(shareText + '\n' + GAME_URL + '?src=share'); toast('Share text copied'); }catch(e){ toast('Copying is blocked. Please capture the card.'); }
+    const _st = shareText + '\n' + GAME_URL + '?src=share'; let _ok = false; try{ await navigator.clipboard.writeText(_st); _ok = true; }catch(e){ try{ const ta = document.createElement('textarea'); ta.value = _st; document.body.appendChild(ta); ta.select(); _ok = document.execCommand('copy'); ta.remove(); }catch(_){} } try{ if(!_ok) throw 0; toast('Share text copied'); }catch(e){ toast('Copying is blocked. Please capture the card.'); }
   };
 }
 function wrapText(ctx, text, x, y, maxW, lh){ let line = ''; const put = s => { ctx.fillText(s, x, y); y += lh; }; for(const w of String(text).split(' ')){ const t = line ? line + ' ' + w : w; if(ctx.measureText(t).width <= maxW){ line = t; continue; } if(line){ put(line); line = ''; } if(ctx.measureText(w).width <= maxW){ line = w; continue; } for(const ch of [...w]){ if(line && ctx.measureText(line + ch).width > maxW){ put(line); line = ch; } else line += ch; } } if(line) put(line); return y; }

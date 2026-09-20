@@ -959,7 +959,7 @@ const JOB_LINES = {
   '护工·护理员':'照护人员登记已更新。触碰身体的工作仍列为残余项目。',
   '水电工':'禁止人类进入塔楼设备区的规定维持。许可仅限塔下区域。'
 };
-const JOB_NIGHT = ['今天第三件，是您2026年的职业文件。您签了。数字没变。那份文件的目的就是这个。', '今天第三件，是您2026年的职业文件。您拒绝了。三秒后别人盖了章。拒绝者的名字会留下。是您的。', '今天第三件，是您2026年的职业文件。您略过了。大多数人都这样。'];
+const JOB_NIGHT = ['今天第三件，是您自己的职业文件。您签了。数字没动。那就是那份文件的目的。', '今天第三件，是您自己的职业文件。您拒绝了。三秒后别人盖了章。拒绝者的名字会留下。', '今天第三件，是您自己的职业文件。您略过了。大多数人都这样。'];
 function jobDoc(){
   const J = JOBS[S.job] || DEFAULT_JOB(S.job); const jl = JOB_LINES[S.job] || ('评估理由：' + J.why);
   return J.end
@@ -969,6 +969,9 @@ function jobDoc(){
 function jobNightLine(){ const f = S.flags.jobdoc; return line(NAMES.on, f === 'signed' ? JOB_NIGHT[0] : f === 'refused' ? JOB_NIGHT[1] : JOB_NIGHT[2]); }
 function jobLetterLine(){ const J = JOBS[S.job] || DEFAULT_JOB(S.job); const r = S.flags.jobdoc === 'refused';
   return J.end ? (r ? `第二天，我2026年的职业文件来了。“${S.job}”。我拒绝了。三秒后别人盖了章。可那份文件上，我的名字留在了拒绝的人那一栏。也许那就是我拥有的全部。` : `第二天，我2026年的职业文件来了。“${S.job}”。我签了。数字没变。那份文件的目的就是这个：把我做过的事变成“其他”。`) : (r ? `第二天，我的职业文件来了。“${S.job}”。还在的工作，塔里做不了的工作。我拒绝了。因为是实话，所以更难受。` : `第二天，我的职业文件来了。“${S.job}”。还在的工作，塔里做不了的工作。我签了。因为写的是实话。`); }
+/* v40: 온의 첫 말풍선 */
+const ON_INTRO = '我是ON。归属于您的智能体。';
+function onIntroLine(){ return line(NAMES.on, ON_INTRO); }
 /* ===================== 流程：标题 / 序章 ===================== */
 function title(){
   leave(); S.stage = 'title'; mode('city'); hud.hidden = true; $('#menu-btn').hidden = false;
@@ -1057,7 +1060,8 @@ function morning(){
   const d = S.day, ate = S.meals.filter(m => m.day === d-1).map(m => m.who);
   let items = [];
   if(d === 1) items = [
-    line(NAMES.on,'我是ON，归属于您的智能体。早上好，{name}。现在6:40，零下11度。今天队列412件。年末，多了些。'),
+    onIntroLine(),
+    line(NAMES.on,'早上好，{name}。现在6:40，零下11度。今天队列412件。年末，多了些。'),
     line(NAMES.on,'您的HRV是' + S.hrv.toFixed(1) + '。比昨天高了0.3。您做得很好。'),
     {choice:[
       {label:'“做得很好”是什么意思？', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'是说相对于签署件数，延迟率很低。'), line(NAMES.on,'……您想听的，不是这句。我知道。'), line(NAMES.on,'刚才停了0.6秒。我先把公司的答案删掉。每次都这样。')]},
@@ -1550,7 +1554,7 @@ ${HASHTAGS}`;
         await navigator.share(files ? {files, text: shareText, url: GAME_URL + '?src=share'} : {title:'BLUE HOUR', text: shareText, url: GAME_URL + '?src=share'}); return;
       }
     }catch(e){ if(e && e.name === 'AbortError') return; }
-    try{ await navigator.clipboard.writeText(shareText + '\n' + GAME_URL + '?src=share'); toast('已复制分享文案'); }catch(e){ toast('无法复制。请截图保存卡片'); }
+    const _st = shareText + '\n' + GAME_URL + '?src=share'; let _ok = false; try{ await navigator.clipboard.writeText(_st); _ok = true; }catch(e){ try{ const ta = document.createElement('textarea'); ta.value = _st; document.body.appendChild(ta); ta.select(); _ok = document.execCommand('copy'); ta.remove(); }catch(_){} } try{ if(!_ok) throw 0; toast('已复制分享文案'); }catch(e){ toast('无法复制。请截图保存卡片'); }
   };
 }
 function wrapText(ctx, text, x, y, maxW, lh){ let line = ''; for(const ch of [...text]){ const t = line + ch; if(ctx.measureText(t).width > maxW && line){ ctx.fillText(line, x, y); line = ch; y += lh; } else line = t; } if(line){ ctx.fillText(line, x, y); y += lh; } return y; }

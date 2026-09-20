@@ -959,7 +959,7 @@ const JOB_LINES = {
   '介護士':'介護人材の登録は更新されました。体に触れる仕事は残存項目。',
   '配管工・電気工':'タワー設備への人間の立ち入り禁止は維持されます。許可は下の区域に限る。'
 };
-const JOB_NIGHT = ['今日の三件目は、あなたの2026年の職種の書類でした。署名しましたね。数字は変わりませんでした。それがあの書類の目的です。', '今日の三件目は、あなたの2026年の職種の書類でした。拒否しましたね。三秒後に別の人が押しました。拒否した人の名前は残ります。あなたです。', '今日の三件目は、あなたの2026年の職種の書類でした。通り過ぎましたね。ほとんどの人がそうです。'];
+const JOB_NIGHT = ['今日の三件目は、あなた自身の職種の書類でした。署名しましたね。数字は動きませんでした。それがあの書類の目的です。', '今日の三件目は、あなた自身の職種の書類でした。拒否しましたね。三秒後に別の人が押しました。拒否した人の名前は残ります。', '今日の三件目は、あなた自身の職種の書類でした。通り過ぎましたね。ほとんどの人がそうです。'];
 function jobDoc(){
   const J = JOBS[S.job] || DEFAULT_JOB(S.job); const jl = JOB_LINES[S.job] || ('算定理由：' + J.why);
   return J.end
@@ -969,6 +969,9 @@ function jobDoc(){
 function jobNightLine(){ const f = S.flags.jobdoc; return line(NAMES.on, f === 'signed' ? JOB_NIGHT[0] : f === 'refused' ? JOB_NIGHT[1] : JOB_NIGHT[2]); }
 function jobLetterLine(){ const J = JOBS[S.job] || DEFAULT_JOB(S.job); const r = S.flags.jobdoc === 'refused';
   return J.end ? (r ? `二日目、私の2026年の職種の書類が来た。「${S.job}」。私は拒否した。三秒後に別の人が押した。それでもあの書類には、拒否した人として私の名前が残る。それが私の持っているすべてかもしれない。` : `二日目、私の2026年の職種の書類が来た。「${S.job}」。私は署名した。数字は変わらなかった。それがあの書類の目的だった。私がしていた仕事を「その他」にすること。`) : (r ? `二日目、私の職種の書類が来た。「${S.job}」。まだある仕事、タワーの中ではできない仕事。私は拒否した。本当のことだったから、余計に嫌だった。` : `二日目、私の職種の書類が来た。「${S.job}」。まだある仕事、タワーの中ではできない仕事。私は署名した。本当のことだったから。`); }
+/* v40: 온의 첫 말풍선 */
+const ON_INTRO = 'オンです。あなたに帰属するエージェントです。';
+function onIntroLine(){ return line(NAMES.on, ON_INTRO); }
 /* ===================== フロー: タイトル / イントロ ===================== */
 function title(){
   leave(); S.stage = 'title'; mode('city'); hud.hidden = true; $('#menu-btn').hidden = false;
@@ -1057,7 +1060,8 @@ function morning(){
   const d = S.day, ate = S.meals.filter(m => m.day === d-1).map(m => m.who);
   let items = [];
   if(d === 1) items = [
-    line(NAMES.on,'オンです。あなたに帰属するエージェントです。おはようございます、{name}さん。6時40分、氷点下11度です。今日の処理待ちは412件です。年末なので多いです。'),
+    onIntroLine(),
+    line(NAMES.on,'おはようございます、{name}さん。6時40分、氷点下11度です。今日の処理待ちは412件です。年末なので多いです。'),
     line(NAMES.on,'HRVは' + S.hrv.toFixed(1) + '。昨日より0.3上がりました。よくやっています。'),
     {choice:[
       {label:'よくやってるって、何が？', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'署名件数に対して遅延率が低い、という意味です。'), line(NAMES.on,'……聞きたかったのは、そういう言葉じゃないですよね。わかっています。'), line(NAMES.on,'今、0.6秒止まりました。会社の答えを先に消すからです。毎回そうです。')]},
@@ -1550,7 +1554,7 @@ ${HASHTAGS}`;
         await navigator.share(files ? {files, text: shareText, url: GAME_URL + '?src=share'} : {title:'BLUE HOUR', text: shareText, url: GAME_URL + '?src=share'}); return;
       }
     }catch(e){ if(e && e.name === 'AbortError') return; }
-    try{ await navigator.clipboard.writeText(shareText + '\n' + GAME_URL + '?src=share'); toast('共有文をコピーしました'); }catch(e){ toast('コピーがブロックされています。カードをキャプチャしてください'); }
+    const _st = shareText + '\n' + GAME_URL + '?src=share'; let _ok = false; try{ await navigator.clipboard.writeText(_st); _ok = true; }catch(e){ try{ const ta = document.createElement('textarea'); ta.value = _st; document.body.appendChild(ta); ta.select(); _ok = document.execCommand('copy'); ta.remove(); }catch(_){} } try{ if(!_ok) throw 0; toast('共有文をコピーしました'); }catch(e){ toast('コピーがブロックされています。カードをキャプチャしてください'); }
   };
 }
 function wrapText(ctx, text, x, y, maxW, lh){ let line = ''; for(const ch of [...text]){ const t = line + ch; if(ctx.measureText(t).width > maxW && line){ ctx.fillText(line, x, y); line = ch; y += lh; } else line = t; } if(line){ ctx.fillText(line, x, y); y += lh; } return y; }

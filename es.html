@@ -960,7 +960,7 @@ const JOB_LINES = {
   'Cuidado de personas':'El registro de personal de cuidado fue renovado. El trabajo que toca el cuerpo sigue como rúbrica residual.',
   'Fontanería · Electricidad':'Se mantiene la prohibición de acceso humano a las instalaciones de la torre. Permiso limitado al barrio de abajo.'
 };
-const JOB_NIGHT = ['El tercer expediente de hoy era su ocupación de 2026. Firmó. El número no cambió. Ese era el propósito del expediente.', 'El tercer expediente de hoy era su ocupación de 2026. Se negó. Tres segundos después, otra persona lo selló. El nombre de quien se negó queda. Es el suyo.', 'El tercer expediente de hoy era su ocupación de 2026. Lo dejó pasar. La mayoría lo hace.'];
+const JOB_NIGHT = ['El tercer expediente de hoy era su propia ocupación. Firmó. El número no se movió. Ese era el propósito del expediente.', 'El tercer expediente de hoy era su propia ocupación. Se negó. Tres segundos después, otra persona lo selló. El nombre de quien se negó queda.', 'El tercer expediente de hoy era su propia ocupación. Lo dejó pasar. La mayoría lo hace.'];
 function jobDoc(){
   const J = JOBS[S.job] || DEFAULT_JOB(S.job); const jl = JOB_LINES[S.job] || ('Motivo de la valoración: ' + J.why);
   return J.end
@@ -970,6 +970,9 @@ function jobDoc(){
 function jobNightLine(){ const f = S.flags.jobdoc; return line(NAMES.on, f === 'signed' ? JOB_NIGHT[0] : f === 'refused' ? JOB_NIGHT[1] : JOB_NIGHT[2]); }
 function jobLetterLine(){ const J = JOBS[S.job] || DEFAULT_JOB(S.job); const r = S.flags.jobdoc === 'refused';
   return J.end ? (r ? `El segundo día llegó el expediente de mi ocupación de 2026. ‘${S.job}’. Me negué. Tres segundos después, otra persona lo selló. Pero en ese expediente mi nombre queda como quien se negó. Quizá sea todo lo que tengo.` : `El segundo día llegó el expediente de mi ocupación de 2026. ‘${S.job}’. Firmé. El número no cambió. Ese era el propósito del expediente: convertir lo que yo hacía en “Otros”.`) : (r ? `El segundo día llegó el expediente de mi ocupación. ‘${S.job}’. Un trabajo que aún existe, un trabajo que no se puede hacer dentro de la torre. Me negué. Era verdad, y por eso dolía más.` : `El segundo día llegó el expediente de mi ocupación. ‘${S.job}’. Un trabajo que aún existe, un trabajo que no se puede hacer dentro de la torre. Firmé. Era verdad.`); }
+/* v40: 온의 첫 말풍선 */
+const ON_INTRO = 'Soy ON. El agente que le pertenece a usted.';
+function onIntroLine(){ return line(NAMES.on, ON_INTRO); }
 /* ===================== Flujo: título / intro ===================== */
 function title(){
   leave(); S.stage = 'title'; mode('city'); hud.hidden = true; $('#menu-btn').hidden = false;
@@ -977,7 +980,7 @@ function title(){
   const canCont = saved && saved.name && saved.stage !== 'title';
   stage.innerHTML = `<section class="title fade">
     <div class="hero" style="background-image:url('img/title.jpg')"><div class="hero-text">
-    <div class="eyebrow">Ciudad de México · 21 de diciembre · La fecha de desalojo es Nochebuena, en tres días</div>
+    <div class="eyebrow">21 de diciembre · Desalojo: Nochebuena, en tres días</div>
     <h1>BLUE HOUR<span>Ciudad de México · Diciembre de 2029</span></h1>
     <p class="langs top">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
     </div></div>
@@ -1058,7 +1061,8 @@ function morning(){
   const d = S.day, ate = S.meals.filter(m => m.day === d-1).map(m => m.who);
   let items = [];
   if(d === 1) items = [
-    line(NAMES.on,'Soy ON, el agente que le pertenece a usted. Buenos días, {name}. Son las 6:40 y hay once bajo cero. Hoy hay 412 expedientes en cola. Fin de año. Son muchos.'),
+    onIntroLine(),
+    line(NAMES.on,'Buenos días, {name}. Son las 6:40 y hay once bajo cero. Hoy hay 412 expedientes en cola. Fin de año. Son muchos.'),
     line(NAMES.on,'Su HRV es ' + dec(S.hrv, 1) + '. Subió 0,3 desde ayer. Lo está haciendo bien.'),
     {choice:[
       {label:'¿Qué es «hacerlo bien»?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'Que su tasa de demora es baja en relación con las firmas.'), line(NAMES.on,'…No era eso lo que quería oír. Lo sé.'), line(NAMES.on,'Fue una pausa de 0,6 segundos. Primero borro la respuesta de la empresa. Pasa siempre.')]},
@@ -1551,7 +1555,7 @@ ${HASHTAGS}`;
         await navigator.share(files ? {files, text: shareText, url: GAME_URL + '?src=share'} : {title:'BLUE HOUR', text: shareText, url: GAME_URL + '?src=share'}); return;
       }
     }catch(e){ if(e && e.name === 'AbortError') return; }
-    try{ await navigator.clipboard.writeText(shareText + '\n' + GAME_URL + '?src=share'); toast('Texto de compartir copiado.'); }catch(e){ toast('No se pudo copiar. Haz una captura de la tarjeta.'); }
+    const _st = shareText + '\n' + GAME_URL + '?src=share'; let _ok = false; try{ await navigator.clipboard.writeText(_st); _ok = true; }catch(e){ try{ const ta = document.createElement('textarea'); ta.value = _st; document.body.appendChild(ta); ta.select(); _ok = document.execCommand('copy'); ta.remove(); }catch(_){} } try{ if(!_ok) throw 0; toast('Texto de compartir copiado.'); }catch(e){ toast('No se pudo copiar. Haz una captura de la tarjeta.'); }
   };
 }
 function wrapText(ctx, text, x, y, maxW, lh){ let line = ''; for(const ch of [...text]){ const t = line + ch; if(ctx.measureText(t).width > maxW && line){ ctx.fillText(line, x, y); line = ch; y += lh; } else line = t; } if(line){ ctx.fillText(line, x, y); y += lh; } return y; }

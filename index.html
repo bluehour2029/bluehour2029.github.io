@@ -960,7 +960,7 @@ const JOB_LINES = {
   '간병인·요양보호사':'돌봄 인력 등록이 갱신되었습니다. 몸을 만지는 일은 잔존 항목.',
   '배관공·전기기사':'타워 설비의 인간 출입 금지가 유지됩니다. 아래 구역 한정 허가.'
 };
-const JOB_NIGHT = ['오늘 세 번째 건, 당신의 2026년 직군 서류였어요. 서명하셨죠. 숫자는 안 바뀌었어요. 그게 그 서류의 목적이에요.', '오늘 세 번째 건, 당신의 2026년 직군 서류였어요. 거부하셨죠. 3초 뒤에 다른 사람이 찍었어요. 거부한 사람 이름은 남아요. 당신이에요.', '오늘 세 번째 건, 당신의 2026년 직군 서류였어요. 지나가셨죠. 대부분 그래요.'];
+const JOB_NIGHT = ['오늘 세 번째 건, 당신 직군 서류였어요. 서명하셨죠. 숫자는 그대로예요. 그게 그 서류의 목적이에요.', '오늘 세 번째 건, 당신 직군 서류였어요. 거부하셨죠. 3초 뒤 다른 사람이 찍었어요. 거부한 사람 이름은 남아요.', '오늘 세 번째 건, 당신 직군 서류였어요. 지나가셨죠. 대부분 그래요.'];
 function jobDoc(){
   const J = JOBS[S.job] || DEFAULT_JOB(S.job); const jl = JOB_LINES[S.job] || ('산정 사유: ' + J.why);
   return J.end
@@ -970,6 +970,9 @@ function jobDoc(){
 function jobNightLine(){ const f = S.flags.jobdoc; return line(NAMES.on, f === 'signed' ? JOB_NIGHT[0] : f === 'refused' ? JOB_NIGHT[1] : JOB_NIGHT[2]); }
 function jobLetterLine(){ const J = JOBS[S.job] || DEFAULT_JOB(S.job); const r = S.flags.jobdoc === 'refused';
   return J.end ? (r ? `둘째 날, 내 2026년 직군 서류가 왔어. ‘${S.job}’. 나는 거부했어. 3초 뒤에 다른 사람이 찍었지. 그래도 그 서류에는 거부한 사람으로 내 이름이 남아. 그게 내가 가진 전부일지도 몰라.` : `둘째 날, 내 2026년 직군 서류가 왔어. ‘${S.job}’. 나는 서명했어. 숫자는 안 바뀌었어. 그 서류의 목적이 그거였어. 내가 하던 일을 ‘기타’로 만드는 것.`) : (r ? `둘째 날, 내 직군 서류가 왔어. ‘${S.job}’. 아직 있는 일, 타워 안에서는 할 수 없는 일. 나는 거부했어. 맞는 말이라서 더 싫었어.` : `둘째 날, 내 직군 서류가 왔어. ‘${S.job}’. 아직 있는 일, 타워 안에서는 할 수 없는 일. 나는 서명했어. 맞는 말이었으니까.`); }
+/* v40: 온의 첫 말풍선 */
+const ON_INTRO = '온이에요. 당신에게 귀속된 에이전트.';
+function onIntroLine(){ return line(NAMES.on, ON_INTRO); }
 /* ===================== 흐름: 타이틀 / 인트로 ===================== */
 function title(){
   leave(); S.stage = 'title'; mode('city'); hud.hidden = true; $('#menu-btn').hidden = false;
@@ -977,7 +980,7 @@ function title(){
   const canCont = saved && saved.name && saved.stage !== 'title';
   stage.innerHTML = `<section class="title fade">
     <div class="hero" style="background-image:url('img/title.jpg')"><div class="hero-text">
-    <div class="eyebrow">서울 · 12월 21일 · 퇴거 예고일은 크리스마스 이브, 사흘 뒤</div>
+    <div class="eyebrow">12월 21일 · 예고일은 크리스마스 이브, 사흘 뒤</div>
     <h1>BLUE HOUR<span>서울 · 2029년 12월</span></h1>
     <p class="langs top">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
     </div></div>
@@ -1058,7 +1061,8 @@ function morning(){
   const d = S.day, ate = S.meals.filter(m => m.day === d-1).map(m => m.who);
   let items = [];
   if(d === 1) items = [
-    line(NAMES.on,'온이에요. 당신에게 귀속된 에이전트. 좋은 아침이에요, {name}. 6시 40분, 영하 11도예요. 오늘 대기열은 412건이에요. 연말이라 많아요.'),
+    onIntroLine(),
+    line(NAMES.on,'좋은 아침이에요, {name}. 6시 40분, 영하 11도예요. 오늘 대기열은 412건이에요. 연말이라 많아요.'),
     line(NAMES.on,'당신의 HRV는 ' + S.hrv.toFixed(1) + '. 지난 갱신보다 0.3 올랐어요. 잘하고 있어요.'),
     {choice:[
       {label:'잘하고 있다는 게 뭐야?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'서명 건수 대비 지연률이 낮다는 뜻이에요.'), line(NAMES.on,'…그 말이 듣고 싶으셨던 건 아니죠. 알아요.'), line(NAMES.on,'방금 0.6초 쉬었어요. 회사 답을 먼저 지우느라고요. 매번 그래요.')]},
@@ -1551,7 +1555,7 @@ ${HASHTAGS}`;
         await navigator.share(files ? {files, text: shareText, url: GAME_URL + '?src=share'} : {title:'BLUE HOUR', text: shareText, url: GAME_URL + '?src=share'}); return;
       }
     }catch(e){ if(e && e.name === 'AbortError') return; }
-    try{ await navigator.clipboard.writeText(shareText + '\n' + GAME_URL + '?src=share'); toast('공유 문구를 복사했습니다'); }catch(e){ toast('복사가 막혀 있습니다. 카드를 캡처해 주세요'); }
+    const _st = shareText + '\n' + GAME_URL + '?src=share'; let _ok = false; try{ await navigator.clipboard.writeText(_st); _ok = true; }catch(e){ try{ const ta = document.createElement('textarea'); ta.value = _st; document.body.appendChild(ta); ta.select(); _ok = document.execCommand('copy'); ta.remove(); }catch(_){} } try{ if(!_ok) throw 0; toast('공유 문구를 복사했습니다'); }catch(e){ toast('복사가 막혀 있습니다. 카드를 캡처해 주세요'); }
   };
 }
 function wrapText(ctx, text, x, y, maxW, lh){ let line = ''; for(const ch of [...text]){ const t = line + ch; if(ctx.measureText(t).width > maxW && line){ ctx.fillText(line, x, y); line = ch; y += lh; } else line = t; } if(line){ ctx.fillText(line, x, y); y += lh; } return y; }
