@@ -428,7 +428,7 @@ const NAMES = {on:'オン', me:'私', bak:'パクさん', sujin:'スジン', hal
 const LANGS = [['ko','한국어','index.html'],['en','English','en.html'],['zh','中文','zh.html'],['ja','日本語','ja.html'],['es','Español','es.html']];
 const TRACK_URL = 'https://script.google.com/macros/s/AKfycbzblaRzqByXosYJ1bRfhyqrP82Qx9D9EHR4xbIGAFrRY4dUhcWcADaOZMpqUeWAWDkc/exec';
 const TRACK_NOTE = 'このページは、あなたの名前、2026年の職業、進行状況と署名回数を制作者に送ります。日記の答えと手紙の本文は送りません。';
-const NOTICE_CARD = {html:`<div class="law notice"><b>明渡執行予告</b>対象：タワー下の全域<br>予告日：12月24日<br>延長審査：予告日の深夜零時、審査はダン<br>担当者：該当なし</div><p class="after-law">どの路地にも貼られている。要するに、12月24日の深夜零時に、ダンがこの町を空けるかどうかを決める。これまでは、いつも延びてきた。</p>`};
+const NOTICE_CARD = {html:`<div class="law notice"><b>明渡執行予告</b>対象：タワー下の全域<br>予告日：12月24日<br>延長審査：予告日の深夜零時、審査はエージェントのダン<br>担当者：該当なし</div><p class="after-law">どの路地にも貼られている。ダンは会社のエージェントだ。12月24日の深夜零時に、ダンがこの町を空けるかどうかを決める。これまでは、いつも延びてきた。</p>`};
 const INTRO_BGS = ['title','title','terminal',null,'room'];
 const AFTER_BGS = ['tower',null,'terminal','room'];
 const LANG = 'ja';
@@ -511,7 +511,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '予告 ' + dd.d;
   $('#h-phase').textContent = ({morning:'朝', shift:'勤務', evening:'夕方', night:'夜', diary:'日記'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '手紙まであと' + (4 - S.day) + '晩' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '階';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -905,9 +905,9 @@ try{ SFX.init(); }catch(e){}
 try{ track('open'); }catch(e){}   // 열기만 한 사람도 센다. 이름 없이 언어·유입·sid 만 실린다
 /* ===================== 案件 ===================== */
 const CASES = {
-  batch:{cat:'標準', title:'年末更新 一括署名 · 標準案件', body:'標準案件{n}件。保険更新・料金プラン調整・配当再算定を含む。\nダン判定信頼度0.95以上。個別閲覧は不要。\n一括署名を要する。', basis:'標準案件は閲覧時に処理時間を超過します。閲覧へ切り替えた場合の予想所要：9時間40分。', harsh:2, batch:true},
+  batch:{cat:'標準', title:'年末更新 一括署名 · 標準案件', body:'標準案件{n}件。保険更新・料金プラン調整・配当再算定を含む。\nダンの判定信頼度0.95以上。個別閲覧は不要。\n一括署名を要する。', basis:'標準案件は閲覧時に処理時間を超過します。閲覧へ切り替えた場合の予想所要：9時間40分。', harsh:2, batch:true},
   pet:{cat:'登録', title:'ペット登録の承認', body:'申請人 チェ〇〇（5階）。犬1頭。\n自動審査結果：承認。', basis:'変数212項目を考慮。上位：居住面積、騒音苦情歴、関係網密度。', harsh:0, note:'何も起きない。たいていはそうだ。'},
-  loan38:{cat:'信用', title:'融資申請の否決', body:'申請人 イ〇〇（HRV 38、8階）。\n申請額400万ウォン。用途：医療費。\n自動審査結果：否決。', basis:'変数4,120項目を考慮。上位3項目：残存価値、居住階、関係網密度。ダン判定信頼度0.97。', harsh:3},
+  loan38:{cat:'信用', title:'融資申請の否決', body:'申請人 イ〇〇（HRV 38、8階）。\n申請額400万ウォン。用途：医療費。\n自動審査結果：否決。', basis:'変数4,120項目を考慮。上位3項目：残存価値、居住階、関係網密度。ダンの判定信頼度0.97。', harsh:3},
   loan91:{cat:'信用', title:'融資申請の承認', body:'申請人 ハン〇〇（HRV 91、タワー2期33階）。\n申請額3億ウォン。用途：未記載。\n自動審査結果：承認。', basis:'変数4,120項目を考慮。上位3項目：残存価値、資産、所属。', harsh:0, note:'この署名は速かった。手が先に動いた。'},
   triage:{cat:'医療', title:'治療優先順位の調整', body:'患者 キム〇〇、67歳、3階。\n優先順位 B → D。\n予想待機 14日 → 96日。', basis:'期待残存貢献度を算定。年齢、HRV、関係網密度を反映。', harsh:4},
   study:{cat:'配当', title:'学習配当の縮小', body:'対象 ユン〇〇、17歳。\n学習用演算配当60%縮小。\n事由：希望職業（イラストレーター）の消滅確率0.98。', basis:'職業消滅確率は5年予測値。代替推奨職業：なし。', harsh:3},
@@ -1409,7 +1409,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">書く</button><button class="btn text" id="d-skip">空欄にする</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
