@@ -408,7 +408,7 @@ body.paper-mode::after{opacity:.03}
       <button class="btn" id="m-sfx"></button>
     </div>
     <div class="confirm" id="m-confirm" hidden>已保存的进度将被清除。真的要从头开始吗？<div class="row"><button class="btn solid" id="m-yes">清除</button><button class="btn text" id="m-no">不</button></div></div>
-    <div class="world" id="m-world-card" hidden><p>2029年，上海。智能体几乎做所有的事。</p><p>决定由公司的智能体做出。名字是丹。留给人的只有在那些决定上签字。你是签署员。</p><p>HRV是丹核定的你的残余价值，决定房租、就医顺序和楼层。</p><p>地球在变冷。大气反照率调节第三年。说是在修复气候，依据的第三行是算力冷却成本。</p><p>人也在变少。连续三年。长期假设里写着世界人口10亿。没有写是哪一年。</p><p>数字高的人住在白色塔楼里，其余的人住在塔楼下面。你住在塔楼的低层。入住条件是HRV 85。你搬进来的那年还没有条件。</p><p>12月24日午夜，丹决定是否清空那个街区。同一个午夜，还要复审塔楼的居住资格。到目前为止，总是被延后。</p><p>ON是归属于你的智能体。三天后，ON会用你的记录，写一封信给2026年的你。</p><p class="world-last">太阳落下之后、夜晚到来之前的那一个小时，叫蓝调时刻。分不清狗和狼的时间。太阳是在落下还是在重新升起，也还没有定。</p><button class="btn text" id="m-world-close">关闭</button></div>
+    <div class="world" id="m-world-card" hidden><p>2029年，上海。一个叫丹的智能体推动着几乎所有的事。</p><p>决定由丹做出。审查是丹，执行也是丹。留给人的是最后的签字。那个签字算多少，没人知道。你是签署员。</p><p>HRV是丹核定的你的残余价值，决定房租、就医顺序和楼层。</p><p>地球在变冷。大气反照率调节第三年。说是在修复气候，依据的第三行是算力冷却成本。</p><p>人也在变少。连续三年。长期假设里写着世界人口10亿。没有写是哪一年。</p><p>数字高的人住在白色塔楼里，其余的人住在塔楼下面。你住在塔楼的低层。入住条件是HRV 85。你搬进来的那年还没有条件。</p><p>在塔楼里，丹自己就能动。在塔楼下面，要有人的签字才能动。这就是《人类签署法》，也是你的工作。</p><p>12月24日午夜，丹决定是否清空那个街区。同一个午夜，还要复审塔楼的居住资格。到目前为止，总是被延后。</p><p>ON是归属于你的智能体。三天后，ON会用你的记录，写一封信给2026年的你。</p><p class="world-last">太阳落下之后、夜晚到来之前的那一个小时，叫蓝调时刻。分不清狗和狼的时间。太阳是在落下还是在重新升起，也还没有定。</p><button class="btn text" id="m-world-close">关闭</button></div>
     <div class="eps" id="m-eps"></div>
     <p class="credit">进度只保存在本浏览器中。</p>
   </div>
@@ -428,7 +428,7 @@ const NAMES = {on:'ON', me:'我', bak:'朴师傅', sujin:'秀真', hal:'郑奶�
 const LANGS = [['ko','한국어','index.html'],['en','English','en.html'],['zh','中文','zh.html'],['ja','日本語','ja.html'],['es','Español','es.html']];
 const TRACK_URL = 'https://script.google.com/macros/s/AKfycbzblaRzqByXosYJ1bRfhyqrP82Qx9D9EHR4xbIGAFrRY4dUhcWcADaOZMpqUeWAWDkc/exec';
 const TRACK_NOTE = '本页会把你的名字、2026年的职业、进度和签署次数发送给制作者。日记内容和信件本身不会发送。';
-const NOTICE_CARD = {html:`<div class="law notice"><b>明渡（腾退）执行预告</b>对象：塔楼下全区<br>预告日：12月24日<br>延期审查：预告日午夜，由代理人丹执行<br>负责人：无</div><p class="after-law">塔楼下面每条巷子都贴着。丹是公司的代理人。你不住在那个街区。签字的人是你。到目前为止，总是被延后。</p>`};
+const NOTICE_CARD = {html:`<div class="law notice"><b>明渡（腾退）执行预告</b>对象：塔楼下全区<br>预告日：12月24日<br>延期审查：预告日午夜，由代理人丹执行<br>负责人：无</div><p class="after-law">塔楼下面每条巷子都贴着。丹的手还伸不到那里。要有人的签字才能伸到。那个签字就是你。</p>`};
 const INTRO_BGS = ['title','title','terminal',null,'room'];
 const AFTER_BGS = ['tower',null,'terminal','room'];
 const LANG = 'zh';
@@ -456,7 +456,7 @@ const DEFAULT_JOB = j => { const h = [...String(j)].reduce((a,c) => a + c.charCo
 const EPISODES = [];
 const EPS_HEAD = '记录 · 小说';
 const VISITED_LABEL = '去过';
-const WORLD_LINES = ['2029年，上海。智能体几乎做所有的事。', '决定由公司的智能体做出。名字是丹。留给人的只有在那些决定上签字。你是签署员。', 'HRV是丹核定的你的残余价值，决定房租、就医顺序和楼层。', '地球在变冷。大气反照率调节第三年。说是在修复气候，依据的第三行是算力冷却成本。', '人也在变少。连续三年。长期假设里写着世界人口10亿。没有写是哪一年。', '数字高的人住在白色塔楼里，其余的人住在塔楼下面。你住在塔楼的低层。入住条件是HRV 85。你搬进来的那年还没有条件。', '12月24日午夜，丹决定是否清空那个街区。同一个午夜，还要复审塔楼的居住资格。到目前为止，总是被延后。', 'ON是归属于你的智能体。三天后，ON会用你的记录，写一封信给2026年的你。'];
+const WORLD_LINES = ['2029年，上海。一个叫丹的智能体推动着几乎所有的事。', '决定由丹做出。审查是丹，执行也是丹。留给人的是最后的签字。那个签字算多少，没人知道。你是签署员。', 'HRV是丹核定的你的残余价值，决定房租、就医顺序和楼层。', '地球在变冷。大气反照率调节第三年。说是在修复气候，依据的第三行是算力冷却成本。', '人也在变少。连续三年。长期假设里写着世界人口10亿。没有写是哪一年。', '数字高的人住在白色塔楼里，其余的人住在塔楼下面。你住在塔楼的低层。入住条件是HRV 85。你搬进来的那年还没有条件。', '在塔楼里，丹自己就能动。在塔楼下面，要有人的签字才能动。这就是《人类签署法》，也是你的工作。', '12月24日午夜，丹决定是否清空那个街区。同一个午夜，还要复审塔楼的居住资格。到目前为止，总是被延后。', 'ON是归属于你的智能体。三天后，ON会用你的记录，写一封信给2026年的你。'];
 const LANG_SUGGEST = {ko:'한국어 버전으로 보기', en:'Play in English', zh:'切换到中文版', ja:'日本語版で遊ぶ', es:'Jugar en español'};
 const SRC = (() => { try{ const q = new URLSearchParams(location.search).get('src'); if(q){ localStorage.setItem('bh_src', String(q).slice(0,24)); } return localStorage.getItem('bh_src') || ''; }catch(e){ return ''; } })();
 const REF = (() => { try{ return document.referrer ? new URL(document.referrer).hostname : ''; }catch(e){ return ''; } })();
@@ -511,7 +511,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '预告 ' + dd.d;
   $('#h-phase').textContent = ({morning:'早晨', shift:'值班', evening:'傍晚', night:'夜', diary:'日记'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '离信还有' + (4 - S.day) + '夜' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '层';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -979,9 +979,9 @@ function intro(){
   narrate([
     '2029年12月21日，上海。五点半。太阳落了，夜还没来。',
     '这一个小时叫蓝调时刻。分不清狗和狼的时间。也分不清太阳是在落，还是在升。',
-    '智能体几乎做所有的事。留给人的只有一件事。签字。',
+    '一个叫丹的智能体推动着这个世界几乎所有的事。留给人的只有一件事。最后的签字。',
     NOTICE_CARD,
-    '你住在白色塔楼的低层。塔楼里面，楼层也是价码。三天后，2029年的你会写一封信给2026年的你。'
+    '你住在白色塔楼的低层。每天傍晚你都往下走。为什么，你还不知道。三天后，2029年的你会写一封信给2026年的你。'
   ], askName, INTRO_BGS);
 }
 function askName(){
@@ -1067,7 +1067,7 @@ function shift(){
   stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
     <div class="term-top"><span>签署终端</span><span>${esc(S.name)}</span><span>你的配额 ${BATCH[S.day] + q.length - 1}</span></div>
     <article class="paper"><div class="doc-head"><span class="tag">接入</span><span>${DATES[S.day].md}</span></div>
-    <h3>签署员须知</h3><p class="p-body">决定由丹做出。签字由你来。依据：《人类签署法》第三条。\n请逐件阅读并签署或拒绝。\n建议处理时间：每件20秒。\n允许询问。答复以依据摘要形式提供。\n拒绝是权利。拒绝将计入信任分。</p></article>
+    <h3>签署员须知</h3><p class="p-body">决定由丹做出。签字由你来。依据：《人类签署法》第三条。\n决定由丹做出。最后的签字由你来。是否被采纳不予公开。依据：《人类签署法》第三条。\n请逐件阅读并签署或拒绝。\n建议处理时间：每件20秒。\n允许询问。答复以依据摘要形式提供。\n拒绝是权利。拒绝将计入信任分。</p></article>
     <div class="term-ctl one"><button class="btn solid" id="t-go">接入终端</button></div></section>`;
   scrollTop();
   $('#t-go').onclick = showCase;
@@ -1350,7 +1350,7 @@ function night(){
     ate ? line(NAMES.on,'今天您和' + ate + '一起吃了饭。关系网密度上升了0.02。丹会高兴的。') : line(NAMES.on,'您今天是一个人吃的。明天要是能和谁一起吃就好了。不是因为数值。……不，就是因为数值。抱歉。'),
 line(NAMES.on,'{name}。我喜欢叫您的名字。公司的表格上只写着“签署员”。'),
         {choice:[
-      {label:'丹是谁？', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'公司的智能体。审查是丹，执行是丹，今天读您材料的也是丹。'), line(NAMES.on,'名字只有一个，所以不需要脸。我不是丹。我归属于您。'), line(NAMES.on,'别担心。人权还有效。只是到什么时候，没人知道。')]},
+      {label:'丹是谁？', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'公司的智能体。只有一个。审查是丹，执行是丹，今天读您材料的也是丹。'), line(NAMES.on,'名字只有一个，所以不需要脸。我不是丹。我归属于您。'), line(NAMES.on,'别担心。人权还有效。只是到什么时候，没人知道。')]},
       {label:'那些人会怎么样？', then:[line(NAMES.on,'哪些人？'), line(NAMES.me,'我今天签署的那些人。'), line(NAMES.on,'我看不到那些文件。就算看得到，也不能告诉您。'), line(NAMES.on,'……大多数什么都不会发生。您这样想就可以了。')]},
       {label:'做得更好是什么意思？', then:[line(NAMES.on,'延迟率低，拒绝少。'), line(NAMES.on,'……那不是我的回答，是公司的回答。我没有回答。暂时没有。')]},
       {label:'今天就说到这儿吧。', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'好。我就在这儿。不会关掉的。')]}
@@ -1409,7 +1409,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">写下</button><button class="btn text" id="d-skip">留空</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
