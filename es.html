@@ -2,17 +2,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>BLUE HOUR 2029</title>
-<meta name="description" content="Diciembre de 2029, Ciudad de México. Tres días firmando cuatrocientos expedientes al día. Al final, una carta para quien eras en 2026. 20 minutos, gratis.">
+<meta name="description" content="Diciembre de 2029, Ciudad de México. El agente Dan decide casi todo. A las personas les queda una sola cosa: la última firma. Tres días después, una carta para quien eras en 2026. 20 minutos, gratis.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="BLUE HOUR 2029 · El último papel que le queda al ser humano">
-<meta property="og:description" content="Ciudad de México, diciembre de 2029. Un solo agente lo mueve todo. Tú das la última firma. La tercera tarde se vota si se conserva el único barrio al que su mano aún no llega. 20 minutos, gratis.">
+<meta property="og:description" content="Diciembre de 2029, Ciudad de México. El agente Dan decide casi todo. A las personas les queda una sola cosa: la última firma. Tres días después, una carta para quien eras en 2026. 20 minutos, gratis.">
 <meta property="og:url" content="https://bluehour2029.github.io/es.html">
 <meta property="og:image" content="https://bluehour2029.github.io/img/title.jpg">
 <meta property="og:image:width" content="1400">
 <meta property="og:image:height" content="792">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="BLUE HOUR 2029 · El último papel que le queda al ser humano">
-<meta name="twitter:description" content="Ciudad de México, diciembre de 2029. Un solo agente lo mueve todo. Tú das la última firma. La tercera tarde se vota si se conserva el único barrio al que su mano aún no llega. 20 minutos, gratis.">
+<meta name="twitter:description" content="Diciembre de 2029, Ciudad de México. El agente Dan decide casi todo. A las personas les queda una sola cosa: la última firma. Tres días después, una carta para quien eras en 2026. 20 minutos, gratis.">
 <meta name="twitter:image" content="https://bluehour2029.github.io/img/title.jpg">
 <meta name="theme-color" content="#070b14">
 <style>body{word-break:keep-all;overflow-wrap:anywhere}</style>
@@ -478,6 +478,7 @@ const WALL_URL = 'names.json';
 const CONFIRM_TAP = 'Toca otra vez para borrar';
 const REFLECT = ['Si en 2015 hubieras sabido cómo sería 2026, ¿qué habrías hecho distinto?', 'Tres años más allá de ahí está 2029.', 'Si no va a ser muy distinto de ahora, ¿qué deberías hacer distinto hoy?'];
 /* DONE_V40 */
+/* DONE_V43 */
 /* ===================== Estado ===================== */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), hud = $('#hud');
@@ -985,8 +986,8 @@ function title(){
     <p class="langs top">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
     </div></div>
     <div class="rule"></div>
-    <p class="quote">¿El sol se pone, o vuelve a salir?<br>Todavía no está decidido.</p>
-    <p class="promise">Tres días en un piso bajo de la torre. Cuatrocientas últimas firmas al día. Al final, una carta para quien eras en 2026.</p>
+    <p class="quote">El agente Dan decide casi todo.<br>A las personas les queda una sola cosa.<br>La última firma.</p>
+    <p class="promise">Tres días en un piso bajo de la torre, cuatrocientos expedientes al día. Nunca se divulga cuánto cuenta esa firma. Al final, una carta para quien eras en 2026.</p>
     <div class="actions">
       ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? 'Volver a la carta' : 'Continuar · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">Desde el principio</button>` : `<button class="btn solid" id="b-start">Empezar</button>`}
     </div>
