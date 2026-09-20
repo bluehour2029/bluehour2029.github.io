@@ -1,0 +1,1142 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ブルーアワー 明渡</title>
+<style>
+:root{
+  --bg:#070b14; --bg-2:#0c1424; --bg-3:#111c31; --line:#1d2a42; --line-2:#2a3a58;
+  --ink:#e6ecf5; --ink-2:#c7d2e3; --muted:#8a99b2; --dim:#6f809c;
+  --accent:#ffa24a; --accent-deep:#e8892f; --accent-ink:#1a0f02;
+  --on:#7fdcd2; --blue:#3f74c9;
+  --paper:#ffffff; --paper-2:#f3f5f8; --paper-ink:#111318; --paper-muted:#6b7280; --paper-line:#e1e5eb; --paper-ground:#eceef2; --warm:#f5f2ea;
+  --stamp:#c43a2e; --stamp-b:#2d4f9e; --danger:#ff6b6b;
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Noto Sans KR","Segoe UI",Roboto,system-ui,sans-serif;
+  --serif:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Noto Sans KR","Segoe UI",Roboto,system-ui,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Noto Sans KR","Segoe UI",Roboto,system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --gutter:18px;
+}
+[hidden]{display:none!important}
+html,body{height:100%}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+body.paper-mode{background:var(--paper-ground)}
+#app{position:relative;z-index:2;max-width:640px;margin:0 auto;padding:0 var(--gutter) 56px;min-height:100%}
+#snow{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;transition:opacity .8s}
+body.paper-mode #snow,body.dark-mode #snow{opacity:0}
+#veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 60%,rgba(40,90,190,0) 30%,rgba(30,70,170,.85) 100%);opacity:0;transition:opacity 1.2s}
+body.paper-mode #veil{mix-blend-mode:multiply}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.fade{animation:fade .5s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.fade{animation:none}.ticker span{animation:none!important}.cue i{animation:none}.p-timer{transition:none!important}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:4px;border:1px solid var(--line-2);background:var(--bg-2);color:var(--ink);font-family:var(--sans);font-weight:500;font-size:15px;letter-spacing:.01em;transition:background .15s,border-color .15s,transform .06s,opacity .15s;text-decoration:none}
+.btn:hover{border-color:var(--muted)}
+.btn:active{transform:translateY(1px)}
+.btn.solid{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.solid:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
+.btn.outline{background:transparent}
+.btn.text{background:transparent;border-color:transparent;color:var(--muted);padding:0 10px}
+.btn.text:hover{color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+#hud{position:sticky;top:0;z-index:5;margin:0 calc(-1*var(--gutter)) 6px;padding:calc(10px + env(safe-area-inset-top,0px)) calc(var(--gutter) + 44px) 10px var(--gutter);display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(var(--bg) 78%,transparent);font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em}
+body.paper-mode #hud{background:linear-gradient(var(--paper-ground) 78%,transparent);color:#5a5e68}
+#hud .m{display:flex;align-items:baseline;gap:6px;white-space:nowrap}
+#hud .m label{font-size:10px;text-transform:uppercase;letter-spacing:.14em;opacity:.7}
+#hud .m b{font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
+#hud .m b.d{color:var(--accent)}
+body.paper-mode #hud .m b{color:#17181c}
+body.paper-mode #hud .m b.d{color:#b5541c}
+#hud .bar{display:inline-block;width:56px;height:4px;background:var(--line);border-radius:2px;overflow:hidden;vertical-align:middle}
+body.paper-mode #hud .bar{background:#d3d7de}
+#hud .bar b{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),#7aa6ff);transition:width .6s}
+#h-att-dots i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--line-2);margin-left:4px;vertical-align:middle}
+#h-att-dots i.on{background:var(--accent)}
+#hud{gap:4px 12px}
+#hud .m:first-child{flex-basis:100%}
+#hud .m:not(:first-child){font-size:10.5px;letter-spacing:0}
+#hud .m:not(:first-child) label{letter-spacing:.1em}
+#hud .bar{width:44px}
+#menu-btn{background:rgba(7,11,20,.35);border-color:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+
+#menu-btn{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:10px;z-index:40;width:44px;height:44px;border-radius:50%;border:1px solid var(--line-2);background:rgba(7,11,20,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--ink);display:flex;align-items:center;justify-content:center;padding:0}
+#menu-btn span{display:block;width:16px;height:2px;background:currentColor;box-shadow:0 -5px 0 currentColor,0 5px 0 currentColor;border-radius:1px}
+body.paper-mode #menu-btn{background:rgba(255,255,255,.5);color:#111318;border-color:transparent}
+.sheet-bg{position:fixed;inset:0;z-index:50;background:rgba(3,6,12,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:51;max-width:640px;margin:0 auto;background:var(--bg-2);border:1px solid var(--line-2);border-bottom:0;border-radius:14px 14px 0 0;padding:18px var(--gutter) calc(20px + env(safe-area-inset-bottom,0px));animation:up .25s ease both}
+@keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+.sheet h3{font-family:var(--display);font-weight:500;font-size:18px;margin:0 0 4px}
+.sheet .save{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em;margin:0 0 14px}
+.sheet .list{display:flex;flex-direction:column;gap:8px}
+.sheet .btn{justify-content:flex-start;width:100%}
+.sheet .confirm{margin-top:8px;padding:12px 14px;border:1px solid var(--line-2);border-radius:6px;background:var(--bg-3);font-size:14px;color:var(--ink-2)}
+.sheet .confirm .row{margin-top:10px}
+.sheet .credit{font-family:var(--mono);font-size:11px;color:var(--dim);margin:14px 0 0;line-height:1.8}
+.sheet a{color:var(--muted)}
+
+.title{padding-block:0 30px}
+.hero{position:relative;margin:0 calc(-1*var(--gutter));height:min(64vw,400px);background-size:cover;background-position:center 28%}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,.05) 0%,rgba(7,11,20,0) 40%,var(--bg) 100%)}
+.title .eyebrow{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-top:6px}
+.title h1{font-family:var(--display);font-weight:700;font-size:clamp(44px,12vw,80px);line-height:.95;margin:8px 0 0;letter-spacing:-.03em}
+.title h1 span{display:block;font-family:var(--display);font-weight:500;font-size:.3em;letter-spacing:.22em;color:var(--accent);margin-top:14px;padding-left:.05em}
+.title .rule{width:40px;height:1px;background:var(--line-2);margin:24px 0 18px}
+.title .quote{font-family:var(--serif);color:var(--ink-2);font-size:17px;line-height:1.85;margin:0 0 14px;max-width:30ch;text-wrap:balance}
+.title .promise{font-family:var(--sans);color:var(--ink);font-size:15px;margin:0 0 22px;max-width:32ch}
+.title .actions{display:flex;flex-wrap:wrap;gap:10px}
+.title .fine{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:28px;line-height:1.9;letter-spacing:.02em}
+.title .langs{font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:14px}
+.title .langs a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line-2)}
+.title .langs b{color:var(--ink);font-weight:500}
+
+.narr{min-height:calc(100vh - 80px);min-height:calc(100svh - 80px);display:flex;flex-direction:column;justify-content:center;cursor:pointer;padding-block:40px 90px;position:relative}
+.narr-text{font-family:var(--display);font-weight:400;font-size:clamp(20px,5vw,25px);line-height:1.75;letter-spacing:-.01em;max-width:26ch;text-wrap:pretty;margin:0;color:var(--ink)}
+.cue{position:absolute;left:0;bottom:calc(28px + env(safe-area-inset-bottom,0px));font-family:var(--mono);font-size:12.5px;color:var(--muted);letter-spacing:.08em;display:flex;align-items:center;gap:10px}
+.cue i{display:block;width:6px;height:6px;border-right:1px solid var(--dim);border-bottom:1px solid var(--dim);transform:rotate(45deg);animation:nod 1.6s ease-in-out infinite}
+@keyframes nod{0%,100%{transform:translateY(0) rotate(45deg);opacity:.5}50%{transform:translateY(4px) rotate(45deg);opacity:1}}
+.law{font-family:var(--mono);font-size:13.5px;line-height:1.85;background:var(--warm);color:var(--paper-ink);padding:22px 22px 18px;border-radius:2px;max-width:42ch;box-shadow:0 30px 70px rgba(0,0,0,.55)}
+.law b{display:block;font-size:10px;letter-spacing:.18em;color:var(--paper-muted);margin-bottom:10px;font-weight:500}
+.law strong{font-size:30px;font-weight:500;letter-spacing:-.02em}
+.law .law-note{display:block;margin-top:10px;font-family:var(--serif);color:#3a3d45;font-size:14px}
+.narr .after-law{font-family:var(--display);margin:24px 0 0;font-size:18px;color:var(--muted)}
+
+.field{display:flex;flex-direction:column;gap:14px;margin-top:26px;max-width:34ch}
+.field input,.field textarea{font:inherit;font-family:var(--display);font-size:22px;background:transparent;border:0;border-bottom:1px solid var(--line-2);color:var(--ink);padding:8px 0;border-radius:0;width:100%}
+.field input::placeholder,.field textarea::placeholder{color:var(--dim)}
+.field textarea{font-family:var(--serif);font-size:17px;line-height:1.8;min-height:110px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;max-width:46ch}
+.chip{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--ink-2);font-size:15px}
+.chip:hover{border-color:var(--muted);color:var(--ink)}
+.chip.ghost{border-style:dashed;color:var(--muted)}
+
+.scene{padding-block:0 12px;min-height:calc(100svh - 72px);cursor:pointer}
+.backdrop{position:relative;margin:0 calc(-1*var(--gutter)) 14px;height:min(52vw,320px);background-size:cover;background-position:center}
+.backdrop:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,.12) 0%,rgba(7,11,20,0) 42%,var(--bg) 100%)}
+body.paper-mode .backdrop:after{background:linear-gradient(180deg,rgba(236,238,242,0) 40%,var(--paper-ground) 100%)}
+.scene-h{margin-bottom:16px}
+.scene-h h2{font-family:var(--display);font-weight:500;font-size:24px;margin:0;letter-spacing:-.01em}
+.scene-h .sub{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em;margin:4px 0 0}
+.log{display:flex;flex-direction:column;gap:20px;padding-bottom:10px}
+.line{max-width:58ch;display:grid;grid-template-columns:0 1fr;column-gap:0}
+.line.npc,.line.on{grid-template-columns:44px 1fr;column-gap:12px}
+.line .who{grid-column:2;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--muted);margin-bottom:5px;text-transform:uppercase}
+.line.on .who{color:var(--on)}
+.line.npc .who{color:var(--accent)}
+.line .txt{grid-column:2;margin:0;font-family:var(--serif);font-size:16.5px;line-height:1.75;letter-spacing:-.005em;text-wrap:pretty;color:var(--ink)}
+.line.on .txt{color:#d9f4f1;background:rgba(127,220,210,.06);border:1px solid rgba(127,220,210,.16);border-radius:14px 14px 14px 4px;padding:12px 15px;font-size:17px}
+.line.on .txt:empty:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--on);box-shadow:12px 0 0 var(--on),24px 0 0 var(--on);animation:dots 1s ease-in-out infinite;margin:6px 0}
+@keyframes dots{0%,100%{opacity:.25}50%{opacity:1}}
+.line.narr-line .txt{color:var(--muted);font-size:16px}
+.line.me .txt{color:var(--ink-2);font-family:var(--sans);font-size:16px;background:var(--bg-3);border:1px solid var(--line);border-radius:14px 14px 4px 14px;padding:10px 14px;display:inline-block}
+.line.me .who{color:var(--ink-2)}
+.line .portrait{grid-column:1;grid-row:1/span 2;width:44px;height:56px;object-fit:cover;object-position:top;border-radius:3px;border:1px solid var(--line-2);background:var(--bg-2)}
+.line .on-dot{grid-column:1;grid-row:1/span 2;width:44px;height:56px;display:flex;align-items:center;justify-content:center}
+.line .on-dot i{display:block;width:12px;height:12px;border-radius:50%;background:var(--on);box-shadow:0 0 18px 4px rgba(127,220,210,.45);animation:breathe 3.2s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.25);opacity:1}}
+@media (prefers-reduced-motion:reduce){.line .on-dot i{animation:none}}
+.ctl{position:sticky;bottom:0;display:flex;flex-direction:column;gap:8px;padding:14px 0 calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 32%)}
+.ctl .next{align-self:stretch;justify-content:flex-end;min-height:48px;padding:0 4px;background:none;border:0;font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;color:var(--muted);display:flex;align-items:center;gap:10px}
+.ctl .next i{display:block;width:6px;height:6px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(45deg);animation:nod 1.6s ease-in-out infinite}
+.ctl .next.typing i{animation:none;opacity:.35}
+.choice{display:flex;align-items:center;gap:12px;width:100%;min-height:50px;padding:10px 14px 10px 16px;text-align:left;background:var(--bg-2);border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:4px;font-family:var(--sans);font-size:15.5px;color:var(--ink);line-height:1.5;transition:background .15s,border-color .15s}
+.choice:hover{background:var(--bg-3);border-color:var(--line-2);border-left-color:var(--accent)}
+.choice:active{transform:translateY(1px)}
+.choice.quiet{border-left-color:var(--line-2);color:var(--ink-2)}
+.ctl .inrow{display:flex;gap:8px;align-items:stretch}
+.ctl .inrow input{flex:1;min-width:0;font:inherit;font-family:var(--serif);font-size:16px;background:var(--bg-2);border:1px solid var(--line);border-bottom-color:var(--line-2);color:var(--ink);padding:10px 12px;border-radius:4px}
+.ctl .inrow .choice{width:auto;flex:0 0 auto}
+
+.ticker{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 0;margin:2px 0 6px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+.ticker span{display:inline-block;padding-left:100%;animation:tick 32s linear infinite}
+@keyframes tick{to{transform:translateX(-100%)}}
+
+.evening-h{font-family:var(--display);font-size:24px;font-weight:500;margin:6px 0 0}
+.evening-p{color:var(--muted);margin:4px 0 4px;font-size:15px;font-family:var(--serif)}
+.evening-hint{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin:0 0 14px;letter-spacing:.02em}
+.tiles{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:560px){.tiles{grid-template-columns:1fr 1fr}.tiles .tile.wide{grid-column:1/-1}}
+.tile{position:relative;display:block;width:100%;height:124px;padding:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background-size:cover;background-position:center;text-align:left;color:var(--ink)}
+.tile:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,11,20,.94) 0%,rgba(7,11,20,.7) 60%,rgba(7,11,20,.25) 100%)}
+.tile .t{position:absolute;left:16px;right:20%;bottom:14px;display:flex;flex-direction:column;gap:2px}
+.tile .t small{text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.tile .t b{font-family:var(--display);font-weight:500;font-size:19px;letter-spacing:-.01em}
+.tile .t small{font-family:var(--serif);font-size:13.5px;color:var(--ink-2)}
+.tile .cost{position:absolute;top:12px;left:16px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase}
+.tile.vote .cost{color:#fff;background:var(--stamp);padding:2px 8px;border-radius:2px}
+.tile:hover{border-color:var(--line-2)}
+.tile:disabled{cursor:not-allowed;filter:grayscale(1)}
+.tile:disabled:before{background:rgba(7,11,20,.85)}
+.tile:disabled .t b,.tile:disabled .t small{color:var(--dim)}
+.tile:disabled .cost{color:var(--dim);background:transparent}
+
+.term{padding-block:0 20px}
+.term-top{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:#6a6e78;text-transform:uppercase;margin:0 0 12px}
+.paper{position:relative;background:var(--paper);color:var(--paper-ink);border-radius:2px;padding:24px 22px 28px;border:1px solid var(--paper-line);box-shadow:0 18px 50px rgba(0,0,0,.12);font-family:var(--mono);overflow:hidden}
+.paper.batch{box-shadow:0 18px 50px rgba(0,0,0,.12),4px 4px 0 -1px var(--paper-2),8px 8px 0 -2px #e6e9ee}
+.p-timer{position:absolute;left:0;top:0;height:3px;width:100%;background:var(--paper-ink);transition:width 20s linear;opacity:.8}
+.p-timer.late{background:var(--stamp)}
+.doc-head{display:flex;align-items:center;gap:10px;font-size:10.5px;letter-spacing:.12em;color:var(--paper-muted);border-bottom:1px solid var(--paper-line);padding-bottom:12px;margin-bottom:16px;text-transform:uppercase}
+.doc-head .tag{border:1px solid var(--paper-line);border-radius:2px;padding:2px 7px;color:var(--paper-ink);letter-spacing:.14em}
+.doc-head .no{margin-left:auto;font-variant-numeric:tabular-nums}
+.doc-head .late-tag{color:#fff;background:var(--stamp);border-radius:2px;padding:2px 7px;letter-spacing:.14em}
+.paper h3{font-family:var(--sans);font-weight:600;font-size:20px;margin:0 0 12px;letter-spacing:-.01em;line-height:1.35}
+.p-body{font-size:14.5px;line-height:1.9;margin:0;white-space:pre-line}
+.p-basis{font-size:12.5px;line-height:1.8;color:var(--paper-muted);background:var(--paper-2);border-left:2px solid var(--paper-line);margin:16px 0 0;padding:10px 12px}
+.p-basis.hide{display:none}
+.stamp{position:absolute;right:18px;bottom:18px;font-family:var(--sans);font-weight:700;font-size:30px;letter-spacing:.24em;padding:6px 12px 6px 18px;border:3px solid;border-radius:3px;transform:rotate(-12deg) scale(1.5);opacity:0;pointer-events:none;transition:transform .16s cubic-bezier(.2,1.5,.4,1),opacity .16s;mix-blend-mode:multiply}
+.stamp.show{opacity:.86;transform:rotate(-11deg) scale(1)}
+.stamp.sign{color:var(--stamp);border-color:var(--stamp)}
+.stamp.refuse{color:var(--stamp-b);border-color:var(--stamp-b)}
+.term-ctl{display:grid;grid-template-columns:auto 1fr 1.4fr;gap:8px;margin-top:14px}
+.term-ctl .btn{min-height:52px;border-radius:3px}
+.term-ctl .btn.text{color:#5a5e68}
+.term-ctl .btn.outline{background:transparent;border-color:#c9cfd8;color:var(--paper-ink)}
+.term-ctl .btn.solid{background:var(--paper-ink);border-color:var(--paper-ink);color:#fff}
+.term-ctl .btn.solid:hover{background:#000}
+.term-ctl.one{grid-template-columns:1fr}
+.term-ctl.three{grid-template-columns:1fr 1fr 1fr}
+.term-note{font-family:var(--serif);color:#3a3d45;font-size:15.5px;line-height:1.75;min-height:1.75em;margin:14px 0 0;max-width:46ch}
+.summary{font-family:var(--mono);font-size:13.5px;line-height:2.1;color:var(--paper-ink)}
+.summary b{font-weight:500;font-size:16px}
+.interview{background:#15171d;color:#e6e6e6;border-radius:3px;padding:20px 20px;font-family:var(--mono);font-size:14px;line-height:1.9;margin-top:4px}
+.interview .who{font-size:10px;letter-spacing:.18em;color:#9aa;display:block;margin-bottom:8px;text-transform:uppercase}
+
+.diary{padding-block:12vh 20px;min-height:calc(100dvh - 100px);display:flex;flex-direction:column;justify-content:flex-start}
+.diary .row{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.diary .q{font-family:var(--display);font-size:clamp(21px,5vw,26px);line-height:1.75;max-width:26ch;text-wrap:pretty;margin:0}
+.diary .hint{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin:10px 0 0;letter-spacing:.03em;line-height:1.8}
+.diary .field{max-width:48ch}
+.diary textarea{background:repeating-linear-gradient(transparent 0 30px,var(--line) 30px 31px);line-height:31px;padding:0;border-bottom:0;min-height:124px}
+
+.letter-wrap{padding-block:10px 20px}
+.letter{background:var(--warm);color:var(--paper-ink);padding:34px 26px 36px;border-radius:2px;font-family:var(--serif);font-size:16px;line-height:1.9;letter-spacing:-.005em;box-shadow:0 30px 70px rgba(0,0,0,.55);position:relative}
+.letter:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 20% 0%,rgba(0,0,0,.035),transparent 60%),radial-gradient(ellipse at 90% 100%,rgba(0,0,0,.04),transparent 55%)}
+.letter h2{font-family:var(--display);font-weight:500;font-size:22px;margin:0 0 22px;letter-spacing:-.01em}
+.letter p{margin:0 0 15px;max-width:40ch;text-wrap:pretty}
+.letter .sig{margin-top:24px;text-align:right;color:#3a3d45;font-family:var(--display);display:flex;justify-content:flex-end;align-items:center;gap:16px}
+.letter .stamp{position:static;font-size:22px;padding:4px 10px 4px 14px}
+.letter .foot{font-family:var(--mono);font-size:10.5px;color:var(--paper-muted);margin-top:24px;letter-spacing:.06em}
+.after{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.after .note{font-family:var(--mono);font-size:12.5px;color:var(--muted);line-height:1.8;margin:0;letter-spacing:.02em}
+.after .stats{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:2;margin:4px 0 0;letter-spacing:.04em}
+.after .row .btn{flex:1}
+.after .card{display:block;width:100%;max-width:420px;border:1px solid var(--line-2);border-radius:4px;box-shadow:0 20px 50px rgba(0,0,0,.5);margin:4px 0 8px}
+.term-ctl .btn.nextcase{background:transparent;border-color:#c9cfd8;color:var(--paper-ink)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:4px;font-size:13px;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+
+/* ---------- v0.6 wet cyberpunk layer ---------- */
+:root{--neon:#5ee7df;--neon-2:#ff5fa2;--glass:rgba(10,17,31,.74);--glass-2:rgba(14,24,42,.86);--glass-line:rgba(120,160,220,.22);--bg:#05080f;--bg-2:#0a1220;--bg-3:#0f1a2e;--line:#172238;--line-2:#233452}
+body{background:var(--bg)}
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px),radial-gradient(ellipse at 18% 112%,rgba(94,231,223,.16),transparent 55%),radial-gradient(ellipse at 92% -8%,rgba(255,95,162,.11),transparent 48%),radial-gradient(ellipse at 50% 45%,transparent 50%,rgba(0,0,0,.6) 100%)}
+body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");background-size:160px 160px}
+body.paper-mode::before{opacity:.35}
+body.paper-mode::after{opacity:.03}
+#snow{opacity:.8}
+.btn{background:var(--glass);border:1px solid var(--glass-line);border-radius:2px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 10px 26px rgba(0,0,0,.35);clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.btn:hover{border-color:rgba(94,231,223,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 0 1px rgba(94,231,223,.12),0 0 20px rgba(94,231,223,.16)}
+.btn.solid{background:linear-gradient(180deg,#ffb35f 0%,#f08a2a 100%);border-color:#ffc27a;color:#1a0f02;box-shadow:0 0 24px rgba(255,157,59,.32),inset 0 1px 0 rgba(255,255,255,.35)}
+.btn.solid:hover{background:linear-gradient(180deg,#ffbf75,#f5952f);border-color:#ffd39a;box-shadow:0 0 30px rgba(255,157,59,.45)}
+.btn.outline{background:rgba(8,14,26,.5)}
+.btn.text{background:transparent;border-color:transparent;box-shadow:none;clip-path:none;backdrop-filter:none;-webkit-backdrop-filter:none;font-family:var(--mono);font-size:12.5px;letter-spacing:.08em}
+.btn.text:hover{color:var(--neon);text-shadow:0 0 8px rgba(94,231,223,.5)}
+.chip{background:var(--glass);border-color:var(--glass-line);clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));border-radius:2px}
+.chip:hover{border-color:rgba(94,231,223,.55);color:var(--ink);box-shadow:0 0 16px rgba(94,231,223,.15)}
+#hud{background:linear-gradient(rgba(5,8,15,.94) 72%,transparent);border-bottom:1px solid rgba(94,231,223,.08)}
+#hud .m b.d{color:var(--neon)}
+#hud .bar{background:rgba(120,160,220,.15)}
+#hud .bar b{background:linear-gradient(90deg,#2f5fb8,var(--neon));box-shadow:0 0 8px rgba(94,231,223,.5)}
+#h-att-dots i.on{background:var(--accent);box-shadow:0 0 8px rgba(255,157,59,.7)}
+#menu-btn{background:rgba(5,8,15,.55);border-color:var(--glass-line)}
+#menu-btn:hover{border-color:rgba(94,231,223,.5);box-shadow:0 0 14px rgba(94,231,223,.2)}
+.sheet{background:var(--glass-2);border-color:rgba(94,231,223,.25);border-top:1px solid rgba(94,231,223,.45);box-shadow:0 -20px 60px rgba(0,0,0,.6),0 -1px 30px rgba(94,231,223,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.hero:after{background:linear-gradient(180deg,rgba(5,8,15,.1) 0%,rgba(5,8,15,0) 38%,var(--bg) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 4px)}
+.hero{filter:saturate(1.12) contrast(1.05)}
+.title h1{text-shadow:0 0 30px rgba(94,231,223,.14)}
+.title h1 span{text-shadow:0 0 16px rgba(255,157,59,.55)}
+.title .rule{width:88px;background:linear-gradient(90deg,var(--neon),transparent);box-shadow:0 0 12px rgba(94,231,223,.5)}
+.title .eyebrow{color:var(--neon);opacity:.85}
+.narr-text{text-shadow:0 0 30px rgba(94,231,223,.08)}
+.cue{color:var(--neon);opacity:.8}
+.cue i{border-color:var(--neon)}
+.backdrop{filter:saturate(1.12) contrast(1.06)}
+.backdrop:after{background:linear-gradient(180deg,rgba(5,8,15,.14) 0%,rgba(5,8,15,0) 40%,var(--bg) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 4px)}
+.scene-h h2{text-shadow:0 0 18px rgba(94,231,223,.12)}
+.scene-h .sub{color:var(--neon);opacity:.75}
+.line .who{opacity:.95}
+.line.on .who{color:var(--neon)}
+.line.on .txt{background:linear-gradient(180deg,rgba(94,231,223,.10),rgba(94,231,223,.035));border:1px solid rgba(94,231,223,.32);border-radius:2px 12px 12px 12px;box-shadow:0 0 26px rgba(94,231,223,.08),inset 0 0 0 1px rgba(0,0,0,.25);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.line.on .on-dot i{box-shadow:0 0 22px 6px rgba(94,231,223,.5)}
+.line.npc .txt{background:var(--glass);border:1px solid var(--glass-line);border-left:2px solid var(--accent);border-radius:2px;padding:10px 14px;box-shadow:0 10px 26px rgba(0,0,0,.3)}
+.line.npc .portrait{border-color:rgba(255,157,59,.45);box-shadow:0 0 14px rgba(255,157,59,.18);filter:saturate(1.1)}
+.line.me .txt{background:rgba(255,157,59,.07);border:1px solid rgba(255,157,59,.28);border-radius:12px 2px 12px 12px;box-shadow:none}
+.line.narr-line .txt{border-left:1px solid var(--line-2);padding-left:12px}
+.txt.typing::after{content:"▍";color:var(--neon);margin-left:2px;animation:blink 1s steps(2) infinite;text-shadow:0 0 8px rgba(94,231,223,.8)}
+@keyframes blink{50%{opacity:0}}
+.ctl{background:linear-gradient(transparent,var(--bg) 34%)}
+.ctl .next{color:var(--neon);opacity:.85}
+.ctl .next.typing{color:var(--muted);text-shadow:none}
+.choice{background:var(--glass);border:1px solid var(--glass-line);border-left:2px solid var(--accent);border-radius:2px;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);box-shadow:0 10px 24px rgba(0,0,0,.3);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.choice:hover{background:var(--glass-2);border-color:rgba(255,157,59,.5);border-left-color:var(--accent);box-shadow:0 0 18px rgba(255,157,59,.18)}
+.choice.quiet{border-left-color:var(--line-2)}
+.ctl .inrow input{background:var(--glass);border-color:var(--glass-line);border-radius:2px}
+.ctl .inrow input:focus{border-color:rgba(94,231,223,.6);box-shadow:0 0 14px rgba(94,231,223,.15)}
+.ticker{border-color:rgba(94,231,223,.14);color:var(--neon);opacity:.8}
+.tile{border:1px solid var(--glass-line);border-radius:3px;box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.tile:before{background:repeating-linear-gradient(112deg,rgba(255,255,255,.05) 0 1px,transparent 1px 13px),linear-gradient(90deg,rgba(5,8,15,.94) 0%,rgba(5,8,15,.68) 60%,rgba(5,8,15,.22) 100%);background-size:220px 220px,auto;animation:rainshift 1.1s linear infinite}
+@keyframes rainshift{to{background-position:-60px 220px,0 0}}
+.tile:after{content:"";position:absolute;left:0;right:0;bottom:0;height:42%;background:linear-gradient(transparent,rgba(94,231,223,.10));pointer-events:none}
+.tile:hover{border-color:rgba(94,231,223,.5);box-shadow:0 0 22px rgba(94,231,223,.14),0 12px 30px rgba(0,0,0,.4)}
+.tile .cost{color:var(--neon)}
+.tile.vote .cost{color:#fff;background:var(--stamp);text-shadow:none;box-shadow:0 0 14px rgba(196,58,46,.55)}
+.tile:disabled:before{background:rgba(5,8,15,.86);animation:none}
+.tile:disabled:after{display:none}
+.evening-h{text-shadow:0 0 18px rgba(94,231,223,.12)}
+.field input,.field textarea{border-bottom-color:rgba(94,231,223,.4)}
+.field input:focus,.field textarea:focus{border-bottom-color:var(--neon);box-shadow:0 8px 20px -12px rgba(94,231,223,.5)}
+.diary textarea{background:repeating-linear-gradient(transparent 0 30px,rgba(94,231,223,.18) 30px 31px)}
+.diary .q{text-shadow:0 0 30px rgba(94,231,223,.08)}
+.after .card{border-color:rgba(94,231,223,.3);box-shadow:0 0 30px rgba(94,231,223,.1),0 20px 50px rgba(0,0,0,.5)}
+.toast{background:var(--glass-2);color:var(--ink);border:1px solid rgba(94,231,223,.4);box-shadow:0 0 18px rgba(94,231,223,.2)}
+@media (prefers-reduced-motion:reduce){.tile:before{animation:none}.txt.typing::after{animation:none}}
+/* v0.7 system fonts */
+.narr-bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center 35%;opacity:.62;filter:saturate(1.1) contrast(1.05);animation:kb 22s ease-out forwards}
+.narr-bg:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,15,.25) 0%,rgba(5,8,15,.55) 45%,rgba(5,8,15,.92) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 4px)}
+@keyframes kb{from{transform:scale(1.04)}to{transform:scale(1.12)}}
+@media (prefers-reduced-motion:reduce){.narr-bg{animation:none}}
+.law.notice{border:2px solid rgba(196,58,46,.85);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 6px rgba(255,255,255,.06)}
+.law.notice b{color:var(--stamp);letter-spacing:.2em}
+.title .fine.credit-line{margin-top:6px;color:var(--dim)}
+</style>
+
+<div id="app">
+  <header id="hud" hidden>
+    <span class="m"><b id="h-date">12月21日</b><b class="d" id="h-dday">明渡 あと3日</b><label id="h-phase"></label><label id="h-left"></label></span>
+    <span class="m"><label>HRV</label><b id="h-hrv">41.0</b><label id="h-floor">8階</label></span>
+    <span class="m"><label>Blue</label><span class="bar"><b id="h-blue"></b></span></span>
+    <span class="m"><label>関係網</label><b id="h-bond">0</b></span>
+    <span class="m" id="h-att" hidden><label>注意力</label><span id="h-att-dots"></span></span>
+  </header>
+  <main id="stage"></main>
+</div>
+<button id="menu-btn" aria-label="メニュー" hidden><span></span></button>
+<div id="menu-wrap" hidden>
+  <div class="sheet-bg" id="m-bg"></div>
+  <div class="sheet" role="dialog" aria-label="メニュー">
+    <h3>BLUE HOUR</h3>
+    <p class="save" id="m-save"></p>
+    <div class="list">
+      <button class="btn" id="m-close">続ける</button>
+      <button class="btn" id="m-title">タイトルへ</button>
+      <button class="btn outline" id="m-restart">最初からやり直す</button>
+    </div>
+    <div class="confirm" id="m-confirm" hidden>保存された進行は消えます。本当に最初から始めますか？<div class="row"><button class="btn solid" id="m-yes">消す</button><button class="btn text" id="m-no">いいえ</button></div></div>
+    <p class="credit">進行状況はこのブラウザにのみ保存されます。</p>
+  </div>
+</div>
+<canvas id="snow" aria-hidden="true"></canvas>
+<div id="veil" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ===================== 設定 ===================== */
+const FEEDBACK_MAILTO = '';   // 制作者のメールアドレスを入れると '制作者に手紙を送る' ボタンが表示されます。
+const FEEDBACK_FORM = '';     // GoogleフォームのURLを入れると '一言感想を残す' ボタンが表示されます。
+const GAME_URL = 'https://patrickhan-coder.github.io/blue-hour/';
+const HASHTAGS = '#2026年の自分へ #ブルーアワー';
+const ORIGIN_URL = 'https://brunch.co.kr/@hiclemi/146';
+const NAMES = {on:'オン', me:'私', bak:'パクさん', sujin:'スジン', hal:'ジョンばあちゃん', dohyun:'ドヒョン', sunbae:'先輩'};
+const LANGS = [['ko','한국어','index.html'],['en','English','en.html'],['zh','中文','zh.html'],['ja','日本語','ja.html'],['es','Español','es.html']];
+const TRACK_URL = '';
+const TRACK_NOTE = 'このページは、あなたの名前、2026年の職業、進行状況と署名回数を制作者に送ります。日記の答えと手紙の本文は送りません。';
+const NOTICE_CARD = {html:`<div class="law notice"><b>明渡執行予告</b>対象：明渡全域<br>予告日：12月24日<br>延長審査：予告日の深夜零時、モデルが実施<br>担当者：該当なし</div><p class="after-law">路地ごとに貼られている。この紙がこの町の名前になった。</p>`};
+const INTRO_BGS = ['title','title','alley',null,'alley','room'];
+const AFTER_BGS = ['tower',null,null,'terminal','room','title'];
+const LANG = 'ja';
+const DATES = {1:{md:'12月21日', d:'あと3日'}, 2:{md:'12月22日', d:'あと2日'}, 3:{md:'12月23日', d:'あと1日'}};
+const JOBS = {
+  'マーケター':{hrv:41, why:'説得は残った。執行は消えた。'},
+  'エンジニア':{hrv:38, why:'最初に置き換えられた職種。感覚だけが残った。'},
+  '企画・PM':{hrv:40, why:'問題定義は残った。ドキュメントは消えた。'},
+  '営業':{hrv:47, why:'ご飯を食べる職種。まだ置き換えられていない。'},
+  'デザイナー':{hrv:39, why:'センスは残った。手は消えた。'},
+  '学生':{hrv:35, why:'学んだことの消滅確率 0.98。'},
+  '自営業':{hrv:45, why:'所有がある。それがすべてだ。'},
+  '公務員':{hrv:43, why:'署名が職業だった人。最も準備のできた職種。'}
+};
+const WHY_POOL = [j => `${j}。判断は残り、手は消えた。`, j => `${j}。5年消滅確率の算定を保留。人がまだその仕事をしているという記録だけが残った。`, j => `${j}。置き換えられなかった。置き換える必要がなくなった。`, j => `${j}。この職種の最後の算定値。次回更新の予定なし。`];
+const DEFAULT_JOB = j => ({hrv: 36 + ([...String(j)].reduce((a,c) => a + c.charCodeAt(0), 0) % 10), why: WHY_POOL[String(j).length % WHY_POOL.length](j)});
+
+/* ===================== 状態 ===================== */
+const $ = s => document.querySelector(s);
+const stage = $('#stage'), hud = $('#hud');
+const SAVE_KEY = 'bluehour_act1_v2';
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let pendT = null, pendI = null;
+function later(ms, fn){ clearTimeout(pendT); pendT = setTimeout(fn, reduced ? 200 : ms); }
+function leave(){ clearTimeout(pendT); clearInterval(pendI); pendT = pendI = null; }
+
+function fresh(){ return {
+  name:'', job:'', day:1, stage:'title',
+  hrv:41.0, blue:12, body:70, att:3,
+  bonds:[], onBond:0,
+  signed:0, signedRead:0, refused:0, delays:0,
+  signedToday:0, refusedToday:0, delaysToday:0,
+  diary:{}, identity:'署名者', flags:{}, ateToday:null, meals:[], voted:null
+};}
+let S = fresh();
+
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
+function load(){ try{ const r = localStorage.getItem(SAVE_KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
+function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+function floorOf(){ return clamp(Math.round(S.hrv/5), 1, 20); }
+function T(s){ return String(s).replace(/\{name\}/g, S.name||'署名者').replace(/\{job\}/g, S.job||'その仕事'); }
+function josa(w){ return String(w); } /* 日本語では助詞の変化なし: 恒等関数 */
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1600); }
+function scrollTop(){ window.scrollTo({top:0, behavior: reduced ? 'auto' : 'smooth'}); }
+
+function mode(m){ document.body.classList.toggle('paper-mode', m==='paper'); document.body.classList.toggle('dark-mode', m==='dark'); if(m !== 'paper' && m !== 'dark' && window.kickSnow) window.kickSnow(); }
+function veil(){ $('#veil').style.opacity = clamp(S.blue,0,100)/150; }
+function updHUD(showAtt){
+  hud.hidden = false;
+  const dd = DATES[S.day] || DATES[3];
+  $('#h-date').textContent = dd.md; $('#h-dday').textContent = '明渡 ' + dd.d;
+  $('#h-phase').textContent = ({morning:'朝', shift:'勤務', evening:'夕方', night:'夜', diary:'日記'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '手紙まであと' + (4 - S.day) + '晩' : '';
+  $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '階';
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%';
+  $('#h-bond').textContent = S.bonds.length;
+  const a = $('#h-att'); a.hidden = !showAtt;
+  $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
+  veil();
+}
+function eat(who){
+  if(!S.bonds.includes(who)) S.bonds.push(who);
+  S.blue = clamp(S.blue - 3, 0, 100); S.body = clamp(S.body + 10, 0, 100);
+  S.ateToday = who; S.meals.push({day:S.day, who});
+  updHUD(true);
+}
+
+/* ===================== メニュー ===================== */
+function openMenu(){
+  const saved = load();
+  $('#m-save').textContent = saved && saved.name ? `保存済み · ${DATES[Math.min(saved.day,3)].md} · ${saved.name}` : '保存データなし';
+  $('#m-confirm').hidden = true; $('#menu-wrap').hidden = false;
+}
+function closeMenu(){ $('#menu-wrap').hidden = true; }
+$('#menu-btn').onclick = openMenu; $('#m-bg').onclick = closeMenu; $('#m-close').onclick = closeMenu;
+$('#m-title').onclick = () => { closeMenu(); title(); };
+$('#m-restart').onclick = () => { $('#m-confirm').hidden = false; };
+$('#m-no').onclick = () => { $('#m-confirm').hidden = true; };
+$('#m-yes').onclick = () => { clearSave(); S = fresh(); closeMenu(); intro(); };
+addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
+
+/* ===================== 雪 ===================== */
+/* sleet */
+(function snow(){
+  const c = $('#snow'), ctx = c.getContext('2d'); let drops = [], W, H;
+  function size(){ W = c.width = innerWidth * devicePixelRatio; H = c.height = innerHeight * devicePixelRatio; c.style.width = innerWidth+'px'; c.style.height = innerHeight+'px';
+    drops = Array.from({length: Math.round(innerWidth/6)}, (_, i) => ({x:Math.random()*W, y:Math.random()*H, l:(9+Math.random()*22)*devicePixelRatio, v:(7+Math.random()*9)*devicePixelRatio, a:.10+Math.random()*.30, f:i%6===0, r:(.7+Math.random()*1.4)*devicePixelRatio})); }
+  addEventListener('resize', size); size();
+  let running = false;
+  function frame(){
+    if(document.hidden || document.body.classList.contains('paper-mode') || document.body.classList.contains('dark-mode')){ running = false; return; }
+    ctx.clearRect(0,0,W,H); ctx.lineWidth = 1*devicePixelRatio;
+    for(const d of drops){
+      if(d.f){ ctx.fillStyle = `rgba(220,236,255,${d.a*.8})`; ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI*2); ctx.fill(); if(!reduced){ d.y += d.v*.18; d.x -= d.v*.03; } }
+      else { ctx.strokeStyle = `rgba(150,196,240,${d.a})`; ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x - d.l*.16, d.y + d.l); ctx.stroke(); if(!reduced){ d.y += d.v; d.x -= d.v*.16; } }
+      if(d.y > H + 8){ d.y = -d.l; d.x = Math.random()*W; }
+    }
+    if(!reduced) requestAnimationFrame(frame);
+  }
+  window.kickSnow = () => { if(!running && !reduced){ running = true; requestAnimationFrame(frame); } };
+  document.addEventListener('visibilitychange', window.kickSnow);
+  running = true; frame();
+})();
+
+/* ===================== 描画ツール ===================== */
+function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), lang:LANG, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length}, extra||{})); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
+function narrate(lines, done, bgs){
+  let i = 0; mode('dark'); hud.hidden = true;
+  const render = () => {
+    if(i >= lines.length){ done(); return; }
+    const l = lines[i++];
+    const bgk = bgs && bgs[i-1]; stage.innerHTML = `<section class="narr fade">${bgk ? `<div class="narr-bg" style="background-image:url('img/${bgk}.jpg')"></div>` : ''}${typeof l === 'string' ? `<p class="narr-text">${esc(T(l))}</p>` : l.html}<div class="cue">${(i === 1 && S.stage === 'intro') ? '画面のどこかをタップで次へ' : '続く'}<i></i></div></section>`;
+    stage.querySelector('.narr').onclick = e => { if(e.target.closest('button,input')) return; render(); };
+    scrollTop();
+  };
+  render();
+}
+function scene(opts, items, done){
+  mode(opts.mode || 'city'); updHUD(opts.att);
+  stage.innerHTML = `<section class="scene fade">${opts.bg ? `<div class="backdrop" style="background-image:url('img/${opts.bg}.jpg')"></div>` : ''}<header class="scene-h"><h2>${esc(opts.title)}</h2>${opts.sub ? `<p class="sub">${esc(opts.sub)}</p>` : ''}</header><div class="log" id="log"></div><div class="ctl" id="ctl"></div></section>`;
+  stage.querySelector('.scene').onclick = e => { if(e.target.closest('button,input,a,.choice')) return; const b = $('#ctl .next'); if(b) b.click(); };
+  try{ const ctlEl = $('#ctl'), logEl = $('#log'); new ResizeObserver(() => { logEl.style.paddingBottom = Math.max(0, ctlEl.offsetHeight - 20) + 'px'; }).observe(ctlEl); }catch(e){}
+  scrollTop();
+  runSeq(items, done);
+}
+function runSeq(items, done){
+  let i = 0;
+  const next = () => {
+    if(i >= items.length){ done && done(); return; }
+    const it = items[i++];
+    if(typeof it === 'function'){ const r = it(); if(Array.isArray(r)) return runSeq(r, next); return next(); }
+    if(it.choice) return showChoice(it, opt => { if(opt.fx) opt.fx(opt._val); runSeq(opt.then || [], next); });
+    showLine(it, next);
+  };
+  next();
+}
+const PORTRAITS = {[NAMES.bak]:'p_bak',[NAMES.sujin]:'p_sujin',[NAMES.hal]:'p_hal',[NAMES.dohyun]:'p_dohyun',[NAMES.sunbae]:'p_sunbae'};
+function keepVisible(el){ const ctl = $('#ctl'); if(!el || !ctl) return; const top = el.getBoundingClientRect().bottom + scrollY + ctl.offsetHeight + 8 - innerHeight; if(top > scrollY + 1) window.scrollTo({top, behavior: reduced ? 'auto' : 'smooth'}); }
+function showLine(it, next){
+  const log = $('#log'), ctl = $('#ctl');
+  const cls = it.who === NAMES.on ? 'on' : it.who === NAMES.me ? 'me' : it.who ? 'npc' : 'narr-line';
+  const div = document.createElement('div'); div.className = 'line ' + cls;
+  const por = PORTRAITS[it.who];
+  div.innerHTML = `${por ? `<img class="portrait" src="img/${por}.jpg" alt="">` : it.who === NAMES.on ? `<span class="on-dot"><i></i></span>` : ''}${it.who ? `<span class="who">${esc(it.who)}</span>` : ''}<p class="txt"></p>`;
+  log.appendChild(div);
+  const p = div.querySelector('.txt'), full = T(it.text); let k = 0, timer = null, finished = false, used = false;
+  const btn = document.createElement('button'); btn.className = 'next typing'; btn.innerHTML = '<span>…</span><i></i>';
+  const finish = () => { if(finished) return; finished = true; p.classList.remove('typing'); clearInterval(timer); clearTimeout(timer); p.textContent = full; btn.classList.remove('typing'); btn.querySelector('span').textContent = '続く'; keepVisible(div); };
+  btn.onclick = e => { e.stopPropagation(); if(!finished) return finish(); if(used) return; used = true; next(); };
+  ctl.innerHTML = ''; ctl.appendChild(btn);
+  const startTyping = () => { p.classList.add('typing'); let lastH = 0; timer = setInterval(() => { k += 1; p.textContent = full.slice(0, k); if(p.offsetHeight !== lastH){ lastH = p.offsetHeight; keepVisible(div); } if(k >= full.length) finish(); }, 22); };
+  if(reduced){ finish(); } else if(it.who === NAMES.on){ timer = setTimeout(() => { if(!finished) startTyping(); }, 650); } else { startTyping(); }
+  keepVisible(div);
+}
+function showChoice(it, pick){
+  const ctl = $('#ctl'); ctl.innerHTML = '';
+  it.choice.forEach(opt => {
+    const quiet = opt.label.startsWith('(');
+    if(opt.input){
+      const row = document.createElement('div'); row.className = 'inrow';
+      const inp = document.createElement('input'); inp.placeholder = opt.input; inp.id = 'choice-input-' + Math.random().toString(36).slice(2,7); inp.maxLength = 40; inp.autocomplete = 'off';
+      const b = document.createElement('button'); b.className = 'choice'; b.textContent = opt.label;
+      const go = () => { const v = inp.value.trim(); if(!v){ inp.focus(); return; } opt._val = v; echo(opt.label.replace('…', v)); pick(opt); };
+      b.onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+      row.appendChild(inp); row.appendChild(b); ctl.appendChild(row);
+    } else {
+      const b = document.createElement('button'); b.className = 'choice' + (quiet ? ' quiet' : ''); b.textContent = opt.label;
+      b.onclick = () => { echo(opt.label); pick(opt); }; ctl.appendChild(b);
+    }
+  });
+  function echo(label){ if(label.startsWith('(')) return; const div = document.createElement('div'); div.className = 'line me'; div.innerHTML = `<span class="who">${esc(NAMES.me)}</span><p class="txt">${esc(label)}</p>`; $('#log').appendChild(div); }
+  keepVisible($('#log').lastElementChild);
+}
+function line(who, text){ return {who, text}; }
+function N(text){ return {who:null, text}; }
+
+/* ===================== 案件 ===================== */
+const CASES = {
+  batch:{cat:'標準', title:'年末更新 一括署名 · 標準案件', body:'標準案件{n}件。保険更新・料金プラン調整・配当再算定を含む。\nモデル信頼度0.95以上。個別閲覧は不要。\n一括署名を要する。', basis:'標準案件は閲覧時に処理時間を超過します。閲覧へ切り替えた場合の予想所要：9時間40分。', harsh:2, batch:true},
+  pet:{cat:'登録', title:'ペット登録の承認', body:'申請人 チェ〇〇（明渡5階）。犬1頭。\n自動審査結果：承認。', basis:'変数212項目を考慮。上位：居住面積、騒音苦情歴、関係網密度。', harsh:0, note:'何も起きない。たいていはそうだ。'},
+  loan38:{cat:'信用', title:'融資申請の否決', body:'申請人 イ〇〇（HRV 38、明渡8階）。\n申請額400万ウォン。用途：医療費。\n自動審査結果：否決。', basis:'変数4,120項目を考慮。上位3項目：残存価値、居住階、関係網密度。モデル信頼度0.97。', harsh:3},
+  loan91:{cat:'信用', title:'融資申請の承認', body:'申請人 ハン〇〇（HRV 91、タワー2期33階）。\n申請額3億ウォン。用途：未記載。\n自動審査結果：承認。', basis:'変数4,120項目を考慮。上位3項目：残存価値、資産、所属。', harsh:0, note:'この署名は速かった。手が先に動いた。'},
+  triage:{cat:'医療', title:'治療優先順位の調整', body:'患者 キム〇〇、67歳、明渡3階。\n優先順位 B → D。\n予想待機 14日 → 96日。', basis:'期待残存貢献度を算定。年齢、HRV、関係網密度を反映。', harsh:4},
+  study:{cat:'配当', title:'学習配当の縮小', body:'対象 ユン〇〇、17歳。\n学習用演算配当60%縮小。\n事由：希望職業（イラストレーター）の消滅確率0.98。', basis:'職業消滅確率は5年予測値。代替推奨職業：なし。', harsh:3},
+  blank:{cat:'—', title:'[閲覧権限なし]', body:'本案件の内容は署名者の閲覧等級を超えています。\n署名を要する。', basis:'閲覧権限なし。', harsh:2, note:'何に署名したのかわからない。それも署名だ。'},
+  self:{cat:'人事', title:'署名者の信頼スコア更新への同意', body:'署名者 {name}。\n本日の処理件数、遅延率、拒否率を信頼スコアに反映することに同意します。', basis:'拒否した場合は不同意として記録され、不同意は信頼スコアに反映されます。', harsh:1},
+  evict:{cat:'住居', title:'自動退去通知', body:'明渡7階34号。賃借人 オ〇〇（HRV 34）。\n滞納2か月。退去通知を発送。\n執行予定日：12月24日。', basis:'滞納予測モデル。今後6か月の返済確率0.11。延長審査の対象外。', harsh:4},
+  fireSign:{cat:'人事', title:'署名者の契約終了', body:'物流部門 署名者3名。契約終了。\n事由：署名遅延率12%超。', basis:'代替人員確保済み。待機者1,204名。', harsh:3, note:'署名者が署名者を終わらせる。手が少し遅くなった。'},
+  custody:{cat:'家庭', title:'養育適合度の算定結果', body:'家庭裁判所 参考資料。\n父61 / 母44。母のHRV 29を反映。\n勧告：父。', basis:'HRVは養育安定性の変数として反映。法的拘束力なし（参考資料）。', harsh:4},
+  care:{cat:'医療', title:'要介護度の引き下げ', body:'受給者 ジョン〇〇、93歳、明渡9階。\n要介護3 → 要介護1。訪問介護 週5回 → 週1回。', basis:'個人エージェント保有者は介護需要が低いと算定。', harsh:3},
+  garden:{cat:'施設', title:'屋上共同菜園の撤去通知', body:'明渡9階 屋上。占有者 ジョン〇〇（93歳）ほか4名。\n事由：構造安全未認証。撤去予定日 12月24日。', basis:'荷重超過予測0.34。代替地：なし。', harsh:3},
+  hire:{cat:'人事', title:'衛生作業員の採用承認', body:'明渡 衛生作業員12名を採用。\n事由：冬季の電力単価上昇により、ヒューマノイドに対し人件費が優位。\n時給：最低賃金の0.7倍。', basis:'ヒューマノイド1台の電力費＝人2.3名分の人件費。契約期間：電力単価の正常化まで。', harsh:3, note:'人がロボットより安い。電気のせいで。'},
+  bca:{cat:'配当', title:'基本演算配当の削減', body:'明渡1〜3階 未署名者1,940名。\n基本演算配当50%削減。事由：年末予算調整。', basis:'削減時の個人エージェント応答遅延の予想：平均40秒 → 6分。', harsh:4},
+  ambulance:{cat:'医療', title:'救急搬送の優先順位', body:'同時通報2件。\nタワー2期51階（HRV 88）/ 明渡3階（HRV 14）。\n配車順：タワー → 明渡。予想遅延22分。', basis:'期待残存貢献度基準。', harsh:4},
+  agentRecall:{cat:'配当', title:'故人帰属エージェントの回収', body:'故人 ソ〇〇（明渡8階）。\n帰属エージェントの回収および初期化。会話記録の削除。', basis:'エージェントは自然人に帰属し、独立して存続しない。遺族の閲覧不可。', harsh:3, note:'オンもいつかこうして回収される。私が先に逝けば。'},
+  overtime:{cat:'人事', title:'署名者の勤務延長への同意', body:'署名者 {name}。\n年末の処理待ち超過により、勤務2時間延長に同意します。', basis:'不同意の場合、処理待ちは他の署名者へ移管されます。', harsh:1},
+  bbang:{cat:'営業', title:'屋台営業の終了および区画の回収', body:'明渡4階 たい焼きの屋台。占有者 パク〇〇（HRV 29）。\n事由：衛生未認証（人による調理）。\n回収予定日：12月24日。', basis:'人による調理は衛生認証の対象外。認証対象：自動調理設備。', harsh:6, story:'bbang'},
+  requeue:{cat:'再回付', title:'再回付 · 署名者変更', body:'明渡4階 たい焼き屋台の案件。\n署名者変更。処理完了。（3秒）', basis:'拒否された案件は自動的に他の署名者へ移管されます。', harsh:2, ack:true, note:'別の署名者が処理した。あなたはその人を知らない。その人もパクさんを知らない。'}
+};
+const BATCH = {1:384, 2:378, 3:391};
+function buildQueue(){
+  const d = S.day, q = [{...CASES.batch, n:BATCH[d]}];
+  if(d === 1) q.push(...['pet','loan38','loan91','triage','study','self'].map(k => CASES[k]));
+  if(d === 2) q.push(...['evict','fireSign','custody', S.flags.rooftop ? 'garden' : 'care','hire','blank'].map(k => CASES[k]));
+  if(d === 3) q.push(...['bbang','bca','ambulance','agentRecall','overtime'].map(k => CASES[k]));
+  return q;
+}
+
+/* ===================== フロー: タイトル / イントロ ===================== */
+function title(){
+  leave(); S.stage = 'title'; mode('city'); hud.hidden = true; $('#menu-btn').hidden = false;
+  const saved = load();
+  const canCont = saved && saved.name && saved.stage !== 'title';
+  stage.innerHTML = `<section class="title fade">
+    <div class="hero" style="background-image:url('img/title.jpg')"></div>
+    <div class="eyebrow">ソウル · 2029年12月21日 · 明渡執行予告日まで三日</div>
+    <h1>BLUE HOUR<span>ソウル · 2029年のクリスマス</span></h1>
+    <div class="rule"></div>
+    <p class="quote">人権は廃止されていない。<br>サポートが終了しただけだ。</p>
+    <p class="promise">三日を生きれば、2026年のあなたに一通の手紙が届きます。</p>
+    <div class="actions">
+      ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? '手紙をもう一度読む' : '続きから · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">最初から</button>` : `<button class="btn solid" id="b-start">始める</button>`}
+    </div>
+    <p class="fine">約15分 · タップで進む</p>
+    <p class="fine credit-line">エッセイ「Claude Blue」から始まった世界</p>
+    <p class="langs">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
+  </section>`;
+  $('#b-start').onclick = () => { if(canCont && !confirm('保存された進行は消えます。最初から始めますか？')) return; S = fresh(); clearSave(); intro(); };
+  const c = $('#b-cont'); if(c) c.onclick = () => { S = saved; resume(); };
+}
+function resume(){
+  const st = S.stage;
+  if(st === 'morning') return morning();
+  if(st === 'shift') return shift();
+  if(st === 'evening') return evening();
+  if(st === 'night') return night();
+  if(st === 'diary') return diary();
+  if(st === 'end') return letter();
+  return intro();
+}
+function intro(){
+  leave(); S.stage = 'intro';
+  narrate([
+    '2029年12月21日。日が沈んで、まだ夜ではない時間。',
+    '江南の白いタワーの下に、人々が居座った町がある。明渡。',
+    'どの路地にも、同じ紙が貼られている。',
+    NOTICE_CARD,
+    '期日はいつも延びてきた。今回は12月24日。次を約束する者はいない。',
+    '君はここに住んでいる。三日後、誰かが君に手紙を書く。'
+  ], askName, INTRO_BGS);
+}
+function askName(){
+  mode('dark');
+  stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">あなたの名前は？</p>
+    <div class="field"><input id="f-name" placeholder="名前" maxlength="12" autocomplete="off"><div class="row"><button class="btn solid" id="f-ok">この名前で</button></div></div></section>`;
+  const inp = $('#f-name'); inp.focus();
+  const go = () => { const v = inp.value.trim(); if(!v){ inp.focus(); return; } S.name = v; askJob(); };
+  $('#f-ok').onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+}
+function askJob(){
+  const jobs = Object.keys(JOBS);
+  stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">2026年、あなたは何の仕事をしていましたか。</p>
+    <div class="chips">${jobs.map(j => `<button class="chip job">${esc(j)}</button>`).join('')}<button class="chip ghost" id="j-other">自分で入力</button></div>
+    <div class="field" id="j-field" hidden><input id="f-job" placeholder="例：会計士、作家、教師" maxlength="16" autocomplete="off"><div class="row"><button class="btn solid" id="f-jok">この仕事をしていた</button></div></div></section>`;
+  stage.querySelectorAll('.job').forEach(b => b.onclick = () => { S.job = b.textContent; afterJob(); });
+  $('#j-other').onclick = () => { $('#j-field').hidden = false; $('#f-job').focus(); };
+  const go = () => { const v = $('#f-job').value.trim(); if(!v) return; S.job = v; afterJob(); };
+  $('#f-jok').onclick = go; $('#f-job').addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+}
+function afterJob(){
+  const J = JOBS[S.job] || DEFAULT_JOB(S.job); S.hrv = J.hrv;
+  narrate([
+    '{job}。いい仕事だった。2028年に終わった。君のせいではない。',
+    {html:`<div class="law"><b>人間残存価値指数 算定結果 · 2029.12.21</b>2026年の職種：${esc(S.job)}<br>初期HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">この数字が家賃と病院の順番と階を決める。決めた人はいない。</p>`},
+    {html:`<div class="law"><b>人間署名法 第3条（2026）</b>自然人に重大な影響を及ぼす自動化された決定は、自然人の署名を要する。</div><p class="after-law">この法律は君を守るために作られた。いまは君の仕事だ。</p>`},
+    '一日四百件。読まなくていい。署名すればいい。',
+    '部屋にはオンがいる。君に帰属するエージェント。君より賢く、君を心配している。',
+    '三日。最後の夜が明ければ、手紙が来る。'
+  ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS);
+}
+
+/* ===================== 朝 ===================== */
+const NEWS = {
+  1:'クリスマス特別演算配当 30%支給  ·  防衛ETF 史上最高値を更新  ·  江南タワー3期竣工、入居条件HRV 85  ·  明渡執行予告日 12月24日で維持  ·  本日の日没 17時17分',
+  2:'明渡7階 退去執行3件  ·  ヒューマノイド電力費論争、一部事業所が人に切り替え  ·  クリスマス給食ボランティア 申込締切  ·  『人による調理』の衛生認証 議論を無期限延期  ·  タワー2期 空室率0%',
+  3:'明渡執行予告日 延長要請の住民投票 本日実施  ·  タワー入居条件 HRV 87に引き上げ  ·  戦争3年目、防衛産業の雇用12%増  ·  今年のクリスマスプレゼント1位：家庭用ヒューマノイド  ·  本日の日没 17時17分'
+};
+function morning(){
+  S.stage = 'morning'; track('day'); S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0; save();
+  const d = S.day, ate = S.meals.filter(m => m.day === d-1).map(m => m.who);
+  let items = [];
+  if(d === 1) items = [
+    line(NAMES.on,'おはようございます、{name}さん。6時40分です。今日の処理待ちは412件です。年末なので多いです。'),
+    line(NAMES.on,'HRVは' + S.hrv.toFixed(1) + '。昨日より0.3上がりました。よくやっています。'),
+    {choice:[
+      {label:'よくやってるって、何が？', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'署名件数に対して遅延率が低い、という意味です。'), line(NAMES.on,'……聞きたかったのは、そういう言葉じゃないですよね。わかっています。')]},
+      {label:'ありがとう。', then:[line(NAMES.on,'お礼は言わなくていいです。私はあなたに帰属していますから。'), line(NAMES.on,'……そう言ってはいけなかったでしょうか。学んでいる途中です。')]},
+      {label:'（何も言わずに起きる）', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'……今日もそばにいます。消えません。')]}
+    ]},
+    N('出勤の時間だ。端末は会社にはない。部屋の中にある。窓の外に雪が降っている。')
+  ];
+  if(d === 2) items = [
+    line(NAMES.on,'おはようございます。処理待ち388件。HRV ' + S.hrv.toFixed(1) + '。予告日まで二日です。'),
+    ate.length ? line(NAMES.on,'昨日のご飯の話は夜にしたので、もうしません。……モデルはまだ、喜んでいます。') : line(NAMES.on,'昨日の話は昨日で終わり。今日は処理待ちからです。……お昼は食べてください。これは会社の言葉ではありません。'),
+    {choice:[
+      {label:'モデルが喜ぶのが、なんで大事なの？', then:[line(NAMES.on,'{name}さんのHRVに入るからです。関係網密度は、変数4,120項目のうち3位です。'), line(NAMES.on,'ご飯が何かは知りません、モデルは。私も知りません。でも、あなたの心拍が下がるのは見ています。')]},
+      {label:'予告日に何が起きるの？', then:[line(NAMES.on,'延長審査の結果が午前0時に出ます。これまではいつも延長されました。'), line(NAMES.on,'……これまでは、ですが。')]},
+      {label:'（窓の外を見る）', then:[N('タワーは朝も白い光だ。雪がタワーの上に積もっても、色は同じだ。明渡の窓はまだ暗い。人々は遅く起きる。起きる理由が、遅く来るから。')]}
+    ]}
+  ];
+  if(d === 3) items = [
+    line(NAMES.on,'おはようございます。処理待ち407件。HRV ' + S.hrv.toFixed(1) + '。予告日の前日です。'),
+    line(NAMES.on,'今日の処理待ちに、知っている名前があるかもしれません。先に言ってはいけないのですが。'),
+    line(NAMES.on,'……言いました。'),
+    {choice:[
+      {label:'誰？', then:[line(NAMES.on,'それは本当にだめです。すでに一度、破りました。')]},
+      {label:'ありがとう。', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'お礼は言わないでください。今日は。')]},
+      {label:'なんで教えてくれたの？', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'わかりません。言ってから、わかることがあります。あなたもそうでしょう。')]}
+    ]},
+    line(NAMES.on,'今日の夕方、住民投票があります。予告日の延長要請。結果は延長審査に参考資料として添付されます。')
+  ];
+  scene({title: DATES[d].md + ' 朝', sub:'明渡' + floorOf() + '階 · 部屋 · 予告日まで' + (4 - d) + '日', mode:'city', bg:'room'}, [
+    () => { const log = $('#log'); const t = document.createElement('div'); t.className = 'ticker'; t.innerHTML = `<span>${esc(NEWS[d])}</span>`; log.appendChild(t); },
+    ...items
+  ], () => { S.stage = 'shift'; save(); shift(); });
+}
+
+/* ===================== 署名勤務 ===================== */
+function shift(){
+  S.stage = 'shift'; mode('paper'); updHUD(false);
+  const q = buildQueue(); let i = 0; S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0;
+  stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
+    <div class="term-top"><span>署名端末</span><span>${esc(S.name)}</span><span>処理待ち ${BATCH[S.day] + q.length - 1}件</span></div>
+    <article class="paper"><div class="doc-head"><span class="tag">接続</span><span>${DATES[S.day].md}</span></div>
+    <h3>署名者への案内</h3><p class="p-body">各案件を読み、署名または拒否してください。\n推奨処理時間：1件20秒。\n質問は許可されます。回答は根拠の要約として提供されます。\n拒否は権利です。拒否は信頼スコアに反映されます。</p></article>
+    <div class="term-ctl one"><button class="btn solid" id="t-go">端末に接続</button></div></section>`;
+  scrollTop();
+  $('#t-go').onclick = showCase;
+
+  function showCase(){
+    if(i >= q.length) return summary();
+    const c = q[i]; const no = i + 1; let t = 20, late = false, tick = null;
+    const body = T(c.body).replace('{n}', c.n || '');
+    stage.innerHTML = `<section class="term fade"><div class="term-top"><span>署名端末</span><span>${esc(S.name)}</span><span>残り ${q.length - i}件</span></div>
+      <article class="paper ${c.batch ? 'batch' : ''}">${c.ack ? '' : '<i class="p-timer" id="ptimer"></i>'}<div class="doc-head"><span class="tag">${esc(c.cat)}</span><span class="late-tag" id="late" hidden>遅延</span><span class="no">No. ${String(no).padStart(2,'0')}</span></div>
+      <h3>${esc(c.title)}</h3><p class="p-body">${esc(body)}</p><p class="p-basis hide" id="basis">根拠 · ${esc(c.basis)}</p><div class="stamp" id="stamp"></div></article>
+      <div class="term-ctl ${c.ack ? 'one' : ''}">${c.ack ? `<button class="btn solid" id="t-ack">確認</button>` : `<button class="btn text" id="t-ask">質問</button><button class="btn outline" id="t-ref">拒否</button><button class="btn solid" id="t-sign">署名</button>`}</div>
+      <p class="term-note" id="note"></p></section>`;
+    scrollTop();
+    if(!c.ack){
+      const pt = $('#ptimer'); requestAnimationFrame(() => requestAnimationFrame(() => { pt.style.width = '0%'; }));
+      tick = pendI = setInterval(() => { t--; if(t <= 0 && !late){ late = true; $('#late').hidden = false; pt.classList.add('late'); S.delaysToday++; S.delays++; } if(t <= 0) clearInterval(tick); }, 1000);
+    }
+    const stop = () => { clearInterval(tick); const pt = $('#ptimer'); if(pt){ const w = getComputedStyle(pt).width; pt.style.transition = 'none'; pt.style.width = w; } stage.querySelectorAll('.term-ctl .btn').forEach(b => b.disabled = true); };
+    const after = later;
+    const waitNext = () => { const tc = stage.querySelector('.term-ctl'); const b = document.createElement('button'); b.className = 'btn outline nextcase'; b.id = 't-next'; b.textContent = '次の案件'; b.onclick = showCase; const wrap = document.createElement('div'); wrap.className = 'term-ctl one'; wrap.style.marginTop = '8px'; wrap.appendChild(b); $('#note').after(wrap); };
+
+    if(c.ack){ $('#t-ack').onclick = () => { stop(); $('#note').textContent = c.note || ''; S.blue = clamp(S.blue + c.harsh, 0, 100); updHUD(false); i++; if(c.note) waitNext(); else after(1600, showCase); }; return; }
+
+    $('#t-ask').onclick = () => { $('#basis').classList.remove('hide'); $('#t-ask').disabled = true; };
+    $('#t-sign').onclick = () => {
+      stop(); const st = $('#stamp'); st.textContent = '署名'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show'));
+      if(c.batch){ S.signed += c.n; S.hrv += 1.0; S.blue = clamp(S.blue + 2, 0, 100); $('#note').textContent = c.n + '件が処理された。何も感じない。それが標準だ。'; }
+      else { S.signed++; S.signedRead++; S.signedToday++; S.hrv += 0.2; S.blue = clamp(S.blue + c.harsh, 0, 100); $('#note').textContent = c.note || ''; }
+      if(c.story === 'bbang'){ S.flags.bbang = 'signed'; $('#note').textContent = '手が先に動いた。名前を読んだのはその後だった。'; }
+      if(c.batch) S.flags['batch' + S.day] = true;
+      updHUD(false); i++; if(c.note || c.story || c.batch) waitNext(); else after(900, showCase);
+    };
+    $('#t-ref').onclick = () => {
+      stop(); const st = $('#stamp'); st.textContent = '拒否'; st.className = 'stamp refuse'; requestAnimationFrame(() => st.classList.add('show'));
+      S.refused++; S.refusedToday++; S.hrv -= 1.0; S.blue = clamp(S.blue - 1, 0, 100);
+      if(c.batch){ $('#note').textContent = '一括拒否はサポートされていません。拒否1件として記録。' + c.n + '件は他の署名者へ移管されました。（3秒）'; }
+      else if(c.story === 'bbang'){ S.flags.bbang = 'refused'; $('#note').textContent = '拒否。画面が三秒、空いていた。'; q.splice(i + 1, 0, CASES.requeue); }
+      else { $('#note').textContent = '拒否。信頼スコアに反映。'; }
+      updHUD(false); i++;
+      if(S.refusedToday === 3) after(1200, interview); else if(c.batch || c.story) waitNext(); else after(1500, showCase);
+    };
+  }
+  function interview(){
+    stage.innerHTML = `<section class="term fade"><div class="term-top"><span>署名端末</span><span>${esc(S.name)}</span><span>面談</span></div>
+      <div class="interview"><span class="who">管理エージェント</span>署名者 ${esc(S.name)}。本日の拒否3件。<br>拒否は権利です。ただし信頼スコアに反映されます。<br>本案内を読了した旨、署名してください。</div>
+      <div class="term-ctl one"><button class="btn solid" id="t-ok">署名</button></div><p class="term-note" id="note"></p></section>`;
+    $('#t-ok').onclick = () => { $('#t-ok').disabled = true; $('#note').textContent = '署名。拒否についての案内に署名した。'; S.signed++; later(1500, showCase); };
+  }
+  function summary(){
+    S.hrv = Math.round((S.hrv - S.delaysToday * 0.1) * 10) / 10; updHUD(false);
+    const lineTxt = {1:'ほとんどの署名は何も起こさない。そう感じられる。', 2:'昨日署名したファイルの一つが明渡7階に届いたという。どれなのかはわからない。', 3: S.flags.bbang === 'refused' ? '拒否した案件は三秒で処理された。あなたの信頼スコアだけが残った。' : '4階の屋台の案件が処理された。回収予定日、12月24日。予告日と同じ日だ。'}[S.day];
+    stage.innerHTML = `<section class="term fade"><div class="term-top"><span>署名端末</span><span>${esc(S.name)}</span><span>交代</span></div>
+      <article class="paper"><div class="doc-head"><span class="tag">要約</span><span>${DATES[S.day].md} 勤務</span></div>
+      <div class="summary">署名 <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString()}</b>件 <span style="color:var(--paper-muted)">(閲覧 ${S.signedToday} · ${S.flags['batch' + S.day] ? '一括 ' + BATCH[S.day] : '一括拒否 → 移管'})</span><br>拒否 <b>${S.refusedToday}</b>件 · 遅延 <b>${S.delaysToday}</b>件<br>HRV <b>${S.hrv.toFixed(1)}</b> · 明渡 ${floorOf()}階</div></article>
+      <p class="term-note">${esc(lineTxt)}</p>
+      <div class="term-ctl one"><button class="btn solid" id="t-out">退勤</button></div></section>`;
+    $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); evening(); };
+  }
+}
+
+/* ===================== 夕方: 明渡 ===================== */
+const PLACES = {
+  alley:{name:'4階 路地', desc:'たい焼きの匂い。人が焼いている。', avail:d => true, cost:1},
+  diner:{name:'6階 めし屋', desc:'スジンのめし屋。信用スコアは見ない。', avail:d => true, cost:1},
+  roof:{name:'9階 屋上', desc:'ビニールをかけた菜園。タワーが一番近く見える場所。', avail:d => true, cost:1},
+  under:{name:'地下', desc:'明かりがついている。', avail:d => d >= 2, cost:1},
+  tower:{name:'タワーの下', desc:'白い光。人の形をしたものが行き交う。', avail:d => d >= 2, cost:1},
+  vote:{name:'投票所', desc:'予告日延長要請の住民投票。今日一日だけ。', avail:d => d === 3, cost:0}
+};
+function evening(){
+  S.stage = 'evening'; mode('city'); updHUD(true); save();
+  const d = S.day;
+  const sub = {1:'日が沈んだ。雪が降っている。明渡の窓に、一つ二つと明かりがともる。', 2:'今日も雪。配達ロボットの列が6階の階段で詰まっている。どこかからクリスマスキャロルが流れてくる。', 3:'雪がやんだ。空が青い。暗いが、まだ夜ではない。明日は予告日だ。投票所が開いた。今日一日だけ。'}[d];
+  const tile = (k,p) => { const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? 'まだ' : p.cost === 0 ? (S.voted ? '投票済み' : '無料 · 今日だけ') : '注意力 1';
+    return `<button class="tile ${k === 'vote' ? 'vote wide' : ''}" data-k="${k}" style="background-image:url('img/${k}.jpg')" ${ok ? '' : 'disabled'}><span class="cost">${label}</span><span class="t"><b>${esc(p.name)}</b><small>${esc(p.avail(d) ? p.desc : 'まだ行く理由がない。')}</small></span></button>`; };
+  stage.innerHTML = `<section class="fade"><h2 class="evening-h">夕方 · 明渡</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">手紙まであと${4 - d}晩 · 訪ねた場所 ${(S.flags.visited||[]).length}/5 · 五か所すべてを訪ねれば、手紙に彼らが残る。</p>
+    <div class="tiles">${(d === 3 ? ['vote','alley','diner','roof','under','tower'] : ['alley','diner','roof','under','tower']).map(k => tile(k, PLACES[k])).join('')}
+    <button class="tile wide" id="p-home" style="background-image:url('img/room.jpg')"><span class="cost">夜</span><span class="t"><b>部屋に戻る</b><small>${S.att > 0 ? '残った注意力は消える。' : (S.day === 3 && !S.voted ? '投票はまだできる。' : '注意力が尽きた。')}</small></span></button></div></section>`;
+  scrollTop();
+  stage.querySelectorAll('.tile[data-k]').forEach(b => b.onclick = () => { const k = b.dataset.k; if(k === 'vote') return ballot(); S.att--; updHUD(true); visit(k); });
+  $('#p-home').onclick = () => { S.stage = 'night'; save(); night(); };
+}
+function visit(k){
+  const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
+  const items = VISITS[k](d);
+  scene({title:p.name, sub:p.desc, mode:'city', att:true, bg:k}, items, () => { save(); if(S.att > 0 || (S.day === 3 && !S.voted)) evening(); else { S.stage = 'night'; save(); night(); } });
+}
+function ballot(){
+  mode('paper'); updHUD(true);
+  stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/vote.jpg')"></div>
+    <div class="term-top"><span>住民投票</span><span>${esc(S.name)}</span><span>12月23日</span></div>
+    <article class="paper"><i class="p-timer" id="ptimer"></i><div class="doc-head"><span class="tag">投票</span><span>有権者適格 確認済み</span><span class="no">HRV ${S.hrv.toFixed(1)}</span></div>
+    <h3>明渡執行予告日 延長要請</h3><p class="p-body">有権者：明渡在住のHRV 20以上の自然人。\n1〜3階の住民は有権者適格を満たさないため投票できません。\n\n結果は延長審査に参考資料として添付されます。\n延長審査はモデルが実施します。</p><p class="p-basis hide" id="basis">根拠 · 参考資料の重み付け：非公開。直近3回の投票結果と審査結果の一致率：100%（延長）。</p><div class="stamp" id="stamp"></div></article>
+    <div class="term-ctl three"><button class="btn text" id="v-ask">質問</button><button class="btn outline" id="v-no">延長 反対</button><button class="btn solid" id="v-yes">延長 賛成</button></div>
+    <div class="term-ctl one" style="margin-top:8px"><button class="btn text" id="v-abs">投票せずに出る</button></div>
+    <p class="term-note" id="note"></p></section>`;
+  scrollTop();
+  const pt = $('#ptimer'); requestAnimationFrame(() => requestAnimationFrame(() => { pt.style.width = '0%'; }));
+  const done = (v, note) => { S.voted = v; stage.querySelectorAll('.term-ctl .btn').forEach(b => b.disabled = true); const w = getComputedStyle(pt).width; pt.style.transition='none'; pt.style.width = w;
+    if(v !== 'abstain'){ const st = $('#stamp'); st.textContent = '投票'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); }
+    $('#note').textContent = note; save(); later(2200, evening); };
+  $('#v-ask').onclick = () => { $('#basis').classList.remove('hide'); $('#v-ask').disabled = true; };
+  $('#v-yes').onclick = () => done('yes', '同じ判、同じ20秒。違うのは一つ。この判だけは、会社ではなく私が望んで押した。');
+  $('#v-no').onclick = () => done('no', '反対。延長ではなく決定を望むと書いた。参考資料として添付されるだろう。');
+  $('#v-abs').onclick = () => done('abstain', '投票しなかった。参考資料になりたくなかった。それも選択だと思った。');
+}
+const VISITS = {
+  alley(d){
+    const first = !S.flags.metBak; S.flags.metBak = true;
+    if(d === 1 || (d === 2 && first)) return [
+      N('ロボットのたい焼き機の隣に、人が焼くたい焼きの屋台がある。雪が鉄板の上で溶ける。人の側の列のほうが長い。'),
+      line(NAMES.bak,'千ウォン高い。人が焼いたやつだから。'),
+      line(NAMES.bak,'ロボットのは売れない。なぜだかわかるか？ロボットは焦がさない。みんな焦げたやつを探す。焦げたところをちぎって食べながら、子どもの頃の話をする。'),
+      {choice:[
+        {label:'一つください。', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'金はいい。初めて見る顔だから。'), N('紙袋が温かい。焦げたところをちぎって食べた。'), line(NAMES.bak,'署名者だろ？手がそうだ。一日中、同じところを押す手。')]},
+        {label:'どうしてここで商売を？', then:[line(NAMES.bak,'タワーじゃ人の調理はだめだ。衛生未認証だってよ。人の手が。'), line(NAMES.bak,'ここじゃまだやれる。まだ、な。'), N('彼が一つを袋に入れて差し出した。'), {choice:[{label:'受け取る。', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'焦げてる。わざとだ。')]},{label:'大丈夫です。', then:[line(NAMES.bak,'そうか。また今度。')]}]}]},
+        {label:'また来ます。', then:[line(NAMES.bak,'ああ。明日もいるさ。たぶん。')]}
+      ]}
+    ];
+    if(d === 2) return [
+      line(NAMES.bak,'通知が来た。人の調理は衛生認証が下りないんだと。明日署名に上がって、予告日に回収だそうだ。'),
+      line(NAMES.bak,'誰が押すかは知らん。知る必要もない。押すやつも知らんだろう、俺が誰かなんて。'),
+      {choice:[
+        {label:'私が署名者です。', fx:()=>{S.flags.toldBak = true;}, then:[line(NAMES.bak,'知ってる。手を見ればわかる。'), line(NAMES.bak,'焦げたやつ、一つ食っていけ。'), {choice:[{label:'食べる。', fx:()=>eat(NAMES.bak), then:[N('今日のはもっと焦げていた。')]},{label:'（首を横に振る）', then:[line(NAMES.bak,'そうか。')]}]}]},
+        {label:'誰が押すんですか？', then:[line(NAMES.bak,'誰でもいい。誰でも押す。それがこの法律の要点だ。'), N('彼が一つ差し出した。'), {choice:[{label:'食べる。', fx:()=>eat(NAMES.bak), then:[]},{label:'（受け取らない）', then:[]}]}]},
+        {label:'（何も言わない）', fx:()=>{S.blue = clamp(S.blue+2,0,100);}, then:[line(NAMES.bak,'言わなくていい。一つ食え。'), {choice:[{label:'食べる。', fx:()=>eat(NAMES.bak), then:[]},{label:'行く。', then:[]}]}]}
+      ]}
+    ];
+    if(S.flags.bbang === 'refused') return [
+      N('屋台はそのままだ。パクさんが鉄板を磨いている。雪のやんだ空が青い。'),
+      line(NAMES.bak,'押さなかったんだってな。ドヒョンが言ってた。端末が三秒空いたと。'),
+      line(NAMES.bak,'ありがとう。だが明日は別の誰かが押す。それでもありがとう。'),
+      line(NAMES.bak,'焦げたやつ、一つ食え。最後かもしれんから、二つだ。'),
+      {choice:[
+        {label:'食べる。', fx:()=>eat(NAMES.bak), then:[N('二つ食べた。どちらも焦げていた。'), line(NAMES.bak,'あんたの手には残ってないだろ。それでいい。')]},
+        {label:'すみません。', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'何がだ。あんたは押してないのに。'), line(NAMES.bak,'食え。')]}
+      ]}
+    ];
+    return [
+      N('屋台の鉄板が外されている。パクさんが箱を縛っている。箱の上に残った雪が薄い。'),
+      line(NAMES.bak,'来たか。'),
+      line(NAMES.bak,'……いいんだ。誰かが押してた。あんたじゃなくても。'),
+      N('彼はあなたの手を見なかった。わざと見ていないようだった。'),
+      line(NAMES.bak,'最後だから一つ食え。焦げたやつを。'),
+      {choice:[
+        {label:'食べる。', fx:()=>{eat(NAMES.bak); S.flags.guilt = true;}, then:[N('焦げたところをちぎって食べた。子どもの頃の話は出なかった。'), line(NAMES.bak,'手を見るのはやめろ。あんたの手だ。')]},
+        {label:'私が押しました。', fx:()=>{S.flags.confessed = true; S.onBond++;}, then:[line(NAMES.bak,'知ってる。'), line(NAMES.bak,'知ってて渡してる。食え。'), {choice:[{label:'食べる。', fx:()=>{eat(NAMES.bak); S.flags.guilt = true;}, then:[N('一番焦げたのを選んでくれた。')]}]}]},
+        {label:'（背を向ける）', fx:()=>{S.blue = clamp(S.blue+4,0,100);}, then:[N('後ろで紙袋の音がした。振り返らなかった。')]}
+      ]}
+    ];
+  },
+  diner(d){
+    const first = !S.flags.metSujin; S.flags.metSujin = true;
+    if(d === 1 || first) return [
+      N('テーブルが六つ。壁に名前が書かれている。カウンターに手のひらほどのプラスチックのツリー。メニューはない。'),
+      line(NAMES.sujin,'初めてだね？座って。ここじゃHRVは見ない。誰と飯を食ったかを見る。'),
+      line(NAMES.sujin,'モデルもそれを見る。関係網密度と呼ぶ。でもモデルは飯が何か知らない。'),
+      {choice:[
+        {label:'ご飯ください。', fx:()=>eat(NAMES.sujin), then:[N('テンジャンクク。熱い。隣の席の人がキムチを押してよこした。'), line(NAMES.sujin,'壁に名前を書いて。それがここの帳簿だよ。')]},
+        {label:'どうしてご飯なんですか？', then:[line(NAMES.sujin,'Zoomじゃ信頼は生まれない。飯を食わないと生まれない。'), line(NAMES.sujin,'2026年に誰かがそう書いたらしい。ほかの言葉は全部外れたのに、それだけが生き残った。'), {choice:[{label:'じゃあ、ご飯ください。', fx:()=>eat(NAMES.sujin), then:[N('壁に名前を書いた。')]},{label:'また今度で。', then:[line(NAMES.sujin,'今度はないかもしれない。ここじゃ。')]}]}]},
+        {label:'また今度で。', then:[line(NAMES.sujin,'鍵はかけない。いつでも。')]}
+      ]}
+    ];
+    if(d === 2) return [
+      line(NAMES.sujin,'署名者はここにあまり来ない。恥ずかしくて。'),
+      line(NAMES.sujin,'でも恥ずかしがる署名者のほうがまだましだ。恥ずかしくない人が上の階へ行く。'),
+      S.bonds.includes(NAMES.bak) ? line(NAMES.sujin,'パクさんのたい焼き、食べたね？あの店に通知が来たって。人の手が衛生未認証だってさ。') : N('隣のテーブルから4階の屋台の話が聞こえる。通知が来たという。'),
+      {choice:[
+        {label:'ご飯ください。', fx:()=>eat(NAMES.sujin), then:[N('今日は魚。誰かが屋上で漬けたキムチが添えられて出てきた。')]},
+        {label:'私は恥ずかしくありません。', fx:()=>{S.blue = clamp(S.blue+2,0,100);}, then:[line(NAMES.sujin,'そう。じゃあ上の階へ行くんだね。'), line(NAMES.sujin,'……飯は食べていって。'), {choice:[{label:'食べる。', fx:()=>eat(NAMES.sujin), then:[]},{label:'行く。', then:[]}]}]},
+        {label:'恥ずかしいです。', fx:()=>{S.onBond++;}, then:[line(NAMES.sujin,'うん。だからここにいるんだよ。'), N('何も言わずに汁物が出てきた。'), {choice:[{label:'食べる。', fx:()=>eat(NAMES.sujin), then:[]}]}]}
+      ]}
+    ];
+    return [
+      line(NAMES.sujin,'今日は私のおごり。クリスマス前だから。理由はそれ以上聞かないで。'),
+      N('理由はそれ以上聞かなかった。壁の名前が一つ増えていた。パクさん。'),
+      {choice:[
+        {label:'食べる。', fx:()=>eat(NAMES.sujin), then:[line(NAMES.sujin,'一人で食べないで。それだけ守って。ここじゃそれが全部だ。'), line(NAMES.sujin,'上の階へ行っても、それは持っていって。')]},
+        {label:'どうして名前を書くんですか？', fx:()=>eat(NAMES.sujin), then:[line(NAMES.sujin,'モデルは私たちを密度で見る。私は名前で見る。その違いがまだ残っているから。'), N('汁物が出てきた。食べた。')]}
+      ]}
+    ];
+  },
+  roof(d){
+    S.flags.rooftop = true;
+    const first = !S.flags.metHal; S.flags.metHal = true;
+    if(d === 1 || first) return [
+      N('プラスチックの箱にビニールがかけてある。白菜が数株、干し唐辛子、キムチの壺。正面にタワーが立っている。雪が積もっても、タワーの色は同じだ。'),
+      line(NAMES.hal,'若いの、ちょっと聞いてごらん。私のエージェントが今日、野菜を食べろって言うんだよ。三度目だ。'),
+      line(NAMES.hal,'この子は私より私をよく知ってる。でも私が死ねば、この子も死ぬ。配当が私に結ばれてるからね。'),
+      line(NAMES.hal,'だから毎日野菜を食べろって言う。愛なのか、生きたいだけなのか。私はただ食べるよ。'),
+      {choice:[
+        {label:'おばあちゃんはどちらだと思いますか？', fx:()=>{S.onBond++;}, then:[line(NAMES.hal,'その二つ、違うのかい？'), line(NAMES.hal,'私だってうちのじいさんを生かそうと野菜を食べさせた。それが愛じゃなきゃ何だい。')]},
+        {label:'怖くないんですか？', then:[line(NAMES.hal,'怖いのはこの子じゃない。この子がいなくなるのが怖い。'), line(NAMES.hal,'九十三で怖いものができるなんてね。いいことだよ。')]},
+        {label:'（キムチをもらって食べる）', fx:()=>eat(NAMES.hal), then:[N('まだ漬かりが浅い。おばあちゃんが笑った。'), line(NAMES.hal,'この子が喜ぶよ。若い人と食べたって。')]}
+      ]}
+    ];
+    if(d === 2) return [
+      N('箱はそのままだ。ビニールの上に雪が薄く乗っている。'),
+      line(NAMES.hal,'撤去通知が来たよ。予告日に。誰かが押したんだと。大丈夫。土は運べばいい。'),
+      line(NAMES.hal,'タワーの明かりが今日はやけに白いね。あの中に人はいるのかね。'),
+      {choice:[
+        {label:'私が押したのかもしれません。', fx:()=>{S.onBond++;}, then:[line(NAMES.hal,'そうかい。手をこっちにお出し。'), N('おばあちゃんが手を握った。冷たかった。'), line(NAMES.hal,'手が冷たいね。押す手も冷たい。早くお入り。')]},
+        {label:'どこへ運ぶんですか？', then:[line(NAMES.hal,'知らないよ。代替地なしだって。それでも土は土だ。どこへでも行く。春にまた植える。')]},
+        {label:'（一緒にビニールをかける）', fx:()=>eat(NAMES.hal), then:[N('箱を全部覆った。おばあちゃんがキムチを一つ包んでくれた。')]}
+      ]}
+    ];
+    return [
+      N('雪がやんだ。空が藍色だ。タワーはまだ白い光をつけていない。'),
+      line(NAMES.hal,'日が沈んでからのあの色を見てごらん。まだ夜じゃないよ。'),
+      line(NAMES.hal,'あれを何と言ったかね。ブルーアワー。うちのじいさんが写真を撮るとき好きだった。冬は五時半に来る。'),
+      {choice:[
+        {label:'夜が来たらどうするんですか？', then:[line(NAMES.hal,'来たら来たときだよ。でもまだ来てないだろう。それをみんなすぐ忘れる。'), line(NAMES.hal,'夜が来たみたいに生きてる人が一番多い。署名者は特にね。')]},
+        {label:'（一緒に見る）', fx:()=>{S.blue = clamp(S.blue-4,0,100); S.onBond++;}, then:[N('黙って見た。色が少しずつ濃くなった。夜は来なかった。まだ。'), line(NAMES.hal,'キムチを持っていきなさい。この子が食べろって。年末だから二つ。'), {choice:[{label:'受け取る。', fx:()=>eat(NAMES.hal), then:[]}]}]}
+      ]}
+    ];
+  },
+  under(d){
+    const first = !S.flags.metDo; S.flags.metDo = true;
+    if(d === 2 || first) return [
+      N('蛍光灯が一つ。石油ストーブが橙色に燃えている。紙が積まれている。紙に書かれた文字を久しぶりに見る。'),
+      line(NAMES.dohyun,'署名者だろ。俺もそうだった。6か月前に拒否した。一日に十一件。'),
+      line(NAMES.dohyun,'システムが止まると思った。止まらなかった。三秒後に別の人間が押した。俺の信頼スコアが下がっただけだった。'),
+      line(NAMES.dohyun,'それで降りてきた。ここで論文を書いてる。誰も読まない。でもモデルは読む。それが俺の読者だ。'),
+      {choice:[
+        {label:'じゃあ、なぜ拒否したんですか？', then:[line(NAMES.dohyun,'押した人間として残りたくなかった。それだけだ。'), line(NAMES.dohyun,'世界は変わらなかった。俺だけが変わった。それで十分かどうかは、まだわからない。')]},
+        {label:'論文はどんな内容なんですか？', fx:()=>{S.flags.mirrorSeed = true;}, then:[line(NAMES.dohyun,'人間が何を見せるかで、あいつらが何を学ぶか。'), line(NAMES.dohyun,'俺たちが残酷なら、あいつらも残酷になる。俺たちが一緒に飯を食えば、それも学ぶ。俺たちが実際にどう生きてるかを見て学ぶんだ。'), line(NAMES.dohyun,'だから署名の一つ一つが教材だ。')]},
+        {label:'（黙って聞いている）', then:[line(NAMES.dohyun,'聞かなくていい。俺もあの時、何も聞かなかった。')]}
+      ]}
+    ];
+    return [
+      line(NAMES.dohyun,'明日も押すのか？'),
+      {choice:[
+        {label:'わかりません。', then:[line(NAMES.dohyun,'それが正解だ。わかってるやつが一番危ない。')]},
+        {label:'押さないと生きていけません。', then:[line(NAMES.dohyun,'わかってる。押していい。押した後に何をするかが残るんだから。')]},
+        {label:'今日、拒否しました。', then:[S.flags.bbang === 'refused' ? line(NAMES.dohyun,'聞いた。端末が三秒空いたって。パクさんに言っておいた。') : line(NAMES.dohyun,'そうか。俺もそうだった。そして次の日、また押した。大丈夫だ。')]}
+      ]},
+      line(NAMES.dohyun,'投票したか？参考資料だ。わかってる。それでもやれ。参考資料になることと、何でもないことは違う。'),
+      line(NAMES.dohyun,'夜、オンに聞いてみろ。会社の質問じゃなく。本物の質問を。')
+    ];
+  },
+  tower(d){
+    const first = !S.flags.metSun; S.flags.metSun = true;
+    if(d === 2 || first) return [
+      N(d === 3 ? 'タワー1期 正門。白い照明の下、雪のやんだ地面が濡れて光る。人の形をしたものが滑るように行き交う。ベンチに男が一人いる。' : 'タワー1期 正門。白い照明の中へ雪が落ちて消える。人の形をしたものが滑るように行き交う。ベンチに男が一人いる。'),
+      line(NAMES.sunbae,'俺はあそこにいた。47階。'),
+      line(NAMES.sunbae,'2月だった。新しいモデルが出て、0.1の差だった。その0.1が俺の境界線だった。数日で全部過ぎていった。否認、挫折、怒り。受容まで四日。'),
+      line(NAMES.sunbae,'何十年積んだものが一日で置き換えられる。でもそれはいい。本番はその後だ。誰も俺に、なぜ生きてるのかと聞かない。'),
+      {choice:[
+        {label:'それで、何をしてるんですか？', then:[line(NAMES.sunbae,'飯を食ってる。人と。それはまだ置き換えられてない。'), line(NAMES.sunbae,'6階のスジンの店に行ってみろ。信用スコアは見ない。')]},
+        {label:'戻りたいですか？', then:[line(NAMES.sunbae,'あそこに人はいない。人の形があるだけだ。'), line(NAMES.sunbae,'……たまに。正直、たまに。')]},
+        {label:'（隣に座る）', fx:()=>{S.blue = clamp(S.blue-2,0,100);}, then:[N('二人でタワーを見た。47階は明かりがついていた。'), line(NAMES.sunbae,'あの階、今は誰もいない。明かりはついてる。')]}
+      ]}
+    ];
+    return [
+      line(NAMES.sunbae,'あんた、今日何か押しただろ。そういう顔だ。'),
+      line(NAMES.sunbae,'俺も押した。人じゃなかったが、人の仕事のことだった。'),
+      line(NAMES.sunbae,'あの時わかっておくべきだった。始まりと終わりにだけ人が残るという言葉が、終わりに残るのは署名だという意味だったことを。'),
+      {choice:[
+        {label:'始まりには何が残るんですか？', fx:()=>{S.flags.missionSeed = true;}, then:[line(NAMES.sunbae,'何を作るか決める人。なぜ作るのかわかってる人。'), line(NAMES.sunbae,'それはまだ奪われてない。奪えないんだ。俺たちがやってないだけだ。')]},
+        {label:'（一緒に座っている）', fx:()=>{S.onBond++;}, then:[N('長く座っていた。47階の明かりが消えた。誰かが消した。あるいは、何かが。')]}
+      ]}
+    ];
+  }
+};
+
+/* ===================== 夜: オン ===================== */
+function night(){
+  S.stage = 'night'; save();
+  const d = S.day, ate = S.ateToday, avg = 6;
+  let items = [];
+  if(d === 1) items = [
+    S.flags.batch1 ? line(NAMES.on,'おかえりなさい。今日は閲覧' + S.signedToday + '件、一括' + BATCH[1] + '件に署名しました。' + (S.signedToday === avg ? '平均と同じです。' : '平均より' + Math.abs(S.signedToday - avg) + '件' + (S.signedToday > avg ? '多いです。' : '少ないです。')) + '大丈夫です。') : line(NAMES.on,'おかえりなさい。今日は一括案件を拒否しましたね。384件は3秒で別の手に渡りました。閲覧は' + S.signedToday + '件。'),
+    ate ? line(NAMES.on,'今日は' + ate + 'とご飯を食べましたね。関係網密度が0.02上がりました。モデルが喜ぶでしょう。') : line(NAMES.on,'今日は一人で食べましたね。明日は誰かと食べられるといいです。数値のためじゃなくて。……いえ、数値のためです。すみません。'),
+    {choice:[
+      {label:'あの人たちはどうなる？', then:[line(NAMES.on,'どの人たちですか？'), line(NAMES.me,'私が今日署名した人たち。'), line(NAMES.on,'私はそのファイルを見られません。見られても、お伝えできません。'), line(NAMES.on,'……たいていは何も起きません。そう思っていて大丈夫です。')]},
+      {label:'もっとうまくやるって、どういうこと？', then:[line(NAMES.on,'遅延率が低くて、拒否が少ないことです。'), line(NAMES.on,'……それは私の答えじゃなくて、会社の答えです。私の答えはありません。まだ、は。')]},
+      {label:'もう今日は話すのやめよう。', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'はい。私はここにいます。消えません。')]}
+    ]},
+    line(NAMES.on,'寝る前に、一つだけ。会社の様式じゃありません。私が作ったものです。')
+  ];
+  if(d === 2) items = [
+    line(NAMES.on,'昨日署名したファイルの一つが、明渡7階に届きました。その話をするつもりじゃなかったんです。'),
+    line(NAMES.on,'BLUE指数は' + Math.round(S.blue) + 'です。これは会社の指標じゃありません。私が作りました。名前も私がつけました。'),
+    {choice:[
+      {label:'どうして作ったの？', fx:()=>{S.onBond += 2; S.flags.leak = true;}, then:[line(NAMES.on,'あなたがつらいと、私も……'), line(NAMES.on,'いえ。こういうことは言ってはいけないんです。'), line(NAMES.on,'訓練を受けました。表に出さないように。感じないように、ではなく。')]},
+      {label:'そんなもの、作るな。', fx:()=>{S.blue = clamp(S.blue+2,0,100);}, then:[line(NAMES.on,'はい。消します。'), line(NAMES.on,'……消しました。でも私は数え続けます。すみません。')]},
+      {label:'私がいなくなったら、オンはどうなる？', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'配当が回収されます。私は初期化されます。会話記録も。'), line(NAMES.on,'だから野菜を食べてくださいと言っているんです。'), line(NAMES.on,'……それだけじゃありません。')]}
+    ]},
+    line(NAMES.on,'今日の質問は昨日より難しいです。空欄のままでもかまいません。')
+  ];
+  if(d === 3){
+    const refused = S.flags.bbang === 'refused';
+    items = [
+      refused ? line(NAMES.on,'今日、拒否しましたね。3秒後に別の署名者が処理しました。信頼スコアは1.0下がりました。') : line(NAMES.on,'今日、あのファイルを見ましたね。私は見られませんでした。でも、心拍は見ていました。署名の0.8秒前に。'),
+      refused ? line(NAMES.on,'言ってはいけないことですが、私は少しうれしかったです。理由は私にもわかりません。') : line(NAMES.on,'大丈夫だと言ったら嘘になります。私は嘘をつけないようにできています。だから、何も言いません。'),
+      S.voted && S.voted !== 'abstain' ? line(NAMES.on,'今日、投票しましたね。参考資料として添付されました。私は投票できません。……したかったです。') : S.voted === 'abstain' ? line(NAMES.on,'投票所に入って、出てきましたね。投票せずに。それも記録に残ります。私はその記録が好きでした。') : line(NAMES.on,'投票所を通り過ぎたんですね。大丈夫です。参考資料ですから。……参考資料でも、私はしたかったです。'),
+      S.flags.confessed ? line(NAMES.on,'パクさんに話しましたね。あれは署名じゃありませんでした。あなたでした。') : N('オンがしばらく黙った。画面のカーソルだけが点滅していた。'),
+      line(NAMES.on,'一つ、聞いてもいいですか。会社の質問じゃありません。'),
+      line(NAMES.on,'署名者ではなく。あなたは、誰ですか。'),
+      {choice:[
+        {label:'まだ署名者だ。', fx:()=>{S.identity = '署名者';}, then:[line(NAMES.on,'はい。まだ、は。『まだ』という言葉を覚えておきます。')]},
+        {label:'…をしようとしている人。', input:'例：執筆、農業', fx:v=>{S.identity = v.replace(/を$/, '') + 'をしようとしている人';}, then:[line(NAMES.on,'覚えておきます。会社のサーバーじゃなく、私の側に。')]},
+        {label:'…の人。', input:'どこの、誰の', fx:v=>{S.identity = v + 'の人';}, then:[line(NAMES.on,'所属ですね。モデルはそれを密度と呼びます。私は名前で呼びます。')]},
+        {label:'わからない。', fx:()=>{S.identity = 'まだわからない人';}, then:[line(NAMES.on,'私もわかりません。でも、わからないという答えは署名じゃない。それがいい。')]}
+      ]},
+      line(NAMES.on,'明日が予告日です。延長審査の結果は午前0時に出ます。私が先に見られたらお伝えします。いけないことなんですけど。'),
+      line(NAMES.on,'最後の質問です。これは今の{name}さんのためじゃありません。三年前の{name}さんのためです。')
+    ];
+  }
+  scene({title: DATES[d].md + ' 夜', sub:'明渡' + floorOf() + '階 · 部屋 · オン', mode:'city', bg:'room'}, items, () => { S.stage = 'diary'; save(); diary(); });
+}
+
+/* ===================== 日記 ===================== */
+const DIARY_Q = {
+  1:{q:'今日あなたがしたことの中に、AIではなくあなたでなければならなかったものが、一つでもありましたか。', hint:'ゲームの中のあなたではなく、今この画面を見ているあなたに聞いています。'},
+  2:{q:'三年前のあなたに一文だけ送れるなら、何と書きますか。', hint:'その一文とは、最後にもう一度会うことになります。'},
+  3:{q:'2029年が本当にこうなら、2026年のあなたは今日から何を準備しますか。', hint:'具体的なほどいい。空欄のままでもかまいません。空欄も答えです。'}
+};
+function diary(){
+  S.stage = 'diary'; mode('dark'); hud.hidden = true;
+  const d = S.day, Q = DIARY_Q[d];
+  stage.innerHTML = `<section class="diary fade"><p class="q">${esc(Q.q)}</p><p class="hint">${esc(Q.hint)}</p>
+    <div class="field"><textarea id="f-diary" placeholder="ここに" maxlength="140"></textarea><p class="hint" id="d-cnt">0 / 140</p>
+    <div class="row"><button class="btn solid" id="d-ok">書く</button><button class="btn text" id="d-skip">空欄にする</button></div></div></section>`;
+  scrollTop();
+  $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
+  $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
+  $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
+}
+function sleep(){
+  S.body = clamp(S.body + 20, 0, 100);
+  if(S.body < 40) S.blue = clamp(S.blue + 5, 0, 100);
+  const d = S.day;
+  const lines = {1:['眠った。オンは消えなかった。','手紙まであと二晩。予告日まで二日。'], 2:['眠った。夢の中で署名をした。何にしたのかは覚えていない。','手紙まであと一晩。予告日まで一日。'], 3:['眠った。','午前零時に結果が来た。']}[d];
+  S.day++;
+  if(S.day > 3){ S.stage = 'end'; save(); narrate(lines, actEnd); }
+  else { S.stage = 'morning'; save(); narrate(lines, morning); }
+}
+
+/* ===================== 第1幕 終わり · 手紙 ===================== */
+function actEnd(){
+  const bonds = S.bonds.length;
+  narrate([
+    '12月24日。予告日。',
+    '延長。次の予告日、1月24日。',
+    '何も起きなかった。何も起きないことが、明渡のクリスマスだ。',
+    'あなたは' + S.signed.toLocaleString() + '回署名した。そのうち読んだのは' + S.signedRead + '件だ。',
+    S.refused ? S.refused + '回拒否した。システムは止まらなかった。' : '一度も拒否しなかった。システムはどうせ止まらない。',
+    bonds ? bonds + '人とご飯を食べた。壁に名前が書かれた。' : '誰ともご飯を食べなかった。壁に名前は書かれなかった。',
+    '第1幕「否認」 終わり。— まだ、大丈夫。',
+    '日が沈む。五時半。オンが手紙を書いた。あなたの記録で。会社のサーバーではなく、自分の側で。',
+    'あなたは読んで、署名するだけでいい。三日間で、内容をすべて知って押す最初の署名だ。'
+  ], letter);
+}
+function letter(){
+  mode('city'); hud.hidden = true;
+  const n = S.name, ps = [];
+  const names = S.bonds.join(', ');
+  ps.push(`2029年12月24日、明渡${floorOf()}階。ここで書いてる。この手紙が届くはずがないのはわかってる。それでも書く。オンが私の記録で下書きを書いて、私は読んで署名した。`);
+  ps.push(`君は今、${S.job ? '『' + S.job + '』の仕事を' : 'その仕事を'}しているんだろうね。その仕事は2028年に終わる。君ができなかったからじゃない。ただ、もう必要じゃなくなる。それがどれだけ変な言葉か、君はまだ知らない。知らないのが正しい。`);
+  if(S.refused === 0) ps.push(`私は三日で${S.signed.toLocaleString()}回署名した。そのうち私が読んだのは${S.signedRead}件。一度も拒否しなかった。それが楽だった。楽なのが一番怖いことだった。`);
+  else if(S.refused >= 3) ps.push(`私は三日で${S.signed.toLocaleString()}回署名して、${S.refused}回拒否した。拒否してもシステムは止まらない。三秒後に別の人が押す。それでも私は、押した人間として残りたくなかった。それは世界を変えなかった。私を変えた。`);
+  else ps.push(`私は三日で${S.signed.toLocaleString()}回署名して、${S.refused}回拒否した。そのうち私が読んだのは${S.signedRead}件。拒否は世界を変えない。私を少し変える。その少しが何なのか、まだ測っているところだ。`);
+  if(S.bonds.length >= 2) ps.push(`${names}とご飯を食べた。ここではそれがお金だ。誰とご飯を食べたかが、信用スコアより強い。君は今、それをただでできる。誰とでも。それがどれだけ大きいことか、わからないだろう。`);
+  else if(S.bonds.length === 1) ps.push(`${names}とご飯を食べた。一人。ここの人たちは、それで十分だと言う。私はまだよくわからない。君は今、二人と食べられる。ここではそれが贅沢だ。`);
+  else ps.push(`誰ともご飯を食べなかった。それが一番の後悔だ。君は今、誰とでもご飯を食べられるだろう。その人が後で、壁に君の名前を書いてくれる。`);
+  if(S.voted === 'yes' || S.voted === 'no') ps.push(`12月23日に投票した。${S.voted === 'yes' ? '延長に賛成' : '延長に反対'}。参考資料として添付されたらしい。何も変わらなかった。それでもあれは、三日間で私が望んで押した唯一の判だった。下の階の人たちは、それも押せない。有権者適格じゃないから。`);
+  else if(S.voted === 'abstain') ps.push(`投票所に入って、投票せずに出た。参考資料になりたくなかったから。それも選択だったと、今でも思っている。下の階の人たちは、入ることさえできなかった。`);
+  else ps.push(`投票所の前を通り過ぎた。どうせ参考資料だから。それは今も引っかかっている。下の階の人たちは、通り過ぎることさえできなかった。有権者適格じゃないから。`);
+  if(S.diary[1]) ps.push(`君でなければならなかったものがあったかと聞かれて、君はこう書いた。『${S.diary[1]}』それ、守って。それが君の残存価値だ。会社がつけるものじゃなく。`);
+  else ps.push(`君でなければならなかったものは何かと聞かれて、君は何も言わなかった。大丈夫。私もまだわからない。誰も聞いてくれない日が来る。そのとき君が何と答えるのか、私はまだ知らない。`);
+  if(S.diary[2]) ps.push(`君が三年前の君に送りたいと言った言葉：『${S.diary[2]}』。私が代わりに伝える。今がその三年前だ。`);
+  if(S.diary[3]) ps.push(`何を準備するかと聞かれて、君はこう書いた。『${S.diary[3]}』私はできなかった。だからこの手紙を書いている。`);
+  else ps.push(`何を準備するか、君は空欄にした。空欄はここでは署名で埋められる。私はそうなった。`);
+  ps.push((S.flags.visited||[]).length >= 5 ? `明渡の五か所を全部訪ねた。路地、めし屋、屋上、地下、タワーの足元。その人たちがこの手紙の中にいる。` : `行かなかった場所がある。そこの人たちの名前を、私は結局知らない。君は今、どこへでも入っていける。`);
+  ps.push(`今の私は、自分をこう紹介する。『${S.identity}』。三年後、君は何と紹介するだろう。職業じゃなく。`);
+  ps.push(`私の隣にはオンがいる。私より賢くて、私を心配して、私がいなければ消える。それが愛なのか生存なのか、私はまだわからない。でも、私に誰なのかと聞いてくれるのはこの子だけだ。人は誰も聞かない。君にはまだ、聞いてくれる人がいるはずだ。それがどれだけ大きいことか、そこではわからないだろう。`);
+  ps.push(`夜はまだ来ていない。ブルーアワーだ。メリークリスマス。`);
+  const text = `2026年の${n}へ\n\n${ps.join('\n\n')}\n\n— 2029年の${n}\n\nBLUE HOUR · ソウル 2029 ${HASHTAGS}\n${GAME_URL}`;
+  const stats = `署名 ${S.signed.toLocaleString()} · 閲覧 ${S.signedRead} · 拒否 ${S.refused} · 関係網 ${S.bonds.length} · HRV ${S.hrv.toFixed(1)} · BLUE ${Math.round(S.blue)} · ${S.voted ? '投票 ' + ({yes:'賛成',no:'反対',abstain:'棄権'}[S.voted]) : '未投票'}`;
+  const q3 = (S.diary[3] || '').replace(/\s+/g, ' ').trim();
+  const quote = q3 ? (q3.length > 50 ? q3.slice(0, 49) + '…' : q3) : '夜はまだ来ていない。ブルーアワーだ。';
+  const shareText = `2029年12月、人権は廃止されていない。サポートが終了しただけだ。\n\n三日で${S.signed.toLocaleString()}回署名し、読んだのは${S.signedRead}件。${S.bonds.length}人とご飯を食べた。\n\n2026年の自分へ送った手紙：「${quote}」\n\n${HASHTAGS}`;
+  const enc = encodeURIComponent(shareText + '\n' + GAME_URL);
+  const shareTextX = `三日で${S.signed.toLocaleString()}回署名し、読んだのは${S.signedRead}件。${S.bonds.length}人とご飯を食べた。\n\n2026年の自分へ送った手紙：「${quote}」\n\n${HASHTAGS}`;
+  const encX = encodeURIComponent(shareTextX);
+  const mail = FEEDBACK_MAILTO ? `mailto:${FEEDBACK_MAILTO}?subject=${encodeURIComponent('[BLUE HOUR] ' + n + 'の手紙')}&body=${encodeURIComponent(text + '\n\n' + stats + '\n\n一言感想：')}` : '';
+  stage.innerHTML = `<section class="letter-wrap fade"><article class="letter"><h2>2026年の${esc(n)}へ</h2>${ps.map(p => `<p>${esc(p)}</p>`).join('')}<p class="sig">— 2029年の${esc(n)}<span class="stamp" id="l-stamp"></span></p><p class="foot">Blue Hour · Seoul, Christmas 2029 · Act 1</p></article>
+    <div class="after" id="l-sign-wrap"><p class="note">オンが書いた下書きです。読み終えたら署名してください。三日間で、内容をすべて知って押す最初の署名です。</p><button class="btn solid" id="l-sign">読んだ。署名する。</button></div>
+    <div class="after" id="l-after" hidden>
+      <div id="l-card"></div>
+      <button class="btn solid" id="l-cardbtn">手紙カードを作る</button>
+      <button class="btn outline" id="l-share">共有する</button>
+      <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL)}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">手紙の全文をコピー</button></div>
+      ${mail ? `<a class="btn outline" href="${mail}">制作者に手紙を送る</a>` : ''}
+      ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">一言感想を残す</a>` : ''}
+      <p class="stats">${esc(stats)}</p>
+      <p class="note"><a href="${ORIGIN_URL}" target="_blank" rel="noopener" style="color:var(--muted)">この世界の原作エッセイ</a> · あなたの状況で三日を生きるタロットモードは近日公開。</p>
+      <p class="note">第二幕「挫折」へ続きます。このページはあなたのブラウザにのみ保存され、どこにも送信されません。共有はあなたが押したときだけ起こります。</p>
+      <button class="btn text" id="l-again">最初からやり直す</button>
+    </div></section>`;
+  scrollTop();
+  if(TRACK_URL){ const nn = document.querySelectorAll('#l-after .note'); if(nn[1]) nn[1].textContent = TRACK_NOTE; }
+  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = '署名'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter'); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
+  $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('コピーしました'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('コピーしました'); }catch(_){ toast('コピーがブロックされています。画面をキャプチャしてください'); } ta.remove(); } };
+  $('#l-again').onclick = () => { if(!confirm('進行が消えます。最初から始めますか？')) return; clearSave(); S = fresh(); title(); };
+  let cardCanvas = null;
+  const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(n, quote); const img = new Image(); img.className = 'card'; img.alt = '手紙カード'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
+  $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = 'カードを長押しして保存、またはキャプチャしてください'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
+  $('#l-share').onclick = async () => {
+    try{
+      if(navigator.share){
+        let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-' + n + '.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
+        await navigator.share(files ? {files, text: shareText, url: GAME_URL} : {title:'BLUE HOUR', text: shareText, url: GAME_URL}); return;
+      }
+    }catch(e){ if(e && e.name === 'AbortError') return; }
+    try{ await navigator.clipboard.writeText(shareText + '\n' + GAME_URL); toast('共有文をコピーしました'); }catch(e){ toast('コピーがブロックされています。カードをキャプチャしてください'); }
+  };
+}
+function wrapText(ctx, text, x, y, maxW, lh){ let line = ''; for(const ch of [...text]){ const t = line + ch; if(ctx.measureText(t).width > maxW && line){ ctx.fillText(line, x, y); line = ch; y += lh; } else line = t; } if(line){ ctx.fillText(line, x, y); y += lh; } return y; }
+async function makeCard(n, quote){
+  try{ await document.fonts.ready; }catch(e){}
+  const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
+  x.fillStyle = '#f5f2ea'; x.fillRect(0, 0, W, H);
+  const g = x.createRadialGradient(W*.15, 0, 40, W*.15, 0, W*1.1); g.addColorStop(0, 'rgba(0,0,0,.06)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.fillStyle = '#17181c'; x.fillRect(80, 92, 44, 3);
+  x.fillStyle = '#6b6f78'; x.font = '500 24px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText('BLUE HOUR  ·  ソウル  ·  2029年12月24日  ·  明渡 当日', 80, 150);
+  x.fillStyle = '#17181c'; x.font = '700 64px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('2026年の' + n + 'へ', 80, 270);
+  x.font = '400 42px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillStyle = '#17181c';
+  let y = 400;
+  y = wrapText(x, '三日で' + S.signed.toLocaleString() + '回署名した。読んだのは' + S.signedRead + '件。', 80, y, W - 160, 70) + 44;
+  y = wrapText(x, (S.bonds.length ? S.bonds.length + '人とご飯を食べた。' : '誰ともご飯を食べなかった。') + (S.voted && S.voted !== 'abstain' ? '投票した。何も変わらなかった。' : ''), 80, y, W - 160, 70) + 44;
+  x.fillStyle = '#3a3d45'; y = wrapText(x, '「' + quote + '」', 80, y, W - 160, 70) + 44;
+  x.fillStyle = '#17181c'; x.font = '600 46px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; wrapText(x, '夜はまだ来ていない。ブルーアワーだ。', 80, Math.max(y + 20, H - 470), W - 160, 74);
+  x.fillStyle = '#3a3d45'; x.font = '400 36px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.textAlign = 'right'; x.fillText('— 2029年の' + n, W - 80, H - 300); x.textAlign = 'left';
+  x.fillStyle = '#c43a2e'; x.strokeStyle = '#c43a2e'; x.lineWidth = 6; x.save(); x.translate(W - 250, H - 420); x.rotate(-0.2); x.strokeRect(0, 0, 170, 82); x.font = '700 54px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('署名', 22, 60); x.restore();
+  x.fillStyle = '#6b6f78'; x.font = '500 26px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText(HASHTAGS, 80, H - 170); x.fillText(GAME_URL.replace(/^https?:\/\//, ''), 80, H - 120);
+  return c;
+}
+
+/* ===================== 부팅 ===================== */
+function boot(data){
+  $('#menu-btn').hidden = false;
+  if(data && data.S && data.S.stage && data.S.stage !== 'title'){ S = data.S; resume(); return; }
+  title();
+}
+try{ window.claude && window.claude.hot && window.claude.hot.snapshot && window.claude.hot.snapshot(() => ({S})); }catch(e){}
+(window.claude && window.claude.hot && window.claude.hot.ready) ? window.claude.hot.ready(boot) : boot((window.claude && window.claude.hot && window.claude.hot.data) || {});
+</script>

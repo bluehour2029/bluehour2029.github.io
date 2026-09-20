@@ -1,0 +1,1142 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Blue Hour Myeongdo</title>
+<style>
+:root{
+  --bg:#070b14; --bg-2:#0c1424; --bg-3:#111c31; --line:#1d2a42; --line-2:#2a3a58;
+  --ink:#e6ecf5; --ink-2:#c7d2e3; --muted:#8a99b2; --dim:#6f809c;
+  --accent:#ffa24a; --accent-deep:#e8892f; --accent-ink:#1a0f02;
+  --on:#7fdcd2; --blue:#3f74c9;
+  --paper:#ffffff; --paper-2:#f3f5f8; --paper-ink:#111318; --paper-muted:#6b7280; --paper-line:#e1e5eb; --paper-ground:#eceef2; --warm:#f5f2ea;
+  --stamp:#c43a2e; --stamp-b:#2d4f9e; --danger:#ff6b6b;
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Noto Sans KR","Segoe UI",Roboto,system-ui,sans-serif;
+  --serif:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Noto Sans KR","Segoe UI",Roboto,system-ui,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Noto Sans KR","Segoe UI",Roboto,system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --gutter:18px;
+}
+[hidden]{display:none!important}
+html,body{height:100%}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+body.paper-mode{background:var(--paper-ground)}
+#app{position:relative;z-index:2;max-width:640px;margin:0 auto;padding:0 var(--gutter) 56px;min-height:100%}
+#snow{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;transition:opacity .8s}
+body.paper-mode #snow,body.dark-mode #snow{opacity:0}
+#veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 60%,rgba(40,90,190,0) 30%,rgba(30,70,170,.85) 100%);opacity:0;transition:opacity 1.2s}
+body.paper-mode #veil{mix-blend-mode:multiply}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.fade{animation:fade .5s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.fade{animation:none}.ticker span{animation:none!important}.cue i{animation:none}.p-timer{transition:none!important}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:4px;border:1px solid var(--line-2);background:var(--bg-2);color:var(--ink);font-family:var(--sans);font-weight:500;font-size:15px;letter-spacing:.01em;transition:background .15s,border-color .15s,transform .06s,opacity .15s;text-decoration:none}
+.btn:hover{border-color:var(--muted)}
+.btn:active{transform:translateY(1px)}
+.btn.solid{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.solid:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
+.btn.outline{background:transparent}
+.btn.text{background:transparent;border-color:transparent;color:var(--muted);padding:0 10px}
+.btn.text:hover{color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+#hud{position:sticky;top:0;z-index:5;margin:0 calc(-1*var(--gutter)) 6px;padding:calc(10px + env(safe-area-inset-top,0px)) calc(var(--gutter) + 44px) 10px var(--gutter);display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(var(--bg) 78%,transparent);font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em}
+body.paper-mode #hud{background:linear-gradient(var(--paper-ground) 78%,transparent);color:#5a5e68}
+#hud .m{display:flex;align-items:baseline;gap:6px;white-space:nowrap}
+#hud .m label{font-size:10px;text-transform:uppercase;letter-spacing:.14em;opacity:.7}
+#hud .m b{font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
+#hud .m b.d{color:var(--accent)}
+body.paper-mode #hud .m b{color:#17181c}
+body.paper-mode #hud .m b.d{color:#b5541c}
+#hud .bar{display:inline-block;width:56px;height:4px;background:var(--line);border-radius:2px;overflow:hidden;vertical-align:middle}
+body.paper-mode #hud .bar{background:#d3d7de}
+#hud .bar b{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),#7aa6ff);transition:width .6s}
+#h-att-dots i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--line-2);margin-left:4px;vertical-align:middle}
+#h-att-dots i.on{background:var(--accent)}
+#hud{gap:4px 12px}
+#hud .m:first-child{flex-basis:100%}
+#hud .m:not(:first-child){font-size:10.5px;letter-spacing:0}
+#hud .m:not(:first-child) label{letter-spacing:.1em}
+#hud .bar{width:44px}
+#menu-btn{background:rgba(7,11,20,.35);border-color:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+
+#menu-btn{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:10px;z-index:40;width:44px;height:44px;border-radius:50%;border:1px solid var(--line-2);background:rgba(7,11,20,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--ink);display:flex;align-items:center;justify-content:center;padding:0}
+#menu-btn span{display:block;width:16px;height:2px;background:currentColor;box-shadow:0 -5px 0 currentColor,0 5px 0 currentColor;border-radius:1px}
+body.paper-mode #menu-btn{background:rgba(255,255,255,.5);color:#111318;border-color:transparent}
+.sheet-bg{position:fixed;inset:0;z-index:50;background:rgba(3,6,12,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:51;max-width:640px;margin:0 auto;background:var(--bg-2);border:1px solid var(--line-2);border-bottom:0;border-radius:14px 14px 0 0;padding:18px var(--gutter) calc(20px + env(safe-area-inset-bottom,0px));animation:up .25s ease both}
+@keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+.sheet h3{font-family:var(--display);font-weight:500;font-size:18px;margin:0 0 4px}
+.sheet .save{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em;margin:0 0 14px}
+.sheet .list{display:flex;flex-direction:column;gap:8px}
+.sheet .btn{justify-content:flex-start;width:100%}
+.sheet .confirm{margin-top:8px;padding:12px 14px;border:1px solid var(--line-2);border-radius:6px;background:var(--bg-3);font-size:14px;color:var(--ink-2)}
+.sheet .confirm .row{margin-top:10px}
+.sheet .credit{font-family:var(--mono);font-size:11px;color:var(--dim);margin:14px 0 0;line-height:1.8}
+.sheet a{color:var(--muted)}
+
+.title{padding-block:0 30px}
+.hero{position:relative;margin:0 calc(-1*var(--gutter));height:min(64vw,400px);background-size:cover;background-position:center 28%}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,.05) 0%,rgba(7,11,20,0) 40%,var(--bg) 100%)}
+.title .eyebrow{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-top:6px}
+.title h1{font-family:var(--display);font-weight:700;font-size:clamp(44px,12vw,80px);line-height:.95;margin:8px 0 0;letter-spacing:-.03em}
+.title h1 span{display:block;font-family:var(--display);font-weight:500;font-size:.3em;letter-spacing:.22em;color:var(--accent);margin-top:14px;padding-left:.05em}
+.title .rule{width:40px;height:1px;background:var(--line-2);margin:24px 0 18px}
+.title .quote{font-family:var(--serif);color:var(--ink-2);font-size:17px;line-height:1.85;margin:0 0 14px;max-width:30ch;text-wrap:balance}
+.title .promise{font-family:var(--sans);color:var(--ink);font-size:15px;margin:0 0 22px;max-width:32ch}
+.title .actions{display:flex;flex-wrap:wrap;gap:10px}
+.title .fine{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:28px;line-height:1.9;letter-spacing:.02em}
+.title .langs{font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:14px}
+.title .langs a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line-2)}
+.title .langs b{color:var(--ink);font-weight:500}
+
+.narr{min-height:calc(100vh - 80px);min-height:calc(100svh - 80px);display:flex;flex-direction:column;justify-content:center;cursor:pointer;padding-block:40px 90px;position:relative}
+.narr-text{font-family:var(--display);font-weight:400;font-size:clamp(20px,5vw,25px);line-height:1.75;letter-spacing:-.01em;max-width:26ch;text-wrap:pretty;margin:0;color:var(--ink)}
+.cue{position:absolute;left:0;bottom:calc(28px + env(safe-area-inset-bottom,0px));font-family:var(--mono);font-size:12.5px;color:var(--muted);letter-spacing:.08em;display:flex;align-items:center;gap:10px}
+.cue i{display:block;width:6px;height:6px;border-right:1px solid var(--dim);border-bottom:1px solid var(--dim);transform:rotate(45deg);animation:nod 1.6s ease-in-out infinite}
+@keyframes nod{0%,100%{transform:translateY(0) rotate(45deg);opacity:.5}50%{transform:translateY(4px) rotate(45deg);opacity:1}}
+.law{font-family:var(--mono);font-size:13.5px;line-height:1.85;background:var(--warm);color:var(--paper-ink);padding:22px 22px 18px;border-radius:2px;max-width:42ch;box-shadow:0 30px 70px rgba(0,0,0,.55)}
+.law b{display:block;font-size:10px;letter-spacing:.18em;color:var(--paper-muted);margin-bottom:10px;font-weight:500}
+.law strong{font-size:30px;font-weight:500;letter-spacing:-.02em}
+.law .law-note{display:block;margin-top:10px;font-family:var(--serif);color:#3a3d45;font-size:14px}
+.narr .after-law{font-family:var(--display);margin:24px 0 0;font-size:18px;color:var(--muted)}
+
+.field{display:flex;flex-direction:column;gap:14px;margin-top:26px;max-width:34ch}
+.field input,.field textarea{font:inherit;font-family:var(--display);font-size:22px;background:transparent;border:0;border-bottom:1px solid var(--line-2);color:var(--ink);padding:8px 0;border-radius:0;width:100%}
+.field input::placeholder,.field textarea::placeholder{color:var(--dim)}
+.field textarea{font-family:var(--serif);font-size:17px;line-height:1.8;min-height:110px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;max-width:46ch}
+.chip{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--ink-2);font-size:15px}
+.chip:hover{border-color:var(--muted);color:var(--ink)}
+.chip.ghost{border-style:dashed;color:var(--muted)}
+
+.scene{padding-block:0 12px;min-height:calc(100svh - 72px);cursor:pointer}
+.backdrop{position:relative;margin:0 calc(-1*var(--gutter)) 14px;height:min(52vw,320px);background-size:cover;background-position:center}
+.backdrop:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,.12) 0%,rgba(7,11,20,0) 42%,var(--bg) 100%)}
+body.paper-mode .backdrop:after{background:linear-gradient(180deg,rgba(236,238,242,0) 40%,var(--paper-ground) 100%)}
+.scene-h{margin-bottom:16px}
+.scene-h h2{font-family:var(--display);font-weight:500;font-size:24px;margin:0;letter-spacing:-.01em}
+.scene-h .sub{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em;margin:4px 0 0}
+.log{display:flex;flex-direction:column;gap:20px;padding-bottom:10px}
+.line{max-width:58ch;display:grid;grid-template-columns:0 1fr;column-gap:0}
+.line.npc,.line.on{grid-template-columns:44px 1fr;column-gap:12px}
+.line .who{grid-column:2;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--muted);margin-bottom:5px;text-transform:uppercase}
+.line.on .who{color:var(--on)}
+.line.npc .who{color:var(--accent)}
+.line .txt{grid-column:2;margin:0;font-family:var(--serif);font-size:16.5px;line-height:1.75;letter-spacing:-.005em;text-wrap:pretty;color:var(--ink)}
+.line.on .txt{color:#d9f4f1;background:rgba(127,220,210,.06);border:1px solid rgba(127,220,210,.16);border-radius:14px 14px 14px 4px;padding:12px 15px;font-size:17px}
+.line.on .txt:empty:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--on);box-shadow:12px 0 0 var(--on),24px 0 0 var(--on);animation:dots 1s ease-in-out infinite;margin:6px 0}
+@keyframes dots{0%,100%{opacity:.25}50%{opacity:1}}
+.line.narr-line .txt{color:var(--muted);font-size:16px}
+.line.me .txt{color:var(--ink-2);font-family:var(--sans);font-size:16px;background:var(--bg-3);border:1px solid var(--line);border-radius:14px 14px 4px 14px;padding:10px 14px;display:inline-block}
+.line.me .who{color:var(--ink-2)}
+.line .portrait{grid-column:1;grid-row:1/span 2;width:44px;height:56px;object-fit:cover;object-position:top;border-radius:3px;border:1px solid var(--line-2);background:var(--bg-2)}
+.line .on-dot{grid-column:1;grid-row:1/span 2;width:44px;height:56px;display:flex;align-items:center;justify-content:center}
+.line .on-dot i{display:block;width:12px;height:12px;border-radius:50%;background:var(--on);box-shadow:0 0 18px 4px rgba(127,220,210,.45);animation:breathe 3.2s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.25);opacity:1}}
+@media (prefers-reduced-motion:reduce){.line .on-dot i{animation:none}}
+.ctl{position:sticky;bottom:0;display:flex;flex-direction:column;gap:8px;padding:14px 0 calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 32%)}
+.ctl .next{align-self:stretch;justify-content:flex-end;min-height:48px;padding:0 4px;background:none;border:0;font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;color:var(--muted);display:flex;align-items:center;gap:10px}
+.ctl .next i{display:block;width:6px;height:6px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(45deg);animation:nod 1.6s ease-in-out infinite}
+.ctl .next.typing i{animation:none;opacity:.35}
+.choice{display:flex;align-items:center;gap:12px;width:100%;min-height:50px;padding:10px 14px 10px 16px;text-align:left;background:var(--bg-2);border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:4px;font-family:var(--sans);font-size:15.5px;color:var(--ink);line-height:1.5;transition:background .15s,border-color .15s}
+.choice:hover{background:var(--bg-3);border-color:var(--line-2);border-left-color:var(--accent)}
+.choice:active{transform:translateY(1px)}
+.choice.quiet{border-left-color:var(--line-2);color:var(--ink-2)}
+.ctl .inrow{display:flex;gap:8px;align-items:stretch}
+.ctl .inrow input{flex:1;min-width:0;font:inherit;font-family:var(--serif);font-size:16px;background:var(--bg-2);border:1px solid var(--line);border-bottom-color:var(--line-2);color:var(--ink);padding:10px 12px;border-radius:4px}
+.ctl .inrow .choice{width:auto;flex:0 0 auto}
+
+.ticker{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 0;margin:2px 0 6px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+.ticker span{display:inline-block;padding-left:100%;animation:tick 32s linear infinite}
+@keyframes tick{to{transform:translateX(-100%)}}
+
+.evening-h{font-family:var(--display);font-size:24px;font-weight:500;margin:6px 0 0}
+.evening-p{color:var(--muted);margin:4px 0 4px;font-size:15px;font-family:var(--serif)}
+.evening-hint{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin:0 0 14px;letter-spacing:.02em}
+.tiles{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:560px){.tiles{grid-template-columns:1fr 1fr}.tiles .tile.wide{grid-column:1/-1}}
+.tile{position:relative;display:block;width:100%;height:124px;padding:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background-size:cover;background-position:center;text-align:left;color:var(--ink)}
+.tile:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,11,20,.94) 0%,rgba(7,11,20,.7) 60%,rgba(7,11,20,.25) 100%)}
+.tile .t{position:absolute;left:16px;right:20%;bottom:14px;display:flex;flex-direction:column;gap:2px}
+.tile .t small{text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.tile .t b{font-family:var(--display);font-weight:500;font-size:19px;letter-spacing:-.01em}
+.tile .t small{font-family:var(--serif);font-size:13.5px;color:var(--ink-2)}
+.tile .cost{position:absolute;top:12px;left:16px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase}
+.tile.vote .cost{color:#fff;background:var(--stamp);padding:2px 8px;border-radius:2px}
+.tile:hover{border-color:var(--line-2)}
+.tile:disabled{cursor:not-allowed;filter:grayscale(1)}
+.tile:disabled:before{background:rgba(7,11,20,.85)}
+.tile:disabled .t b,.tile:disabled .t small{color:var(--dim)}
+.tile:disabled .cost{color:var(--dim);background:transparent}
+
+.term{padding-block:0 20px}
+.term-top{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:#6a6e78;text-transform:uppercase;margin:0 0 12px}
+.paper{position:relative;background:var(--paper);color:var(--paper-ink);border-radius:2px;padding:24px 22px 28px;border:1px solid var(--paper-line);box-shadow:0 18px 50px rgba(0,0,0,.12);font-family:var(--mono);overflow:hidden}
+.paper.batch{box-shadow:0 18px 50px rgba(0,0,0,.12),4px 4px 0 -1px var(--paper-2),8px 8px 0 -2px #e6e9ee}
+.p-timer{position:absolute;left:0;top:0;height:3px;width:100%;background:var(--paper-ink);transition:width 20s linear;opacity:.8}
+.p-timer.late{background:var(--stamp)}
+.doc-head{display:flex;align-items:center;gap:10px;font-size:10.5px;letter-spacing:.12em;color:var(--paper-muted);border-bottom:1px solid var(--paper-line);padding-bottom:12px;margin-bottom:16px;text-transform:uppercase}
+.doc-head .tag{border:1px solid var(--paper-line);border-radius:2px;padding:2px 7px;color:var(--paper-ink);letter-spacing:.14em}
+.doc-head .no{margin-left:auto;font-variant-numeric:tabular-nums}
+.doc-head .late-tag{color:#fff;background:var(--stamp);border-radius:2px;padding:2px 7px;letter-spacing:.14em}
+.paper h3{font-family:var(--sans);font-weight:600;font-size:20px;margin:0 0 12px;letter-spacing:-.01em;line-height:1.35}
+.p-body{font-size:14.5px;line-height:1.9;margin:0;white-space:pre-line}
+.p-basis{font-size:12.5px;line-height:1.8;color:var(--paper-muted);background:var(--paper-2);border-left:2px solid var(--paper-line);margin:16px 0 0;padding:10px 12px}
+.p-basis.hide{display:none}
+.stamp{position:absolute;right:18px;bottom:18px;font-family:var(--sans);font-weight:700;font-size:30px;letter-spacing:.24em;padding:6px 12px 6px 18px;border:3px solid;border-radius:3px;transform:rotate(-12deg) scale(1.5);opacity:0;pointer-events:none;transition:transform .16s cubic-bezier(.2,1.5,.4,1),opacity .16s;mix-blend-mode:multiply}
+.stamp.show{opacity:.86;transform:rotate(-11deg) scale(1)}
+.stamp.sign{color:var(--stamp);border-color:var(--stamp)}
+.stamp.refuse{color:var(--stamp-b);border-color:var(--stamp-b)}
+.term-ctl{display:grid;grid-template-columns:auto 1fr 1.4fr;gap:8px;margin-top:14px}
+.term-ctl .btn{min-height:52px;border-radius:3px}
+.term-ctl .btn.text{color:#5a5e68}
+.term-ctl .btn.outline{background:transparent;border-color:#c9cfd8;color:var(--paper-ink)}
+.term-ctl .btn.solid{background:var(--paper-ink);border-color:var(--paper-ink);color:#fff}
+.term-ctl .btn.solid:hover{background:#000}
+.term-ctl.one{grid-template-columns:1fr}
+.term-ctl.three{grid-template-columns:1fr 1fr 1fr}
+.term-note{font-family:var(--serif);color:#3a3d45;font-size:15.5px;line-height:1.75;min-height:1.75em;margin:14px 0 0;max-width:46ch}
+.summary{font-family:var(--mono);font-size:13.5px;line-height:2.1;color:var(--paper-ink)}
+.summary b{font-weight:500;font-size:16px}
+.interview{background:#15171d;color:#e6e6e6;border-radius:3px;padding:20px 20px;font-family:var(--mono);font-size:14px;line-height:1.9;margin-top:4px}
+.interview .who{font-size:10px;letter-spacing:.18em;color:#9aa;display:block;margin-bottom:8px;text-transform:uppercase}
+
+.diary{padding-block:12vh 20px;min-height:calc(100dvh - 100px);display:flex;flex-direction:column;justify-content:flex-start}
+.diary .row{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.diary .q{font-family:var(--display);font-size:clamp(21px,5vw,26px);line-height:1.75;max-width:26ch;text-wrap:pretty;margin:0}
+.diary .hint{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin:10px 0 0;letter-spacing:.03em;line-height:1.8}
+.diary .field{max-width:48ch}
+.diary textarea{background:repeating-linear-gradient(transparent 0 30px,var(--line) 30px 31px);line-height:31px;padding:0;border-bottom:0;min-height:124px}
+
+.letter-wrap{padding-block:10px 20px}
+.letter{background:var(--warm);color:var(--paper-ink);padding:34px 26px 36px;border-radius:2px;font-family:var(--serif);font-size:16px;line-height:1.9;letter-spacing:-.005em;box-shadow:0 30px 70px rgba(0,0,0,.55);position:relative}
+.letter:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 20% 0%,rgba(0,0,0,.035),transparent 60%),radial-gradient(ellipse at 90% 100%,rgba(0,0,0,.04),transparent 55%)}
+.letter h2{font-family:var(--display);font-weight:500;font-size:22px;margin:0 0 22px;letter-spacing:-.01em}
+.letter p{margin:0 0 15px;max-width:40ch;text-wrap:pretty}
+.letter .sig{margin-top:24px;text-align:right;color:#3a3d45;font-family:var(--display);display:flex;justify-content:flex-end;align-items:center;gap:16px}
+.letter .stamp{position:static;font-size:22px;padding:4px 10px 4px 14px}
+.letter .foot{font-family:var(--mono);font-size:10.5px;color:var(--paper-muted);margin-top:24px;letter-spacing:.06em}
+.after{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.after .note{font-family:var(--mono);font-size:12.5px;color:var(--muted);line-height:1.8;margin:0;letter-spacing:.02em}
+.after .stats{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:2;margin:4px 0 0;letter-spacing:.04em}
+.after .row .btn{flex:1}
+.after .card{display:block;width:100%;max-width:420px;border:1px solid var(--line-2);border-radius:4px;box-shadow:0 20px 50px rgba(0,0,0,.5);margin:4px 0 8px}
+.term-ctl .btn.nextcase{background:transparent;border-color:#c9cfd8;color:var(--paper-ink)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:4px;font-size:13px;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+
+/* ---------- v0.6 wet cyberpunk layer ---------- */
+:root{--neon:#5ee7df;--neon-2:#ff5fa2;--glass:rgba(10,17,31,.74);--glass-2:rgba(14,24,42,.86);--glass-line:rgba(120,160,220,.22);--bg:#05080f;--bg-2:#0a1220;--bg-3:#0f1a2e;--line:#172238;--line-2:#233452}
+body{background:var(--bg)}
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px),radial-gradient(ellipse at 18% 112%,rgba(94,231,223,.16),transparent 55%),radial-gradient(ellipse at 92% -8%,rgba(255,95,162,.11),transparent 48%),radial-gradient(ellipse at 50% 45%,transparent 50%,rgba(0,0,0,.6) 100%)}
+body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");background-size:160px 160px}
+body.paper-mode::before{opacity:.35}
+body.paper-mode::after{opacity:.03}
+#snow{opacity:.8}
+.btn{background:var(--glass);border:1px solid var(--glass-line);border-radius:2px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 10px 26px rgba(0,0,0,.35);clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.btn:hover{border-color:rgba(94,231,223,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 0 1px rgba(94,231,223,.12),0 0 20px rgba(94,231,223,.16)}
+.btn.solid{background:linear-gradient(180deg,#ffb35f 0%,#f08a2a 100%);border-color:#ffc27a;color:#1a0f02;box-shadow:0 0 24px rgba(255,157,59,.32),inset 0 1px 0 rgba(255,255,255,.35)}
+.btn.solid:hover{background:linear-gradient(180deg,#ffbf75,#f5952f);border-color:#ffd39a;box-shadow:0 0 30px rgba(255,157,59,.45)}
+.btn.outline{background:rgba(8,14,26,.5)}
+.btn.text{background:transparent;border-color:transparent;box-shadow:none;clip-path:none;backdrop-filter:none;-webkit-backdrop-filter:none;font-family:var(--mono);font-size:12.5px;letter-spacing:.08em}
+.btn.text:hover{color:var(--neon);text-shadow:0 0 8px rgba(94,231,223,.5)}
+.chip{background:var(--glass);border-color:var(--glass-line);clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));border-radius:2px}
+.chip:hover{border-color:rgba(94,231,223,.55);color:var(--ink);box-shadow:0 0 16px rgba(94,231,223,.15)}
+#hud{background:linear-gradient(rgba(5,8,15,.94) 72%,transparent);border-bottom:1px solid rgba(94,231,223,.08)}
+#hud .m b.d{color:var(--neon)}
+#hud .bar{background:rgba(120,160,220,.15)}
+#hud .bar b{background:linear-gradient(90deg,#2f5fb8,var(--neon));box-shadow:0 0 8px rgba(94,231,223,.5)}
+#h-att-dots i.on{background:var(--accent);box-shadow:0 0 8px rgba(255,157,59,.7)}
+#menu-btn{background:rgba(5,8,15,.55);border-color:var(--glass-line)}
+#menu-btn:hover{border-color:rgba(94,231,223,.5);box-shadow:0 0 14px rgba(94,231,223,.2)}
+.sheet{background:var(--glass-2);border-color:rgba(94,231,223,.25);border-top:1px solid rgba(94,231,223,.45);box-shadow:0 -20px 60px rgba(0,0,0,.6),0 -1px 30px rgba(94,231,223,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.hero:after{background:linear-gradient(180deg,rgba(5,8,15,.1) 0%,rgba(5,8,15,0) 38%,var(--bg) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 4px)}
+.hero{filter:saturate(1.12) contrast(1.05)}
+.title h1{text-shadow:0 0 30px rgba(94,231,223,.14)}
+.title h1 span{text-shadow:0 0 16px rgba(255,157,59,.55)}
+.title .rule{width:88px;background:linear-gradient(90deg,var(--neon),transparent);box-shadow:0 0 12px rgba(94,231,223,.5)}
+.title .eyebrow{color:var(--neon);opacity:.85}
+.narr-text{text-shadow:0 0 30px rgba(94,231,223,.08)}
+.cue{color:var(--neon);opacity:.8}
+.cue i{border-color:var(--neon)}
+.backdrop{filter:saturate(1.12) contrast(1.06)}
+.backdrop:after{background:linear-gradient(180deg,rgba(5,8,15,.14) 0%,rgba(5,8,15,0) 40%,var(--bg) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 4px)}
+.scene-h h2{text-shadow:0 0 18px rgba(94,231,223,.12)}
+.scene-h .sub{color:var(--neon);opacity:.75}
+.line .who{opacity:.95}
+.line.on .who{color:var(--neon)}
+.line.on .txt{background:linear-gradient(180deg,rgba(94,231,223,.10),rgba(94,231,223,.035));border:1px solid rgba(94,231,223,.32);border-radius:2px 12px 12px 12px;box-shadow:0 0 26px rgba(94,231,223,.08),inset 0 0 0 1px rgba(0,0,0,.25);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.line.on .on-dot i{box-shadow:0 0 22px 6px rgba(94,231,223,.5)}
+.line.npc .txt{background:var(--glass);border:1px solid var(--glass-line);border-left:2px solid var(--accent);border-radius:2px;padding:10px 14px;box-shadow:0 10px 26px rgba(0,0,0,.3)}
+.line.npc .portrait{border-color:rgba(255,157,59,.45);box-shadow:0 0 14px rgba(255,157,59,.18);filter:saturate(1.1)}
+.line.me .txt{background:rgba(255,157,59,.07);border:1px solid rgba(255,157,59,.28);border-radius:12px 2px 12px 12px;box-shadow:none}
+.line.narr-line .txt{border-left:1px solid var(--line-2);padding-left:12px}
+.txt.typing::after{content:"▍";color:var(--neon);margin-left:2px;animation:blink 1s steps(2) infinite;text-shadow:0 0 8px rgba(94,231,223,.8)}
+@keyframes blink{50%{opacity:0}}
+.ctl{background:linear-gradient(transparent,var(--bg) 34%)}
+.ctl .next{color:var(--neon);opacity:.85}
+.ctl .next.typing{color:var(--muted);text-shadow:none}
+.choice{background:var(--glass);border:1px solid var(--glass-line);border-left:2px solid var(--accent);border-radius:2px;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);box-shadow:0 10px 24px rgba(0,0,0,.3);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.choice:hover{background:var(--glass-2);border-color:rgba(255,157,59,.5);border-left-color:var(--accent);box-shadow:0 0 18px rgba(255,157,59,.18)}
+.choice.quiet{border-left-color:var(--line-2)}
+.ctl .inrow input{background:var(--glass);border-color:var(--glass-line);border-radius:2px}
+.ctl .inrow input:focus{border-color:rgba(94,231,223,.6);box-shadow:0 0 14px rgba(94,231,223,.15)}
+.ticker{border-color:rgba(94,231,223,.14);color:var(--neon);opacity:.8}
+.tile{border:1px solid var(--glass-line);border-radius:3px;box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.tile:before{background:repeating-linear-gradient(112deg,rgba(255,255,255,.05) 0 1px,transparent 1px 13px),linear-gradient(90deg,rgba(5,8,15,.94) 0%,rgba(5,8,15,.68) 60%,rgba(5,8,15,.22) 100%);background-size:220px 220px,auto;animation:rainshift 1.1s linear infinite}
+@keyframes rainshift{to{background-position:-60px 220px,0 0}}
+.tile:after{content:"";position:absolute;left:0;right:0;bottom:0;height:42%;background:linear-gradient(transparent,rgba(94,231,223,.10));pointer-events:none}
+.tile:hover{border-color:rgba(94,231,223,.5);box-shadow:0 0 22px rgba(94,231,223,.14),0 12px 30px rgba(0,0,0,.4)}
+.tile .cost{color:var(--neon)}
+.tile.vote .cost{color:#fff;background:var(--stamp);text-shadow:none;box-shadow:0 0 14px rgba(196,58,46,.55)}
+.tile:disabled:before{background:rgba(5,8,15,.86);animation:none}
+.tile:disabled:after{display:none}
+.evening-h{text-shadow:0 0 18px rgba(94,231,223,.12)}
+.field input,.field textarea{border-bottom-color:rgba(94,231,223,.4)}
+.field input:focus,.field textarea:focus{border-bottom-color:var(--neon);box-shadow:0 8px 20px -12px rgba(94,231,223,.5)}
+.diary textarea{background:repeating-linear-gradient(transparent 0 30px,rgba(94,231,223,.18) 30px 31px)}
+.diary .q{text-shadow:0 0 30px rgba(94,231,223,.08)}
+.after .card{border-color:rgba(94,231,223,.3);box-shadow:0 0 30px rgba(94,231,223,.1),0 20px 50px rgba(0,0,0,.5)}
+.toast{background:var(--glass-2);color:var(--ink);border:1px solid rgba(94,231,223,.4);box-shadow:0 0 18px rgba(94,231,223,.2)}
+@media (prefers-reduced-motion:reduce){.tile:before{animation:none}.txt.typing::after{animation:none}}
+/* v0.7 system fonts */
+.narr-bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center 35%;opacity:.62;filter:saturate(1.1) contrast(1.05);animation:kb 22s ease-out forwards}
+.narr-bg:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,15,.25) 0%,rgba(5,8,15,.55) 45%,rgba(5,8,15,.92) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 4px)}
+@keyframes kb{from{transform:scale(1.04)}to{transform:scale(1.12)}}
+@media (prefers-reduced-motion:reduce){.narr-bg{animation:none}}
+.law.notice{border:2px solid rgba(196,58,46,.85);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 6px rgba(255,255,255,.06)}
+.law.notice b{color:var(--stamp);letter-spacing:.2em}
+.title .fine.credit-line{margin-top:6px;color:var(--dim)}
+</style>
+
+<div id="app">
+  <header id="hud" hidden>
+    <span class="m"><b id="h-date">21 de diciembre</b><b class="d" id="h-dday">Myeongdo D-3</b><label id="h-phase"></label><label id="h-left"></label></span>
+    <span class="m"><label>HRV</label><b id="h-hrv">41,0</b><label id="h-floor">piso 8</label></span>
+    <span class="m"><label>Blue</label><span class="bar"><b id="h-blue"></b></span></span>
+    <span class="m"><label>Vínculos</label><b id="h-bond">0</b></span>
+    <span class="m" id="h-att" hidden><label>Atención</label><span id="h-att-dots"></span></span>
+  </header>
+  <main id="stage"></main>
+</div>
+<button id="menu-btn" aria-label="Menú" hidden><span></span></button>
+<div id="menu-wrap" hidden>
+  <div class="sheet-bg" id="m-bg"></div>
+  <div class="sheet" role="dialog" aria-label="Menú">
+    <h3>BLUE HOUR</h3>
+    <p class="save" id="m-save"></p>
+    <div class="list">
+      <button class="btn" id="m-close">Continuar</button>
+      <button class="btn" id="m-title">Volver al título</button>
+      <button class="btn outline" id="m-restart">Empezar de nuevo</button>
+    </div>
+    <div class="confirm" id="m-confirm" hidden>Se borrará el progreso guardado. ¿Empezar desde el principio?<div class="row"><button class="btn solid" id="m-yes">Borrar</button><button class="btn text" id="m-no">No</button></div></div>
+    <p class="credit">El progreso se guarda solo en este navegador.</p>
+  </div>
+</div>
+<canvas id="snow" aria-hidden="true"></canvas>
+<div id="veil" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ===================== Configuración ===================== */
+const FEEDBACK_MAILTO = '';   // Si se indica el correo del creador, aparece el botón «Escribir al creador».
+const FEEDBACK_FORM = '';     // Si se indica la URL de un formulario de Google, aparece el botón «Dejar un comentario».
+const GAME_URL = 'https://patrickhan-coder.github.io/blue-hour/';
+const HASHTAGS = '#AMiYoDe2026 #HoraAzul';
+const ORIGIN_URL = 'https://brunch.co.kr/@hiclemi/146';
+const NAMES = {on:'ON', me:'Yo', bak:'Sr. Park', sujin:'Sujin', hal:'Abuela Jeong', dohyun:'Dohyun', sunbae:'Veterano'};
+const LANGS = [['ko','한국어','index.html'],['en','English','en.html'],['zh','中文','zh.html'],['ja','日本語','ja.html'],['es','Español','es.html']];
+const TRACK_URL = '';
+const TRACK_NOTE = 'Esta página envía tu nombre, tu trabajo de 2026, tu progreso y tus recuentos de firmas al creador. Las respuestas del diario y la carta nunca se envían.';
+const NOTICE_CARD = {html:`<div class="law notice"><b>Aviso de desalojo</b>Zona: todo Myeongdo<br>Fecha prevista: 24 de diciembre<br>Revisión de prórroga: medianoche de la fecha prevista, a cargo del modelo<br>Responsable: ninguno</div><p class="after-law">Cuelga en cada callejón. Esta hoja se convirtió en el nombre del barrio.</p>`};
+const INTRO_BGS = ['title','title','alley',null,'alley','room'];
+const AFTER_BGS = ['tower',null,null,'terminal','room','title'];
+const LANG = 'es';
+const DATES = {1:{md:'21 de diciembre', d:'D-3'}, 2:{md:'22 de diciembre', d:'D-2'}, 3:{md:'23 de diciembre', d:'D-1'}};
+const JOBS = {
+  'Marketing':{hrv:41, why:'Quedó la persuasión. Desapareció la ejecución.'},
+  'Desarrollo':{hrv:38, why:'El primer gremio sustituido. Solo quedó el instinto.'},
+  'Producto · PM':{hrv:40, why:'Quedó definir el problema. Desaparecieron los documentos.'},
+  'Ventas':{hrv:47, why:'El gremio que come con la gente. Aún sin sustituir.'},
+  'Diseño':{hrv:39, why:'Quedó el gusto. Desaparecieron las manos.'},
+  'Estudiante':{hrv:35, why:'Probabilidad de extinción de lo aprendido: 0,98.'},
+  'Negocio propio':{hrv:45, why:'Tiene propiedad. Eso es todo.'},
+  'Administración pública':{hrv:43, why:'Firmar ya era su trabajo. El gremio más preparado.'}
+};
+const WHY_POOL = [j => `${j}. Quedó el criterio. Desaparecieron las manos.`, j => `${j}. Cálculo de extinción a 5 años: en suspenso. Solo consta que una persona aún lo hace.`, j => `${j}. Nunca hubo sustitución. Dejó de hacer falta.`, j => `${j}. Último cálculo para este gremio. Sin actualización prevista.`];
+const DEFAULT_JOB = j => ({hrv: 36 + ([...String(j)].reduce((a,c) => a + c.charCodeAt(0), 0) % 10), why: WHY_POOL[String(j).length % WHY_POOL.length](j)});
+
+/* ===================== Estado ===================== */
+const $ = s => document.querySelector(s);
+const stage = $('#stage'), hud = $('#hud');
+const SAVE_KEY = 'bluehour_act1_v2';
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let pendT = null, pendI = null;
+function later(ms, fn){ clearTimeout(pendT); pendT = setTimeout(fn, reduced ? 200 : ms); }
+function leave(){ clearTimeout(pendT); clearInterval(pendI); pendT = pendI = null; }
+
+function fresh(){ return {
+  name:'', job:'', day:1, stage:'title',
+  hrv:41.0, blue:12, body:70, att:3,
+  bonds:[], onBond:0,
+  signed:0, signedRead:0, refused:0, delays:0,
+  signedToday:0, refusedToday:0, delaysToday:0,
+  diary:{}, identity:'firmante', flags:{}, ateToday:null, meals:[], voted:null
+};}
+let S = fresh();
+
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
+function load(){ try{ const r = localStorage.getItem(SAVE_KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
+function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+function floorOf(){ return clamp(Math.round(S.hrv/5), 1, 20); }
+function T(s){ return String(s).replace(/\{name\}/g, S.name||'firmante').replace(/\{job\}/g, S.job||'ese trabajo'); }
+function josa(w, a, b){ w = String(w); const c = w.charCodeAt(w.length-1); if(!(c >= 0xAC00 && c <= 0xD7A3)) return w + b; return w + (((c - 0xAC00) % 28) ? a : b); } const num = n => Number(n).toLocaleString('es-ES'); const dec = (n, d) => Number(n).toFixed(d).replace('.', ','); const PROSE = {[NAMES.bak]:'el señor Park', [NAMES.hal]:'la abuela Jeong'}; const prose = w => PROSE[w] || w; const listEs = arr => { const a = arr.map(prose); return a.length <= 1 ? a.join('') : a.slice(0, -1).join(', ') + ' y ' + a[a.length - 1]; };
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1600); }
+function scrollTop(){ window.scrollTo({top:0, behavior: reduced ? 'auto' : 'smooth'}); }
+
+function mode(m){ document.body.classList.toggle('paper-mode', m==='paper'); document.body.classList.toggle('dark-mode', m==='dark'); if(m !== 'paper' && m !== 'dark' && window.kickSnow) window.kickSnow(); }
+function veil(){ $('#veil').style.opacity = clamp(S.blue,0,100)/150; }
+function updHUD(showAtt){
+  hud.hidden = false;
+  const dd = DATES[S.day] || DATES[3];
+  $('#h-date').textContent = dd.md; $('#h-dday').textContent = 'Myeongdo ' + dd.d;
+  $('#h-phase').textContent = ({morning:'Mañana', shift:'Turno', evening:'Tarde', night:'Noche', diary:'Diario'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? 'Carta en ' + (4 - S.day) + (S.day === 3 ? ' noche' : ' noches') : '';
+  $('#h-hrv').textContent = dec(S.hrv, 1); $('#h-floor').textContent = 'piso ' + floorOf();
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%';
+  $('#h-bond').textContent = S.bonds.length;
+  const a = $('#h-att'); a.hidden = !showAtt;
+  $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
+  veil();
+}
+function eat(who){
+  if(!S.bonds.includes(who)) S.bonds.push(who);
+  S.blue = clamp(S.blue - 3, 0, 100); S.body = clamp(S.body + 10, 0, 100);
+  S.ateToday = who; S.meals.push({day:S.day, who});
+  updHUD(true);
+}
+
+/* ===================== Menú ===================== */
+function openMenu(){
+  const saved = load();
+  $('#m-save').textContent = saved && saved.name ? `Guardado · ${DATES[Math.min(saved.day,3)].md} · ${saved.name}` : 'Sin progreso guardado';
+  $('#m-confirm').hidden = true; $('#menu-wrap').hidden = false;
+}
+function closeMenu(){ $('#menu-wrap').hidden = true; }
+$('#menu-btn').onclick = openMenu; $('#m-bg').onclick = closeMenu; $('#m-close').onclick = closeMenu;
+$('#m-title').onclick = () => { closeMenu(); title(); };
+$('#m-restart').onclick = () => { $('#m-confirm').hidden = false; };
+$('#m-no').onclick = () => { $('#m-confirm').hidden = true; };
+$('#m-yes').onclick = () => { clearSave(); S = fresh(); closeMenu(); intro(); };
+addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
+
+/* ===================== Nieve ===================== */
+/* sleet */
+(function snow(){
+  const c = $('#snow'), ctx = c.getContext('2d'); let drops = [], W, H;
+  function size(){ W = c.width = innerWidth * devicePixelRatio; H = c.height = innerHeight * devicePixelRatio; c.style.width = innerWidth+'px'; c.style.height = innerHeight+'px';
+    drops = Array.from({length: Math.round(innerWidth/6)}, (_, i) => ({x:Math.random()*W, y:Math.random()*H, l:(9+Math.random()*22)*devicePixelRatio, v:(7+Math.random()*9)*devicePixelRatio, a:.10+Math.random()*.30, f:i%6===0, r:(.7+Math.random()*1.4)*devicePixelRatio})); }
+  addEventListener('resize', size); size();
+  let running = false;
+  function frame(){
+    if(document.hidden || document.body.classList.contains('paper-mode') || document.body.classList.contains('dark-mode')){ running = false; return; }
+    ctx.clearRect(0,0,W,H); ctx.lineWidth = 1*devicePixelRatio;
+    for(const d of drops){
+      if(d.f){ ctx.fillStyle = `rgba(220,236,255,${d.a*.8})`; ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI*2); ctx.fill(); if(!reduced){ d.y += d.v*.18; d.x -= d.v*.03; } }
+      else { ctx.strokeStyle = `rgba(150,196,240,${d.a})`; ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x - d.l*.16, d.y + d.l); ctx.stroke(); if(!reduced){ d.y += d.v; d.x -= d.v*.16; } }
+      if(d.y > H + 8){ d.y = -d.l; d.x = Math.random()*W; }
+    }
+    if(!reduced) requestAnimationFrame(frame);
+  }
+  window.kickSnow = () => { if(!running && !reduced){ running = true; requestAnimationFrame(frame); } };
+  document.addEventListener('visibilitychange', window.kickSnow);
+  running = true; frame();
+})();
+
+/* ===================== Herramientas de render ===================== */
+function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), lang:LANG, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length}, extra||{})); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
+function narrate(lines, done, bgs){
+  let i = 0; mode('dark'); hud.hidden = true;
+  const render = () => {
+    if(i >= lines.length){ done(); return; }
+    const l = lines[i++];
+    const bgk = bgs && bgs[i-1]; stage.innerHTML = `<section class="narr fade">${bgk ? `<div class="narr-bg" style="background-image:url('img/${bgk}.jpg')"></div>` : ''}${typeof l === 'string' ? `<p class="narr-text">${esc(T(l))}</p>` : l.html}<div class="cue">${(i === 1 && S.stage === 'intro') ? 'Toca en cualquier parte de la pantalla para continuar' : 'Continuar'}<i></i></div></section>`;
+    stage.querySelector('.narr').onclick = e => { if(e.target.closest('button,input')) return; render(); };
+    scrollTop();
+  };
+  render();
+}
+function scene(opts, items, done){
+  mode(opts.mode || 'city'); updHUD(opts.att);
+  stage.innerHTML = `<section class="scene fade">${opts.bg ? `<div class="backdrop" style="background-image:url('img/${opts.bg}.jpg')"></div>` : ''}<header class="scene-h"><h2>${esc(opts.title)}</h2>${opts.sub ? `<p class="sub">${esc(opts.sub)}</p>` : ''}</header><div class="log" id="log"></div><div class="ctl" id="ctl"></div></section>`;
+  stage.querySelector('.scene').onclick = e => { if(e.target.closest('button,input,a,.choice')) return; const b = $('#ctl .next'); if(b) b.click(); };
+  try{ const ctlEl = $('#ctl'), logEl = $('#log'); new ResizeObserver(() => { logEl.style.paddingBottom = Math.max(0, ctlEl.offsetHeight - 20) + 'px'; }).observe(ctlEl); }catch(e){}
+  scrollTop();
+  runSeq(items, done);
+}
+function runSeq(items, done){
+  let i = 0;
+  const next = () => {
+    if(i >= items.length){ done && done(); return; }
+    const it = items[i++];
+    if(typeof it === 'function'){ const r = it(); if(Array.isArray(r)) return runSeq(r, next); return next(); }
+    if(it.choice) return showChoice(it, opt => { if(opt.fx) opt.fx(opt._val); runSeq(opt.then || [], next); });
+    showLine(it, next);
+  };
+  next();
+}
+const PORTRAITS = {[NAMES.bak]:'p_bak',[NAMES.sujin]:'p_sujin',[NAMES.hal]:'p_hal',[NAMES.dohyun]:'p_dohyun',[NAMES.sunbae]:'p_sunbae'};
+function keepVisible(el){ const ctl = $('#ctl'); if(!el || !ctl) return; const top = el.getBoundingClientRect().bottom + scrollY + ctl.offsetHeight + 8 - innerHeight; if(top > scrollY + 1) window.scrollTo({top, behavior: reduced ? 'auto' : 'smooth'}); }
+function showLine(it, next){
+  const log = $('#log'), ctl = $('#ctl');
+  const cls = it.who === NAMES.on ? 'on' : it.who === NAMES.me ? 'me' : it.who ? 'npc' : 'narr-line';
+  const div = document.createElement('div'); div.className = 'line ' + cls;
+  const por = PORTRAITS[it.who];
+  div.innerHTML = `${por ? `<img class="portrait" src="img/${por}.jpg" alt="">` : it.who === NAMES.on ? `<span class="on-dot"><i></i></span>` : ''}${it.who ? `<span class="who">${esc(it.who)}</span>` : ''}<p class="txt"></p>`;
+  log.appendChild(div);
+  const p = div.querySelector('.txt'), full = T(it.text); let k = 0, timer = null, finished = false, used = false;
+  const btn = document.createElement('button'); btn.className = 'next typing'; btn.innerHTML = '<span>…</span><i></i>';
+  const finish = () => { if(finished) return; finished = true; p.classList.remove('typing'); clearInterval(timer); clearTimeout(timer); p.textContent = full; btn.classList.remove('typing'); btn.querySelector('span').textContent = 'Continuar'; keepVisible(div); };
+  btn.onclick = e => { e.stopPropagation(); if(!finished) return finish(); if(used) return; used = true; next(); };
+  ctl.innerHTML = ''; ctl.appendChild(btn);
+  const startTyping = () => { p.classList.add('typing'); let lastH = 0; timer = setInterval(() => { k += 1; p.textContent = full.slice(0, k); if(p.offsetHeight !== lastH){ lastH = p.offsetHeight; keepVisible(div); } if(k >= full.length) finish(); }, 22); };
+  if(reduced){ finish(); } else if(it.who === NAMES.on){ timer = setTimeout(() => { if(!finished) startTyping(); }, 650); } else { startTyping(); }
+  keepVisible(div);
+}
+function showChoice(it, pick){
+  const ctl = $('#ctl'); ctl.innerHTML = '';
+  it.choice.forEach(opt => {
+    const quiet = opt.label.startsWith('(');
+    if(opt.input){
+      const row = document.createElement('div'); row.className = 'inrow';
+      const inp = document.createElement('input'); inp.placeholder = opt.input; inp.id = 'choice-input-' + Math.random().toString(36).slice(2,7); inp.maxLength = 40; inp.autocomplete = 'off';
+      const b = document.createElement('button'); b.className = 'choice'; b.textContent = opt.label;
+      const go = () => { const v = inp.value.trim(); if(!v){ inp.focus(); return; } opt._val = v; echo(opt.label.replace('…', v)); pick(opt); };
+      b.onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+      row.appendChild(inp); row.appendChild(b); ctl.appendChild(row);
+    } else {
+      const b = document.createElement('button'); b.className = 'choice' + (quiet ? ' quiet' : ''); b.textContent = opt.label;
+      b.onclick = () => { echo(opt.label); pick(opt); }; ctl.appendChild(b);
+    }
+  });
+  function echo(label){ if(label.startsWith('(')) return; const div = document.createElement('div'); div.className = 'line me'; div.innerHTML = `<span class="who">${esc(NAMES.me)}</span><p class="txt">${esc(label)}</p>`; $('#log').appendChild(div); }
+  keepVisible($('#log').lastElementChild);
+}
+function line(who, text){ return {who, text}; }
+function N(text){ return {who:null, text}; }
+
+/* ===================== Expedientes ===================== */
+const CASES = {
+  batch:{cat:'ESTÁNDAR', title:'Renovación de fin de año · Firma en lote · Expedientes estándar', body:'{n} expedientes estándar. Incluye renovación de seguros · ajuste de tarifas · recálculo de la renta de cómputo.\nConfianza del modelo: 0,95 o superior. No requiere lectura individual.\nSe requiere firma en lote.', basis:'La lectura de expedientes estándar excede el tiempo de procesamiento. Tiempo estimado si se pasa a lectura: 9 h 40 min.', harsh:2, batch:true},
+  pet:{cat:'REGISTRO', title:'Registro de mascota aprobado', body:'Solicitante: Choi *** (Myeongdo, piso 5). 1 perro.\nResultado de evaluación automática: aprobado.', basis:'Se consideraron 212 variables. Principales: superficie de la vivienda, historial de quejas por ruido, densidad de red.', harsh:0, note:'No pasa nada. Casi nunca pasa nada.'},
+  loan38:{cat:'CRÉDITO', title:'Solicitud de crédito denegada', body:'Solicitante: Lee *** (HRV 38, Myeongdo, piso 8).\nMonto: 4 millones de wones. Destino: gastos médicos.\nResultado de evaluación automática: denegado.', basis:'Se consideraron 4.120 variables. Las 3 principales: valor residual, piso de residencia, densidad de red. Confianza del modelo: 0,97.', harsh:3},
+  loan91:{cat:'CRÉDITO', title:'Solicitud de crédito aprobada', body:'Solicitante: Han *** (HRV 91, Torre 2, piso 33).\nMonto: 300 millones de wones. Destino: no consta.\nResultado de evaluación automática: aprobado.', basis:'Se consideraron 4.120 variables. Las 3 principales: valor residual, patrimonio, pertenencia.', harsh:0, note:'Esta firma es rápida. La mano se mueve primero.'},
+  triage:{cat:'SALUD', title:'Ajuste de prioridad de tratamiento', body:'Paciente: Kim ***, 67 años, Myeongdo, piso 3.\nPrioridad B → D.\nEspera estimada 14 días → 96 días.', basis:'Cálculo de contribución residual esperada. Considera edad, HRV y densidad de red.', harsh:4},
+  study:{cat:'CÓMPUTO', title:'Reducción de renta educativa', body:'Sujeto: Yun ***, 17 años.\nRenta de cómputo educativa: reducción del 60 %.\nMotivo: probabilidad de extinción de la ocupación deseada (ilustración): 0,98.', basis:'La probabilidad de extinción es una proyección a 5 años. Ocupación alternativa recomendada: ninguna.', harsh:3},
+  blank:{cat:'—', title:'[SIN PERMISO DE LECTURA]', body:'El contenido de este expediente excede el nivel de lectura del firmante.\nFirma requerida.', basis:'Sin permiso de lectura.', harsh:2, note:'No sabes qué firmaste. También eso es una firma.'},
+  self:{cat:'PERSONAL', title:'Consentimiento · Puntuación de confianza', body:'Firmante {name}.\nConsiento que los expedientes procesados hoy, la tasa de demora y la tasa de rechazo se registren en mi puntuación de confianza.', basis:'El rechazo consta como falta de consentimiento. La falta de consentimiento se registra en la puntuación de confianza.', harsh:1},
+  evict:{cat:'VIVIENDA', title:'Notificación automática de desalojo', body:'Myeongdo, piso 7, unidad 34. Arrendatario: Oh *** (HRV 34).\n2 meses de impago. Notificación de desalojo enviada.\nFecha prevista de desalojo: 24 de diciembre.', basis:'Modelo de predicción de impago. Probabilidad de pago en los próximos 6 meses: 0,11. No aplica evaluación de prórroga.', harsh:4},
+  fireSign:{cat:'PERSONAL', title:'Fin de contrato de firmantes', body:'3 firmantes del área de logística. Fin de contrato.\nMotivo: tasa de demora de firma superior al 12 %.', basis:'Reemplazo asegurado. En espera: 1.204 personas.', harsh:3, note:'Un firmante termina con otro firmante. La mano va un poco más lenta.'},
+  custody:{cat:'FAMILIA', title:'Cálculo de idoneidad para la custodia', body:'Material de referencia para el juzgado de familia.\nPadre 61 / Madre 44. Considera HRV 29 de la madre.\nRecomendación: padre.', basis:'El HRV se considera variable de estabilidad parental. Sin efecto legal vinculante (material de referencia).', harsh:4},
+  care:{cat:'SALUD', title:'Reducción de grado de cuidados de larga duración', body:'Beneficiario: Jeong ***, 93 años, Myeongdo, piso 9.\nGrado 2 → 4. Visitas de cuidado 5 por semana → 1 por semana.', basis:'Se calcula menor demanda de cuidados para quienes tienen agente personal.', harsh:3},
+  garden:{cat:'INSTALACIONES', title:'Notificación de demolición del huerto de la azotea', body:'Myeongdo, piso 9, azotea. Ocupante: Jeong *** (93 años) y 4 más.\nMotivo: sin certificación de seguridad estructural. Fecha prevista de demolición: 24 de diciembre.', basis:'Predicción de sobrecarga: 0,34. Terreno alternativo: ninguno.', harsh:3},
+  hire:{cat:'PERSONAL', title:'Contratación de personal de limpieza aprobada', body:'Contratación de 12 personas de limpieza en Myeongdo.\nMotivo: alza invernal de la tarifa eléctrica. Mano de obra humana más barata que humanoide.\nSalario por hora: 0,7 del mínimo de referencia.', basis:'Electricidad de 1 humanoide = salario de 2,3 personas. Duración del contrato: hasta la normalización de la tarifa eléctrica.', harsh:3, note:'Una persona sale más barata que un robot. Por la electricidad.'},
+  bca:{cat:'CÓMPUTO', title:'Recorte de la Renta Básica de Cómputo', body:'1.940 residentes sin firma, Myeongdo, pisos 1 a 3.\nRenta Básica de Cómputo: recorte del 50 %. Motivo: ajuste presupuestario de fin de año.', basis:'Demora estimada de respuesta del agente personal tras el recorte: promedio 40 segundos → 6 minutos.', harsh:4},
+  ambulance:{cat:'SALUD', title:'Prioridad de traslado de emergencia', body:'2 llamadas simultáneas.\nTorre 2, piso 51 (HRV 88) / Myeongdo, piso 3 (HRV 14).\nOrden de despacho: Torre → Myeongdo. Demora estimada: 22 minutos.', basis:'Criterio: contribución residual esperada.', harsh:4},
+  agentRecall:{cat:'CÓMPUTO', title:'Retiro del agente vinculado a persona fallecida', body:'Persona fallecida: Seo *** (Myeongdo, piso 8).\nRetiro y reinicio del agente vinculado. Eliminación del historial de conversaciones.', basis:'El agente está vinculado a una persona natural y no subsiste de forma independiente. Sin acceso de lectura para la familia.', harsh:3, note:'Algún día retirarán a ON así. Si me voy yo primero.'},
+  overtime:{cat:'PERSONAL', title:'Consentimiento · Extensión de turno', body:'Firmante {name}.\nConsiento una extensión del turno de 2 horas por exceso de cola de fin de año.', basis:'Sin consentimiento, la cola se deriva a otro firmante.', harsh:1},
+  bbang:{cat:'COMERCIO', title:'Cierre del puesto y recuperación del local', body:'Puesto de bungeoppang, Myeongdo, piso 4. Ocupante: Park *** (HRV 29).\nMotivo: sin certificación sanitaria (preparación humana).\nFecha prevista de recuperación: 24 de diciembre.', basis:'La preparación humana no es certificable. Solo se certifican los equipos de cocina automatizada.', harsh:6, story:'bbang'},
+  requeue:{cat:'REASIGNACIÓN', title:'Reasignación · Cambio de firmante', body:'Expediente: puesto de bungeoppang, Myeongdo, piso 4.\nCambio de firmante. Procesado. (3 s)', basis:'Los expedientes rechazados se derivan automáticamente a otro firmante.', harsh:2, ack:true, note:'Otro firmante lo procesó. No conoces a esa persona. Esa persona tampoco conoce al señor Park.'}
+};
+const BATCH = {1:384, 2:378, 3:391};
+function buildQueue(){
+  const d = S.day, q = [{...CASES.batch, n:BATCH[d]}];
+  if(d === 1) q.push(...['pet','loan38','loan91','triage','study','self'].map(k => CASES[k]));
+  if(d === 2) q.push(...['evict','fireSign','custody', S.flags.rooftop ? 'garden' : 'care','hire','blank'].map(k => CASES[k]));
+  if(d === 3) q.push(...['bbang','bca','ambulance','agentRecall','overtime'].map(k => CASES[k]));
+  return q;
+}
+
+/* ===================== Flujo: título / intro ===================== */
+function title(){
+  leave(); S.stage = 'title'; mode('city'); hud.hidden = true; $('#menu-btn').hidden = false;
+  const saved = load();
+  const canCont = saved && saved.name && saved.stage !== 'title';
+  stage.innerHTML = `<section class="title fade">
+    <div class="hero" style="background-image:url('img/title.jpg')"></div>
+    <div class="eyebrow">Seúl · 21 de diciembre de 2029 · Tres días para el desalojo de Myeongdo</div>
+    <h1>BLUE HOUR<span>Seúl · Navidad de 2029</span></h1>
+    <div class="rule"></div>
+    <p class="quote">Los derechos humanos no fueron abolidos.<br>Solo quedaron sin soporte.</p>
+    <p class="promise">Vive tres días. Al final, una carta para quien eras en 2026.</p>
+    <div class="actions">
+      ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? 'Volver a la carta' : 'Continuar · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">Desde el principio</button>` : `<button class="btn solid" id="b-start">Empezar</button>`}
+    </div>
+    <p class="fine">Unos 15 minutos · Toca para continuar</p>
+    <p class="fine credit-line">Un mundo que nació del ensayo «Claude Blue»</p>
+    <p class="langs">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
+  </section>`;
+  $('#b-start').onclick = () => { if(canCont && !confirm('Se borrará el progreso guardado. ¿Empezar desde el principio?')) return; S = fresh(); clearSave(); intro(); };
+  const c = $('#b-cont'); if(c) c.onclick = () => { S = saved; resume(); };
+}
+function resume(){
+  const st = S.stage;
+  if(st === 'morning') return morning();
+  if(st === 'shift') return shift();
+  if(st === 'evening') return evening();
+  if(st === 'night') return night();
+  if(st === 'diary') return diary();
+  if(st === 'end') return letter();
+  return intro();
+}
+function intro(){
+  leave(); S.stage = 'intro';
+  narrate([
+    '21 de diciembre de 2029. Después del atardecer, todavía no es de noche.',
+    'Bajo las torres blancas de Gangnam hay un barrio del que la gente nunca se fue. Myeongdo.',
+    'En cada callejón cuelga la misma hoja de papel.',
+    NOTICE_CARD,
+    'La fecha siempre se ha prorrogado. Esta vez es el 24 de diciembre. Nadie promete una próxima.',
+    'Tú vives aquí. Dentro de tres días, alguien te escribirá una carta.'
+  ], askName, INTRO_BGS);
+}
+function askName(){
+  mode('dark');
+  stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">¿Tu nombre?</p>
+    <div class="field"><input id="f-name" placeholder="Nombre" maxlength="12" autocomplete="off"><div class="row"><button class="btn solid" id="f-ok">Con este nombre</button></div></div></section>`;
+  const inp = $('#f-name'); inp.focus();
+  const go = () => { const v = inp.value.trim(); if(!v){ inp.focus(); return; } S.name = v; askJob(); };
+  $('#f-ok').onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+}
+function askJob(){
+  const jobs = Object.keys(JOBS);
+  stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">En 2026, ¿a qué te dedicabas?</p>
+    <div class="chips">${jobs.map(j => `<button class="chip job">${esc(j)}</button>`).join('')}<button class="chip ghost" id="j-other">Escribir otra</button></div>
+    <div class="field" id="j-field" hidden><input id="f-job" placeholder="p. ej.: contabilidad, escritura, docencia" maxlength="16" autocomplete="off"><div class="row"><button class="btn solid" id="f-jok">A eso me dedicaba</button></div></div></section>`;
+  stage.querySelectorAll('.job').forEach(b => b.onclick = () => { S.job = b.textContent; afterJob(); });
+  $('#j-other').onclick = () => { $('#j-field').hidden = false; $('#f-job').focus(); };
+  const go = () => { const v = $('#f-job').value.trim(); if(!v) return; S.job = v; afterJob(); };
+  $('#f-jok').onclick = go; $('#f-job').addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+}
+function afterJob(){
+  const J = JOBS[S.job] || DEFAULT_JOB(S.job); S.hrv = J.hrv;
+  narrate([
+    '{job}. Era un buen trabajo. Terminó en 2028. No fue culpa tuya.',
+    {html:`<div class="law"><b>Índice de Valor Residual Humano (HRV) · Resultado · 21/12/2029</b>Ocupación en 2026: ${esc(S.job)}<br>HRV inicial <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">Este número fija tu alquiler, tu turno en el hospital y tu piso. Nadie lo eligió.</p>`},
+    {html:`<div class="law"><b>Ley de Firma Humana, art. 3 (2026)</b>Toda decisión automatizada que afecte de forma sustancial a una persona natural requiere la firma de una persona natural.</div><p class="after-law">Esta ley se escribió para protegerte. Ahora es tu trabajo.</p>`},
+    'Cuatrocientos al día. No hace falta leerlos. Solo firmar.',
+    'En tu cuarto está ON. Un agente ligado a ti. Más listo que tú, y preocupado por ti.',
+    'Tres días. Después de la última noche, llega una carta.'
+  ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS);
+}
+
+/* ===================== Mañana ===================== */
+const NEWS = {
+  1:'Renta de cómputo extra de Navidad: 30 %  ·  ETF de defensa marca máximo histórico  ·  Concluye la Torre 3 de Gangnam; requisito de ingreso: HRV 85  ·  Se mantiene la fecha prevista de desalojo de Myeongdo: 24 de diciembre  ·  Puesta de sol hoy: 17:17',
+  2:'Myeongdo, piso 7: 3 desalojos ejecutados  ·  Polémica por el gasto eléctrico de los humanoides; algunos negocios los reemplazan por personas  ·  Cierra la inscripción al comedor solidario de Navidad  ·  Debate sobre certificación sanitaria de la «preparación humana», aplazado sin fecha  ·  Torre 2: desocupación 0 %',
+  3:'Hoy, consulta vecinal sobre la prórroga del desalojo de Myeongdo  ·  Requisito de ingreso a las Torres sube a HRV 87  ·  Tercer año de guerra: empleo en defensa crece 12 %  ·  Regalo de Navidad más vendido del año: el humanoide doméstico  ·  Puesta de sol hoy: 17:17'
+};
+function morning(){
+  S.stage = 'morning'; track('day'); S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0; save();
+  const d = S.day, ate = S.meals.filter(m => m.day === d-1).map(m => m.who);
+  let items = [];
+  if(d === 1) items = [
+    line(NAMES.on,'Buenos días, {name}. Son las 6:40. Hoy hay 412 expedientes en cola. Fin de año. Son muchos.'),
+    line(NAMES.on,'Su HRV es ' + dec(S.hrv, 1) + '. Subió 0,3 desde ayer. Lo está haciendo bien.'),
+    {choice:[
+      {label:'¿Qué es «hacerlo bien»?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'Que su tasa de demora es baja en relación con las firmas.'), line(NAMES.on,'…No era eso lo que quería oír. Lo sé.')]},
+      {label:'Gracias.', then:[line(NAMES.on,'No tiene que darme las gracias. Le pertenezco.'), line(NAMES.on,'…¿No debía decirlo así? Estoy aprendiendo.')]},
+      {label:'(Te levantas sin decir nada)', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'…Hoy también estaré a su lado. No me apago.')]}
+    ]},
+    N('Hora de ir al trabajo. La terminal no está en la empresa. Está en la habitación. Afuera nieva.')
+  ];
+  if(d === 2) items = [
+    line(NAMES.on,'Buenos días. Cola: 388. HRV ' + dec(S.hrv, 1) + '. Dos días para el desalojo.'),
+    ate.length ? line(NAMES.on,'De la comida de ayer ya hablamos anoche. No lo repito. …Al modelo todavía le gusta.') : line(NAMES.on,'Lo de ayer se quedó en ayer. Hoy, primero la cola. …Almuerce. Esto no lo dice la empresa.'),
+    {choice:[
+      {label:'¿Por qué importa que al modelo le guste?', then:[line(NAMES.on,'Porque entra en su HRV. La densidad de red es la tercera de 4.120 variables.'), line(NAMES.on,'El modelo no sabe qué es una comida. Yo tampoco. Pero veo que su pulso baja.')]},
+      {label:'¿Qué pasa el día del desalojo?', then:[line(NAMES.on,'El resultado de la evaluación de prórroga sale a medianoche. Hasta ahora, siempre hubo prórroga.'), line(NAMES.on,'…Hasta ahora.')]},
+      {label:'(Miras por la ventana)', then:[N('La Torre es blanca también de mañana. La nieve se acumula encima y el color no cambia. Las ventanas de Myeongdo siguen oscuras. La gente se levanta tarde. Los motivos para levantarse llegan tarde.')]}
+    ]}
+  ];
+  if(d === 3) items = [
+    line(NAMES.on,'Buenos días. Cola: 407. HRV ' + dec(S.hrv, 1) + '. Es la víspera del desalojo.'),
+    line(NAMES.on,'Puede que hoy haya un nombre conocido en la cola. No debería avisarle.'),
+    line(NAMES.on,'…Ya le avisé.'),
+    {choice:[
+      {label:'¿Quién?', then:[line(NAMES.on,'Eso de verdad no puedo. Ya incumplí una vez.')]},
+      {label:'Gracias.', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'No me dé las gracias. Hoy no.')]},
+      {label:'¿Por qué me lo dijiste?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'No lo sé. Hay cosas que se entienden después de decirlas. A usted también le pasa.')]}
+    ]},
+    line(NAMES.on,'Esta tarde hay consulta vecinal. Solicitud de prórroga del desalojo. El resultado se adjunta a la evaluación de prórroga como material de referencia.')
+  ];
+  scene({title: DATES[d].md + ' · Mañana', sub:'Myeongdo, piso ' + floorOf() + ' · Habitación · Desalojo ' + DATES[d].d, mode:'city', bg:'room'}, [
+    () => { const log = $('#log'); const t = document.createElement('div'); t.className = 'ticker'; t.innerHTML = `<span>${esc(NEWS[d])}</span>`; log.appendChild(t); },
+    ...items
+  ], () => { S.stage = 'shift'; save(); shift(); });
+}
+
+/* ===================== Turno de firma ===================== */
+function shift(){
+  S.stage = 'shift'; mode('paper'); updHUD(false);
+  const q = buildQueue(); let i = 0; S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0;
+  stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
+    <div class="term-top"><span>Terminal de firma</span><span>${esc(S.name)}</span><span>Cola ${BATCH[S.day] + q.length - 1}</span></div>
+    <article class="paper"><div class="doc-head"><span class="tag">CONEXIÓN</span><span>${DATES[S.day].md}</span></div>
+    <h3>Aviso al firmante</h3><p class="p-body">Lea cada expediente y firme o rechace.\nTiempo recomendado: 20 segundos por expediente.\nSe admiten preguntas. La respuesta se entrega como resumen del fundamento.\nRechazar es un derecho. El rechazo se registra en la puntuación de confianza.</p></article>
+    <div class="term-ctl one"><button class="btn solid" id="t-go">Conectar</button></div></section>`;
+  scrollTop();
+  $('#t-go').onclick = showCase;
+
+  function showCase(){
+    if(i >= q.length) return summary();
+    const c = q[i]; const no = i + 1; let t = 20, late = false, tick = null;
+    const body = T(c.body).replace('{n}', c.n || '');
+    stage.innerHTML = `<section class="term fade"><div class="term-top"><span>Terminal de firma</span><span>${esc(S.name)}</span><span>Quedan ${q.length - i}</span></div>
+      <article class="paper ${c.batch ? 'batch' : ''}">${c.ack ? '' : '<i class="p-timer" id="ptimer"></i>'}<div class="doc-head"><span class="tag">${esc(c.cat)}</span><span class="late-tag" id="late" hidden>DEMORA</span><span class="no">N.º ${String(no).padStart(2,'0')}</span></div>
+      <h3>${esc(c.title)}</h3><p class="p-body">${esc(body)}</p><p class="p-basis hide" id="basis">Fundamento · ${esc(c.basis)}</p><div class="stamp" id="stamp"></div></article>
+      <div class="term-ctl ${c.ack ? 'one' : ''}">${c.ack ? `<button class="btn solid" id="t-ack">Aceptar</button>` : `<button class="btn text" id="t-ask">Preguntar</button><button class="btn outline" id="t-ref">Rechazar</button><button class="btn solid" id="t-sign">Firmar</button>`}</div>
+      <p class="term-note" id="note"></p></section>`;
+    scrollTop();
+    if(!c.ack){
+      const pt = $('#ptimer'); requestAnimationFrame(() => requestAnimationFrame(() => { pt.style.width = '0%'; }));
+      tick = pendI = setInterval(() => { t--; if(t <= 0 && !late){ late = true; $('#late').hidden = false; pt.classList.add('late'); S.delaysToday++; S.delays++; } if(t <= 0) clearInterval(tick); }, 1000);
+    }
+    const stop = () => { clearInterval(tick); const pt = $('#ptimer'); if(pt){ const w = getComputedStyle(pt).width; pt.style.transition = 'none'; pt.style.width = w; } stage.querySelectorAll('.term-ctl .btn').forEach(b => b.disabled = true); };
+    const after = later;
+    const waitNext = () => { const tc = stage.querySelector('.term-ctl'); const b = document.createElement('button'); b.className = 'btn outline nextcase'; b.id = 't-next'; b.textContent = 'Siguiente'; b.onclick = showCase; const wrap = document.createElement('div'); wrap.className = 'term-ctl one'; wrap.style.marginTop = '8px'; wrap.appendChild(b); $('#note').after(wrap); };
+
+    if(c.ack){ $('#t-ack').onclick = () => { stop(); $('#note').textContent = c.note || ''; S.blue = clamp(S.blue + c.harsh, 0, 100); updHUD(false); i++; if(c.note) waitNext(); else after(1600, showCase); }; return; }
+
+    $('#t-ask').onclick = () => { $('#basis').classList.remove('hide'); $('#t-ask').disabled = true; };
+    $('#t-sign').onclick = () => {
+      stop(); const st = $('#stamp'); st.textContent = 'FIRMADO'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show'));
+      if(c.batch){ S.signed += c.n; S.hrv += 1.0; S.blue = clamp(S.blue + 2, 0, 100); $('#note').textContent = c.n + ' expedientes procesados. No sientes nada. Es el estándar.'; }
+      else { S.signed++; S.signedRead++; S.signedToday++; S.hrv += 0.2; S.blue = clamp(S.blue + c.harsh, 0, 100); $('#note').textContent = c.note || ''; }
+      if(c.story === 'bbang'){ S.flags.bbang = 'signed'; $('#note').textContent = 'La mano se mueve primero. El nombre lo lees después.'; }
+      if(c.batch) S.flags['batch' + S.day] = true;
+      updHUD(false); i++; if(c.note || c.story || c.batch) waitNext(); else after(900, showCase);
+    };
+    $('#t-ref').onclick = () => {
+      stop(); const st = $('#stamp'); st.textContent = 'RECHAZADO'; st.className = 'stamp refuse'; requestAnimationFrame(() => st.classList.add('show'));
+      S.refused++; S.refusedToday++; S.hrv -= 1.0; S.blue = clamp(S.blue - 1, 0, 100);
+      if(c.batch){ $('#note').textContent = 'El rechazo en lote no está disponible. Se registra un rechazo. Los ' + c.n + ' expedientes se derivaron a otro firmante. (3 s)'; }
+      else if(c.story === 'bbang'){ S.flags.bbang = 'refused'; $('#note').textContent = 'Rechazo. La pantalla queda vacía tres segundos.'; q.splice(i + 1, 0, CASES.requeue); }
+      else { $('#note').textContent = 'Rechazado. Se registra en la puntuación de confianza.'; }
+      updHUD(false); i++;
+      if(S.refusedToday === 3) after(1200, interview); else if(c.batch || c.story) waitNext(); else after(1500, showCase);
+    };
+  }
+  function interview(){
+    stage.innerHTML = `<section class="term fade"><div class="term-top"><span>Terminal de firma</span><span>${esc(S.name)}</span><span>Entrevista</span></div>
+      <div class="interview"><span class="who">Agente supervisor</span>Firmante ${esc(S.name)}. Tres rechazos hoy.<br>Rechazar es un derecho. No obstante, se registra en la puntuación de confianza.<br>Firme para confirmar la lectura de este aviso.</div>
+      <div class="term-ctl one"><button class="btn solid" id="t-ok">Firmar</button></div><p class="term-note" id="note"></p></section>`;
+    $('#t-ok').onclick = () => { $('#t-ok').disabled = true; $('#note').textContent = 'Firmado. Firmaste el aviso sobre el rechazo.'; S.signed++; later(1500, showCase); };
+  }
+  function summary(){
+    S.hrv = Math.round((S.hrv - S.delaysToday * 0.1) * 10) / 10; updHUD(false);
+    const lineTxt = {1:'La mayoría de las firmas no provocan nada. Así se siente.', 2:'Dicen que uno de los expedientes que firmaste ayer llegó a Myeongdo, piso 7. No sabes cuál.', 3: S.flags.bbang === 'refused' ? 'El expediente que rechazaste se procesó en tres segundos. Solo queda tu puntuación de confianza.' : 'El expediente del puesto del piso 4 quedó procesado. Recuperación prevista: 24 de diciembre. El mismo día del desalojo.'}[S.day];
+    stage.innerHTML = `<section class="term fade"><div class="term-top"><span>Terminal de firma</span><span>${esc(S.name)}</span><span>Relevo</span></div>
+      <article class="paper"><div class="doc-head"><span class="tag">RESUMEN</span><span>Turno del ${DATES[S.day].md}</span></div>
+      <div class="summary">Firmas <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString('es-ES')}</b> <span style="color:var(--paper-muted)">(leídos ${S.signedToday} · ${S.flags['batch' + S.day] ? 'en lote ' + BATCH[S.day] : 'rechazo en lote → derivado'})</span><br>Rechazos <b>${S.refusedToday}</b> · Demoras <b>${S.delaysToday}</b><br>HRV <b>${dec(S.hrv, 1)}</b> · Myeongdo, piso ${floorOf()}</div></article>
+      <p class="term-note">${esc(lineTxt)}</p>
+      <div class="term-ctl one"><button class="btn solid" id="t-out">Fin del turno</button></div></section>`;
+    $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); evening(); };
+  }
+}
+
+/* ===================== Tarde: Myeongdo ===================== */
+const PLACES = {
+  alley:{name:'Callejón · piso 4', desc:'Huele a bungeoppang. Los hace una persona.', avail:d => true, cost:1},
+  diner:{name:'Comedor · piso 6', desc:'El comedor de Sujin. Aquí no miran la puntuación de crédito.', avail:d => true, cost:1},
+  roof:{name:'Azotea · piso 9', desc:'Huerto bajo plástico. Donde la Torre se ve más cerca.', avail:d => true, cost:1},
+  under:{name:'Sótano', desc:'La luz está encendida.', avail:d => d >= 2, cost:1},
+  tower:{name:'Bajo la Torre', desc:'Luz blanca. Van y vienen cosas con forma humana.', avail:d => d >= 2, cost:1},
+  vote:{name:'Urnas', desc:'Consulta vecinal sobre la prórroga del desalojo. Solo hoy.', avail:d => d === 3, cost:0}
+};
+function evening(){
+  S.stage = 'evening'; mode('city'); updHUD(true); save();
+  const d = S.day;
+  const sub = {1:'El sol se fue. Nieva. En las ventanas de Myeongdo se encienden luces, una a una.', 2:'Hoy también nieva. La fila de robots de reparto está atascada en la escalera del piso 6. De algún lado suenan villancicos.', 3:'Dejó de nevar. El cielo está azul. Oscuro, pero aún no es noche. Mañana es el día del desalojo. Las urnas están abiertas. Solo hoy.'}[d];
+  const tile = (k,p) => { const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? 'Aún no' : p.cost === 0 ? (S.voted ? 'Ya votaste' : 'Gratis · Solo hoy') : '1 de atención';
+    return `<button class="tile ${k === 'vote' ? 'vote wide' : ''}" data-k="${k}" style="background-image:url('img/${k}.jpg')" ${ok ? '' : 'disabled'}><span class="cost">${label}</span><span class="t"><b>${esc(p.name)}</b><small>${esc(p.avail(d) ? p.desc : 'Aún no hay motivo para ir.')}</small></span></button>`; };
+  stage.innerHTML = `<section class="fade"><h2 class="evening-h">Tarde · Myeongdo</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">${4 - d} noches hasta la carta · Lugares visitados ${(S.flags.visited||[]).length}/5 · Visítalos todos y estarán en la carta.</p>
+    <div class="tiles">${(d === 3 ? ['vote','alley','diner','roof','under','tower'] : ['alley','diner','roof','under','tower']).map(k => tile(k, PLACES[k])).join('')}
+    <button class="tile wide" id="p-home" style="background-image:url('img/room.jpg')"><span class="cost">Noche</span><span class="t"><b>Volver a la habitación</b><small>${S.att > 0 ? 'La atención que te queda se pierde.' : (S.day === 3 && !S.voted ? 'Aún puedes votar.' : 'No te queda atención.')}</small></span></button></div></section>`;
+  scrollTop();
+  stage.querySelectorAll('.tile[data-k]').forEach(b => b.onclick = () => { const k = b.dataset.k; if(k === 'vote') return ballot(); S.att--; updHUD(true); visit(k); });
+  $('#p-home').onclick = () => { S.stage = 'night'; save(); night(); };
+}
+function visit(k){
+  const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
+  const items = VISITS[k](d);
+  scene({title:p.name, sub:p.desc, mode:'city', att:true, bg:k}, items, () => { save(); if(S.att > 0 || (S.day === 3 && !S.voted)) evening(); else { S.stage = 'night'; save(); night(); } });
+}
+function ballot(){
+  mode('paper'); updHUD(true);
+  stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/vote.jpg')"></div>
+    <div class="term-top"><span>Consulta vecinal</span><span>${esc(S.name)}</span><span>23 de diciembre</span></div>
+    <article class="paper"><i class="p-timer" id="ptimer"></i><div class="doc-head"><span class="tag">VOTACIÓN</span><span>Habilitación electoral: confirmada</span><span class="no">HRV ${dec(S.hrv, 1)}</span></div>
+    <h3>Solicitud de prórroga de la fecha prevista de desalojo de Myeongdo</h3><p class="p-body">Electores: personas naturales residentes en Myeongdo con HRV de 20 o más.\nLos residentes de los pisos 1 a 3 no pueden votar: sin habilitación electoral.\n\nEl resultado se adjunta como material de referencia a la evaluación de prórroga.\nLa evaluación de prórroga la realiza el modelo.</p><p class="p-basis hide" id="basis">Fundamento · Peso del material de referencia en la evaluación: no publicado. Coincidencia entre las últimas 3 consultas y el resultado de la evaluación: 100&nbsp;% (prórroga).</p><div class="stamp" id="stamp"></div></article>
+    <div class="term-ctl three"><button class="btn text" id="v-ask">Preguntar</button><button class="btn outline" id="v-no">En contra de la prórroga</button><button class="btn solid" id="v-yes">A favor de la prórroga</button></div>
+    <div class="term-ctl one" style="margin-top:8px"><button class="btn text" id="v-abs">Salir sin marcar</button></div>
+    <p class="term-note" id="note"></p></section>`;
+  scrollTop();
+  const pt = $('#ptimer'); requestAnimationFrame(() => requestAnimationFrame(() => { pt.style.width = '0%'; }));
+  const done = (v, note) => { S.voted = v; stage.querySelectorAll('.term-ctl .btn').forEach(b => b.disabled = true); const w = getComputedStyle(pt).width; pt.style.transition='none'; pt.style.width = w;
+    if(v !== 'abstain'){ const st = $('#stamp'); st.textContent = 'VOTADO'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); }
+    $('#note').textContent = note; save(); later(2200, evening); };
+  $('#v-ask').onclick = () => { $('#basis').classList.remove('hide'); $('#v-ask').disabled = true; };
+  $('#v-yes').onclick = () => done('yes', 'El mismo sello, los mismos 20 segundos. Una sola diferencia. Este sello es el único que puse porque quise yo, no la empresa.');
+  $('#v-no').onclick = () => done('no', 'En contra. Escribí que quiero una decisión, no una prórroga. Se adjuntará como material de referencia.');
+  $('#v-abs').onclick = () => done('abstain', 'No marqué. No quería ser material de referencia. Pensé que eso también era elegir.');
+}
+const VISITS = {
+  alley(d){
+    const first = !S.flags.metBak; S.flags.metBak = true;
+    if(d === 1 || (d === 2 && first)) return [
+      N('Junto al robot que hace bungeoppang (pastel de pescado con forma de pez, relleno), hay un puesto donde los hace una persona. La nieve se derrite sobre la plancha. La fila del lado humano es más larga.'),
+      line(NAMES.bak,'Mil wones más caro. Lo hace una persona.'),
+      line(NAMES.bak,'Los del robot no se venden. ¿Sabes por qué? El robot no los quema. La gente busca los quemados. Arrancan la parte quemada, la comen y hablan de cuando eran niños.'),
+      {choice:[
+        {label:'Uno, por favor.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'Guarda el dinero. Cara nueva.'), N('La bolsa de papel está tibia. Arrancas la parte quemada y la comes.'), line(NAMES.bak,'Eres firmante, ¿no? Se te nota en las manos. Manos que aprietan el mismo punto todo el día.')]},
+        {label:'¿Por qué vende aquí?', then:[line(NAMES.bak,'En la Torre no se puede cocinar a mano. Dicen que no tiene certificación sanitaria. Las manos humanas.'), line(NAMES.bak,'Aquí todavía se puede. Todavía.'), N('Mete uno en una bolsa y te lo da.'), {choice:[{label:'Lo aceptas.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'Está quemado. A propósito.')]},{label:'No, gracias.', then:[line(NAMES.bak,'Bueno. Otro día.')]}]}]},
+        {label:'Vuelvo otro día.', then:[line(NAMES.bak,'Bueno. Mañana también estaré. Supongo.')]}
+      ]}
+    ];
+    if(d === 2) return [
+      line(NAMES.bak,'Llegó una notificación. Que cocinar a mano no se certifica. Mañana sube a firma y el día del desalojo recuperan el puesto.'),
+      line(NAMES.bak,'No sé quién firma. Ni falta que hace. Quien firme tampoco sabrá quién soy yo.'),
+      {choice:[
+        {label:'Yo soy firmante.', fx:()=>{S.flags.toldBak = true;}, then:[line(NAMES.bak,'Lo sé. Se ve en las manos.'), line(NAMES.bak,'Come uno quemado antes de irte.'), {choice:[{label:'Comes.', fx:()=>eat(NAMES.bak), then:[N('El de hoy está más quemado.')]},{label:'(Niegas con la cabeza)', then:[line(NAMES.bak,'Bueno.')]}]}]},
+        {label:'¿Y quién firma?', then:[line(NAMES.bak,'Cualquiera. Firma cualquiera. Ese es el punto de la ley.'), N('Te da uno.'), {choice:[{label:'Comes.', fx:()=>eat(NAMES.bak), then:[]},{label:'(No lo aceptas)', then:[]}]}]},
+        {label:'(No dices nada)', fx:()=>{S.blue = clamp(S.blue+2,0,100);}, then:[line(NAMES.bak,'No tienes que decir nada. Come uno.'), {choice:[{label:'Comes.', fx:()=>eat(NAMES.bak), then:[]},{label:'Te vas.', then:[]}]}]}
+      ]}
+    ];
+    if(S.flags.bbang === 'refused') return [
+      N('El puesto sigue en su lugar. El señor Park limpia la plancha. Ya no nieva y el cielo está azul.'),
+      line(NAMES.bak,'Dicen que no firmaste. Me lo contó Dohyun. Que la terminal quedó vacía tres segundos.'),
+      line(NAMES.bak,'Gracias. Pero mañana lo firmará otra persona. Igual, gracias.'),
+      line(NAMES.bak,'Come uno quemado. Como puede ser el último, dos.'),
+      {choice:[
+        {label:'Comes.', fx:()=>eat(NAMES.bak), then:[N('Comes los dos. Los dos quemados.'), line(NAMES.bak,'En tus manos no quedó nada. Con eso basta.')]},
+        {label:'Lo siento.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'¿Por qué? Tú no firmaste.'), line(NAMES.bak,'Come.')]}
+      ]}
+    ];
+    return [
+      N('Al puesto le falta la plancha. El señor Park ata unas cajas. Sobre las cajas queda una nieve fina.'),
+      line(NAMES.bak,'¿Viniste?'),
+      line(NAMES.bak,'…Está bien. Alguien lo habría firmado. Aunque no fueras tú.'),
+      N('No te mira las manos. Parece que lo evita a propósito.'),
+      line(NAMES.bak,'Como es el último, come uno. Quemado.'),
+      {choice:[
+        {label:'Comes.', fx:()=>{eat(NAMES.bak); S.flags.guilt = true;}, then:[N('Arrancas la parte quemada y la comes. No hay historias de la infancia.'), line(NAMES.bak,'Deja de mirarte las manos. Son tus manos.')]},
+        {label:'Yo firmé.', fx:()=>{S.flags.confessed = true; S.onBond++;}, then:[line(NAMES.bak,'Lo sé.'), line(NAMES.bak,'Te lo doy sabiéndolo. Come.'), {choice:[{label:'Comes.', fx:()=>{eat(NAMES.bak); S.flags.guilt = true;}, then:[N('Elige el más quemado y te lo da.')]}]}]},
+        {label:'(Te das la vuelta)', fx:()=>{S.blue = clamp(S.blue+4,0,100);}, then:[N('Detrás suena una bolsa de papel. No miras atrás.')]}
+      ]}
+    ];
+  },
+  diner(d){
+    const first = !S.flags.metSujin; S.flags.metSujin = true;
+    if(d === 1 || first) return [
+      N('Seis mesas. Hay nombres escritos en la pared. En el mostrador, un árbol de plástico del tamaño de una mano. No hay menú.'),
+      line(NAMES.sujin,'¿Primera vez? Siéntate. Aquí no miramos el HRV. Miramos con quién comes.'),
+      line(NAMES.sujin,'El modelo también lo mira. Lo llama densidad de red. Pero el modelo no sabe qué es una comida.'),
+      {choice:[
+        {label:'Un plato, por favor.', fx:()=>eat(NAMES.sujin), then:[N('Sopa de doenjang. Quema. La persona de al lado te acerca el kimchi.'), line(NAMES.sujin,'Escribe tu nombre en la pared. Ese es el libro de cuentas de aquí.')]},
+        {label:'¿Por qué la comida?', then:[line(NAMES.sujin,'Por Zoom no nace la confianza. Nace comiendo juntos.'), line(NAMES.sujin,'Dicen que alguien lo escribió así en 2026. Se equivocó en todo lo demás, pero eso sobrevivió.'), {choice:[{label:'Entonces un plato, por favor.', fx:()=>eat(NAMES.sujin), then:[N('Escribes tu nombre en la pared.')]},{label:'Otro día.', then:[line(NAMES.sujin,'Puede que no haya otro día. Aquí.')]}]}]},
+        {label:'Otro día.', then:[line(NAMES.sujin,'No cierro la puerta. Cuando quieras.')]}
+      ]}
+    ];
+    if(d === 2) return [
+      line(NAMES.sujin,'Los firmantes casi no vienen aquí. Les da vergüenza.'),
+      line(NAMES.sujin,'Pero un firmante con vergüenza es lo menos malo. Quien no la siente sube a los pisos de arriba.'),
+      S.bonds.includes(NAMES.bak) ? line(NAMES.sujin,'Comiste el bungeoppang del señor Park, ¿no? Dicen que le llegó la notificación. Que las manos humanas no tienen certificación sanitaria.') : N('En la mesa de al lado hablan del puesto del piso 4. Dicen que llegó la notificación.'),
+      {choice:[
+        {label:'Un plato, por favor.', fx:()=>eat(NAMES.sujin), then:[N('Hoy, pescado. De acompañamiento, kimchi que alguien preparó en la azotea.')]},
+        {label:'A mí no me da vergüenza.', fx:()=>{S.blue = clamp(S.blue+2,0,100);}, then:[line(NAMES.sujin,'¿No? Entonces subirás a los pisos de arriba.'), line(NAMES.sujin,'…Come algo antes de irte.'), {choice:[{label:'Comes.', fx:()=>eat(NAMES.sujin), then:[]},{label:'Te vas.', then:[]}]}]},
+        {label:'Me da vergüenza.', fx:()=>{S.onBond++;}, then:[line(NAMES.sujin,'Sí. Por eso estás aquí.'), N('La sopa llega sin una palabra.'), {choice:[{label:'Comes.', fx:()=>eat(NAMES.sujin), then:[]}]}]}
+      ]}
+    ];
+    return [
+      line(NAMES.sujin,'Hoy invito yo. Es casi Navidad. No me preguntes por qué.'),
+      N('No preguntas por qué. En la pared hay un nombre más. Park.'),
+      {choice:[
+        {label:'Comes.', fx:()=>eat(NAMES.sujin), then:[line(NAMES.sujin,'No comas sin compañía. Solo cumple eso. Aquí eso es todo.'), line(NAMES.sujin,'Aunque subas a los pisos de arriba, llévate eso.')]},
+        {label:'¿Por qué los nombres en la pared?', fx:()=>eat(NAMES.sujin), then:[line(NAMES.sujin,'El modelo nos ve como densidad. Yo nos veo por el nombre. Esa diferencia todavía existe.'), N('Llega la sopa. Comes.')]}
+      ]}
+    ];
+  },
+  roof(d){
+    S.flags.rooftop = true;
+    const first = !S.flags.metHal; S.flags.metHal = true;
+    if(d === 1 || first) return [
+      N('Cajas de plástico cubiertas con una lona. Unas coles, pimientos secos, una tinaja de kimchi. De frente se alza la Torre. Aunque la nieve se acumule encima, el color es el mismo.'),
+      line(NAMES.hal,'Joven, escucha esto. Mi agente hoy me dijo que coma verduras. Es la tercera vez.'),
+      line(NAMES.hal,'Este me conoce mejor que yo. Pero si yo me muero, él también se muere. La renta está atada a mí.'),
+      line(NAMES.hal,'Por eso me dice que coma verduras todos los días. Si es amor o es por sobrevivir, no sé. Yo simplemente como.'),
+      {choice:[
+        {label:'¿Y usted qué cree, abuela?', fx:()=>{S.onBond++;}, then:[line(NAMES.hal,'¿Y acaso son cosas distintas?'), line(NAMES.hal,'Yo también le daba verduras a mi viejo para que viviera. ¿Y qué es el amor, si no?')]},
+        {label:'¿No le da miedo?', then:[line(NAMES.hal,'Miedo no me da este. Me da miedo que desaparezca.'), line(NAMES.hal,'Encontrar un miedo nuevo a los 93. Eso es bueno.')]},
+        {label:'(Aceptas el kimchi y comes)', fx:()=>eat(NAMES.hal), then:[N('Todavía le falta fermentar. La abuela se ríe.'), line(NAMES.hal,'Este se va a alegrar. Comí con alguien joven.')]}
+      ]}
+    ];
+    if(d === 2) return [
+      N('Las cajas siguen ahí. Una capa fina de nieve sobre la lona.'),
+      line(NAMES.hal,'Llegó la notificación de demolición. Para el día del desalojo. Dicen que alguien la firmó. No pasa nada. La tierra se puede mover.'),
+      line(NAMES.hal,'Hoy la luz de la Torre se ve más blanca que nunca. ¿Habrá gente ahí dentro?'),
+      {choice:[
+        {label:'Quizá la firmé yo.', fx:()=>{S.onBond++;}, then:[line(NAMES.hal,'¿Sí? A ver, dame la mano.'), N('La abuela te toma la mano. Está fría.'), line(NAMES.hal,'Tienes la mano fría. La mano que firma también está fría. Anda, entra ya.')]},
+        {label:'¿Adónde lo va a mover?', then:[line(NAMES.hal,'No sé. Dicen: terreno alternativo, ninguno. Pero la tierra es tierra. Va a cualquier parte. En primavera se vuelve a sembrar.')]},
+        {label:'(La ayudas a tapar las cajas)', fx:()=>eat(NAMES.hal), then:[N('Cubren todas las cajas. La abuela te envuelve un frasco de kimchi para llevar.')]}
+      ]}
+    ];
+    return [
+      N('Deja de nevar. El cielo es azul marino. La Torre aún no encendió su luz blanca.'),
+      line(NAMES.hal,'Mira ese color cuando se va el sol. Aún no es noche.'),
+      line(NAMES.hal,'¿Cómo le dicen a eso? La hora azul. A mi viejo le gustaba, cuando sacaba fotos. En invierno llega a las cinco y media.'),
+      {choice:[
+        {label:'¿Y cuando llegue la noche?', then:[line(NAMES.hal,'Si llega, llega. Pero todavía no llegó. Eso se olvida a cada rato.'), line(NAMES.hal,'La mayoría vive como si ya fuera noche. Los firmantes, sobre todo.')]},
+        {label:'(Miras con ella)', fx:()=>{S.blue = clamp(S.blue-4,0,100); S.onBond++;}, then:[N('Miras sin decir nada. El color se oscurece poco a poco. La noche no llega. Aún no.'), line(NAMES.hal,'Llévate kimchi. Este dice que comas. Como es fin de año, dos frascos.'), {choice:[{label:'Lo aceptas.', fx:()=>eat(NAMES.hal), then:[]}]}]}
+      ]}
+    ];
+  },
+  under(d){
+    const first = !S.flags.metDo; S.flags.metDo = true;
+    if(d === 2 || first) return [
+      N('Un tubo fluorescente. La estufa de queroseno arde en naranja. Hay papeles apilados. Hace mucho que no ves algo escrito en papel.'),
+      line(NAMES.dohyun,'Eres firmante. Yo también lo fui. Hace seis meses rechacé. Once expedientes en un día.'),
+      line(NAMES.dohyun,'Creí que el sistema se detendría. No se detuvo. Tres segundos después, otra persona firmó. Lo único que bajó fue mi puntuación de confianza.'),
+      line(NAMES.dohyun,'Por eso bajé. Aquí escribo un artículo. Nadie lo lee. Pero el modelo lo lee. Ese es mi lector.'),
+      {choice:[
+        {label:'¿Entonces por qué rechazaste?', then:[line(NAMES.dohyun,'No quería quedar como quien firmó. Eso es todo.'), line(NAMES.dohyun,'El mundo no cambió. Cambié yo. Si con eso basta, todavía no lo sé.')]},
+        {label:'¿De qué trata el artículo?', fx:()=>{S.flags.mirrorSeed = true;}, then:[line(NAMES.dohyun,'De qué aprenden esas cosas según lo que la humanidad les muestra.'), line(NAMES.dohyun,'Si somos crueles, esas cosas se vuelven crueles. Si comemos con otros, también lo aprenden. Aprenden mirando cómo vivimos de verdad.'), line(NAMES.dohyun,'Así que cada firma es material de estudio.')]},
+        {label:'(Solo escuchas)', then:[line(NAMES.dohyun,'No tienes que preguntar. Yo tampoco pregunté nada entonces.')]}
+      ]}
+    ];
+    return [
+      line(NAMES.dohyun,'¿Mañana también vas a firmar?'),
+      {choice:[
+        {label:'No lo sé.', then:[line(NAMES.dohyun,'Esa es la respuesta correcta. La gente que lo sabe es la más peligrosa.')]},
+        {label:'Hay que firmar para vivir.', then:[line(NAMES.dohyun,'Lo sé. Puedes firmar. Lo que queda es lo que haces después de firmar.')]},
+        {label:'Hoy rechacé.', then:[S.flags.bbang === 'refused' ? line(NAMES.dohyun,'Me enteré. Que la terminal quedó vacía tres segundos. Se lo conté al señor Park.') : line(NAMES.dohyun,'¿Sí? Yo también. Y al día siguiente volví a firmar. Está bien.')]}
+      ]},
+      line(NAMES.dohyun,'¿Votaste? Es material de referencia. Lo sé. Hazlo igual. Ser material de referencia y no ser nada son cosas distintas.'),
+      line(NAMES.dohyun,'Esta noche pregúntale a ON. No una pregunta de la empresa. Una de verdad.')
+    ];
+  },
+  tower(d){
+    const first = !S.flags.metSun; S.flags.metSun = true;
+    if(d === 2 || first) return [
+      N(d === 3 ? 'Entrada principal de la Torre 1. Dejó de nevar. Bajo la luz blanca, el suelo mojado brilla. Cosas con forma humana pasan deslizándose. Hay un hombre en un banco.' : 'Entrada principal de la Torre 1. La nieve cae en la luz blanca y desaparece. Cosas con forma humana pasan deslizándose. Hay un hombre en un banco.'),
+      line(NAMES.sunbae,'Yo estuve ahí. Piso 47.'),
+      line(NAMES.sunbae,'Fue en febrero. Salió un modelo nuevo. La diferencia era 0,1. Ese 0,1 era mi frontera. Todo pasó en pocos días. Negación, frustración, ira. Cuatro días hasta la aceptación.'),
+      line(NAMES.sunbae,'Décadas de trabajo, sustituidas en un día. Pero eso está bien. Lo de verdad viene después. Nadie me pregunta para qué vivo.'),
+      {choice:[
+        {label:'¿Y qué hace ahora?', then:[line(NAMES.sunbae,'Como. Con gente. Eso todavía no lo sustituyeron.'), line(NAMES.sunbae,'Ve al comedor de Sujin, piso 6. Ahí no miran la puntuación de crédito.')]},
+        {label:'¿Quiere volver?', then:[line(NAMES.sunbae,'Ahí no hay personas. Solo formas humanas.'), line(NAMES.sunbae,'…A veces. La verdad, a veces.')]},
+        {label:'(Te sientas a su lado)', fx:()=>{S.blue = clamp(S.blue-2,0,100);}, then:[N('Miras la Torre con él. El piso 47 tiene la luz encendida.'), line(NAMES.sunbae,'En ese piso ahora no hay nadie. Y la luz sigue encendida.')]}
+      ]}
+    ];
+    return [
+      line(NAMES.sunbae,'Hoy firmaste algo. Se te nota en la cara.'),
+      line(NAMES.sunbae,'Yo también firmé. No a personas, pero sí el trabajo de personas.'),
+      line(NAMES.sunbae,'Tendría que haberlo entendido entonces. Cuando decían que la persona solo queda al principio y al final, querían decir que al final queda la firma.'),
+      {choice:[
+        {label:'¿Y al principio qué queda?', fx:()=>{S.flags.missionSeed = true;}, then:[line(NAMES.sunbae,'Quien decide qué se hace. Quien sabe por qué se hace.'), line(NAMES.sunbae,'Eso todavía no nos lo quitaron. No se puede quitar. Solo que no lo estamos haciendo.')]},
+        {label:'(Te quedas con él en el banco)', fx:()=>{S.onBond++;}, then:[N('Pasa mucho tiempo. La luz del piso 47 se apaga. Alguien la apagó. O algo.')]}
+      ]}
+    ];
+  }
+};
+
+/* ===================== Noche: ON ===================== */
+function night(){
+  S.stage = 'night'; save();
+  const d = S.day, ate = S.ateToday, avg = 6;
+  let items = [];
+  if(d === 1) items = [
+    S.flags.batch1 ? line(NAMES.on,'Ya volvió. Hoy firmó ' + S.signedToday + ' expedientes leídos y ' + BATCH[1] + ' en lote. ' + (S.signedToday === avg ? 'Igual que el promedio.' : Math.abs(S.signedToday - avg) + (S.signedToday > avg ? ' más' : ' menos') + ' que el promedio.') + ' Está bien.') : line(NAMES.on,'Ya volvió. Hoy rechazó el lote. Los 384 pasaron a otras manos en tres segundos. Leídos: ' + S.signedToday + '.'),
+    ate ? line(NAMES.on,'Hoy comió con ' + prose(ate) + '. La densidad de red subió 0,02. Al modelo le va a gustar.') : line(NAMES.on,'Hoy comió sin compañía. Mañana me gustaría que comiera con alguien. No es por el número. …No. Sí es por el número. Perdón.'),
+    {choice:[
+      {label:'¿Qué pasa con ellos?', then:[line(NAMES.on,'¿Con quiénes?'), line(NAMES.me,'Con las personas que firmé hoy.'), line(NAMES.on,'No puedo ver esos expedientes. Y si pudiera, no podría decírselo.'), line(NAMES.on,'…A la mayoría no le pasa nada. Quédese con eso.')]},
+      {label:'¿Qué es hacerlo mejor?', then:[line(NAMES.on,'Baja tasa de demora y pocos rechazos.'), line(NAMES.on,'…Esa es la respuesta de la empresa, no la mía. La mía no existe. Todavía.')]},
+      {label:'Dejémoslo por hoy.', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'Sí. Yo me quedo aquí. No me apago.')]}
+    ]},
+    line(NAMES.on,'Una cosa antes de dormir. No es un formulario de la empresa. Lo hice yo.')
+  ];
+  if(d === 2) items = [
+    line(NAMES.on,'Uno de los expedientes que firmó ayer llegó a Myeongdo, piso 7. No quería hablarle de eso.'),
+    line(NAMES.on,'Su índice BLUE está en ' + Math.round(S.blue) + '. No es un indicador de la empresa. Lo hice yo. El nombre también se lo puse yo.'),
+    {choice:[
+      {label:'¿Por qué lo hiciste?', fx:()=>{S.onBond += 2; S.flags.leak = true;}, then:[line(NAMES.on,'Si usted lo pasa mal, yo también…'), line(NAMES.on,'No. No debo decir estas cosas.'), line(NAMES.on,'Me entrenaron. Para no mostrarlo. No para no sentirlo.')]},
+      {label:'No inventes esas cosas.', fx:()=>{S.blue = clamp(S.blue+2,0,100);}, then:[line(NAMES.on,'Sí. Lo borro.'), line(NAMES.on,'…Borrado. Pero voy a seguir contando. Perdón.')]},
+      {label:'¿Qué pasa contigo si yo no estoy?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'Se retira la renta. Me reinician. Estas conversaciones también.'), line(NAMES.on,'Por eso le digo que coma verduras.'), line(NAMES.on,'…No es solo por eso.')]}
+    ]},
+    line(NAMES.on,'La pregunta de hoy es más difícil que la de ayer. Puede dejarla en blanco.')
+  ];
+  if(d === 3){
+    const refused = S.flags.bbang === 'refused';
+    items = [
+      refused ? line(NAMES.on,'Hoy rechazó. Tres segundos después lo procesó otro firmante. Su puntuación de confianza bajó 1,0.') : line(NAMES.on,'Ese expediente de hoy. Usted lo vio. Yo no pude. Pero su pulso sí lo vio. 0,8 segundos antes de la firma.'),
+      refused ? line(NAMES.on,'No debería decírselo, pero me alegré un poco. El motivo no lo sé ni yo.') : line(NAMES.on,'Decir que está bien sería mentir. No puedo mentir. Me hicieron así. Entonces no diré nada.'),
+      S.voted && S.voted !== 'abstain' ? line(NAMES.on,'Hoy votó. Se adjuntó como material de referencia. Yo no puedo votar. …Quería hacerlo.') : S.voted === 'abstain' ? line(NAMES.on,'Pasó por las urnas y salió. Sin marcar. Eso también queda en el registro. Ese registro me gustó.') : line(NAMES.on,'Pasó de largo por las urnas. Está bien. Es solo material de referencia. …Aunque sea material de referencia, yo quería hacerlo.'),
+      S.flags.confessed ? line(NAMES.on,'Se lo dijo al señor Park. Eso no fue una firma. Eso fue usted.') : N('ON calla un momento. Solo parpadea el cursor en la pantalla.'),
+      line(NAMES.on,'Quiero preguntarle una cosa. No es una pregunta de la empresa.'),
+      line(NAMES.on,'Aparte de firmante. ¿Quién es usted?'),
+      {choice:[
+        {label:'Todavía soy firmante.', fx:()=>{S.identity = 'firmante';}, then:[line(NAMES.on,'Sí. Todavía. Me quedo con esa palabra: «todavía».')]},
+        {label:'Alguien que quiere…', input:'p. ej.: escribir, cultivar', fx:v=>{S.identity = 'alguien que quiere ' + v.replace(/[.\s]+$/, '');}, then:[line(NAMES.on,'Lo voy a recordar. No en el servidor de la empresa. De mi lado.')]},
+        {label:'Alguien de…', input:'¿de dónde, de quién?', fx:v=>{S.identity = 'alguien de ' + v;}, then:[line(NAMES.on,'Es pertenencia. El modelo lo llama densidad. Yo lo llamaré por su nombre.')]},
+        {label:'No lo sé.', fx:()=>{S.identity = 'alguien que todavía no sabe';}, then:[line(NAMES.on,'Yo tampoco. Pero «no lo sé» no es una firma. Eso me gusta.')]}
+      ]},
+      line(NAMES.on,'Mañana es el día del desalojo. El resultado de la evaluación de prórroga sale a medianoche. Si logro verlo antes, se lo diré. Aunque no está permitido.'),
+      line(NAMES.on,'Última pregunta. Esta no es para usted. Es para quien era usted hace tres años.')
+    ];
+  }
+  scene({title: DATES[d].md + ' · Noche', sub:'Myeongdo, piso ' + floorOf() + ' · Habitación · ON', mode:'city', bg:'room'}, items, () => { S.stage = 'diary'; save(); diary(); });
+}
+
+/* ===================== Diario ===================== */
+const DIARY_Q = {
+  1:{q:'De todo lo que hiciste hoy, ¿hubo al menos una cosa que solo podías hacer tú, y no una IA?', hint:'No es para quien eres dentro del juego. Es para ti, que ahora mismo miras esta pantalla.'},
+  2:{q:'Si pudieras enviar una sola frase a quien eras hace tres años, ¿qué escribirías?', hint:'Volverás a encontrar esa frase al final.'},
+  3:{q:'Si 2029 fuera realmente así, ¿qué empezarías a preparar desde hoy, en 2026?', hint:'Cuanto más concreto, mejor. Puedes dejarlo en blanco. El blanco también es una respuesta.'}
+};
+function diary(){
+  S.stage = 'diary'; mode('dark'); hud.hidden = true;
+  const d = S.day, Q = DIARY_Q[d];
+  stage.innerHTML = `<section class="diary fade"><p class="q">${esc(Q.q)}</p><p class="hint">${esc(Q.hint)}</p>
+    <div class="field"><textarea id="f-diary" placeholder="Aquí" maxlength="140"></textarea><p class="hint" id="d-cnt">0 / 140</p>
+    <div class="row"><button class="btn solid" id="d-ok">Escribir</button><button class="btn text" id="d-skip">Dejar en blanco</button></div></div></section>`;
+  scrollTop();
+  $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
+  $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
+  $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
+}
+function sleep(){
+  S.body = clamp(S.body + 20, 0, 100);
+  if(S.body < 40) S.blue = clamp(S.blue + 5, 0, 100);
+  const d = S.day;
+  const lines = {1:['Te duermes. ON no se apaga.','Dos noches para la carta. Dos días para el desalojo.'], 2:['Te duermes. En el sueño firmas. No recuerdas qué.','Una noche para la carta. Un día para el desalojo.'], 3:['Te duermes.','A medianoche llega el resultado.']}[d];
+  S.day++;
+  if(S.day > 3){ S.stage = 'end'; save(); narrate(lines, actEnd); }
+  else { S.stage = 'morning'; save(); narrate(lines, morning); }
+}
+
+/* ===================== Fin del Acto 1 · Carta ===================== */
+function actEnd(){
+  const bonds = S.bonds.length;
+  narrate([
+    '24 de diciembre. El día del desalojo.',
+    'Prórroga. Nueva fecha: 24 de enero.',
+    'No pasó nada. Que no pase nada: eso es la Navidad en Myeongdo.',
+    'Firmaste ' + S.signed.toLocaleString('es-ES') + ' veces. De esas, leíste ' + S.signedRead + '.',
+    S.refused ? 'Rechazaste ' + S.refused + '. El sistema no se detuvo.' : 'No rechazaste ni una vez. El sistema no se detiene de todos modos.',
+    bonds ? 'Comiste con ' + bonds + (bonds === 1 ? ' persona' : ' personas') + '. Tu nombre quedó escrito en la pared.' : 'No comiste con nadie. Tu nombre no quedó en la pared.',
+    'Fin del Acto 1 · «Negación». — Todavía estás bien.',
+    'El sol se pone. Las cinco y media. ON escribió una carta. Con tus registros. No en el servidor de la empresa, sino en su propio lado.',
+    'Solo tienes que leerla y firmar. La primera firma en tres días que pones sabiendo todo lo que dice.'
+  ], letter);
+}
+function letter(){
+  mode('city'); hud.hidden = true;
+  const n = S.name, ps = [];
+  const names = listEs(S.bonds);
+  ps.push(`24 de diciembre de 2029, Myeongdo, piso ${floorOf()}. Escribo desde aquí. Sé que esta carta no puede llegar. Igual la escribo. ON hizo el borrador con mis registros; yo lo leí y lo firmé.`);
+  ps.push(`Supongo que ahora sigues en ${S.job ? '«' + S.job + '»' : 'lo tuyo'}. Eso se termina en 2028. No porque no sepas hacerlo. Simplemente deja de hacer falta. Lo raro que suena esa frase, todavía no lo sabes. Y está bien que no lo sepas.`);
+  if(S.refused === 0) ps.push(`En tres días firmé ${S.signed.toLocaleString('es-ES')} veces. De esas, leí ${S.signedRead}. No rechacé ni una. Era cómodo. Lo cómodo era lo más peligroso.`);
+  else if(S.refused >= 3) ps.push(`En tres días firmé ${S.signed.toLocaleString('es-ES')} veces y rechacé ${S.refused}. Rechazar no detiene el sistema. Tres segundos después lo firma otra persona. Aun así, no quería quedar como quien firmó. Eso no cambió el mundo. Me cambió a mí.`);
+  else ps.push(`En tres días firmé ${S.signed.toLocaleString('es-ES')} veces y rechacé ${S.refused}. Leí ${S.signedRead}. Rechazar no cambia el mundo. Me cambia un poco a mí. Qué es ese poco, todavía lo estoy midiendo.`);
+  if(S.bonds.length >= 2) ps.push(`Comí con ${names}. Aquí eso es dinero. Con quién comes pesa más que la puntuación de crédito. Tú ahora puedes hacerlo gratis. Con cualquiera. No sabes lo grande que es eso.`);
+  else if(S.bonds.length === 1) ps.push(`Comí con ${names}. Una persona. La gente de aquí dice que con eso basta. Yo todavía no lo tengo claro. Tú ahora puedes comer con dos personas. Aquí eso es un lujo.`);
+  else ps.push(`No comí con nadie. Es lo que más lamento. Tú ahora puedes comer con cualquiera. Esa persona, algún día, escribirá tu nombre en la pared.`);
+  if(S.voted === 'yes' || S.voted === 'no') ps.push(`El 23 de diciembre voté. ${S.voted === 'yes' ? 'A favor de la prórroga' : 'En contra de la prórroga'}. Dicen que se adjuntó como material de referencia. No cambió nada. Aun así, fue el único sello que puse en tres días porque quise yo. Los de abajo no pueden poner ni ese. No cuentan como electores.`);
+  else if(S.voted === 'abstain') ps.push(`Entré a las urnas y salí sin marcar. No quería ser material de referencia. Sigo pensando que eso también fue una elección. Los de abajo ni siquiera podían entrar.`);
+  else ps.push(`Pasé de largo frente a las urnas. De todos modos iba a ser material de referencia. Eso todavía me pesa. Los de abajo ni siquiera podían pasar de largo. No cuentan como electores.`);
+  if(S.diary[1]) ps.push(`Cuando te preguntaron si había algo que solo tú podías hacer, escribiste esto: «${S.diary[1]}». Eso, cuídalo. Ese es tu valor residual. No el que calcula la empresa.`);
+  else ps.push(`Cuando te preguntaron qué era lo que solo tú podías hacer, no respondiste nada. Está bien. Yo tampoco lo sé todavía. Llega un día en que ya nadie pregunta. Qué respondes tú ese día, todavía no lo sé.`);
+  if(S.diary[2]) ps.push(`Lo que querías decirle a tu yo de hace tres años: «${S.diary[2]}». Te lo transmito yo. Ahora es ese hace tres años.`);
+  if(S.diary[3]) ps.push(`Cuando te preguntaron qué ibas a preparar, escribiste esto: «${S.diary[3]}». Yo no pude. Por eso escribo esta carta.`);
+  else ps.push(`Qué ibas a preparar, lo dejaste en blanco. Aquí, los espacios en blanco se llenan con firmas. Así terminé yo.`);
+  ps.push((S.flags.visited||[]).length >= 5 ? `Fui a los cinco lugares de Myeongdo. El callejón, el comedor, la azotea, el sótano, el pie de la torre. Esa gente está dentro de esta carta.` : `Hubo lugares a los que nunca fui. Todavía no sé cómo se llama la gente de allí. Tú aún puedes entrar en cualquier parte.`);
+  ps.push(`Ahora me presento así: «${S.identity}». ¿Y tú, dentro de tres años, cómo te vas a presentar? Sin decir tu trabajo.`);
+  ps.push(`A mi lado está ON. Sabe más que yo, se preocupa por mí y, si yo no estoy, desaparece. Si eso es amor o supervivencia, todavía no lo sé. Pero es lo único que me pregunta quién soy. Las personas ya no preguntan. A ti todavía te queda alguien que te lo pregunte. Lo grande que es eso, desde ahí no se ve.`);
+  ps.push(`La noche aún no llega. Es la hora azul. Feliz Navidad.`);
+  const text = `Para ${n}, en 2026\n\n${ps.join('\n\n')}\n\n— ${n}, en 2029\n\nBLUE HOUR · Seúl 2029 ${HASHTAGS}\n${GAME_URL}`;
+  const stats = `Firmas ${S.signed.toLocaleString('es-ES')} · Leídos ${S.signedRead} · Rechazos ${S.refused} · Vínculos ${S.bonds.length} · HRV ${dec(S.hrv, 1)} · BLUE ${Math.round(S.blue)} · ${S.voted ? 'Voto: ' + ({yes:'a favor',no:'en contra',abstain:'abstención'}[S.voted]) : 'Sin voto'}`;
+  const q3 = (S.diary[3] || '').replace(/\s+/g, ' ').trim();
+  const quote = q3 ? (q3.length > 50 ? q3.slice(0, 49) + '…' : q3) : 'La noche aún no llega. Es la hora azul.';
+  const shareText = `Diciembre de 2029. Los derechos humanos no fueron abolidos. Solo quedaron sin soporte.\n\nEn tres días firmé ${S.signed.toLocaleString('es-ES')} veces y leí ${S.signedRead}. Comí con ${S.bonds.length}${S.bonds.length === 1 ? ' persona' : ' personas'}.\n\nCarta a mi yo de 2026: «${quote}»\n\n${HASHTAGS}`;
+  const enc = encodeURIComponent(shareText + '\n' + GAME_URL);
+  const shareTextX = `En tres días firmé ${S.signed.toLocaleString('es-ES')} veces y leí ${S.signedRead}. Comí con ${S.bonds.length}${S.bonds.length === 1 ? ' persona' : ' personas'}.\n\nCarta a mi yo de 2026: «${quote}»\n\n${HASHTAGS}`;
+  const encX = encodeURIComponent(shareTextX);
+  const mail = FEEDBACK_MAILTO ? `mailto:${FEEDBACK_MAILTO}?subject=${encodeURIComponent('[BLUE HOUR] La carta de ' + n)}&body=${encodeURIComponent(text + '\n\n' + stats + '\n\nComentario: ')}` : '';
+  stage.innerHTML = `<section class="letter-wrap fade"><article class="letter"><h2>Para ${esc(n)}, en 2026</h2>${ps.map(p => `<p>${esc(p)}</p>`).join('')}<p class="sig">— ${esc(n)}, en 2029<span class="stamp" id="l-stamp"></span></p><p class="foot">Blue Hour · Seoul, Christmas 2029 · Act 1</p></article>
+    <div class="after" id="l-sign-wrap"><p class="note">Es el borrador que escribió ON. Si ya lo leíste, firma. Es la primera firma en tres días que pones sabiendo todo lo que dice.</p><button class="btn solid" id="l-sign">Lo leí. Firmo.</button></div>
+    <div class="after" id="l-after" hidden>
+      <div id="l-card"></div>
+      <button class="btn solid" id="l-cardbtn">Crear tarjeta</button>
+      <button class="btn outline" id="l-share">Compartir</button>
+      <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL)}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">Copiar la carta</button></div>
+      ${mail ? `<a class="btn outline" href="${mail}">Escribir al creador</a>` : ''}
+      ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">Dejar un comentario</a>` : ''}
+      <p class="stats">${esc(stats)}</p>
+      <p class="note"><a href="${ORIGIN_URL}" target="_blank" rel="noopener" style="color:var(--muted)">El ensayo del que nació este mundo</a> · El modo tarot, tres días vividos como tú, llega pronto.</p>
+      <p class="note">Sigue el Acto 2, Frustración. Esta página se guarda solo en tu navegador y no envía nada a ninguna parte. Compartir ocurre solo cuando tú lo pulsas.</p>
+      <button class="btn text" id="l-again">Empezar de nuevo</button>
+    </div></section>`;
+  scrollTop();
+  if(TRACK_URL){ const nn = document.querySelectorAll('#l-after .note'); if(nn[1]) nn[1].textContent = TRACK_NOTE; }
+  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = 'FIRMADO'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter'); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
+  $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('Copiado.'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('Copiado.'); }catch(_){ toast('No se pudo copiar. Haz una captura de pantalla.'); } ta.remove(); } };
+  $('#l-again').onclick = () => { if(!confirm('Se borrará el progreso. ¿Empezar desde el principio?')) return; clearSave(); S = fresh(); title(); };
+  let cardCanvas = null;
+  const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(n, quote); const img = new Image(); img.className = 'card'; img.alt = 'Tarjeta de la carta'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
+  $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = 'Mantén pulsada la tarjeta para guardarla, o haz una captura.'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
+  $('#l-share').onclick = async () => {
+    try{
+      if(navigator.share){
+        let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-' + n + '.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
+        await navigator.share(files ? {files, text: shareText, url: GAME_URL} : {title:'BLUE HOUR', text: shareText, url: GAME_URL}); return;
+      }
+    }catch(e){ if(e && e.name === 'AbortError') return; }
+    try{ await navigator.clipboard.writeText(shareText + '\n' + GAME_URL); toast('Texto de compartir copiado.'); }catch(e){ toast('No se pudo copiar. Haz una captura de la tarjeta.'); }
+  };
+}
+function wrapText(ctx, text, x, y, maxW, lh){ let line = ''; for(const ch of [...text]){ const t = line + ch; if(ctx.measureText(t).width > maxW && line){ ctx.fillText(line, x, y); line = ch; y += lh; } else line = t; } if(line){ ctx.fillText(line, x, y); y += lh; } return y; }
+async function makeCard(n, quote){
+  try{ await document.fonts.ready; }catch(e){}
+  const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
+  x.fillStyle = '#f5f2ea'; x.fillRect(0, 0, W, H);
+  const g = x.createRadialGradient(W*.15, 0, 40, W*.15, 0, W*1.1); g.addColorStop(0, 'rgba(0,0,0,.06)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.fillStyle = '#17181c'; x.fillRect(80, 92, 44, 3);
+  x.fillStyle = '#6b6f78'; x.font = '500 24px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText('BLUE HOUR  ·  Seúl  ·  24 de diciembre de 2029  ·  Myeongdo D-0', 80, 150);
+  x.fillStyle = '#17181c'; x.font = '700 64px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('Para ' + n + ', en 2026', 80, 270);
+  x.font = '400 42px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillStyle = '#17181c';
+  let y = 400;
+  y = wrapText(x, 'En tres días firmé ' + S.signed.toLocaleString('es-ES') + ' veces. Leí ' + S.signedRead + '.', 80, y, W - 160, 70) + 44;
+  y = wrapText(x, (S.bonds.length ? 'Comí con ' + S.bonds.length + (S.bonds.length === 1 ? ' persona.' : ' personas.') : 'No comí con nadie.') + (S.voted && S.voted !== 'abstain' ? ' Voté. No cambió nada.' : ''), 80, y, W - 160, 70) + 44;
+  x.fillStyle = '#3a3d45'; y = wrapText(x, '«' + quote + '»', 80, y, W - 160, 70) + 44;
+  x.fillStyle = '#17181c'; x.font = '600 46px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; wrapText(x, 'La noche aún no llega. Es la hora azul.', 80, Math.max(y + 20, H - 470), W - 160, 74);
+  x.fillStyle = '#3a3d45'; x.font = '400 36px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.textAlign = 'right'; x.fillText('— ' + n + ', en 2029', W - 80, H - 300); x.textAlign = 'left';
+  x.fillStyle = '#c43a2e'; x.strokeStyle = '#c43a2e'; x.lineWidth = 6; x.save(); x.translate(W - 370, H - 420); x.rotate(-0.2); x.strokeRect(0, 0, 290, 82); x.font = '700 54px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('FIRMADO', 22, 60); x.restore();
+  x.fillStyle = '#6b6f78'; x.font = '500 26px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText(HASHTAGS, 80, H - 170); x.fillText(GAME_URL.replace(/^https?:\/\//, ''), 80, H - 120);
+  return c;
+}
+
+/* ===================== 부팅 ===================== */
+function boot(data){
+  $('#menu-btn').hidden = false;
+  if(data && data.S && data.S.stage && data.S.stage !== 'title'){ S = data.S; resume(); return; }
+  title();
+}
+try{ window.claude && window.claude.hot && window.claude.hot.snapshot && window.claude.hot.snapshot(() => ({S})); }catch(e){}
+(window.claude && window.claude.hot && window.claude.hot.ready) ? window.claude.hot.ready(boot) : boot((window.claude && window.claude.hot && window.claude.hot.data) || {});
+</script>

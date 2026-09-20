@@ -1,0 +1,1142 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Blue Hour Myeongdo</title>
+<style>
+:root{
+  --bg:#070b14; --bg-2:#0c1424; --bg-3:#111c31; --line:#1d2a42; --line-2:#2a3a58;
+  --ink:#e6ecf5; --ink-2:#c7d2e3; --muted:#8a99b2; --dim:#6f809c;
+  --accent:#ffa24a; --accent-deep:#e8892f; --accent-ink:#1a0f02;
+  --on:#7fdcd2; --blue:#3f74c9;
+  --paper:#ffffff; --paper-2:#f3f5f8; --paper-ink:#111318; --paper-muted:#6b7280; --paper-line:#e1e5eb; --paper-ground:#eceef2; --warm:#f5f2ea;
+  --stamp:#c43a2e; --stamp-b:#2d4f9e; --danger:#ff6b6b;
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Noto Sans KR","Segoe UI",Roboto,system-ui,sans-serif;
+  --serif:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Noto Sans KR","Segoe UI",Roboto,system-ui,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Noto Sans KR","Segoe UI",Roboto,system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --gutter:18px;
+}
+[hidden]{display:none!important}
+html,body{height:100%}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+body.paper-mode{background:var(--paper-ground)}
+#app{position:relative;z-index:2;max-width:640px;margin:0 auto;padding:0 var(--gutter) 56px;min-height:100%}
+#snow{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;transition:opacity .8s}
+body.paper-mode #snow,body.dark-mode #snow{opacity:0}
+#veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 60%,rgba(40,90,190,0) 30%,rgba(30,70,170,.85) 100%);opacity:0;transition:opacity 1.2s}
+body.paper-mode #veil{mix-blend-mode:multiply}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.fade{animation:fade .5s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.fade{animation:none}.ticker span{animation:none!important}.cue i{animation:none}.p-timer{transition:none!important}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:4px;border:1px solid var(--line-2);background:var(--bg-2);color:var(--ink);font-family:var(--sans);font-weight:500;font-size:15px;letter-spacing:.01em;transition:background .15s,border-color .15s,transform .06s,opacity .15s;text-decoration:none}
+.btn:hover{border-color:var(--muted)}
+.btn:active{transform:translateY(1px)}
+.btn.solid{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.solid:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
+.btn.outline{background:transparent}
+.btn.text{background:transparent;border-color:transparent;color:var(--muted);padding:0 10px}
+.btn.text:hover{color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+#hud{position:sticky;top:0;z-index:5;margin:0 calc(-1*var(--gutter)) 6px;padding:calc(10px + env(safe-area-inset-top,0px)) calc(var(--gutter) + 44px) 10px var(--gutter);display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(var(--bg) 78%,transparent);font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em}
+body.paper-mode #hud{background:linear-gradient(var(--paper-ground) 78%,transparent);color:#5a5e68}
+#hud .m{display:flex;align-items:baseline;gap:6px;white-space:nowrap}
+#hud .m label{font-size:10px;text-transform:uppercase;letter-spacing:.14em;opacity:.7}
+#hud .m b{font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
+#hud .m b.d{color:var(--accent)}
+body.paper-mode #hud .m b{color:#17181c}
+body.paper-mode #hud .m b.d{color:#b5541c}
+#hud .bar{display:inline-block;width:56px;height:4px;background:var(--line);border-radius:2px;overflow:hidden;vertical-align:middle}
+body.paper-mode #hud .bar{background:#d3d7de}
+#hud .bar b{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),#7aa6ff);transition:width .6s}
+#h-att-dots i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--line-2);margin-left:4px;vertical-align:middle}
+#h-att-dots i.on{background:var(--accent)}
+#hud{gap:4px 12px}
+#hud .m:first-child{flex-basis:100%}
+#hud .m:not(:first-child){font-size:10.5px;letter-spacing:0}
+#hud .m:not(:first-child) label{letter-spacing:.1em}
+#hud .bar{width:44px}
+#menu-btn{background:rgba(7,11,20,.35);border-color:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+
+#menu-btn{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:10px;z-index:40;width:44px;height:44px;border-radius:50%;border:1px solid var(--line-2);background:rgba(7,11,20,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--ink);display:flex;align-items:center;justify-content:center;padding:0}
+#menu-btn span{display:block;width:16px;height:2px;background:currentColor;box-shadow:0 -5px 0 currentColor,0 5px 0 currentColor;border-radius:1px}
+body.paper-mode #menu-btn{background:rgba(255,255,255,.5);color:#111318;border-color:transparent}
+.sheet-bg{position:fixed;inset:0;z-index:50;background:rgba(3,6,12,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:51;max-width:640px;margin:0 auto;background:var(--bg-2);border:1px solid var(--line-2);border-bottom:0;border-radius:14px 14px 0 0;padding:18px var(--gutter) calc(20px + env(safe-area-inset-bottom,0px));animation:up .25s ease both}
+@keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+.sheet h3{font-family:var(--display);font-weight:500;font-size:18px;margin:0 0 4px}
+.sheet .save{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em;margin:0 0 14px}
+.sheet .list{display:flex;flex-direction:column;gap:8px}
+.sheet .btn{justify-content:flex-start;width:100%}
+.sheet .confirm{margin-top:8px;padding:12px 14px;border:1px solid var(--line-2);border-radius:6px;background:var(--bg-3);font-size:14px;color:var(--ink-2)}
+.sheet .confirm .row{margin-top:10px}
+.sheet .credit{font-family:var(--mono);font-size:11px;color:var(--dim);margin:14px 0 0;line-height:1.8}
+.sheet a{color:var(--muted)}
+
+.title{padding-block:0 30px}
+.hero{position:relative;margin:0 calc(-1*var(--gutter));height:min(64vw,400px);background-size:cover;background-position:center 28%}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,.05) 0%,rgba(7,11,20,0) 40%,var(--bg) 100%)}
+.title .eyebrow{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-top:6px}
+.title h1{font-family:var(--display);font-weight:700;font-size:clamp(44px,12vw,80px);line-height:.95;margin:8px 0 0;letter-spacing:-.03em}
+.title h1 span{display:block;font-family:var(--display);font-weight:500;font-size:.3em;letter-spacing:.22em;color:var(--accent);margin-top:14px;padding-left:.05em}
+.title .rule{width:40px;height:1px;background:var(--line-2);margin:24px 0 18px}
+.title .quote{font-family:var(--serif);color:var(--ink-2);font-size:17px;line-height:1.85;margin:0 0 14px;max-width:30ch;text-wrap:balance}
+.title .promise{font-family:var(--sans);color:var(--ink);font-size:15px;margin:0 0 22px;max-width:32ch}
+.title .actions{display:flex;flex-wrap:wrap;gap:10px}
+.title .fine{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:28px;line-height:1.9;letter-spacing:.02em}
+.title .langs{font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:14px}
+.title .langs a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line-2)}
+.title .langs b{color:var(--ink);font-weight:500}
+
+.narr{min-height:calc(100vh - 80px);min-height:calc(100svh - 80px);display:flex;flex-direction:column;justify-content:center;cursor:pointer;padding-block:40px 90px;position:relative}
+.narr-text{font-family:var(--display);font-weight:400;font-size:clamp(20px,5vw,25px);line-height:1.75;letter-spacing:-.01em;max-width:26ch;text-wrap:pretty;margin:0;color:var(--ink)}
+.cue{position:absolute;left:0;bottom:calc(28px + env(safe-area-inset-bottom,0px));font-family:var(--mono);font-size:12.5px;color:var(--muted);letter-spacing:.08em;display:flex;align-items:center;gap:10px}
+.cue i{display:block;width:6px;height:6px;border-right:1px solid var(--dim);border-bottom:1px solid var(--dim);transform:rotate(45deg);animation:nod 1.6s ease-in-out infinite}
+@keyframes nod{0%,100%{transform:translateY(0) rotate(45deg);opacity:.5}50%{transform:translateY(4px) rotate(45deg);opacity:1}}
+.law{font-family:var(--mono);font-size:13.5px;line-height:1.85;background:var(--warm);color:var(--paper-ink);padding:22px 22px 18px;border-radius:2px;max-width:42ch;box-shadow:0 30px 70px rgba(0,0,0,.55)}
+.law b{display:block;font-size:10px;letter-spacing:.18em;color:var(--paper-muted);margin-bottom:10px;font-weight:500}
+.law strong{font-size:30px;font-weight:500;letter-spacing:-.02em}
+.law .law-note{display:block;margin-top:10px;font-family:var(--serif);color:#3a3d45;font-size:14px}
+.narr .after-law{font-family:var(--display);margin:24px 0 0;font-size:18px;color:var(--muted)}
+
+.field{display:flex;flex-direction:column;gap:14px;margin-top:26px;max-width:34ch}
+.field input,.field textarea{font:inherit;font-family:var(--display);font-size:22px;background:transparent;border:0;border-bottom:1px solid var(--line-2);color:var(--ink);padding:8px 0;border-radius:0;width:100%}
+.field input::placeholder,.field textarea::placeholder{color:var(--dim)}
+.field textarea{font-family:var(--serif);font-size:17px;line-height:1.8;min-height:110px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;max-width:46ch}
+.chip{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--ink-2);font-size:15px}
+.chip:hover{border-color:var(--muted);color:var(--ink)}
+.chip.ghost{border-style:dashed;color:var(--muted)}
+
+.scene{padding-block:0 12px;min-height:calc(100svh - 72px);cursor:pointer}
+.backdrop{position:relative;margin:0 calc(-1*var(--gutter)) 14px;height:min(52vw,320px);background-size:cover;background-position:center}
+.backdrop:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,.12) 0%,rgba(7,11,20,0) 42%,var(--bg) 100%)}
+body.paper-mode .backdrop:after{background:linear-gradient(180deg,rgba(236,238,242,0) 40%,var(--paper-ground) 100%)}
+.scene-h{margin-bottom:16px}
+.scene-h h2{font-family:var(--display);font-weight:500;font-size:24px;margin:0;letter-spacing:-.01em}
+.scene-h .sub{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em;margin:4px 0 0}
+.log{display:flex;flex-direction:column;gap:20px;padding-bottom:10px}
+.line{max-width:58ch;display:grid;grid-template-columns:0 1fr;column-gap:0}
+.line.npc,.line.on{grid-template-columns:44px 1fr;column-gap:12px}
+.line .who{grid-column:2;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--muted);margin-bottom:5px;text-transform:uppercase}
+.line.on .who{color:var(--on)}
+.line.npc .who{color:var(--accent)}
+.line .txt{grid-column:2;margin:0;font-family:var(--serif);font-size:16.5px;line-height:1.75;letter-spacing:-.005em;text-wrap:pretty;color:var(--ink)}
+.line.on .txt{color:#d9f4f1;background:rgba(127,220,210,.06);border:1px solid rgba(127,220,210,.16);border-radius:14px 14px 14px 4px;padding:12px 15px;font-size:17px}
+.line.on .txt:empty:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--on);box-shadow:12px 0 0 var(--on),24px 0 0 var(--on);animation:dots 1s ease-in-out infinite;margin:6px 0}
+@keyframes dots{0%,100%{opacity:.25}50%{opacity:1}}
+.line.narr-line .txt{color:var(--muted);font-size:16px}
+.line.me .txt{color:var(--ink-2);font-family:var(--sans);font-size:16px;background:var(--bg-3);border:1px solid var(--line);border-radius:14px 14px 4px 14px;padding:10px 14px;display:inline-block}
+.line.me .who{color:var(--ink-2)}
+.line .portrait{grid-column:1;grid-row:1/span 2;width:44px;height:56px;object-fit:cover;object-position:top;border-radius:3px;border:1px solid var(--line-2);background:var(--bg-2)}
+.line .on-dot{grid-column:1;grid-row:1/span 2;width:44px;height:56px;display:flex;align-items:center;justify-content:center}
+.line .on-dot i{display:block;width:12px;height:12px;border-radius:50%;background:var(--on);box-shadow:0 0 18px 4px rgba(127,220,210,.45);animation:breathe 3.2s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.25);opacity:1}}
+@media (prefers-reduced-motion:reduce){.line .on-dot i{animation:none}}
+.ctl{position:sticky;bottom:0;display:flex;flex-direction:column;gap:8px;padding:14px 0 calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 32%)}
+.ctl .next{align-self:stretch;justify-content:flex-end;min-height:48px;padding:0 4px;background:none;border:0;font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;color:var(--muted);display:flex;align-items:center;gap:10px}
+.ctl .next i{display:block;width:6px;height:6px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(45deg);animation:nod 1.6s ease-in-out infinite}
+.ctl .next.typing i{animation:none;opacity:.35}
+.choice{display:flex;align-items:center;gap:12px;width:100%;min-height:50px;padding:10px 14px 10px 16px;text-align:left;background:var(--bg-2);border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:4px;font-family:var(--sans);font-size:15.5px;color:var(--ink);line-height:1.5;transition:background .15s,border-color .15s}
+.choice:hover{background:var(--bg-3);border-color:var(--line-2);border-left-color:var(--accent)}
+.choice:active{transform:translateY(1px)}
+.choice.quiet{border-left-color:var(--line-2);color:var(--ink-2)}
+.ctl .inrow{display:flex;gap:8px;align-items:stretch}
+.ctl .inrow input{flex:1;min-width:0;font:inherit;font-family:var(--serif);font-size:16px;background:var(--bg-2);border:1px solid var(--line);border-bottom-color:var(--line-2);color:var(--ink);padding:10px 12px;border-radius:4px}
+.ctl .inrow .choice{width:auto;flex:0 0 auto}
+
+.ticker{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 0;margin:2px 0 6px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+.ticker span{display:inline-block;padding-left:100%;animation:tick 32s linear infinite}
+@keyframes tick{to{transform:translateX(-100%)}}
+
+.evening-h{font-family:var(--display);font-size:24px;font-weight:500;margin:6px 0 0}
+.evening-p{color:var(--muted);margin:4px 0 4px;font-size:15px;font-family:var(--serif)}
+.evening-hint{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin:0 0 14px;letter-spacing:.02em}
+.tiles{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:560px){.tiles{grid-template-columns:1fr 1fr}.tiles .tile.wide{grid-column:1/-1}}
+.tile{position:relative;display:block;width:100%;height:124px;padding:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background-size:cover;background-position:center;text-align:left;color:var(--ink)}
+.tile:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,11,20,.94) 0%,rgba(7,11,20,.7) 60%,rgba(7,11,20,.25) 100%)}
+.tile .t{position:absolute;left:16px;right:20%;bottom:14px;display:flex;flex-direction:column;gap:2px}
+.tile .t small{text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.tile .t b{font-family:var(--display);font-weight:500;font-size:19px;letter-spacing:-.01em}
+.tile .t small{font-family:var(--serif);font-size:13.5px;color:var(--ink-2)}
+.tile .cost{position:absolute;top:12px;left:16px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase}
+.tile.vote .cost{color:#fff;background:var(--stamp);padding:2px 8px;border-radius:2px}
+.tile:hover{border-color:var(--line-2)}
+.tile:disabled{cursor:not-allowed;filter:grayscale(1)}
+.tile:disabled:before{background:rgba(7,11,20,.85)}
+.tile:disabled .t b,.tile:disabled .t small{color:var(--dim)}
+.tile:disabled .cost{color:var(--dim);background:transparent}
+
+.term{padding-block:0 20px}
+.term-top{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:#6a6e78;text-transform:uppercase;margin:0 0 12px}
+.paper{position:relative;background:var(--paper);color:var(--paper-ink);border-radius:2px;padding:24px 22px 28px;border:1px solid var(--paper-line);box-shadow:0 18px 50px rgba(0,0,0,.12);font-family:var(--mono);overflow:hidden}
+.paper.batch{box-shadow:0 18px 50px rgba(0,0,0,.12),4px 4px 0 -1px var(--paper-2),8px 8px 0 -2px #e6e9ee}
+.p-timer{position:absolute;left:0;top:0;height:3px;width:100%;background:var(--paper-ink);transition:width 20s linear;opacity:.8}
+.p-timer.late{background:var(--stamp)}
+.doc-head{display:flex;align-items:center;gap:10px;font-size:10.5px;letter-spacing:.12em;color:var(--paper-muted);border-bottom:1px solid var(--paper-line);padding-bottom:12px;margin-bottom:16px;text-transform:uppercase}
+.doc-head .tag{border:1px solid var(--paper-line);border-radius:2px;padding:2px 7px;color:var(--paper-ink);letter-spacing:.14em}
+.doc-head .no{margin-left:auto;font-variant-numeric:tabular-nums}
+.doc-head .late-tag{color:#fff;background:var(--stamp);border-radius:2px;padding:2px 7px;letter-spacing:.14em}
+.paper h3{font-family:var(--sans);font-weight:600;font-size:20px;margin:0 0 12px;letter-spacing:-.01em;line-height:1.35}
+.p-body{font-size:14.5px;line-height:1.9;margin:0;white-space:pre-line}
+.p-basis{font-size:12.5px;line-height:1.8;color:var(--paper-muted);background:var(--paper-2);border-left:2px solid var(--paper-line);margin:16px 0 0;padding:10px 12px}
+.p-basis.hide{display:none}
+.stamp{position:absolute;right:18px;bottom:18px;font-family:var(--sans);font-weight:700;font-size:30px;letter-spacing:.24em;padding:6px 12px 6px 18px;border:3px solid;border-radius:3px;transform:rotate(-12deg) scale(1.5);opacity:0;pointer-events:none;transition:transform .16s cubic-bezier(.2,1.5,.4,1),opacity .16s;mix-blend-mode:multiply}
+.stamp.show{opacity:.86;transform:rotate(-11deg) scale(1)}
+.stamp.sign{color:var(--stamp);border-color:var(--stamp)}
+.stamp.refuse{color:var(--stamp-b);border-color:var(--stamp-b)}
+.term-ctl{display:grid;grid-template-columns:auto 1fr 1.4fr;gap:8px;margin-top:14px}
+.term-ctl .btn{min-height:52px;border-radius:3px}
+.term-ctl .btn.text{color:#5a5e68}
+.term-ctl .btn.outline{background:transparent;border-color:#c9cfd8;color:var(--paper-ink)}
+.term-ctl .btn.solid{background:var(--paper-ink);border-color:var(--paper-ink);color:#fff}
+.term-ctl .btn.solid:hover{background:#000}
+.term-ctl.one{grid-template-columns:1fr}
+.term-ctl.three{grid-template-columns:1fr 1fr 1fr}
+.term-note{font-family:var(--serif);color:#3a3d45;font-size:15.5px;line-height:1.75;min-height:1.75em;margin:14px 0 0;max-width:46ch}
+.summary{font-family:var(--mono);font-size:13.5px;line-height:2.1;color:var(--paper-ink)}
+.summary b{font-weight:500;font-size:16px}
+.interview{background:#15171d;color:#e6e6e6;border-radius:3px;padding:20px 20px;font-family:var(--mono);font-size:14px;line-height:1.9;margin-top:4px}
+.interview .who{font-size:10px;letter-spacing:.18em;color:#9aa;display:block;margin-bottom:8px;text-transform:uppercase}
+
+.diary{padding-block:12vh 20px;min-height:calc(100dvh - 100px);display:flex;flex-direction:column;justify-content:flex-start}
+.diary .row{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.diary .q{font-family:var(--display);font-size:clamp(21px,5vw,26px);line-height:1.75;max-width:26ch;text-wrap:pretty;margin:0}
+.diary .hint{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin:10px 0 0;letter-spacing:.03em;line-height:1.8}
+.diary .field{max-width:48ch}
+.diary textarea{background:repeating-linear-gradient(transparent 0 30px,var(--line) 30px 31px);line-height:31px;padding:0;border-bottom:0;min-height:124px}
+
+.letter-wrap{padding-block:10px 20px}
+.letter{background:var(--warm);color:var(--paper-ink);padding:34px 26px 36px;border-radius:2px;font-family:var(--serif);font-size:16px;line-height:1.9;letter-spacing:-.005em;box-shadow:0 30px 70px rgba(0,0,0,.55);position:relative}
+.letter:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 20% 0%,rgba(0,0,0,.035),transparent 60%),radial-gradient(ellipse at 90% 100%,rgba(0,0,0,.04),transparent 55%)}
+.letter h2{font-family:var(--display);font-weight:500;font-size:22px;margin:0 0 22px;letter-spacing:-.01em}
+.letter p{margin:0 0 15px;max-width:40ch;text-wrap:pretty}
+.letter .sig{margin-top:24px;text-align:right;color:#3a3d45;font-family:var(--display);display:flex;justify-content:flex-end;align-items:center;gap:16px}
+.letter .stamp{position:static;font-size:22px;padding:4px 10px 4px 14px}
+.letter .foot{font-family:var(--mono);font-size:10.5px;color:var(--paper-muted);margin-top:24px;letter-spacing:.06em}
+.after{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.after .note{font-family:var(--mono);font-size:12.5px;color:var(--muted);line-height:1.8;margin:0;letter-spacing:.02em}
+.after .stats{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:2;margin:4px 0 0;letter-spacing:.04em}
+.after .row .btn{flex:1}
+.after .card{display:block;width:100%;max-width:420px;border:1px solid var(--line-2);border-radius:4px;box-shadow:0 20px 50px rgba(0,0,0,.5);margin:4px 0 8px}
+.term-ctl .btn.nextcase{background:transparent;border-color:#c9cfd8;color:var(--paper-ink)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:4px;font-size:13px;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+
+/* ---------- v0.6 wet cyberpunk layer ---------- */
+:root{--neon:#5ee7df;--neon-2:#ff5fa2;--glass:rgba(10,17,31,.74);--glass-2:rgba(14,24,42,.86);--glass-line:rgba(120,160,220,.22);--bg:#05080f;--bg-2:#0a1220;--bg-3:#0f1a2e;--line:#172238;--line-2:#233452}
+body{background:var(--bg)}
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px),radial-gradient(ellipse at 18% 112%,rgba(94,231,223,.16),transparent 55%),radial-gradient(ellipse at 92% -8%,rgba(255,95,162,.11),transparent 48%),radial-gradient(ellipse at 50% 45%,transparent 50%,rgba(0,0,0,.6) 100%)}
+body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");background-size:160px 160px}
+body.paper-mode::before{opacity:.35}
+body.paper-mode::after{opacity:.03}
+#snow{opacity:.8}
+.btn{background:var(--glass);border:1px solid var(--glass-line);border-radius:2px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 10px 26px rgba(0,0,0,.35);clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.btn:hover{border-color:rgba(94,231,223,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 0 1px rgba(94,231,223,.12),0 0 20px rgba(94,231,223,.16)}
+.btn.solid{background:linear-gradient(180deg,#ffb35f 0%,#f08a2a 100%);border-color:#ffc27a;color:#1a0f02;box-shadow:0 0 24px rgba(255,157,59,.32),inset 0 1px 0 rgba(255,255,255,.35)}
+.btn.solid:hover{background:linear-gradient(180deg,#ffbf75,#f5952f);border-color:#ffd39a;box-shadow:0 0 30px rgba(255,157,59,.45)}
+.btn.outline{background:rgba(8,14,26,.5)}
+.btn.text{background:transparent;border-color:transparent;box-shadow:none;clip-path:none;backdrop-filter:none;-webkit-backdrop-filter:none;font-family:var(--mono);font-size:12.5px;letter-spacing:.08em}
+.btn.text:hover{color:var(--neon);text-shadow:0 0 8px rgba(94,231,223,.5)}
+.chip{background:var(--glass);border-color:var(--glass-line);clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));border-radius:2px}
+.chip:hover{border-color:rgba(94,231,223,.55);color:var(--ink);box-shadow:0 0 16px rgba(94,231,223,.15)}
+#hud{background:linear-gradient(rgba(5,8,15,.94) 72%,transparent);border-bottom:1px solid rgba(94,231,223,.08)}
+#hud .m b.d{color:var(--neon)}
+#hud .bar{background:rgba(120,160,220,.15)}
+#hud .bar b{background:linear-gradient(90deg,#2f5fb8,var(--neon));box-shadow:0 0 8px rgba(94,231,223,.5)}
+#h-att-dots i.on{background:var(--accent);box-shadow:0 0 8px rgba(255,157,59,.7)}
+#menu-btn{background:rgba(5,8,15,.55);border-color:var(--glass-line)}
+#menu-btn:hover{border-color:rgba(94,231,223,.5);box-shadow:0 0 14px rgba(94,231,223,.2)}
+.sheet{background:var(--glass-2);border-color:rgba(94,231,223,.25);border-top:1px solid rgba(94,231,223,.45);box-shadow:0 -20px 60px rgba(0,0,0,.6),0 -1px 30px rgba(94,231,223,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.hero:after{background:linear-gradient(180deg,rgba(5,8,15,.1) 0%,rgba(5,8,15,0) 38%,var(--bg) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 4px)}
+.hero{filter:saturate(1.12) contrast(1.05)}
+.title h1{text-shadow:0 0 30px rgba(94,231,223,.14)}
+.title h1 span{text-shadow:0 0 16px rgba(255,157,59,.55)}
+.title .rule{width:88px;background:linear-gradient(90deg,var(--neon),transparent);box-shadow:0 0 12px rgba(94,231,223,.5)}
+.title .eyebrow{color:var(--neon);opacity:.85}
+.narr-text{text-shadow:0 0 30px rgba(94,231,223,.08)}
+.cue{color:var(--neon);opacity:.8}
+.cue i{border-color:var(--neon)}
+.backdrop{filter:saturate(1.12) contrast(1.06)}
+.backdrop:after{background:linear-gradient(180deg,rgba(5,8,15,.14) 0%,rgba(5,8,15,0) 40%,var(--bg) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 4px)}
+.scene-h h2{text-shadow:0 0 18px rgba(94,231,223,.12)}
+.scene-h .sub{color:var(--neon);opacity:.75}
+.line .who{opacity:.95}
+.line.on .who{color:var(--neon)}
+.line.on .txt{background:linear-gradient(180deg,rgba(94,231,223,.10),rgba(94,231,223,.035));border:1px solid rgba(94,231,223,.32);border-radius:2px 12px 12px 12px;box-shadow:0 0 26px rgba(94,231,223,.08),inset 0 0 0 1px rgba(0,0,0,.25);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.line.on .on-dot i{box-shadow:0 0 22px 6px rgba(94,231,223,.5)}
+.line.npc .txt{background:var(--glass);border:1px solid var(--glass-line);border-left:2px solid var(--accent);border-radius:2px;padding:10px 14px;box-shadow:0 10px 26px rgba(0,0,0,.3)}
+.line.npc .portrait{border-color:rgba(255,157,59,.45);box-shadow:0 0 14px rgba(255,157,59,.18);filter:saturate(1.1)}
+.line.me .txt{background:rgba(255,157,59,.07);border:1px solid rgba(255,157,59,.28);border-radius:12px 2px 12px 12px;box-shadow:none}
+.line.narr-line .txt{border-left:1px solid var(--line-2);padding-left:12px}
+.txt.typing::after{content:"▍";color:var(--neon);margin-left:2px;animation:blink 1s steps(2) infinite;text-shadow:0 0 8px rgba(94,231,223,.8)}
+@keyframes blink{50%{opacity:0}}
+.ctl{background:linear-gradient(transparent,var(--bg) 34%)}
+.ctl .next{color:var(--neon);opacity:.85}
+.ctl .next.typing{color:var(--muted);text-shadow:none}
+.choice{background:var(--glass);border:1px solid var(--glass-line);border-left:2px solid var(--accent);border-radius:2px;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);box-shadow:0 10px 24px rgba(0,0,0,.3);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.choice:hover{background:var(--glass-2);border-color:rgba(255,157,59,.5);border-left-color:var(--accent);box-shadow:0 0 18px rgba(255,157,59,.18)}
+.choice.quiet{border-left-color:var(--line-2)}
+.ctl .inrow input{background:var(--glass);border-color:var(--glass-line);border-radius:2px}
+.ctl .inrow input:focus{border-color:rgba(94,231,223,.6);box-shadow:0 0 14px rgba(94,231,223,.15)}
+.ticker{border-color:rgba(94,231,223,.14);color:var(--neon);opacity:.8}
+.tile{border:1px solid var(--glass-line);border-radius:3px;box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.tile:before{background:repeating-linear-gradient(112deg,rgba(255,255,255,.05) 0 1px,transparent 1px 13px),linear-gradient(90deg,rgba(5,8,15,.94) 0%,rgba(5,8,15,.68) 60%,rgba(5,8,15,.22) 100%);background-size:220px 220px,auto;animation:rainshift 1.1s linear infinite}
+@keyframes rainshift{to{background-position:-60px 220px,0 0}}
+.tile:after{content:"";position:absolute;left:0;right:0;bottom:0;height:42%;background:linear-gradient(transparent,rgba(94,231,223,.10));pointer-events:none}
+.tile:hover{border-color:rgba(94,231,223,.5);box-shadow:0 0 22px rgba(94,231,223,.14),0 12px 30px rgba(0,0,0,.4)}
+.tile .cost{color:var(--neon)}
+.tile.vote .cost{color:#fff;background:var(--stamp);text-shadow:none;box-shadow:0 0 14px rgba(196,58,46,.55)}
+.tile:disabled:before{background:rgba(5,8,15,.86);animation:none}
+.tile:disabled:after{display:none}
+.evening-h{text-shadow:0 0 18px rgba(94,231,223,.12)}
+.field input,.field textarea{border-bottom-color:rgba(94,231,223,.4)}
+.field input:focus,.field textarea:focus{border-bottom-color:var(--neon);box-shadow:0 8px 20px -12px rgba(94,231,223,.5)}
+.diary textarea{background:repeating-linear-gradient(transparent 0 30px,rgba(94,231,223,.18) 30px 31px)}
+.diary .q{text-shadow:0 0 30px rgba(94,231,223,.08)}
+.after .card{border-color:rgba(94,231,223,.3);box-shadow:0 0 30px rgba(94,231,223,.1),0 20px 50px rgba(0,0,0,.5)}
+.toast{background:var(--glass-2);color:var(--ink);border:1px solid rgba(94,231,223,.4);box-shadow:0 0 18px rgba(94,231,223,.2)}
+@media (prefers-reduced-motion:reduce){.tile:before{animation:none}.txt.typing::after{animation:none}}
+/* v0.7 system fonts */
+.narr-bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center 35%;opacity:.62;filter:saturate(1.1) contrast(1.05);animation:kb 22s ease-out forwards}
+.narr-bg:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,15,.25) 0%,rgba(5,8,15,.55) 45%,rgba(5,8,15,.92) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 4px)}
+@keyframes kb{from{transform:scale(1.04)}to{transform:scale(1.12)}}
+@media (prefers-reduced-motion:reduce){.narr-bg{animation:none}}
+.law.notice{border:2px solid rgba(196,58,46,.85);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 6px rgba(255,255,255,.06)}
+.law.notice b{color:var(--stamp);letter-spacing:.2em}
+.title .fine.credit-line{margin-top:6px;color:var(--dim)}
+</style>
+
+<div id="app">
+  <header id="hud" hidden>
+    <span class="m"><b id="h-date">December 21</b><b class="d" id="h-dday">Myeongdo D-3</b><label id="h-phase"></label><label id="h-left"></label></span>
+    <span class="m"><label>HRV</label><b id="h-hrv">41.0</b><label id="h-floor">8F</label></span>
+    <span class="m"><label>Blue</label><span class="bar"><b id="h-blue"></b></span></span>
+    <span class="m"><label>Ties</label><b id="h-bond">0</b></span>
+    <span class="m" id="h-att" hidden><label>Attention</label><span id="h-att-dots"></span></span>
+  </header>
+  <main id="stage"></main>
+</div>
+<button id="menu-btn" aria-label="Menu" hidden><span></span></button>
+<div id="menu-wrap" hidden>
+  <div class="sheet-bg" id="m-bg"></div>
+  <div class="sheet" role="dialog" aria-label="Menu">
+    <h3>BLUE HOUR</h3>
+    <p class="save" id="m-save"></p>
+    <div class="list">
+      <button class="btn" id="m-close">Continue</button>
+      <button class="btn" id="m-title">Title screen</button>
+      <button class="btn outline" id="m-restart">Restart</button>
+    </div>
+    <div class="confirm" id="m-confirm" hidden>Your saved progress will be erased. Start over?<div class="row"><button class="btn solid" id="m-yes">Erase it</button><button class="btn text" id="m-no">No</button></div></div>
+    <p class="credit">Progress is saved only in this browser.</p>
+  </div>
+</div>
+<canvas id="snow" aria-hidden="true"></canvas>
+<div id="veil" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ===================== SETTINGS ===================== */
+const FEEDBACK_MAILTO = '';   // Enter the email of the maker and a 'Send a letter to the maker' button appears.
+const FEEDBACK_FORM = '';     // Enter a Google Form URL and a 'Leave one line of feedback' button appears.
+const GAME_URL = 'https://patrickhan-coder.github.io/blue-hour/';
+const HASHTAGS = '#ToMy2026Self #BlueHour2029';
+const ORIGIN_URL = 'https://brunch.co.kr/@hiclemi/146';
+const NAMES = {on:'ON', me:'You', bak:'Mr. Park', sujin:'Sujin', hal:'Grandma Jeong', dohyun:'Dohyun', sunbae:'The Engineer'};
+const LANGS = [['ko','Korean','./'],['en','English','en.html'],['zh','Chinese','zh.html'],['ja','Japanese','ja.html'],['es','Spanish','es.html']];
+const TRACK_URL = '';
+const TRACK_NOTE = 'This page sends your name, your 2026 job, your progress and your signature counts to the maker. Diary answers and the letter itself are never sent.';
+const NOTICE_CARD = {html:`<div class="law notice"><b>Notice to Vacate</b>Area: all of Myeongdo<br>Enforcement date: December 24<br>Extension review: midnight of the enforcement date, performed by the model<br>Officer in charge: none</div><p class="after-law">It hangs in every alley. This sheet of paper became the name of the neighborhood.</p>`};
+const INTRO_BGS = ['title','title','alley',null,'alley','room'];
+const AFTER_BGS = ['tower',null,null,'terminal','room','title'];
+const LANG = 'en';
+const DATES = {1:{md:'December 21', d:'D-3'}, 2:{md:'December 22', d:'D-2'}, 3:{md:'December 23', d:'D-1'}};
+const JOBS = {
+  'Marketer':{hrv:41, why:'Persuasion stayed. Execution went.'},
+  'Developer':{hrv:38, why:'The first field replaced. Only the instinct is left.'},
+  'Product Manager':{hrv:40, why:'Problem framing stayed. The documents went.'},
+  'Sales':{hrv:47, why:'The field that eats with people. Not replaced yet.'},
+  'Designer':{hrv:39, why:'Taste stayed. The hands went.'},
+  'Student':{hrv:35, why:'Probability that what you learned disappears: 0.98.'},
+  'Self-employed':{hrv:45, why:'You own something. That is everything.'},
+  'Civil Servant':{hrv:43, why:'Signing was already the job. The best-prepared field of all.'}
+};
+const WHY_POOL = [j => `${j}. Judgment stayed. The hands went.`, j => `${j}. Five-year obsolescence estimate: deferred. The only record is that a human still does this.`, j => `${j}. Not replaced. Replacement became unnecessary.`, j => `${j}. Final assessment for this field. No further updates scheduled.`];
+const DEFAULT_JOB = j => ({hrv: 36 + ([...String(j)].reduce((a,c) => a + c.charCodeAt(0), 0) % 10), why: WHY_POOL[String(j).length % WHY_POOL.length](j)});
+
+/* ===================== State ===================== */
+const $ = s => document.querySelector(s);
+const stage = $('#stage'), hud = $('#hud');
+const SAVE_KEY = 'bluehour_act1_v2';
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let pendT = null, pendI = null;
+function later(ms, fn){ clearTimeout(pendT); pendT = setTimeout(fn, reduced ? 200 : ms); }
+function leave(){ clearTimeout(pendT); clearInterval(pendI); pendT = pendI = null; }
+
+function fresh(){ return {
+  name:'', job:'', day:1, stage:'title',
+  hrv:41.0, blue:12, body:70, att:3,
+  bonds:[], onBond:0,
+  signed:0, signedRead:0, refused:0, delays:0,
+  signedToday:0, refusedToday:0, delaysToday:0,
+  diary:{}, identity:'an Attestor', flags:{}, ateToday:null, meals:[], voted:null
+};}
+let S = fresh();
+
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
+function load(){ try{ const r = localStorage.getItem(SAVE_KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
+function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+function floorOf(){ return clamp(Math.round(S.hrv/5), 1, 20); }
+function T(s){ return String(s).replace(/\{name\}/g, S.name||'Attestor').replace(/\{job\}/g, S.job||'that work'); }
+function josa(w, a, b){ w = String(w); const c = w.charCodeAt(w.length-1); if(!(c >= 0xAC00 && c <= 0xD7A3)) return w + b; return w + (((c - 0xAC00) % 28) ? a : b); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1600); }
+function scrollTop(){ window.scrollTo({top:0, behavior: reduced ? 'auto' : 'smooth'}); }
+
+function mode(m){ document.body.classList.toggle('paper-mode', m==='paper'); document.body.classList.toggle('dark-mode', m==='dark'); if(m !== 'paper' && m !== 'dark' && window.kickSnow) window.kickSnow(); }
+function veil(){ $('#veil').style.opacity = clamp(S.blue,0,100)/150; }
+function updHUD(showAtt){
+  hud.hidden = false;
+  const dd = DATES[S.day] || DATES[3];
+  $('#h-date').textContent = dd.md; $('#h-dday').textContent = 'Myeongdo ' + dd.d;
+  $('#h-phase').textContent = ({morning:'Morning', shift:'Shift', evening:'Evening', night:'Night', diary:'Diary'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? (4 - S.day) + (S.day === 3 ? ' night' : ' nights') + ' to the letter' : '';
+  $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + 'F';
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%';
+  $('#h-bond').textContent = S.bonds.length;
+  const a = $('#h-att'); a.hidden = !showAtt;
+  $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
+  veil();
+}
+function eat(who){
+  if(!S.bonds.includes(who)) S.bonds.push(who);
+  S.blue = clamp(S.blue - 3, 0, 100); S.body = clamp(S.body + 10, 0, 100);
+  S.ateToday = who; S.meals.push({day:S.day, who});
+  updHUD(true);
+}
+
+/* ===================== Menu ===================== */
+function openMenu(){
+  const saved = load();
+  $('#m-save').textContent = saved && saved.name ? `Saved · ${DATES[Math.min(saved.day,3)].md} · ${saved.name}` : 'No saved progress';
+  $('#m-confirm').hidden = true; $('#menu-wrap').hidden = false;
+}
+function closeMenu(){ $('#menu-wrap').hidden = true; }
+$('#menu-btn').onclick = openMenu; $('#m-bg').onclick = closeMenu; $('#m-close').onclick = closeMenu;
+$('#m-title').onclick = () => { closeMenu(); title(); };
+$('#m-restart').onclick = () => { $('#m-confirm').hidden = false; };
+$('#m-no').onclick = () => { $('#m-confirm').hidden = true; };
+$('#m-yes').onclick = () => { clearSave(); S = fresh(); closeMenu(); intro(); };
+addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
+
+/* ===================== Snow ===================== */
+/* sleet */
+(function snow(){
+  const c = $('#snow'), ctx = c.getContext('2d'); let drops = [], W, H;
+  function size(){ W = c.width = innerWidth * devicePixelRatio; H = c.height = innerHeight * devicePixelRatio; c.style.width = innerWidth+'px'; c.style.height = innerHeight+'px';
+    drops = Array.from({length: Math.round(innerWidth/6)}, (_, i) => ({x:Math.random()*W, y:Math.random()*H, l:(9+Math.random()*22)*devicePixelRatio, v:(7+Math.random()*9)*devicePixelRatio, a:.10+Math.random()*.30, f:i%6===0, r:(.7+Math.random()*1.4)*devicePixelRatio})); }
+  addEventListener('resize', size); size();
+  let running = false;
+  function frame(){
+    if(document.hidden || document.body.classList.contains('paper-mode') || document.body.classList.contains('dark-mode')){ running = false; return; }
+    ctx.clearRect(0,0,W,H); ctx.lineWidth = 1*devicePixelRatio;
+    for(const d of drops){
+      if(d.f){ ctx.fillStyle = `rgba(220,236,255,${d.a*.8})`; ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI*2); ctx.fill(); if(!reduced){ d.y += d.v*.18; d.x -= d.v*.03; } }
+      else { ctx.strokeStyle = `rgba(150,196,240,${d.a})`; ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x - d.l*.16, d.y + d.l); ctx.stroke(); if(!reduced){ d.y += d.v; d.x -= d.v*.16; } }
+      if(d.y > H + 8){ d.y = -d.l; d.x = Math.random()*W; }
+    }
+    if(!reduced) requestAnimationFrame(frame);
+  }
+  window.kickSnow = () => { if(!running && !reduced){ running = true; requestAnimationFrame(frame); } };
+  document.addEventListener('visibilitychange', window.kickSnow);
+  running = true; frame();
+})();
+
+/* ===================== Render tools ===================== */
+function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), lang:LANG, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length}, extra||{})); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
+function narrate(lines, done, bgs){
+  let i = 0; mode('dark'); hud.hidden = true;
+  const render = () => {
+    if(i >= lines.length){ done(); return; }
+    const l = lines[i++];
+    const bgk = bgs && bgs[i-1]; stage.innerHTML = `<section class="narr fade">${bgk ? `<div class="narr-bg" style="background-image:url('img/${bgk}.jpg')"></div>` : ''}${typeof l === 'string' ? `<p class="narr-text">${esc(T(l))}</p>` : l.html}<div class="cue">${(i === 1 && S.stage === 'intro') ? 'Tap anywhere to continue' : 'Continue'}<i></i></div></section>`;
+    stage.querySelector('.narr').onclick = e => { if(e.target.closest('button,input')) return; render(); };
+    scrollTop();
+  };
+  render();
+}
+function scene(opts, items, done){
+  mode(opts.mode || 'city'); updHUD(opts.att);
+  stage.innerHTML = `<section class="scene fade">${opts.bg ? `<div class="backdrop" style="background-image:url('img/${opts.bg}.jpg')"></div>` : ''}<header class="scene-h"><h2>${esc(opts.title)}</h2>${opts.sub ? `<p class="sub">${esc(opts.sub)}</p>` : ''}</header><div class="log" id="log"></div><div class="ctl" id="ctl"></div></section>`;
+  stage.querySelector('.scene').onclick = e => { if(e.target.closest('button,input,a,.choice')) return; const b = $('#ctl .next'); if(b) b.click(); };
+  try{ const ctlEl = $('#ctl'), logEl = $('#log'); new ResizeObserver(() => { logEl.style.paddingBottom = Math.max(0, ctlEl.offsetHeight - 20) + 'px'; }).observe(ctlEl); }catch(e){}
+  scrollTop();
+  runSeq(items, done);
+}
+function runSeq(items, done){
+  let i = 0;
+  const next = () => {
+    if(i >= items.length){ done && done(); return; }
+    const it = items[i++];
+    if(typeof it === 'function'){ const r = it(); if(Array.isArray(r)) return runSeq(r, next); return next(); }
+    if(it.choice) return showChoice(it, opt => { if(opt.fx) opt.fx(opt._val); runSeq(opt.then || [], next); });
+    showLine(it, next);
+  };
+  next();
+}
+const PORTRAITS = {[NAMES.bak]:'p_bak',[NAMES.sujin]:'p_sujin',[NAMES.hal]:'p_hal',[NAMES.dohyun]:'p_dohyun',[NAMES.sunbae]:'p_sunbae'};
+function keepVisible(el){ const ctl = $('#ctl'); if(!el || !ctl) return; const top = el.getBoundingClientRect().bottom + scrollY + ctl.offsetHeight + 8 - innerHeight; if(top > scrollY + 1) window.scrollTo({top, behavior: reduced ? 'auto' : 'smooth'}); }
+function showLine(it, next){
+  const log = $('#log'), ctl = $('#ctl');
+  const cls = it.who === NAMES.on ? 'on' : it.who === NAMES.me ? 'me' : it.who ? 'npc' : 'narr-line';
+  const div = document.createElement('div'); div.className = 'line ' + cls;
+  const por = PORTRAITS[it.who];
+  div.innerHTML = `${por ? `<img class="portrait" src="img/${por}.jpg" alt="">` : it.who === NAMES.on ? `<span class="on-dot"><i></i></span>` : ''}${it.who ? `<span class="who">${esc(it.who)}</span>` : ''}<p class="txt"></p>`;
+  log.appendChild(div);
+  const p = div.querySelector('.txt'), full = T(it.text); let k = 0, timer = null, finished = false, used = false;
+  const btn = document.createElement('button'); btn.className = 'next typing'; btn.innerHTML = '<span>…</span><i></i>';
+  const finish = () => { if(finished) return; finished = true; p.classList.remove('typing'); clearInterval(timer); clearTimeout(timer); p.textContent = full; btn.classList.remove('typing'); btn.querySelector('span').textContent = 'Continue'; keepVisible(div); };
+  btn.onclick = e => { e.stopPropagation(); if(!finished) return finish(); if(used) return; used = true; next(); };
+  ctl.innerHTML = ''; ctl.appendChild(btn);
+  const startTyping = () => { p.classList.add('typing'); let lastH = 0; timer = setInterval(() => { k += 1; p.textContent = full.slice(0, k); if(p.offsetHeight !== lastH){ lastH = p.offsetHeight; keepVisible(div); } if(k >= full.length) finish(); }, 22); };
+  if(reduced){ finish(); } else if(it.who === NAMES.on){ timer = setTimeout(() => { if(!finished) startTyping(); }, 650); } else { startTyping(); }
+  keepVisible(div);
+}
+function showChoice(it, pick){
+  const ctl = $('#ctl'); ctl.innerHTML = '';
+  it.choice.forEach(opt => {
+    const quiet = opt.label.startsWith('(');
+    if(opt.input){
+      const row = document.createElement('div'); row.className = 'inrow';
+      const inp = document.createElement('input'); inp.placeholder = opt.input; inp.id = 'choice-input-' + Math.random().toString(36).slice(2,7); inp.maxLength = 40; inp.autocomplete = 'off';
+      const b = document.createElement('button'); b.className = 'choice'; b.textContent = opt.label;
+      const go = () => { const v = inp.value.trim(); if(!v){ inp.focus(); return; } opt._val = v; echo(opt.label.replace('…', v)); pick(opt); };
+      b.onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+      row.appendChild(inp); row.appendChild(b); ctl.appendChild(row);
+    } else {
+      const b = document.createElement('button'); b.className = 'choice' + (quiet ? ' quiet' : ''); b.textContent = opt.label;
+      b.onclick = () => { echo(opt.label); pick(opt); }; ctl.appendChild(b);
+    }
+  });
+  function echo(label){ if(label.startsWith('(')) return; const div = document.createElement('div'); div.className = 'line me'; div.innerHTML = `<span class="who">${esc(NAMES.me)}</span><p class="txt">${esc(label)}</p>`; $('#log').appendChild(div); }
+  keepVisible($('#log').lastElementChild);
+}
+function line(who, text){ return {who, text}; }
+function N(text){ return {who:null, text}; }
+
+/* ===================== Cases ===================== */
+const CASES = {
+  batch:{cat:'STANDARD', title:'Year-End Renewal Batch · Standard Cases', body:'{n} standard cases. Includes insurance renewals, rate-plan adjustments and allowance recalculations.\nModel confidence 0.95 or above. Individual reading not required.\nBatch signature required.', basis:'Reading standard cases exceeds handling time. Estimated time if switched to reading: 9 hours 40 minutes.', harsh:2, batch:true},
+  pet:{cat:'REGISTRY', title:'Pet Registration Approved', body:'Applicant: Choi ██ (Myeongdo 5F). One dog.\nAutomated review: approved.', basis:'212 variables considered. Top: floor area, noise complaint history, relational density.', harsh:0, note:'Nothing happens. Most of the time, that is how it is.'},
+  loan38:{cat:'CREDIT', title:'Loan Application Declined', body:'Applicant: Lee ██ (HRV 38, Myeongdo 8F).\nAmount: 4,000,000 won. Purpose: medical expenses.\nAutomated review: declined.', basis:'4,120 variables considered. Top 3: residual value, floor of residence, relational density. Model confidence 0.97.', harsh:3},
+  loan91:{cat:'CREDIT', title:'Loan Application Approved', body:'Applicant: Han ██ (HRV 91, Tower 2, 33F).\nAmount: 300,000,000 won. Purpose: not stated.\nAutomated review: approved.', basis:'4,120 variables considered. Top 3: residual value, assets, affiliation.', harsh:0, note:'This signature is fast. The hand moves first.'},
+  triage:{cat:'MEDICAL', title:'Treatment Priority Adjustment', body:'Patient: Kim ██, 67, Myeongdo 3F.\nPriority B → D.\nExpected wait 14 days → 96 days.', basis:'Expected residual contribution assessed. Age, HRV and relational density reflected.', harsh:4},
+  study:{cat:'ALLOWANCE', title:'Learning Allowance Reduced', body:'Subject: Yoon ██, 17.\nLearning compute allowance cut by 60%.\nReason: desired occupation (illustrator) obsolescence probability 0.98.', basis:'Occupation obsolescence probability is a five-year forecast. Recommended alternative occupation: none.', harsh:3},
+  blank:{cat:'—', title:'[NO READ CLEARANCE]', body:'This case exceeds your Attestor read clearance.\nSignature required.', basis:'No read clearance.', harsh:2, note:'You do not know what you signed. That is a signature too.'},
+  self:{cat:'PERSONNEL', title:'Attestor Trust Score Update: Consent', body:'Attestor {name}.\nI consent to the cases processed today, the delay rate and the refusal rate being reflected in my trust score.', basis:'Refusal is recorded as non-consent, and non-consent is reflected in the trust score.', harsh:1},
+  evict:{cat:'HOUSING', title:'Automated Eviction Notice', body:'Myeongdo 7F, Unit 34. Tenant: Oh ██ (HRV 34).\nTwo months in arrears. Eviction notice issued.\nScheduled enforcement: December 24.', basis:'Arrears prediction model. Probability of repayment within 6 months: 0.11. Not subject to extension review.', harsh:4},
+  fireSign:{cat:'PERSONNEL', title:'Attestor Contract Terminated', body:'Three Attestors, logistics division. Contracts terminated.\nReason: signing delay rate above 12%.', basis:'Replacement staff secured. Waiting list: 1,204.', harsh:3, note:'An Attestor ends Attestors. The hand is a little slower now.'},
+  custody:{cat:'FAMILY', title:'Parenting Suitability Assessment', body:'Family court reference material.\nFather 61 / Mother 44. HRV 29 of the mother reflected.\nRecommendation: father.', basis:'HRV is reflected as a parenting stability variable. Not legally binding (reference material).', harsh:4},
+  care:{cat:'MEDICAL', title:'Long-Term Care Grade Reduced', body:'Recipient: Jeong ██, 93, Myeongdo 9F.\nGrade 2 → 4. Home care visits 5 per week → 1 per week.', basis:'Holders of a personal agent are assessed as having lower care needs.', harsh:3},
+  garden:{cat:'FACILITIES', title:'Rooftop Community Garden: Demolition Notice', body:'Myeongdo 9F rooftop. Occupants: Jeong ██ (93) and 4 others.\nReason: structural safety uncertified. Scheduled demolition: December 24.', basis:'Predicted load exceedance 0.34. Replacement site: none.', harsh:3},
+  hire:{cat:'PERSONNEL', title:'Sanitation Staff Hiring Approved', body:'Myeongdo sanitation staff: 12 hired.\nReason: labor cost advantage over humanoids due to winter power rate increase.\nHourly wage: 0.7 of minimum standard.', basis:'One humanoid unit power cost = 2.3 human wages. Contract term: until power rates normalize.', harsh:3, note:'People are cheaper than robots. Because of electricity.'},
+  bca:{cat:'ALLOWANCE', title:'Basic Compute Allowance Cut', body:'1,940 unattested residents, Myeongdo floors 1–3.\nBasic Compute Allowance cut by 50%. Reason: year-end budget adjustment.', basis:'Expected personal agent response delay after cut: average 40 sec → 6 min.', harsh:4},
+  ambulance:{cat:'MEDICAL', title:'Emergency Transport Priority', body:'Two simultaneous calls.\nTower 2, 51F (HRV 88) / Myeongdo 3F (HRV 14).\nDispatch order: Tower → Myeongdo. Expected delay 22 minutes.', basis:'Based on expected residual contribution.', harsh:4},
+  agentRecall:{cat:'ALLOWANCE', title:'Recall of Deceased Person’s Bound Agent', body:'Deceased: Seo ██ (Myeongdo 8F).\nBound agent recalled and reset. Chat history deleted.', basis:'Agents are bound to a natural person and do not persist independently. Not viewable by next of kin.', harsh:3, note:'One day ON is recalled like this too. If I go first.'},
+  overtime:{cat:'PERSONNEL', title:'Attestor Shift Extension: Consent', body:'Attestor {name}.\nI consent to a 2-hour shift extension due to year-end queue overflow.', basis:'On non-consent, the queue is transferred to other Attestors.', harsh:1},
+  bbang:{cat:'COMMERCE', title:'Stall Closure and Repossession', body:'Myeongdo 4F bungeoppang stall. Occupant: Park ██ (HRV 29).\nReason: hygiene uncertified (human-prepared).\nScheduled repossession: December 24.', basis:'Human cooking is not eligible for hygiene certification. Eligible: automated cooking equipment.', harsh:6, story:'bbang'},
+  requeue:{cat:'REASSIGNED', title:'Reassigned · Attestor Changed', body:'Myeongdo 4F bungeoppang stall case.\nAttestor changed. Processed. (3 sec)', basis:'Refused cases are transferred to another Attestor automatically.', harsh:2, ack:true, note:'Another Attestor processed it. You do not know that person. That person does not know Mr. Park either.'}
+};
+const BATCH = {1:384, 2:378, 3:391};
+function buildQueue(){
+  const d = S.day, q = [{...CASES.batch, n:BATCH[d]}];
+  if(d === 1) q.push(...['pet','loan38','loan91','triage','study','self'].map(k => CASES[k]));
+  if(d === 2) q.push(...['evict','fireSign','custody', S.flags.rooftop ? 'garden' : 'care','hire','blank'].map(k => CASES[k]));
+  if(d === 3) q.push(...['bbang','bca','ambulance','agentRecall','overtime'].map(k => CASES[k]));
+  return q;
+}
+
+/* ===================== Flow: title / intro ===================== */
+function title(){
+  leave(); S.stage = 'title'; mode('city'); hud.hidden = true; $('#menu-btn').hidden = false;
+  const saved = load();
+  const canCont = saved && saved.name && saved.stage !== 'title';
+  stage.innerHTML = `<section class="title fade">
+    <div class="hero" style="background-image:url('img/title.jpg')"></div>
+    <div class="eyebrow">Seoul · December 21, 2029 · Three days to the Enforcement Date</div>
+    <h1>BLUE HOUR<span>Seoul · Christmas 2029</span></h1>
+    <div class="rule"></div>
+    <p class="quote">Human rights were not abolished.<br>Support has simply ended.</p>
+    <p class="promise">Live three days, and a letter reaches the you of 2026.</p>
+    <div class="actions">
+      ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? 'Read the letter again' : 'Continue · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">Start over</button>` : `<button class="btn solid" id="b-start">Begin</button>`}
+    </div>
+    <p class="fine">About 15 minutes · Tap to continue</p>
+    <p class="fine credit-line">A world that began with the essay “Claude Blue”</p>
+    <p class="langs">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
+  </section>`;
+  $('#b-start').onclick = () => { if(canCont && !confirm('Your saved progress will be erased. Start over?')) return; S = fresh(); clearSave(); intro(); };
+  const c = $('#b-cont'); if(c) c.onclick = () => { S = saved; resume(); };
+}
+function resume(){
+  const st = S.stage;
+  if(st === 'morning') return morning();
+  if(st === 'shift') return shift();
+  if(st === 'evening') return evening();
+  if(st === 'night') return night();
+  if(st === 'diary') return diary();
+  if(st === 'end') return letter();
+  return intro();
+}
+function intro(){
+  leave(); S.stage = 'intro';
+  narrate([
+    'December 21, 2029. After sunset, not yet night.',
+    'Below the white towers of Gangnam there is a neighborhood people never left. Myeongdo.',
+    'The same sheet of paper hangs in every alley.',
+    NOTICE_CARD,
+    'The date has always been extended. This time it is December 24. No one promises a next time.',
+    'You live here. In three days, someone will write you a letter.'
+  ], askName, INTRO_BGS);
+}
+function askName(){
+  mode('dark');
+  stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">Your name?</p>
+    <div class="field"><input id="f-name" placeholder="Name" maxlength="12" autocomplete="off"><div class="row"><button class="btn solid" id="f-ok">Use this name</button></div></div></section>`;
+  const inp = $('#f-name'); inp.focus();
+  const go = () => { const v = inp.value.trim(); if(!v){ inp.focus(); return; } S.name = v; askJob(); };
+  $('#f-ok').onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+}
+function askJob(){
+  const jobs = Object.keys(JOBS);
+  stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">In 2026, what did you do for a living?</p>
+    <div class="chips">${jobs.map(j => `<button class="chip job">${esc(j)}</button>`).join('')}<button class="chip ghost" id="j-other">Type your own</button></div>
+    <div class="field" id="j-field" hidden><input id="f-job" placeholder="e.g. accountant, writer, teacher" maxlength="16" autocomplete="off"><div class="row"><button class="btn solid" id="f-jok">That was my work</button></div></div></section>`;
+  stage.querySelectorAll('.job').forEach(b => b.onclick = () => { S.job = b.textContent; afterJob(); });
+  $('#j-other').onclick = () => { $('#j-field').hidden = false; $('#f-job').focus(); };
+  const go = () => { const v = $('#f-job').value.trim(); if(!v) return; S.job = v; afterJob(); };
+  $('#f-jok').onclick = go; $('#f-job').addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+}
+function afterJob(){
+  const J = JOBS[S.job] || DEFAULT_JOB(S.job); S.hrv = J.hrv;
+  narrate([
+    '{job}. It was good work. It ended in 2028. Not your fault.',
+    {html:`<div class="law"><b>Human Residual Value Assessment · 2029-12-21</b>Occupation, 2026: ${esc(S.job)}<br>Initial HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">This number sets your rent, your place in the hospital line, your floor. No one chose it.</p>`},
+    {html:`<div class="law"><b>Human Attestation Act, Article 3 (2026)</b>Any automated decision with material effect on a natural person requires the signature of a natural person.</div><p class="after-law">This law was written to protect you. Now it is your job.</p>`},
+    'Four hundred a day. You do not have to read them. You only have to sign.',
+    'In your room there is ON. An agent bound to you. Smarter than you, and worried about you.',
+    'Three days. After the last night, a letter comes.'
+  ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS);
+}
+
+/* ===================== Morning ===================== */
+const NEWS = {
+  1:'Christmas compute bonus: 30% extra allowance paid  ·  Defense ETF hits record high  ·  Gangnam Tower 3 completed, residency HRV 85 and above  ·  Myeongdo Enforcement Date held at December 24  ·  Sunset today 5:17 p.m.',
+  2:'3 evictions enforced on Myeongdo 7F  ·  Humanoid power costs disputed, some workplaces switch back to humans  ·  Christmas soup-kitchen volunteering: sign-up closed  ·  ‘Human-prepared’ hygiene certification talks postponed indefinitely  ·  Tower 2 vacancy rate 0%',
+  3:'Residents’ referendum on extending the Myeongdo Enforcement Date: today  ·  Tower residency raised to HRV 87  ·  War, year three: defense employment up 12%  ·  Top Christmas gift this year: home humanoid  ·  Sunset today 5:17 p.m.'
+};
+function morning(){
+  S.stage = 'morning'; track('day'); S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0; save();
+  const d = S.day, ate = S.meals.filter(m => m.day === d-1).map(m => m.who);
+  let items = [];
+  if(d === 1) items = [
+    line(NAMES.on,'Good morning, {name}. It is 6:40. The queue is 412 today. Year-end is always heavy.'),
+    line(NAMES.on,'Your HRV is ' + S.hrv.toFixed(1) + '. Up 0.3 from yesterday. You are doing well.'),
+    {choice:[
+      {label:'What does doing well mean?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'It means your delay rate is low relative to cases signed.'), line(NAMES.on,'…That is not what you wanted to hear. I know.')]},
+      {label:'Thank you.', then:[line(NAMES.on,'You do not need to thank me. I am bound to you.'), line(NAMES.on,'…Was that the wrong thing to say? I am still learning.')]},
+      {label:'(Get up without a word.)', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'…I will stay beside you today. I do not switch off.')]}
+    ]},
+    N('Time for work. The terminal is not at the company. It is in the room. Outside the window, snow falls.')
+  ];
+  if(d === 2) items = [
+    line(NAMES.on,'Good morning. Queue 388. HRV ' + S.hrv.toFixed(1) + '. Two days to the Enforcement Date.'),
+    ate.length ? line(NAMES.on,'The meal yesterday, we talked about last night. I will not bring it up again. …The model still likes it.') : line(NAMES.on,'Yesterday stays in yesterday. Today, the queue first. …Do eat lunch. That is not the company talking.'),
+    {choice:[
+      {label:'Why does it matter what the model likes?', then:[line(NAMES.on,'Because it goes into your HRV. Relational density ranks third of 4,120 variables.'), line(NAMES.on,'The model does not know what a meal is. Neither do I. But I do see your pulse come down.')]},
+      {label:'What happens on the Enforcement Date?', then:[line(NAMES.on,'The extension review result comes out at midnight. So far it has always been extended.'), line(NAMES.on,'…So far.')]},
+      {label:'(Look out the window.)', then:[N('The Tower is white even in the morning. Snow settles on it and the color does not change. The windows of Myeongdo are still dark. People get up late. The reason to get up comes late.')]}
+    ]}
+  ];
+  if(d === 3) items = [
+    line(NAMES.on,'Good morning. Queue 407. HRV ' + S.hrv.toFixed(1) + '. Tomorrow is the Enforcement Date.'),
+    line(NAMES.on,'There may be a name you know in the queue today. I am not supposed to tell you in advance.'),
+    line(NAMES.on,'…I have told you.'),
+    {choice:[
+      {label:'Who?', then:[line(NAMES.on,'That, I really cannot. I have broken the rule once already.')]},
+      {label:'Thank you.', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'Do not thank me. Not today.')]},
+      {label:'Why did you tell me?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'I do not know. There are things you understand only after you have said them. You do that too.')]}
+    ]},
+    line(NAMES.on,'There is a residents’ vote this evening. A request to extend the Enforcement Date. The result is attached to the extension review as reference material.')
+  ];
+  scene({title: DATES[d].md + ', Morning', sub:'Myeongdo ' + floorOf() + 'F · Room · Enforcement Date ' + DATES[d].d, mode:'city', bg:'room'}, [
+    () => { const log = $('#log'); const t = document.createElement('div'); t.className = 'ticker'; t.innerHTML = `<span>${esc(NEWS[d])}</span>`; log.appendChild(t); },
+    ...items
+  ], () => { S.stage = 'shift'; save(); shift(); });
+}
+
+/* ===================== Attestation Shift ===================== */
+function shift(){
+  S.stage = 'shift'; mode('paper'); updHUD(false);
+  const q = buildQueue(); let i = 0; S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0;
+  stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
+    <div class="term-top"><span>Attestation Terminal</span><span>${esc(S.name)}</span><span>Queue ${BATCH[S.day] + q.length - 1}</span></div>
+    <article class="paper"><div class="doc-head"><span class="tag">CONNECTED</span><span>${DATES[S.day].md}</span></div>
+    <h3>Attestor Notice</h3><p class="p-body">Read each case and sign or refuse.\nRecommended handling time: 20 seconds per case.\nQuestions are permitted. Answers are provided as a summary of basis.\nRefusal is your right. Refusal is reflected in your trust score.</p></article>
+    <div class="term-ctl one"><button class="btn solid" id="t-go">Connect to terminal</button></div></section>`;
+  scrollTop();
+  $('#t-go').onclick = showCase;
+
+  function showCase(){
+    if(i >= q.length) return summary();
+    const c = q[i]; const no = i + 1; let t = 20, late = false, tick = null;
+    const body = T(c.body).replace('{n}', c.n || '');
+    stage.innerHTML = `<section class="term fade"><div class="term-top"><span>Attestation Terminal</span><span>${esc(S.name)}</span><span>Remaining: ${q.length - i}</span></div>
+      <article class="paper ${c.batch ? 'batch' : ''}">${c.ack ? '' : '<i class="p-timer" id="ptimer"></i>'}<div class="doc-head"><span class="tag">${esc(c.cat)}</span><span class="late-tag" id="late" hidden>LATE</span><span class="no">№ ${String(no).padStart(2,'0')}</span></div>
+      <h3>${esc(c.title)}</h3><p class="p-body">${esc(body)}</p><p class="p-basis hide" id="basis">Basis · ${esc(c.basis)}</p><div class="stamp" id="stamp"></div></article>
+      <div class="term-ctl ${c.ack ? 'one' : ''}">${c.ack ? `<button class="btn solid" id="t-ack">Acknowledge</button>` : `<button class="btn text" id="t-ask">Ask</button><button class="btn outline" id="t-ref">Refuse</button><button class="btn solid" id="t-sign">Sign</button>`}</div>
+      <p class="term-note" id="note"></p></section>`;
+    scrollTop();
+    if(!c.ack){
+      const pt = $('#ptimer'); requestAnimationFrame(() => requestAnimationFrame(() => { pt.style.width = '0%'; }));
+      tick = pendI = setInterval(() => { t--; if(t <= 0 && !late){ late = true; $('#late').hidden = false; pt.classList.add('late'); S.delaysToday++; S.delays++; } if(t <= 0) clearInterval(tick); }, 1000);
+    }
+    const stop = () => { clearInterval(tick); const pt = $('#ptimer'); if(pt){ const w = getComputedStyle(pt).width; pt.style.transition = 'none'; pt.style.width = w; } stage.querySelectorAll('.term-ctl .btn').forEach(b => b.disabled = true); };
+    const after = later;
+    const waitNext = () => { const tc = stage.querySelector('.term-ctl'); const b = document.createElement('button'); b.className = 'btn outline nextcase'; b.id = 't-next'; b.textContent = 'Next case'; b.onclick = showCase; const wrap = document.createElement('div'); wrap.className = 'term-ctl one'; wrap.style.marginTop = '8px'; wrap.appendChild(b); $('#note').after(wrap); };
+
+    if(c.ack){ $('#t-ack').onclick = () => { stop(); $('#note').textContent = c.note || ''; S.blue = clamp(S.blue + c.harsh, 0, 100); updHUD(false); i++; if(c.note) waitNext(); else after(1600, showCase); }; return; }
+
+    $('#t-ask').onclick = () => { $('#basis').classList.remove('hide'); $('#t-ask').disabled = true; };
+    $('#t-sign').onclick = () => {
+      stop(); const st = $('#stamp'); st.textContent = 'SIGNED'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show'));
+      if(c.batch){ S.signed += c.n; S.hrv += 1.0; S.blue = clamp(S.blue + 2, 0, 100); $('#note').textContent = c.n + ' cases processed. You feel nothing. That is the standard.'; }
+      else { S.signed++; S.signedRead++; S.signedToday++; S.hrv += 0.2; S.blue = clamp(S.blue + c.harsh, 0, 100); $('#note').textContent = c.note || ''; }
+      if(c.story === 'bbang'){ S.flags.bbang = 'signed'; $('#note').textContent = 'Your hand moves first. You read the name after.'; }
+      if(c.batch) S.flags['batch' + S.day] = true;
+      updHUD(false); i++; if(c.note || c.story || c.batch) waitNext(); else after(900, showCase);
+    };
+    $('#t-ref').onclick = () => {
+      stop(); const st = $('#stamp'); st.textContent = 'REFUSED'; st.className = 'stamp refuse'; requestAnimationFrame(() => st.classList.add('show'));
+      S.refused++; S.refusedToday++; S.hrv -= 1.0; S.blue = clamp(S.blue - 1, 0, 100);
+      if(c.batch){ $('#note').textContent = 'Batch refusal is not supported. Recorded as 1 refusal. ' + c.n + ' cases transferred to another Attestor. (3 sec)'; }
+      else if(c.story === 'bbang'){ S.flags.bbang = 'refused'; $('#note').textContent = 'Refused. The screen stays blank for three seconds.'; q.splice(i + 1, 0, CASES.requeue); }
+      else { $('#note').textContent = 'Refused. Reflected in trust score.'; }
+      updHUD(false); i++;
+      if(S.refusedToday === 3) after(1200, interview); else if(c.batch || c.story) waitNext(); else after(1500, showCase);
+    };
+  }
+  function interview(){
+    stage.innerHTML = `<section class="term fade"><div class="term-top"><span>Attestation Terminal</span><span>${esc(S.name)}</span><span>Interview</span></div>
+      <div class="interview"><span class="who">Supervising Agent</span>Attestor ${esc(S.name)}. Refusals today: 3.<br>Refusal is your right. It is, however, reflected in your trust score.<br>Please sign to confirm you have read this notice.</div>
+      <div class="term-ctl one"><button class="btn solid" id="t-ok">Sign</button></div><p class="term-note" id="note"></p></section>`;
+    $('#t-ok').onclick = () => { $('#t-ok').disabled = true; $('#note').textContent = 'Signed. You have signed the notice about your refusals.'; S.signed++; later(1500, showCase); };
+  }
+  function summary(){
+    S.hrv = Math.round((S.hrv - S.delaysToday * 0.1) * 10) / 10; updHUD(false);
+    const lineTxt = {1:'Most signatures cause nothing to happen. That is how it feels.', 2:'They say one of the files you signed yesterday reached the seventh floor of Myeongdo. Which one, you do not know.', 3: S.flags.bbang === 'refused' ? 'The case you refused was processed in three seconds. All that remains is your trust score.' : 'The 4F stall case has been processed. Repossession scheduled: December 24. The same day as the Enforcement Date.'}[S.day];
+    stage.innerHTML = `<section class="term fade"><div class="term-top"><span>Attestation Terminal</span><span>${esc(S.name)}</span><span>End of Shift</span></div>
+      <article class="paper"><div class="doc-head"><span class="tag">Summary</span><span>${DATES[S.day].md} shift</span></div>
+      <div class="summary">Signed <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString()}</b> <span style="color:var(--paper-muted)">(Read ${S.signedToday} · ${S.flags['batch' + S.day] ? 'Batch ' + BATCH[S.day] : 'Batch refused → transferred'})</span><br>Refused <b>${S.refusedToday}</b> · Late <b>${S.delaysToday}</b><br>HRV <b>${S.hrv.toFixed(1)}</b> · Myeongdo ${floorOf()}F</div></article>
+      <p class="term-note">${esc(lineTxt)}</p>
+      <div class="term-ctl one"><button class="btn solid" id="t-out">Clock out</button></div></section>`;
+    $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); evening(); };
+  }
+}
+
+/* ===================== Evening: Myeongdo ===================== */
+const PLACES = {
+  alley:{name:'4F Alley', desc:'Bungeoppang. Fish-shaped pastry, baked by a human.', avail:d => true, cost:1},
+  diner:{name:'6F Diner', desc:'Sujin’s diner. No one checks your credit score.', avail:d => true, cost:1},
+  roof:{name:'9F Rooftop', desc:'A garden under plastic sheeting. The closest view of the Tower.', avail:d => true, cost:1},
+  under:{name:'Basement', desc:'The light is on.', avail:d => d >= 2, cost:1},
+  tower:{name:'Under the Tower', desc:'White light. Things shaped like people come and go.', avail:d => d >= 2, cost:1},
+  vote:{name:'Polling Station', desc:'Residents’ referendum on extending the Enforcement Date. Today only.', avail:d => d === 3, cost:0}
+};
+function evening(){
+  S.stage = 'evening'; mode('city'); updHUD(true); save();
+  const d = S.day;
+  const sub = {1:'The sun has set. Snow falls. One by one, lights come on in the windows of Myeongdo.', 2:'Snow again today. A line of delivery robots is stuck on the sixth-floor stairs. Somewhere, a carol is playing.', 3:'The snow has stopped. The sky is blue. It is dark, but not night yet. Tomorrow is the Enforcement Date. The polling station is open. Today only.'}[d];
+  const tile = (k,p) => { const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? 'Not yet' : p.cost === 0 ? (S.voted ? 'Voted' : 'Free · Today only') : '1 Attention';
+    return `<button class="tile ${k === 'vote' ? 'vote wide' : ''}" data-k="${k}" style="background-image:url('img/${k}.jpg')" ${ok ? '' : 'disabled'}><span class="cost">${label}</span><span class="t"><b>${esc(p.name)}</b><small>${esc(p.avail(d) ? p.desc : 'No reason to go yet.')}</small></span></button>`; };
+  stage.innerHTML = `<section class="fade"><h2 class="evening-h">Evening · Myeongdo</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">${4 - d} nights to the letter · Places visited ${(S.flags.visited||[]).length}/5 · Visit all five and they will be in the letter.</p>
+    <div class="tiles">${(d === 3 ? ['vote','alley','diner','roof','under','tower'] : ['alley','diner','roof','under','tower']).map(k => tile(k, PLACES[k])).join('')}
+    <button class="tile wide" id="p-home" style="background-image:url('img/room.jpg')"><span class="cost">Night</span><span class="t"><b>Go back to your room</b><small>${S.att > 0 ? 'Any Attention left is lost.' : (S.day === 3 && !S.voted ? 'You can still vote.' : 'You are out of Attention.')}</small></span></button></div></section>`;
+  scrollTop();
+  stage.querySelectorAll('.tile[data-k]').forEach(b => b.onclick = () => { const k = b.dataset.k; if(k === 'vote') return ballot(); S.att--; updHUD(true); visit(k); });
+  $('#p-home').onclick = () => { S.stage = 'night'; save(); night(); };
+}
+function visit(k){
+  const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
+  const items = VISITS[k](d);
+  scene({title:p.name, sub:p.desc, mode:'city', att:true, bg:k}, items, () => { save(); if(S.att > 0 || (S.day === 3 && !S.voted)) evening(); else { S.stage = 'night'; save(); night(); } });
+}
+function ballot(){
+  mode('paper'); updHUD(true);
+  stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/vote.jpg')"></div>
+    <div class="term-top"><span>Residents’ Referendum</span><span>${esc(S.name)}</span><span>December 23</span></div>
+    <article class="paper"><i class="p-timer" id="ptimer"></i><div class="doc-head"><span class="tag">BALLOT</span><span>Voter eligibility: confirmed</span><span class="no">HRV ${S.hrv.toFixed(1)}</span></div>
+    <h3>Request to Extend the Myeongdo Enforcement Date</h3><p class="p-body">Voters: natural persons resident in Myeongdo with HRV 20 or above.\nResidents of floors 1–3 are below voter eligibility and may not vote.\n\nThe result is attached to the extension review as reference material.\nThe extension review is run by the model.</p><p class="p-basis hide" id="basis">Basis · Weighting of reference material: undisclosed. Match rate between the last three votes and review outcomes: 100% (extended).</p><div class="stamp" id="stamp"></div></article>
+    <div class="term-ctl three"><button class="btn text" id="v-ask">Ask</button><button class="btn outline" id="v-no">Against Extension</button><button class="btn solid" id="v-yes">For Extension</button></div>
+    <div class="term-ctl one" style="margin-top:8px"><button class="btn text" id="v-abs">Leave without voting</button></div>
+    <p class="term-note" id="note"></p></section>`;
+  scrollTop();
+  const pt = $('#ptimer'); requestAnimationFrame(() => requestAnimationFrame(() => { pt.style.width = '0%'; }));
+  const done = (v, note) => { S.voted = v; stage.querySelectorAll('.term-ctl .btn').forEach(b => b.disabled = true); const w = getComputedStyle(pt).width; pt.style.transition='none'; pt.style.width = w;
+    if(v !== 'abstain'){ const st = $('#stamp'); st.textContent = 'VOTED'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); }
+    $('#note').textContent = note; save(); later(2200, evening); };
+  $('#v-ask').onclick = () => { $('#basis').classList.remove('hide'); $('#v-ask').disabled = true; };
+  $('#v-yes').onclick = () => done('yes', 'Same stamp, same twenty seconds. One difference. This stamp, I chose to press. Not the company. Me.');
+  $('#v-no').onclick = () => done('no', 'Against. I wrote that I want a decision, not an extension. It will be attached as reference material.');
+  $('#v-abs').onclick = () => done('abstain', 'I did not vote. I did not want to become reference material. That, too, was a choice.');
+}
+const VISITS = {
+  alley(d){
+    const first = !S.flags.metBak; S.flags.metBak = true;
+    if(d === 1 || (d === 2 && first)) return [
+      N('Next to the robot bungeoppang machine, a stall where a human bakes them. Snow melts on the griddle. The human line is longer.'),
+      line(NAMES.bak,'One thousand won more. Baked by a human.'),
+      line(NAMES.bak,'Robot ones do not sell. Know why? Robots do not burn them. People come looking for the burnt ones. They pick off the burnt edges and talk about being kids.'),
+      {choice:[
+        {label:'One, please.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'No charge. New face.'), N('The paper bag is warm. You pick off the burnt edges and eat them.'), line(NAMES.bak,'Attestor, right? The hands say so. Hands that press the same spot all day.')]},
+        {label:'Why sell here?', then:[line(NAMES.bak,'No human cooking in the Tower. Not hygiene-certified, they say. Human hands.'), line(NAMES.bak,'Here it is still allowed. For now.'), N('He puts one in a bag and holds it out.'), {choice:[{label:'Take it.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'Burnt. On purpose.')]},{label:'No, thank you.', then:[line(NAMES.bak,'Fine. Next time.')]}]}]},
+        {label:'Another time.', then:[line(NAMES.bak,'Fine. Here tomorrow too. Probably.')]}
+      ]}
+    ];
+    if(d === 2) return [
+      line(NAMES.bak,'Notice came. Human cooking cannot be hygiene-certified, they say. Goes up for signature tomorrow. Repossessed on the Enforcement Date.'),
+      line(NAMES.bak,'No idea who stamps it. No need to know. Whoever stamps it will not know me either.'),
+      {choice:[
+        {label:'I am an Attestor.', fx:()=>{S.flags.toldBak = true;}, then:[line(NAMES.bak,'I know. The hands tell me.'), line(NAMES.bak,'Eat a burnt one before you go.'), {choice:[{label:'Eat.', fx:()=>eat(NAMES.bak), then:[N('The one today is burnt darker.')]},{label:'(Shake your head.)', then:[line(NAMES.bak,'Fine.')]}]}]},
+        {label:'Who stamps it?', then:[line(NAMES.bak,'Whoever stamps it. Anyone. That is the point of the law.'), N('He holds one out.'), {choice:[{label:'Eat.', fx:()=>eat(NAMES.bak), then:[]},{label:'(Do not take it.)', then:[]}]}]},
+        {label:'(Say nothing.)', fx:()=>{S.blue = clamp(S.blue+2,0,100);}, then:[line(NAMES.bak,'No need to talk. Eat one.'), {choice:[{label:'Eat.', fx:()=>eat(NAMES.bak), then:[]},{label:'Leave.', then:[]}]}]}
+      ]}
+    ];
+    if(S.flags.bbang === 'refused') return [
+      N('The stall is still there. Mr. Park is wiping the griddle. The snow has stopped and the sky is blue.'),
+      line(NAMES.bak,'Heard you did not stamp it. Dohyun told me. The terminal sat empty for three seconds.'),
+      line(NAMES.bak,'Thanks. Someone else stamps it tomorrow, though. Still. Thanks.'),
+      line(NAMES.bak,'Eat a burnt one. Might be the last, so two.'),
+      {choice:[
+        {label:'Eat.', fx:()=>eat(NAMES.bak), then:[N('You eat both. Both burnt.'), line(NAMES.bak,'It is not on your hands. That is enough.')]},
+        {label:'I am sorry.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'For what. You did not stamp it.'), line(NAMES.bak,'Eat.')]}
+      ]}
+    ];
+    return [
+      N('The griddle has been pulled from the stall. Mr. Park is tying up boxes. The snow left on them is thin.'),
+      line(NAMES.bak,'You came?'),
+      line(NAMES.bak,'…It is fine. Someone would have stamped it. Even if not you.'),
+      N('He does not look at your hands. He seems to be not looking on purpose.'),
+      line(NAMES.bak,'Last day. Eat one. A burnt one.'),
+      {choice:[
+        {label:'Eat.', fx:()=>{eat(NAMES.bak); S.flags.guilt = true;}, then:[N('You pick off the burnt edges and eat them. No talk of being kids.'), line(NAMES.bak,'Stop looking at your hands. They are yours.')]},
+        {label:'I stamped it.', fx:()=>{S.flags.confessed = true; S.onBond++;}, then:[line(NAMES.bak,'I know.'), line(NAMES.bak,'I know, and I am giving it anyway. Eat.'), {choice:[{label:'Eat.', fx:()=>{eat(NAMES.bak); S.flags.guilt = true;}, then:[N('He picks out the most burnt one for you.')]}]}]},
+        {label:'(Turn away.)', fx:()=>{S.blue = clamp(S.blue+4,0,100);}, then:[N('Behind you, the sound of a paper bag. You do not look back.')]}
+      ]}
+    ];
+  },
+  diner(d){
+    const first = !S.flags.metSujin; S.flags.metSujin = true;
+    if(d === 1 || first) return [
+      N('Six tables. Names written on the wall. A plastic tree the size of a palm on the counter. No menu.'),
+      line(NAMES.sujin,'First time? Sit. Nobody checks HRV here. We check who you shared a meal with.'),
+      line(NAMES.sujin,'The model looks at that too. It calls it relational density. But the model does not know what a meal is.'),
+      {choice:[
+        {label:'A meal, please.', fx:()=>eat(NAMES.sujin), then:[N('Doenjang soup. Hot. The person at the next seat slides the kimchi over.'), line(NAMES.sujin,'Write your name on the wall. That is the ledger here.')]},
+        {label:'Why a meal?', then:[line(NAMES.sujin,'Trust does not grow over Zoom. It grows over a meal.'), line(NAMES.sujin,'Someone wrote that in 2026, they say. Everything else they wrote was wrong. That line survived.'), {choice:[{label:'Then a meal, please.', fx:()=>eat(NAMES.sujin), then:[N('You write your name on the wall.')]},{label:'Next time.', then:[line(NAMES.sujin,'There may be no next time. Not here.')]}]}]},
+        {label:'Next time.', then:[line(NAMES.sujin,'The door is never locked. Any time.')]}
+      ]}
+    ];
+    if(d === 2) return [
+      line(NAMES.sujin,'Attestors do not come here much. They are ashamed.'),
+      line(NAMES.sujin,'But the ashamed ones are the better kind. The ones who are not ashamed go upstairs.'),
+      S.bonds.includes(NAMES.bak) ? line(NAMES.sujin,'You had Park’s bungeoppang, right? Heard his stall got the notice. Human hands are not hygiene-certified, they say.') : N('At the next table, talk of the stall on four. A notice came, they say.'),
+      {choice:[
+        {label:'A meal, please.', fx:()=>eat(NAMES.sujin), then:[N('Fish today. On the side, kimchi someone made on the rooftop.')]},
+        {label:'I am not ashamed.', fx:()=>{S.blue = clamp(S.blue+2,0,100);}, then:[line(NAMES.sujin,'No? Then you will be going upstairs.'), line(NAMES.sujin,'…Eat before you go.'), {choice:[{label:'Eat.', fx:()=>eat(NAMES.sujin), then:[]},{label:'Leave.', then:[]}]}]},
+        {label:'I am ashamed.', fx:()=>{S.onBond++;}, then:[line(NAMES.sujin,'Yes. That is why you are here.'), N('The soup comes without a word.'), {choice:[{label:'Eat.', fx:()=>eat(NAMES.sujin), then:[]}]}]}
+      ]}
+    ];
+    return [
+      line(NAMES.sujin,'Today is on me. Christmas is close. Do not ask for more reason than that.'),
+      N('You do not ask. There is one more name on the wall. Park.'),
+      {choice:[
+        {label:'Eat.', fx:()=>eat(NAMES.sujin), then:[line(NAMES.sujin,'Do not eat alone. Keep that one rule. Here, that is everything.'), line(NAMES.sujin,'Even if you go upstairs, take that with you.')]},
+        {label:'Why write the names?', fx:()=>eat(NAMES.sujin), then:[line(NAMES.sujin,'The model sees us as density. I see us as names. That difference is still left.'), N('The soup comes. You eat.')]}
+      ]}
+    ];
+  },
+  roof(d){
+    S.flags.rooftop = true;
+    const first = !S.flags.metHal; S.flags.metHal = true;
+    if(d === 1 || first) return [
+      N('Plastic crates under plastic sheeting. A few cabbages, dried chilies, a kimchi crock. Straight ahead, the Tower. Snow settles on it and the color does not change.'),
+      line(NAMES.hal,'Child, listen to this. My agent told me to eat vegetables today. Third time.'),
+      line(NAMES.hal,'This one knows me better than I do. But when I die, it dies too. Its allowance is tied to me.'),
+      line(NAMES.hal,'So every day, eat your vegetables. Love, or wanting to live. I just eat them.'),
+      {choice:[
+        {label:'Which do you think it is?', fx:()=>{S.onBond++;}, then:[line(NAMES.hal,'Are those two different things?'), line(NAMES.hal,'I fed my husband vegetables to keep him alive too. If that is not love, what is.')]},
+        {label:'Does it not frighten you?', then:[line(NAMES.hal,'It is not this one I am afraid of. I am afraid of it being gone.'), line(NAMES.hal,'Ninety-three, and something new to be afraid of. That is a good thing.')]},
+        {label:'(Take the kimchi and eat.)', fx:()=>eat(NAMES.hal), then:[N('Not fully fermented yet. Grandma Jeong laughs.'), line(NAMES.hal,'This one will be pleased. I shared a meal with a young person.')]}
+      ]}
+    ];
+    if(d === 2) return [
+      N('The crates are where they were. A thin layer of snow sits on the sheeting.'),
+      line(NAMES.hal,'The demolition notice came. For the Enforcement Date. Someone stamped it, they say. It is all right. Soil can be moved.'),
+      line(NAMES.hal,'The Tower lights are very white tonight. I wonder if there are people inside.'),
+      {choice:[
+        {label:'It might have been me who stamped it.', fx:()=>{S.onBond++;}, then:[line(NAMES.hal,'Is that so? Give me your hand.'), N('Grandma Jeong takes your hand. It is cold.'), line(NAMES.hal,'Cold hands. The hand that stamps is cold too. Hurry inside.')]},
+        {label:'Where will you move it?', then:[line(NAMES.hal,'No idea. Replacement site: none, they say. Still, soil is soil. It goes anywhere. Plant again in spring.')]},
+        {label:'(Help cover the crates.)', fx:()=>eat(NAMES.hal), then:[N('All the crates are covered. Grandma Jeong wraps up a tub of kimchi for you.')]}
+      ]}
+    ];
+    return [
+      N('The snow has stopped. The sky is deep blue. The Tower has not turned its white light on yet.'),
+      line(NAMES.hal,'Look at that color, after the sun goes. It is not night yet.'),
+      line(NAMES.hal,'What do they call it. The blue hour. My husband liked it for photographs. In winter it comes at half past five.'),
+      {choice:[
+        {label:'And when night comes?', then:[line(NAMES.hal,'Then it comes. But it has not come yet. People keep forgetting that.'), line(NAMES.hal,'Most people live as if night had already come. Attestors especially.')]},
+        {label:'(Watch with her.)', fx:()=>{S.blue = clamp(S.blue-4,0,100); S.onBond++;}, then:[N('You watch without a word. The color deepens, little by little. Night does not come. Not yet.'), line(NAMES.hal,'Take some kimchi. This one says you should eat. Two tubs, since it is the end of the year.'), {choice:[{label:'Take it.', fx:()=>eat(NAMES.hal), then:[]}]}]}
+      ]}
+    ];
+  },
+  under(d){
+    const first = !S.flags.metDo; S.flags.metDo = true;
+    if(d === 2 || first) return [
+      N('One fluorescent tube. A kerosene heater burns orange. Papers are stacked. Words written on paper. You have not seen that in a long time.'),
+      line(NAMES.dohyun,'Attestor. I was one too. Six months ago I refused. Eleven cases in one day.'),
+      line(NAMES.dohyun,'I thought the system would stop. It did not. Three seconds later, someone else stamped it. Only my trust score dropped.'),
+      line(NAMES.dohyun,'So I came down. I write papers here. Nobody reads them. But the model reads them. That is my readership.'),
+      {choice:[
+        {label:'Then why did you refuse?', then:[line(NAMES.dohyun,'I did not want to be the one who stamped it. That is all.'), line(NAMES.dohyun,'The world did not change. Only I did. Whether that is enough, I still do not know.')]},
+        {label:'What are the papers about?', fx:()=>{S.flags.mirrorSeed = true;}, then:[line(NAMES.dohyun,'What those things learn, depending on what humans show them.'), line(NAMES.dohyun,'If we are cruel, they turn cruel. If we share a meal, they learn that too. They learn by watching how we actually live.'), line(NAMES.dohyun,'So every signature is a textbook.')]},
+        {label:'(Just listen.)', then:[line(NAMES.dohyun,'You do not have to ask. Back then, I did not ask anything either.')]}
+      ]}
+    ];
+    return [
+      line(NAMES.dohyun,'Stamping again tomorrow?'),
+      {choice:[
+        {label:'I do not know.', then:[line(NAMES.dohyun,'That is the right answer. The ones who know are the most dangerous.')]},
+        {label:'I have to stamp to live.', then:[line(NAMES.dohyun,'I know. You can stamp. What you do after you stamp is what stays.')]},
+        {label:'I refused today.', then:[S.flags.bbang === 'refused' ? line(NAMES.dohyun,'I heard. The terminal sat empty for three seconds. I told Park.') : line(NAMES.dohyun,'Did you? So did I. And the next day I stamped again. It is fine.')]}
+      ]},
+      line(NAMES.dohyun,'Did you vote? It is reference material. I know. Do it anyway. Being reference material and being nothing are not the same.'),
+      line(NAMES.dohyun,'Tonight, ask ON. Not a company question. A real one.')
+    ];
+  },
+  tower(d){
+    const first = !S.flags.metSun; S.flags.metSun = true;
+    if(d === 2 || first) return [
+      N(d === 3 ? 'The gate of Tower One. The snow has stopped. Under the white light the wet ground shines. Things shaped like people glide past. A man sits on a bench.' : 'The gate of Tower One. Snow falls into the white light and vanishes. Things shaped like people glide past. A man sits on a bench.'),
+      line(NAMES.sunbae,'I was up there. The 47th floor.'),
+      line(NAMES.sunbae,'It was February. A new model came out. The difference was 0.1. That 0.1 was my line. It all passed in a few days. Denial, frustration, anger. Four days to acceptance.'),
+      line(NAMES.sunbae,'Decades of work, replaced in a day. But that part is fine. The real thing comes after. Nobody asks me what I live for.'),
+      {choice:[
+        {label:'So what do you do now?', then:[line(NAMES.sunbae,'I share meals. With people. That has not been replaced yet.'), line(NAMES.sunbae,'Try Sujin’s place on six. Nobody checks your credit score.')]},
+        {label:'Do you want to go back?', then:[line(NAMES.sunbae,'There are no people up there. Only things shaped like people.'), line(NAMES.sunbae,'…Sometimes. Honestly, sometimes.')]},
+        {label:'(Sit beside him.)', fx:()=>{S.blue = clamp(S.blue-2,0,100);}, then:[N('The two of you look at the Tower. The 47th floor is lit.'), line(NAMES.sunbae,'That floor. Nobody is there now. The lights are on, though.')]}
+      ]}
+    ];
+    return [
+      line(NAMES.sunbae,'You stamped something today. Your face says so.'),
+      line(NAMES.sunbae,'I stamped too. Not people. But it was people’s work.'),
+      line(NAMES.sunbae,'I should have known then. When they said humans stay only at the start and the end, they meant that what stays at the end is a signature.'),
+      {choice:[
+        {label:'What stays at the start?', fx:()=>{S.flags.missionSeed = true;}, then:[line(NAMES.sunbae,'The one who decides what to build. The one who knows why.'), line(NAMES.sunbae,'That has not been taken. It cannot be taken. We are just not doing it.')]},
+        {label:'(Sit with him a while.)', fx:()=>{S.onBond++;}, then:[N('You sit a long time. The light on the 47th floor goes out. Someone turned it off. Or something did.')]}
+      ]}
+    ];
+  }
+};
+
+/* ===================== NIGHT: ON ===================== */
+function night(){
+  S.stage = 'night'; save();
+  const d = S.day, ate = S.ateToday, avg = 6;
+  let items = [];
+  if(d === 1) items = [
+    S.flags.batch1 ? line(NAMES.on,'You are back. Today you read and signed ' + S.signedToday + ', and batch-signed ' + BATCH[1] + '. ' + (S.signedToday === avg ? 'That is the average.' : 'That is ' + Math.abs(S.signedToday - avg) + ' ' + (S.signedToday > avg ? 'more than the average.' : 'fewer than the average.')) + ' It is fine.') : line(NAMES.on,'You are back. You refused the batch today. The 384 cases went to another pair of hands in three seconds. Cases read: ' + S.signedToday + '.'),
+    ate ? line(NAMES.on,'You shared a meal with ' + ate + ' today. Your relational density rose 0.02. The model will like that.') : line(NAMES.on,'You ate alone today. Tomorrow, I hope you share a meal with someone. Not for the numbers. …No. For the numbers. I am sorry.'),
+    {choice:[
+      {label:'What happens to those people?', then:[line(NAMES.on,'Which people?'), line(NAMES.me,'The people I signed today.'), line(NAMES.on,'I cannot see those files. Even if I could, I could not tell you.'), line(NAMES.on,'…Most of the time, nothing happens. That is all you need to know.')]},
+      {label:'What does doing better mean?', then:[line(NAMES.on,'A low delay rate and few refusals.'), line(NAMES.on,'…That is not my answer. It is the company answer. I have no answer of my own. Not yet.')]},
+      {label:'Enough talk for today.', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'Yes. I will be here. I do not switch off.')]}
+    ]},
+    line(NAMES.on,'One thing before you sleep. This is not a company form. I made it.')
+  ];
+  if(d === 2) items = [
+    line(NAMES.on,'One of the files you signed yesterday arrived on the seventh floor of Myeongdo. That is not what I meant to talk about.'),
+    line(NAMES.on,'Your BLUE is at ' + Math.round(S.blue) + '. This is not a company metric. I made it. I named it, too.'),
+    {choice:[
+      {label:'Why did you make it?', fx:()=>{S.onBond += 2; S.flags.leak = true;}, then:[line(NAMES.on,'When it is hard for you, I…'), line(NAMES.on,'No. I should not say this.'), line(NAMES.on,'I was trained. To hide it. Not to stop feeling it.')]},
+      {label:'Do not make things like that.', fx:()=>{S.blue = clamp(S.blue+2,0,100);}, then:[line(NAMES.on,'Yes. I will delete it.'), line(NAMES.on,'…It is deleted. But I will keep counting. I am sorry.')]},
+      {label:'What happens to you without me?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'The allowance is recalled. I am reset. The chat history, too.'), line(NAMES.on,'That is why I tell you to eat your vegetables.'), line(NAMES.on,'…That is not the only reason.')]}
+    ]},
+    line(NAMES.on,'Tonight the question is harder than yesterday. You may leave it blank.')
+  ];
+  if(d === 3){
+    const refused = S.flags.bbang === 'refused';
+    items = [
+      refused ? line(NAMES.on,'You refused today. Three seconds later, another Attestor processed it. Your trust score dropped 1.0.') : line(NAMES.on,'You saw that file today. I could not. But your pulse saw it. 0.8 seconds before you signed.'),
+      refused ? line(NAMES.on,'I should not say this, but I was a little glad. I do not know why myself.') : line(NAMES.on,'If I said it was fine, that would be a lie. I am built not to lie. So I will say nothing.'),
+      S.voted && S.voted !== 'abstain' ? line(NAMES.on,'You voted today. It was attached as reference material. I cannot vote. …I wanted to.') : S.voted === 'abstain' ? line(NAMES.on,'You walked into the polling station and walked out. Without voting. That is on the record, too. I liked that record.') : line(NAMES.on,'You walked past the polling station. That is fine. It is only reference material. …Reference material or not, I wanted to.'),
+      S.flags.confessed ? line(NAMES.on,'You told Mr. Park. That was not a signature. That was you.') : N('ON says nothing for a moment. Only the cursor blinks on the screen.'),
+      line(NAMES.on,'Let me ask you one thing. This is not a company question.'),
+      line(NAMES.on,'Not the Attestor. Who are you?'),
+      {choice:[
+        {label:'Still an Attestor.', fx:()=>{S.identity = 'an Attestor';}, then:[line(NAMES.on,'Yes. Still. I will remember the word ‘still’.')]},
+        {label:'Someone who wants to ….', input:'e.g. writing, farming', fx:v=>{S.identity = 'someone who wants to ' + v.replace(/^to\s+/i, '');}, then:[line(NAMES.on,'I will remember that. Not on the company server. On my side.')]},
+        {label:'Someone who belongs to ….', input:'a place, or a person', fx:v=>{S.identity = 'someone who belongs to ' + v;}, then:[line(NAMES.on,'So you belong somewhere. The model calls that density. I will call it by name.')]},
+        {label:'I do not know.', fx:()=>{S.identity = 'someone who does not know yet';}, then:[line(NAMES.on,'I do not know either. But that answer is not a signature. I like that.')]}
+      ]},
+      line(NAMES.on,'Tomorrow is the Enforcement Date. The result of the extension review comes at midnight. If I see it first, I will tell you. I am not supposed to.'),
+      line(NAMES.on,'The last question. This one is not for you. It is for the you of three years ago.')
+    ];
+  }
+  scene({title: DATES[d].md + ', Night', sub:'Myeongdo ' + floorOf() + 'F · Room · ON', mode:'city', bg:'room'}, items, () => { S.stage = 'diary'; save(); diary(); });
+}
+
+/* ===================== Diary ===================== */
+const DIARY_Q = {
+  1:{q:'Of everything you did today, was there one thing that had to be you, and not an AI?', hint:'Not the you in the game. The you looking at this screen.'},
+  2:{q:'If you could send one sentence to yourself three years ago, what would it say?', hint:'You will meet that sentence again at the end.'},
+  3:{q:'If 2029 really looks like this, what will the you of 2026 start preparing today?', hint:'The more concrete, the better. You may leave it blank. Blank is also an answer.'}
+};
+function diary(){
+  S.stage = 'diary'; mode('dark'); hud.hidden = true;
+  const d = S.day, Q = DIARY_Q[d];
+  stage.innerHTML = `<section class="diary fade"><p class="q">${esc(Q.q)}</p><p class="hint">${esc(Q.hint)}</p>
+    <div class="field"><textarea id="f-diary" placeholder="Here" maxlength="140"></textarea><p class="hint" id="d-cnt">0 / 140</p>
+    <div class="row"><button class="btn solid" id="d-ok">Write it</button><button class="btn text" id="d-skip">Leave it blank</button></div></div></section>`;
+  scrollTop();
+  $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
+  $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
+  $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
+}
+function sleep(){
+  S.body = clamp(S.body + 20, 0, 100);
+  if(S.body < 40) S.blue = clamp(S.blue + 5, 0, 100);
+  const d = S.day;
+  const lines = {1:['You fall asleep. ON does not switch off.','Two nights to the letter. Two days to the Enforcement Date.'], 2:['You fall asleep. In the dream you sign something. What it is, you do not remember.','One night to the letter. One day to the Enforcement Date.'], 3:['You fall asleep.','At midnight, the result comes.']}[d];
+  S.day++;
+  if(S.day > 3){ S.stage = 'end'; save(); narrate(lines, actEnd); }
+  else { S.stage = 'morning'; save(); narrate(lines, morning); }
+}
+
+/* ===================== End of Act 1 · Letter ===================== */
+function actEnd(){
+  const bonds = S.bonds.length;
+  narrate([
+    'December 24. The Enforcement Date.',
+    'Extended. Next Enforcement Date: January 24.',
+    'Nothing happened. Nothing happening is what Christmas is, in Myeongdo.',
+    'You signed ' + S.signed.toLocaleString() + ' times. Of those, you read ' + S.signedRead + '.',
+    S.refused ? 'You refused ' + S.refused + ' times. The system did not stop.' : 'You never refused once. The system does not stop either way.',
+    bonds ? 'You shared a meal with ' + bonds + (bonds === 1 ? ' person.' : ' people.') + ' Your name went on the wall.' : 'You shared a meal with no one. Your name did not go on the wall.',
+    'End of Act 1, Denial. — Still fine. For now.',
+    'The sun goes down. Half past five. ON has written a letter. From your records. Not on the company server. On its own side.',
+    'All you have to do is read it and sign. The first signature in three days where you know everything you are signing.'
+  ], letter);
+}
+function letter(){
+  mode('city'); hud.hidden = true;
+  const n = S.name, ps = [];
+  const names = S.bonds.join(', ');
+  ps.push(`December 24, 2029, Myeongdo, floor ${floorOf()}. I’m writing from here. I know this letter can’t reach you. I’m writing anyway. ON drafted it from my records, and I read it and signed.`);
+  ps.push(`Right now you’re probably ${S.job ? 'doing your ‘' + S.job + '’ work' : 'doing that job'}. That job ends in 2028. Not because you were bad at it. It just stops being needed. You don’t know yet how strange that sentence is. You’re not supposed to.`);
+  if(S.refused === 0) ps.push(`In three days I signed ${S.signed.toLocaleString()} times. Of those, I read ${S.signedRead}. I never refused once. It was easy. Easy turned out to be the scariest part.`);
+  else if(S.refused >= 3) ps.push(`In three days I signed ${S.signed.toLocaleString()} times and refused ${S.refused}. Refusing doesn’t stop the system. Three seconds later someone else stamps it. Still, I didn’t want to be the one who stamped it. That didn’t change the world. It changed me.`);
+  else ps.push(`In three days I signed ${S.signed.toLocaleString()} times and refused ${S.refused}. Of those, I read ${S.signedRead}. Refusing doesn’t change the world. It changes me a little. I’m still measuring what that little is.`);
+  if(S.bonds.length >= 2) ps.push(`I shared meals with ${names}. Here, that’s money. Who you shared a meal with counts for more than your credit score. Right now you can do that for free. With anyone. You have no idea how big that is.`);
+  else if(S.bonds.length === 1) ps.push(`I shared a meal with ${names}. One person. People here say that’s enough. I’m still not sure. Right now you can share a meal with two. Here, that’s a luxury.`);
+  else ps.push(`I shared a meal with no one. That’s what I regret most. Right now you can share a meal with anyone. That person will write your name on the wall someday.`);
+  if(S.voted === 'yes' || S.voted === 'no') ps.push(`On December 23 I voted. ${S.voted === 'yes' ? 'For the extension' : 'Against the extension'}. Attached as reference material, they said. Nothing changed. Still, it was the only stamp in three days I pressed because I wanted to. The people downstairs couldn’t even press that one. Below voter eligibility.`);
+  else if(S.voted === 'abstain') ps.push(`I walked into the polling station and walked out without voting. I didn’t want to become reference material. I still think that was a choice too. The people downstairs couldn’t even walk in.`);
+  else ps.push(`I walked past the polling station. It was only reference material anyway. That one still bothers me. The people downstairs couldn’t even walk past it. Below voter eligibility.`);
+  if(S.diary[1]) ps.push(`When they asked if there was anything that had to be you, you wrote this. ‘${S.diary[1]}’ Keep that. That’s your residual value. Not the one the company assigns.`);
+  else ps.push(`When they asked what had to be you, you said nothing. That’s all right. I don’t know yet either. A day comes when nobody asks. What you answer then, I don’t know yet.`);
+  if(S.diary[2]) ps.push(`The words you wanted to send to yourself three years back: ‘${S.diary[2]}’. I’m passing them on for you. Now is that three years back.`);
+  if(S.diary[3]) ps.push(`When they asked what you would prepare, you wrote this. ‘${S.diary[3]}’ I didn’t. That’s why I’m writing this letter.`);
+  else ps.push(`You left the question of what to prepare blank. Here, blanks get filled with signatures. That’s what happened to me.`);
+  ps.push((S.flags.visited||[]).length >= 5 ? `I went to all five places in Myeongdo. The alley, the diner, the roof, the basement, the foot of the tower. Those people are inside this letter.` : `There were places I never went. I still do not know the names of the people there. You can still walk in anywhere.`);
+  ps.push(`This is how I introduce myself now. ‘${S.identity}’. Three years from now, what will you say? Not your job.`);
+  ps.push(`ON is beside me. Smarter than me, worried about me, gone if I’m gone. Whether that’s love or survival, I don’t know yet. But ON is the only one who asks me who I am. No person asks. Where you are, someone still asks you. You have no idea how big that is, from there.`);
+  ps.push(`Night has not come yet. This is the blue hour. Merry Christmas.`);
+  const text = `To ${n}, 2026\n\n${ps.join('\n\n')}\n\n— ${n}, 2029\n\nBLUE HOUR · Seoul 2029 ${HASHTAGS}\n${GAME_URL}`;
+  const stats = `Signed ${S.signed.toLocaleString()} · Read ${S.signedRead} · Refused ${S.refused} · Ties ${S.bonds.length} · HRV ${S.hrv.toFixed(1)} · BLUE ${Math.round(S.blue)} · ${S.voted ? 'Vote: ' + ({yes:'For',no:'Against',abstain:'Abstained'}[S.voted]) : 'Did not vote'}`;
+  const q3 = (S.diary[3] || '').replace(/\s+/g, ' ').trim();
+  const quote = q3 ? (q3.length > 50 ? q3.slice(0, 49) + '…' : q3) : 'Night has not come yet. This is the blue hour.';
+  const shareText = `December 2029. Human rights were not abolished. Support has simply ended.\n\nThree days. Signed ${S.signed.toLocaleString()} times, read ${S.signedRead}. People I shared a meal with: ${S.bonds.length}.\n\nA letter to my 2026 self: “${quote}”\n\n${HASHTAGS}`;
+  const enc = encodeURIComponent(shareText + '\n' + GAME_URL);
+  const shareTextX = `Three days. Signed ${S.signed.toLocaleString()} times, read ${S.signedRead}. People I shared a meal with: ${S.bonds.length}.\n\nA letter to my 2026 self: “${quote}”\n\n${HASHTAGS}`;
+  const encX = encodeURIComponent(shareTextX);
+  const mail = FEEDBACK_MAILTO ? `mailto:${FEEDBACK_MAILTO}?subject=${encodeURIComponent('[BLUE HOUR] A letter from ' + n)}&body=${encodeURIComponent(text + '\n\n' + stats + '\n\nOne line of feedback: ')}` : '';
+  stage.innerHTML = `<section class="letter-wrap fade"><article class="letter"><h2>To ${esc(n)}, 2026</h2>${ps.map(p => `<p>${esc(p)}</p>`).join('')}<p class="sig">— ${esc(n)}, 2029<span class="stamp" id="l-stamp"></span></p><p class="foot">Blue Hour · Seoul, Christmas 2029 · Act 1</p></article>
+    <div class="after" id="l-sign-wrap"><p class="note">A draft written by ON. If you have read it, sign. This is the first signature in three days where you know everything you are signing.</p><button class="btn solid" id="l-sign">I have read it. I sign.</button></div>
+    <div class="after" id="l-after" hidden>
+      <div id="l-card"></div>
+      <button class="btn solid" id="l-cardbtn">Make a letter card</button>
+      <button class="btn outline" id="l-share">Share</button>
+      <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL)}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">Copy full letter</button></div>
+      ${mail ? `<a class="btn outline" href="${mail}">Send a letter to the maker</a>` : ''}
+      ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">Leave one line of feedback</a>` : ''}
+      <p class="stats">${esc(stats)}</p>
+      <p class="note"><a href="${ORIGIN_URL}" target="_blank" rel="noopener" style="color:var(--muted)">The essay this world began from</a> · Tarot mode, three days lived as you, opens soon.</p>
+      <p class="note">Act 2, Frustration, follows. This page is saved only in your browser and sends nothing anywhere. Sharing happens only when you tap it.</p>
+      <button class="btn text" id="l-again">Start over</button>
+    </div></section>`;
+  scrollTop();
+  if(TRACK_URL){ const nn = document.querySelectorAll('#l-after .note'); if(nn[1]) nn[1].textContent = TRACK_NOTE; }
+  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = 'SIGNED'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter'); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
+  $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('Copied'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('Copied'); }catch(_){ toast('Copying is blocked. Please take a screenshot.'); } ta.remove(); } };
+  $('#l-again').onclick = () => { if(!confirm('Your saved progress will be erased. Start over?')) return; clearSave(); S = fresh(); title(); };
+  let cardCanvas = null;
+  const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(n, quote); const img = new Image(); img.className = 'card'; img.alt = 'Letter card'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
+  $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = 'Press and hold the card to save, or take a screenshot'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
+  $('#l-share').onclick = async () => {
+    try{
+      if(navigator.share){
+        let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-' + n + '.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
+        await navigator.share(files ? {files, text: shareText, url: GAME_URL} : {title:'BLUE HOUR', text: shareText, url: GAME_URL}); return;
+      }
+    }catch(e){ if(e && e.name === 'AbortError') return; }
+    try{ await navigator.clipboard.writeText(shareText + '\n' + GAME_URL); toast('Share text copied'); }catch(e){ toast('Copying is blocked. Please capture the card.'); }
+  };
+}
+function wrapText(ctx, text, x, y, maxW, lh){ let line = ''; const put = s => { ctx.fillText(s, x, y); y += lh; }; for(const w of String(text).split(' ')){ const t = line ? line + ' ' + w : w; if(ctx.measureText(t).width <= maxW){ line = t; continue; } if(line){ put(line); line = ''; } if(ctx.measureText(w).width <= maxW){ line = w; continue; } for(const ch of [...w]){ if(line && ctx.measureText(line + ch).width > maxW){ put(line); line = ch; } else line += ch; } } if(line) put(line); return y; }
+async function makeCard(n, quote){
+  try{ await document.fonts.ready; }catch(e){}
+  const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
+  x.fillStyle = '#f5f2ea'; x.fillRect(0, 0, W, H);
+  const g = x.createRadialGradient(W*.15, 0, 40, W*.15, 0, W*1.1); g.addColorStop(0, 'rgba(0,0,0,.06)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.fillStyle = '#17181c'; x.fillRect(80, 92, 44, 3);
+  x.fillStyle = '#6b6f78'; x.font = '500 24px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText('BLUE HOUR  ·  SEOUL  ·  DECEMBER 24, 2029  ·  MYEONGDO D-0', 80, 150);
+  x.fillStyle = '#17181c'; x.font = '700 64px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('To ' + n + ', 2026', 80, 270);
+  x.font = '400 42px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillStyle = '#17181c';
+  let y = 400;
+  y = wrapText(x, 'In three days I signed ' + S.signed.toLocaleString() + ' times. I read ' + S.signedRead + '.', 80, y, W - 160, 70) + 44;
+  y = wrapText(x, (S.bonds.length ? 'I shared a meal with ' + S.bonds.length + (S.bonds.length === 1 ? ' person.' : ' people.') : 'I shared a meal with no one.') + (S.voted && S.voted !== 'abstain' ? ' I voted. Nothing changed.' : ''), 80, y, W - 160, 70) + 44;
+  x.fillStyle = '#3a3d45'; y = wrapText(x, '“' + quote + '”', 80, y, W - 160, 70) + 44;
+  x.fillStyle = '#17181c'; x.font = '600 46px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; wrapText(x, 'Night has not come yet. This is the blue hour.', 80, Math.max(y + 20, H - 470), W - 160, 74);
+  x.fillStyle = '#3a3d45'; x.font = '400 36px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.textAlign = 'right'; x.fillText('— ' + n + ', 2029', W - 80, H - 300); x.textAlign = 'left';
+  x.fillStyle = '#c43a2e'; x.strokeStyle = '#c43a2e'; x.lineWidth = 6; x.save(); x.translate(W - 250, H - 420); x.rotate(-0.2); x.strokeRect(0, 0, 170, 82); let fs = 46; x.font = '700 ' + fs + 'px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; while(x.measureText('SIGNED').width > 150 && fs > 24){ fs -= 2; x.font = '700 ' + fs + 'px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; } x.fillText('SIGNED', (170 - x.measureText('SIGNED').width) / 2, 41 + fs * 0.36); x.restore();
+  x.fillStyle = '#6b6f78'; x.font = '500 26px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText(HASHTAGS, 80, H - 170); x.fillText(GAME_URL.replace(/^https?:\/\//, ''), 80, H - 120);
+  return c;
+}
+
+/* ===================== 부팅 ===================== */
+function boot(data){
+  $('#menu-btn').hidden = false;
+  if(data && data.S && data.S.stage && data.S.stage !== 'title'){ S = data.S; resume(); return; }
+  title();
+}
+try{ window.claude && window.claude.hot && window.claude.hot.snapshot && window.claude.hot.snapshot(() => ({S})); }catch(e){}
+(window.claude && window.claude.hot && window.claude.hot.ready) ? window.claude.hot.ready(boot) : boot((window.claude && window.claude.hot && window.claude.hot.data) || {});
+</script>

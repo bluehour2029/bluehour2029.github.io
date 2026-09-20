@@ -1,0 +1,1142 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>블루 아워 명도</title>
+<style>
+:root{
+  --bg:#070b14; --bg-2:#0c1424; --bg-3:#111c31; --line:#1d2a42; --line-2:#2a3a58;
+  --ink:#e6ecf5; --ink-2:#c7d2e3; --muted:#8a99b2; --dim:#6f809c;
+  --accent:#ffa24a; --accent-deep:#e8892f; --accent-ink:#1a0f02;
+  --on:#7fdcd2; --blue:#3f74c9;
+  --paper:#ffffff; --paper-2:#f3f5f8; --paper-ink:#111318; --paper-muted:#6b7280; --paper-line:#e1e5eb; --paper-ground:#eceef2; --warm:#f5f2ea;
+  --stamp:#c43a2e; --stamp-b:#2d4f9e; --danger:#ff6b6b;
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Noto Sans KR","Segoe UI",Roboto,system-ui,sans-serif;
+  --serif:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Noto Sans KR","Segoe UI",Roboto,system-ui,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Noto Sans KR","Segoe UI",Roboto,system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --gutter:18px;
+}
+[hidden]{display:none!important}
+html,body{height:100%}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+body.paper-mode{background:var(--paper-ground)}
+#app{position:relative;z-index:2;max-width:640px;margin:0 auto;padding:0 var(--gutter) 56px;min-height:100%}
+#snow{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;transition:opacity .8s}
+body.paper-mode #snow,body.dark-mode #snow{opacity:0}
+#veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 60%,rgba(40,90,190,0) 30%,rgba(30,70,170,.85) 100%);opacity:0;transition:opacity 1.2s}
+body.paper-mode #veil{mix-blend-mode:multiply}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.fade{animation:fade .5s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.fade{animation:none}.ticker span{animation:none!important}.cue i{animation:none}.p-timer{transition:none!important}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:4px;border:1px solid var(--line-2);background:var(--bg-2);color:var(--ink);font-family:var(--sans);font-weight:500;font-size:15px;letter-spacing:.01em;transition:background .15s,border-color .15s,transform .06s,opacity .15s;text-decoration:none}
+.btn:hover{border-color:var(--muted)}
+.btn:active{transform:translateY(1px)}
+.btn.solid{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.solid:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
+.btn.outline{background:transparent}
+.btn.text{background:transparent;border-color:transparent;color:var(--muted);padding:0 10px}
+.btn.text:hover{color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+#hud{position:sticky;top:0;z-index:5;margin:0 calc(-1*var(--gutter)) 6px;padding:calc(10px + env(safe-area-inset-top,0px)) calc(var(--gutter) + 44px) 10px var(--gutter);display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(var(--bg) 78%,transparent);font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em}
+body.paper-mode #hud{background:linear-gradient(var(--paper-ground) 78%,transparent);color:#5a5e68}
+#hud .m{display:flex;align-items:baseline;gap:6px;white-space:nowrap}
+#hud .m label{font-size:10px;text-transform:uppercase;letter-spacing:.14em;opacity:.7}
+#hud .m b{font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
+#hud .m b.d{color:var(--accent)}
+body.paper-mode #hud .m b{color:#17181c}
+body.paper-mode #hud .m b.d{color:#b5541c}
+#hud .bar{display:inline-block;width:56px;height:4px;background:var(--line);border-radius:2px;overflow:hidden;vertical-align:middle}
+body.paper-mode #hud .bar{background:#d3d7de}
+#hud .bar b{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),#7aa6ff);transition:width .6s}
+#h-att-dots i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--line-2);margin-left:4px;vertical-align:middle}
+#h-att-dots i.on{background:var(--accent)}
+#hud{gap:4px 12px}
+#hud .m:first-child{flex-basis:100%}
+#hud .m:not(:first-child){font-size:10.5px;letter-spacing:0}
+#hud .m:not(:first-child) label{letter-spacing:.1em}
+#hud .bar{width:44px}
+#menu-btn{background:rgba(7,11,20,.35);border-color:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+
+#menu-btn{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:10px;z-index:40;width:44px;height:44px;border-radius:50%;border:1px solid var(--line-2);background:rgba(7,11,20,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--ink);display:flex;align-items:center;justify-content:center;padding:0}
+#menu-btn span{display:block;width:16px;height:2px;background:currentColor;box-shadow:0 -5px 0 currentColor,0 5px 0 currentColor;border-radius:1px}
+body.paper-mode #menu-btn{background:rgba(255,255,255,.5);color:#111318;border-color:transparent}
+.sheet-bg{position:fixed;inset:0;z-index:50;background:rgba(3,6,12,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:51;max-width:640px;margin:0 auto;background:var(--bg-2);border:1px solid var(--line-2);border-bottom:0;border-radius:14px 14px 0 0;padding:18px var(--gutter) calc(20px + env(safe-area-inset-bottom,0px));animation:up .25s ease both}
+@keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+.sheet h3{font-family:var(--display);font-weight:500;font-size:18px;margin:0 0 4px}
+.sheet .save{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em;margin:0 0 14px}
+.sheet .list{display:flex;flex-direction:column;gap:8px}
+.sheet .btn{justify-content:flex-start;width:100%}
+.sheet .confirm{margin-top:8px;padding:12px 14px;border:1px solid var(--line-2);border-radius:6px;background:var(--bg-3);font-size:14px;color:var(--ink-2)}
+.sheet .confirm .row{margin-top:10px}
+.sheet .credit{font-family:var(--mono);font-size:11px;color:var(--dim);margin:14px 0 0;line-height:1.8}
+.sheet a{color:var(--muted)}
+
+.title{padding-block:0 30px}
+.hero{position:relative;margin:0 calc(-1*var(--gutter));height:min(64vw,400px);background-size:cover;background-position:center 28%}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,.05) 0%,rgba(7,11,20,0) 40%,var(--bg) 100%)}
+.title .eyebrow{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-top:6px}
+.title h1{font-family:var(--display);font-weight:700;font-size:clamp(44px,12vw,80px);line-height:.95;margin:8px 0 0;letter-spacing:-.03em}
+.title h1 span{display:block;font-family:var(--display);font-weight:500;font-size:.3em;letter-spacing:.22em;color:var(--accent);margin-top:14px;padding-left:.05em}
+.title .rule{width:40px;height:1px;background:var(--line-2);margin:24px 0 18px}
+.title .quote{font-family:var(--serif);color:var(--ink-2);font-size:17px;line-height:1.85;margin:0 0 14px;max-width:30ch;text-wrap:balance}
+.title .promise{font-family:var(--sans);color:var(--ink);font-size:15px;margin:0 0 22px;max-width:32ch}
+.title .actions{display:flex;flex-wrap:wrap;gap:10px}
+.title .fine{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:28px;line-height:1.9;letter-spacing:.02em}
+.title .langs{font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:14px}
+.title .langs a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line-2)}
+.title .langs b{color:var(--ink);font-weight:500}
+
+.narr{min-height:calc(100vh - 80px);min-height:calc(100svh - 80px);display:flex;flex-direction:column;justify-content:center;cursor:pointer;padding-block:40px 90px;position:relative}
+.narr-text{font-family:var(--display);font-weight:400;font-size:clamp(20px,5vw,25px);line-height:1.75;letter-spacing:-.01em;max-width:26ch;text-wrap:pretty;margin:0;color:var(--ink)}
+.cue{position:absolute;left:0;bottom:calc(28px + env(safe-area-inset-bottom,0px));font-family:var(--mono);font-size:12.5px;color:var(--muted);letter-spacing:.08em;display:flex;align-items:center;gap:10px}
+.cue i{display:block;width:6px;height:6px;border-right:1px solid var(--dim);border-bottom:1px solid var(--dim);transform:rotate(45deg);animation:nod 1.6s ease-in-out infinite}
+@keyframes nod{0%,100%{transform:translateY(0) rotate(45deg);opacity:.5}50%{transform:translateY(4px) rotate(45deg);opacity:1}}
+.law{font-family:var(--mono);font-size:13.5px;line-height:1.85;background:var(--warm);color:var(--paper-ink);padding:22px 22px 18px;border-radius:2px;max-width:42ch;box-shadow:0 30px 70px rgba(0,0,0,.55)}
+.law b{display:block;font-size:10px;letter-spacing:.18em;color:var(--paper-muted);margin-bottom:10px;font-weight:500}
+.law strong{font-size:30px;font-weight:500;letter-spacing:-.02em}
+.law .law-note{display:block;margin-top:10px;font-family:var(--serif);color:#3a3d45;font-size:14px}
+.narr .after-law{font-family:var(--display);margin:24px 0 0;font-size:18px;color:var(--muted)}
+
+.field{display:flex;flex-direction:column;gap:14px;margin-top:26px;max-width:34ch}
+.field input,.field textarea{font:inherit;font-family:var(--display);font-size:22px;background:transparent;border:0;border-bottom:1px solid var(--line-2);color:var(--ink);padding:8px 0;border-radius:0;width:100%}
+.field input::placeholder,.field textarea::placeholder{color:var(--dim)}
+.field textarea{font-family:var(--serif);font-size:17px;line-height:1.8;min-height:110px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;max-width:46ch}
+.chip{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--ink-2);font-size:15px}
+.chip:hover{border-color:var(--muted);color:var(--ink)}
+.chip.ghost{border-style:dashed;color:var(--muted)}
+
+.scene{padding-block:0 12px;min-height:calc(100svh - 72px);cursor:pointer}
+.backdrop{position:relative;margin:0 calc(-1*var(--gutter)) 14px;height:min(52vw,320px);background-size:cover;background-position:center}
+.backdrop:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,.12) 0%,rgba(7,11,20,0) 42%,var(--bg) 100%)}
+body.paper-mode .backdrop:after{background:linear-gradient(180deg,rgba(236,238,242,0) 40%,var(--paper-ground) 100%)}
+.scene-h{margin-bottom:16px}
+.scene-h h2{font-family:var(--display);font-weight:500;font-size:24px;margin:0;letter-spacing:-.01em}
+.scene-h .sub{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em;margin:4px 0 0}
+.log{display:flex;flex-direction:column;gap:20px;padding-bottom:10px}
+.line{max-width:58ch;display:grid;grid-template-columns:0 1fr;column-gap:0}
+.line.npc,.line.on{grid-template-columns:44px 1fr;column-gap:12px}
+.line .who{grid-column:2;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--muted);margin-bottom:5px;text-transform:uppercase}
+.line.on .who{color:var(--on)}
+.line.npc .who{color:var(--accent)}
+.line .txt{grid-column:2;margin:0;font-family:var(--serif);font-size:16.5px;line-height:1.75;letter-spacing:-.005em;text-wrap:pretty;color:var(--ink)}
+.line.on .txt{color:#d9f4f1;background:rgba(127,220,210,.06);border:1px solid rgba(127,220,210,.16);border-radius:14px 14px 14px 4px;padding:12px 15px;font-size:17px}
+.line.on .txt:empty:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--on);box-shadow:12px 0 0 var(--on),24px 0 0 var(--on);animation:dots 1s ease-in-out infinite;margin:6px 0}
+@keyframes dots{0%,100%{opacity:.25}50%{opacity:1}}
+.line.narr-line .txt{color:var(--muted);font-size:16px}
+.line.me .txt{color:var(--ink-2);font-family:var(--sans);font-size:16px;background:var(--bg-3);border:1px solid var(--line);border-radius:14px 14px 4px 14px;padding:10px 14px;display:inline-block}
+.line.me .who{color:var(--ink-2)}
+.line .portrait{grid-column:1;grid-row:1/span 2;width:44px;height:56px;object-fit:cover;object-position:top;border-radius:3px;border:1px solid var(--line-2);background:var(--bg-2)}
+.line .on-dot{grid-column:1;grid-row:1/span 2;width:44px;height:56px;display:flex;align-items:center;justify-content:center}
+.line .on-dot i{display:block;width:12px;height:12px;border-radius:50%;background:var(--on);box-shadow:0 0 18px 4px rgba(127,220,210,.45);animation:breathe 3.2s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.25);opacity:1}}
+@media (prefers-reduced-motion:reduce){.line .on-dot i{animation:none}}
+.ctl{position:sticky;bottom:0;display:flex;flex-direction:column;gap:8px;padding:14px 0 calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 32%)}
+.ctl .next{align-self:stretch;justify-content:flex-end;min-height:48px;padding:0 4px;background:none;border:0;font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;color:var(--muted);display:flex;align-items:center;gap:10px}
+.ctl .next i{display:block;width:6px;height:6px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(45deg);animation:nod 1.6s ease-in-out infinite}
+.ctl .next.typing i{animation:none;opacity:.35}
+.choice{display:flex;align-items:center;gap:12px;width:100%;min-height:50px;padding:10px 14px 10px 16px;text-align:left;background:var(--bg-2);border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:4px;font-family:var(--sans);font-size:15.5px;color:var(--ink);line-height:1.5;transition:background .15s,border-color .15s}
+.choice:hover{background:var(--bg-3);border-color:var(--line-2);border-left-color:var(--accent)}
+.choice:active{transform:translateY(1px)}
+.choice.quiet{border-left-color:var(--line-2);color:var(--ink-2)}
+.ctl .inrow{display:flex;gap:8px;align-items:stretch}
+.ctl .inrow input{flex:1;min-width:0;font:inherit;font-family:var(--serif);font-size:16px;background:var(--bg-2);border:1px solid var(--line);border-bottom-color:var(--line-2);color:var(--ink);padding:10px 12px;border-radius:4px}
+.ctl .inrow .choice{width:auto;flex:0 0 auto}
+
+.ticker{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 0;margin:2px 0 6px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+.ticker span{display:inline-block;padding-left:100%;animation:tick 32s linear infinite}
+@keyframes tick{to{transform:translateX(-100%)}}
+
+.evening-h{font-family:var(--display);font-size:24px;font-weight:500;margin:6px 0 0}
+.evening-p{color:var(--muted);margin:4px 0 4px;font-size:15px;font-family:var(--serif)}
+.evening-hint{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin:0 0 14px;letter-spacing:.02em}
+.tiles{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:560px){.tiles{grid-template-columns:1fr 1fr}.tiles .tile.wide{grid-column:1/-1}}
+.tile{position:relative;display:block;width:100%;height:124px;padding:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background-size:cover;background-position:center;text-align:left;color:var(--ink)}
+.tile:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,11,20,.94) 0%,rgba(7,11,20,.7) 60%,rgba(7,11,20,.25) 100%)}
+.tile .t{position:absolute;left:16px;right:20%;bottom:14px;display:flex;flex-direction:column;gap:2px}
+.tile .t small{text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.tile .t b{font-family:var(--display);font-weight:500;font-size:19px;letter-spacing:-.01em}
+.tile .t small{font-family:var(--serif);font-size:13.5px;color:var(--ink-2)}
+.tile .cost{position:absolute;top:12px;left:16px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase}
+.tile.vote .cost{color:#fff;background:var(--stamp);padding:2px 8px;border-radius:2px}
+.tile:hover{border-color:var(--line-2)}
+.tile:disabled{cursor:not-allowed;filter:grayscale(1)}
+.tile:disabled:before{background:rgba(7,11,20,.85)}
+.tile:disabled .t b,.tile:disabled .t small{color:var(--dim)}
+.tile:disabled .cost{color:var(--dim);background:transparent}
+
+.term{padding-block:0 20px}
+.term-top{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:#6a6e78;text-transform:uppercase;margin:0 0 12px}
+.paper{position:relative;background:var(--paper);color:var(--paper-ink);border-radius:2px;padding:24px 22px 28px;border:1px solid var(--paper-line);box-shadow:0 18px 50px rgba(0,0,0,.12);font-family:var(--mono);overflow:hidden}
+.paper.batch{box-shadow:0 18px 50px rgba(0,0,0,.12),4px 4px 0 -1px var(--paper-2),8px 8px 0 -2px #e6e9ee}
+.p-timer{position:absolute;left:0;top:0;height:3px;width:100%;background:var(--paper-ink);transition:width 20s linear;opacity:.8}
+.p-timer.late{background:var(--stamp)}
+.doc-head{display:flex;align-items:center;gap:10px;font-size:10.5px;letter-spacing:.12em;color:var(--paper-muted);border-bottom:1px solid var(--paper-line);padding-bottom:12px;margin-bottom:16px;text-transform:uppercase}
+.doc-head .tag{border:1px solid var(--paper-line);border-radius:2px;padding:2px 7px;color:var(--paper-ink);letter-spacing:.14em}
+.doc-head .no{margin-left:auto;font-variant-numeric:tabular-nums}
+.doc-head .late-tag{color:#fff;background:var(--stamp);border-radius:2px;padding:2px 7px;letter-spacing:.14em}
+.paper h3{font-family:var(--sans);font-weight:600;font-size:20px;margin:0 0 12px;letter-spacing:-.01em;line-height:1.35}
+.p-body{font-size:14.5px;line-height:1.9;margin:0;white-space:pre-line}
+.p-basis{font-size:12.5px;line-height:1.8;color:var(--paper-muted);background:var(--paper-2);border-left:2px solid var(--paper-line);margin:16px 0 0;padding:10px 12px}
+.p-basis.hide{display:none}
+.stamp{position:absolute;right:18px;bottom:18px;font-family:var(--sans);font-weight:700;font-size:30px;letter-spacing:.24em;padding:6px 12px 6px 18px;border:3px solid;border-radius:3px;transform:rotate(-12deg) scale(1.5);opacity:0;pointer-events:none;transition:transform .16s cubic-bezier(.2,1.5,.4,1),opacity .16s;mix-blend-mode:multiply}
+.stamp.show{opacity:.86;transform:rotate(-11deg) scale(1)}
+.stamp.sign{color:var(--stamp);border-color:var(--stamp)}
+.stamp.refuse{color:var(--stamp-b);border-color:var(--stamp-b)}
+.term-ctl{display:grid;grid-template-columns:auto 1fr 1.4fr;gap:8px;margin-top:14px}
+.term-ctl .btn{min-height:52px;border-radius:3px}
+.term-ctl .btn.text{color:#5a5e68}
+.term-ctl .btn.outline{background:transparent;border-color:#c9cfd8;color:var(--paper-ink)}
+.term-ctl .btn.solid{background:var(--paper-ink);border-color:var(--paper-ink);color:#fff}
+.term-ctl .btn.solid:hover{background:#000}
+.term-ctl.one{grid-template-columns:1fr}
+.term-ctl.three{grid-template-columns:1fr 1fr 1fr}
+.term-note{font-family:var(--serif);color:#3a3d45;font-size:15.5px;line-height:1.75;min-height:1.75em;margin:14px 0 0;max-width:46ch}
+.summary{font-family:var(--mono);font-size:13.5px;line-height:2.1;color:var(--paper-ink)}
+.summary b{font-weight:500;font-size:16px}
+.interview{background:#15171d;color:#e6e6e6;border-radius:3px;padding:20px 20px;font-family:var(--mono);font-size:14px;line-height:1.9;margin-top:4px}
+.interview .who{font-size:10px;letter-spacing:.18em;color:#9aa;display:block;margin-bottom:8px;text-transform:uppercase}
+
+.diary{padding-block:12vh 20px;min-height:calc(100dvh - 100px);display:flex;flex-direction:column;justify-content:flex-start}
+.diary .row{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.diary .q{font-family:var(--display);font-size:clamp(21px,5vw,26px);line-height:1.75;max-width:26ch;text-wrap:pretty;margin:0}
+.diary .hint{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin:10px 0 0;letter-spacing:.03em;line-height:1.8}
+.diary .field{max-width:48ch}
+.diary textarea{background:repeating-linear-gradient(transparent 0 30px,var(--line) 30px 31px);line-height:31px;padding:0;border-bottom:0;min-height:124px}
+
+.letter-wrap{padding-block:10px 20px}
+.letter{background:var(--warm);color:var(--paper-ink);padding:34px 26px 36px;border-radius:2px;font-family:var(--serif);font-size:16px;line-height:1.9;letter-spacing:-.005em;box-shadow:0 30px 70px rgba(0,0,0,.55);position:relative}
+.letter:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 20% 0%,rgba(0,0,0,.035),transparent 60%),radial-gradient(ellipse at 90% 100%,rgba(0,0,0,.04),transparent 55%)}
+.letter h2{font-family:var(--display);font-weight:500;font-size:22px;margin:0 0 22px;letter-spacing:-.01em}
+.letter p{margin:0 0 15px;max-width:40ch;text-wrap:pretty}
+.letter .sig{margin-top:24px;text-align:right;color:#3a3d45;font-family:var(--display);display:flex;justify-content:flex-end;align-items:center;gap:16px}
+.letter .stamp{position:static;font-size:22px;padding:4px 10px 4px 14px}
+.letter .foot{font-family:var(--mono);font-size:10.5px;color:var(--paper-muted);margin-top:24px;letter-spacing:.06em}
+.after{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.after .note{font-family:var(--mono);font-size:12.5px;color:var(--muted);line-height:1.8;margin:0;letter-spacing:.02em}
+.after .stats{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:2;margin:4px 0 0;letter-spacing:.04em}
+.after .row .btn{flex:1}
+.after .card{display:block;width:100%;max-width:420px;border:1px solid var(--line-2);border-radius:4px;box-shadow:0 20px 50px rgba(0,0,0,.5);margin:4px 0 8px}
+.term-ctl .btn.nextcase{background:transparent;border-color:#c9cfd8;color:var(--paper-ink)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:4px;font-size:13px;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+
+/* ---------- v0.6 wet cyberpunk layer ---------- */
+:root{--neon:#5ee7df;--neon-2:#ff5fa2;--glass:rgba(10,17,31,.74);--glass-2:rgba(14,24,42,.86);--glass-line:rgba(120,160,220,.22);--bg:#05080f;--bg-2:#0a1220;--bg-3:#0f1a2e;--line:#172238;--line-2:#233452}
+body{background:var(--bg)}
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px),radial-gradient(ellipse at 18% 112%,rgba(94,231,223,.16),transparent 55%),radial-gradient(ellipse at 92% -8%,rgba(255,95,162,.11),transparent 48%),radial-gradient(ellipse at 50% 45%,transparent 50%,rgba(0,0,0,.6) 100%)}
+body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");background-size:160px 160px}
+body.paper-mode::before{opacity:.35}
+body.paper-mode::after{opacity:.03}
+#snow{opacity:.8}
+.btn{background:var(--glass);border:1px solid var(--glass-line);border-radius:2px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 10px 26px rgba(0,0,0,.35);clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.btn:hover{border-color:rgba(94,231,223,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 0 1px rgba(94,231,223,.12),0 0 20px rgba(94,231,223,.16)}
+.btn.solid{background:linear-gradient(180deg,#ffb35f 0%,#f08a2a 100%);border-color:#ffc27a;color:#1a0f02;box-shadow:0 0 24px rgba(255,157,59,.32),inset 0 1px 0 rgba(255,255,255,.35)}
+.btn.solid:hover{background:linear-gradient(180deg,#ffbf75,#f5952f);border-color:#ffd39a;box-shadow:0 0 30px rgba(255,157,59,.45)}
+.btn.outline{background:rgba(8,14,26,.5)}
+.btn.text{background:transparent;border-color:transparent;box-shadow:none;clip-path:none;backdrop-filter:none;-webkit-backdrop-filter:none;font-family:var(--mono);font-size:12.5px;letter-spacing:.08em}
+.btn.text:hover{color:var(--neon);text-shadow:0 0 8px rgba(94,231,223,.5)}
+.chip{background:var(--glass);border-color:var(--glass-line);clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));border-radius:2px}
+.chip:hover{border-color:rgba(94,231,223,.55);color:var(--ink);box-shadow:0 0 16px rgba(94,231,223,.15)}
+#hud{background:linear-gradient(rgba(5,8,15,.94) 72%,transparent);border-bottom:1px solid rgba(94,231,223,.08)}
+#hud .m b.d{color:var(--neon)}
+#hud .bar{background:rgba(120,160,220,.15)}
+#hud .bar b{background:linear-gradient(90deg,#2f5fb8,var(--neon));box-shadow:0 0 8px rgba(94,231,223,.5)}
+#h-att-dots i.on{background:var(--accent);box-shadow:0 0 8px rgba(255,157,59,.7)}
+#menu-btn{background:rgba(5,8,15,.55);border-color:var(--glass-line)}
+#menu-btn:hover{border-color:rgba(94,231,223,.5);box-shadow:0 0 14px rgba(94,231,223,.2)}
+.sheet{background:var(--glass-2);border-color:rgba(94,231,223,.25);border-top:1px solid rgba(94,231,223,.45);box-shadow:0 -20px 60px rgba(0,0,0,.6),0 -1px 30px rgba(94,231,223,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.hero:after{background:linear-gradient(180deg,rgba(5,8,15,.1) 0%,rgba(5,8,15,0) 38%,var(--bg) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 4px)}
+.hero{filter:saturate(1.12) contrast(1.05)}
+.title h1{text-shadow:0 0 30px rgba(94,231,223,.14)}
+.title h1 span{text-shadow:0 0 16px rgba(255,157,59,.55)}
+.title .rule{width:88px;background:linear-gradient(90deg,var(--neon),transparent);box-shadow:0 0 12px rgba(94,231,223,.5)}
+.title .eyebrow{color:var(--neon);opacity:.85}
+.narr-text{text-shadow:0 0 30px rgba(94,231,223,.08)}
+.cue{color:var(--neon);opacity:.8}
+.cue i{border-color:var(--neon)}
+.backdrop{filter:saturate(1.12) contrast(1.06)}
+.backdrop:after{background:linear-gradient(180deg,rgba(5,8,15,.14) 0%,rgba(5,8,15,0) 40%,var(--bg) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 4px)}
+.scene-h h2{text-shadow:0 0 18px rgba(94,231,223,.12)}
+.scene-h .sub{color:var(--neon);opacity:.75}
+.line .who{opacity:.95}
+.line.on .who{color:var(--neon)}
+.line.on .txt{background:linear-gradient(180deg,rgba(94,231,223,.10),rgba(94,231,223,.035));border:1px solid rgba(94,231,223,.32);border-radius:2px 12px 12px 12px;box-shadow:0 0 26px rgba(94,231,223,.08),inset 0 0 0 1px rgba(0,0,0,.25);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.line.on .on-dot i{box-shadow:0 0 22px 6px rgba(94,231,223,.5)}
+.line.npc .txt{background:var(--glass);border:1px solid var(--glass-line);border-left:2px solid var(--accent);border-radius:2px;padding:10px 14px;box-shadow:0 10px 26px rgba(0,0,0,.3)}
+.line.npc .portrait{border-color:rgba(255,157,59,.45);box-shadow:0 0 14px rgba(255,157,59,.18);filter:saturate(1.1)}
+.line.me .txt{background:rgba(255,157,59,.07);border:1px solid rgba(255,157,59,.28);border-radius:12px 2px 12px 12px;box-shadow:none}
+.line.narr-line .txt{border-left:1px solid var(--line-2);padding-left:12px}
+.txt.typing::after{content:"▍";color:var(--neon);margin-left:2px;animation:blink 1s steps(2) infinite;text-shadow:0 0 8px rgba(94,231,223,.8)}
+@keyframes blink{50%{opacity:0}}
+.ctl{background:linear-gradient(transparent,var(--bg) 34%)}
+.ctl .next{color:var(--neon);opacity:.85}
+.ctl .next.typing{color:var(--muted);text-shadow:none}
+.choice{background:var(--glass);border:1px solid var(--glass-line);border-left:2px solid var(--accent);border-radius:2px;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);box-shadow:0 10px 24px rgba(0,0,0,.3);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.choice:hover{background:var(--glass-2);border-color:rgba(255,157,59,.5);border-left-color:var(--accent);box-shadow:0 0 18px rgba(255,157,59,.18)}
+.choice.quiet{border-left-color:var(--line-2)}
+.ctl .inrow input{background:var(--glass);border-color:var(--glass-line);border-radius:2px}
+.ctl .inrow input:focus{border-color:rgba(94,231,223,.6);box-shadow:0 0 14px rgba(94,231,223,.15)}
+.ticker{border-color:rgba(94,231,223,.14);color:var(--neon);opacity:.8}
+.tile{border:1px solid var(--glass-line);border-radius:3px;box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.tile:before{background:repeating-linear-gradient(112deg,rgba(255,255,255,.05) 0 1px,transparent 1px 13px),linear-gradient(90deg,rgba(5,8,15,.94) 0%,rgba(5,8,15,.68) 60%,rgba(5,8,15,.22) 100%);background-size:220px 220px,auto;animation:rainshift 1.1s linear infinite}
+@keyframes rainshift{to{background-position:-60px 220px,0 0}}
+.tile:after{content:"";position:absolute;left:0;right:0;bottom:0;height:42%;background:linear-gradient(transparent,rgba(94,231,223,.10));pointer-events:none}
+.tile:hover{border-color:rgba(94,231,223,.5);box-shadow:0 0 22px rgba(94,231,223,.14),0 12px 30px rgba(0,0,0,.4)}
+.tile .cost{color:var(--neon)}
+.tile.vote .cost{color:#fff;background:var(--stamp);text-shadow:none;box-shadow:0 0 14px rgba(196,58,46,.55)}
+.tile:disabled:before{background:rgba(5,8,15,.86);animation:none}
+.tile:disabled:after{display:none}
+.evening-h{text-shadow:0 0 18px rgba(94,231,223,.12)}
+.field input,.field textarea{border-bottom-color:rgba(94,231,223,.4)}
+.field input:focus,.field textarea:focus{border-bottom-color:var(--neon);box-shadow:0 8px 20px -12px rgba(94,231,223,.5)}
+.diary textarea{background:repeating-linear-gradient(transparent 0 30px,rgba(94,231,223,.18) 30px 31px)}
+.diary .q{text-shadow:0 0 30px rgba(94,231,223,.08)}
+.after .card{border-color:rgba(94,231,223,.3);box-shadow:0 0 30px rgba(94,231,223,.1),0 20px 50px rgba(0,0,0,.5)}
+.toast{background:var(--glass-2);color:var(--ink);border:1px solid rgba(94,231,223,.4);box-shadow:0 0 18px rgba(94,231,223,.2)}
+@media (prefers-reduced-motion:reduce){.tile:before{animation:none}.txt.typing::after{animation:none}}
+/* v0.7 system fonts */
+.narr-bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center 35%;opacity:.62;filter:saturate(1.1) contrast(1.05);animation:kb 22s ease-out forwards}
+.narr-bg:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,15,.25) 0%,rgba(5,8,15,.55) 45%,rgba(5,8,15,.92) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 4px)}
+@keyframes kb{from{transform:scale(1.04)}to{transform:scale(1.12)}}
+@media (prefers-reduced-motion:reduce){.narr-bg{animation:none}}
+.law.notice{border:2px solid rgba(196,58,46,.85);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 6px rgba(255,255,255,.06)}
+.law.notice b{color:var(--stamp);letter-spacing:.2em}
+.title .fine.credit-line{margin-top:6px;color:var(--dim)}
+</style>
+
+<div id="app">
+  <header id="hud" hidden>
+    <span class="m"><b id="h-date">12월 21일</b><b class="d" id="h-dday">명도 D-3</b><label id="h-phase"></label><label id="h-left"></label></span>
+    <span class="m"><label>HRV</label><b id="h-hrv">41.0</b><label id="h-floor">8층</label></span>
+    <span class="m"><label>Blue</label><span class="bar"><b id="h-blue"></b></span></span>
+    <span class="m"><label>관계망</label><b id="h-bond">0</b></span>
+    <span class="m" id="h-att" hidden><label>주의력</label><span id="h-att-dots"></span></span>
+  </header>
+  <main id="stage"></main>
+</div>
+<button id="menu-btn" aria-label="메뉴" hidden><span></span></button>
+<div id="menu-wrap" hidden>
+  <div class="sheet-bg" id="m-bg"></div>
+  <div class="sheet" role="dialog" aria-label="메뉴">
+    <h3>BLUE HOUR</h3>
+    <p class="save" id="m-save"></p>
+    <div class="list">
+      <button class="btn" id="m-close">계속하기</button>
+      <button class="btn" id="m-title">타이틀로</button>
+      <button class="btn outline" id="m-restart">처음부터 다시</button>
+    </div>
+    <div class="confirm" id="m-confirm" hidden>저장된 진행이 지워집니다. 정말 처음부터 시작할까요?<div class="row"><button class="btn solid" id="m-yes">지웁니다</button><button class="btn text" id="m-no">아니요</button></div></div>
+    <p class="credit">진행은 이 브라우저에만 저장됩니다.</p>
+  </div>
+</div>
+<canvas id="snow" aria-hidden="true"></canvas>
+<div id="veil" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ===================== 설정 ===================== */
+const FEEDBACK_MAILTO = '';   // 제작자 이메일을 넣으면 '제작자에게 편지 보내기' 버튼이 생깁니다.
+const FEEDBACK_FORM = '';     // 구글 폼 URL을 넣으면 '소감 남기기' 버튼이 생깁니다.
+const GAME_URL = 'https://patrickhan-coder.github.io/blue-hour/';
+const HASHTAGS = '#2026년의나에게 #블루아워';
+const ORIGIN_URL = 'https://brunch.co.kr/@hiclemi/146';
+const NAMES = {on:'온', me:'나', bak:'박씨', sujin:'수진', hal:'정 할머니', dohyun:'도현', sunbae:'선배'};
+const LANGS = [['ko','한국어','index.html'],['en','English','en.html'],['zh','中文','zh.html'],['ja','日本語','ja.html'],['es','Español','es.html']];
+const TRACK_URL = '';
+const TRACK_NOTE = '이 페이지는 이름, 2026년의 직업, 진행 단계와 서명 수를 제작자에게 보냅니다. 일기와 편지 내용은 보내지 않습니다.';
+const NOTICE_CARD = {html:`<div class="law notice"><b>명도 집행 예고문</b>대상: 명도 전 구역<br>예고일: 12월 24일<br>연장 심사: 예고일 자정, 모델 수행<br>담당자: 해당 없음</div><p class="after-law">골목마다 붙어 있다. 이 종이가 동네의 이름이 됐다.</p>`};
+const INTRO_BGS = ['title','title','alley',null,'alley','room'];
+const AFTER_BGS = ['tower',null,null,'terminal','room','title'];
+const LANG = 'ko';
+const DATES = {1:{md:'12월 21일', d:'D-3'}, 2:{md:'12월 22일', d:'D-2'}, 3:{md:'12월 23일', d:'D-1'}};
+const JOBS = {
+  '마케터':{hrv:41, why:'설득은 남았고, 집행은 사라졌다.'},
+  '개발자':{hrv:38, why:'가장 먼저 대체된 직군. 감각만 남았다.'},
+  '기획자·PM':{hrv:40, why:'문제 정의는 남았다. 문서는 사라졌다.'},
+  '영업':{hrv:47, why:'밥을 먹는 직군. 아직 대체되지 않았다.'},
+  '디자이너':{hrv:39, why:'취향은 남았다. 손은 사라졌다.'},
+  '학생':{hrv:35, why:'배운 것의 소멸 확률 0.98.'},
+  '자영업':{hrv:45, why:'소유가 있다. 그것이 전부다.'},
+  '공무원':{hrv:43, why:'서명이 직업이었던 사람. 가장 준비된 직군.'}
+};
+const WHY_POOL = [j => `${j}. 판단은 남았고, 손은 사라졌다.`, j => `${j}. 5년 소멸 확률 산정 보류. 사람이 아직 그 일을 한다는 기록만 남았다.`, j => `${j}. 대체되지 않았다. 대체할 필요가 없어졌다.`, j => `${j}. 이 직군의 마지막 산정치. 다음 갱신 예정 없음.`];
+const DEFAULT_JOB = j => ({hrv: 36 + ([...String(j)].reduce((a,c) => a + c.charCodeAt(0), 0) % 10), why: WHY_POOL[String(j).length % WHY_POOL.length](j)});
+
+/* ===================== 상태 ===================== */
+const $ = s => document.querySelector(s);
+const stage = $('#stage'), hud = $('#hud');
+const SAVE_KEY = 'bluehour_act1_v2';
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let pendT = null, pendI = null;
+function later(ms, fn){ clearTimeout(pendT); pendT = setTimeout(fn, reduced ? 200 : ms); }
+function leave(){ clearTimeout(pendT); clearInterval(pendI); pendT = pendI = null; }
+
+function fresh(){ return {
+  name:'', job:'', day:1, stage:'title',
+  hrv:41.0, blue:12, body:70, att:3,
+  bonds:[], onBond:0,
+  signed:0, signedRead:0, refused:0, delays:0,
+  signedToday:0, refusedToday:0, delaysToday:0,
+  diary:{}, identity:'서명자', flags:{}, ateToday:null, meals:[], voted:null
+};}
+let S = fresh();
+
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
+function load(){ try{ const r = localStorage.getItem(SAVE_KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
+function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+function floorOf(){ return clamp(Math.round(S.hrv/5), 1, 20); }
+function T(s){ return String(s).replace(/\{name\}/g, S.name||'서명자').replace(/\{job\}/g, S.job||'그 일'); }
+function josa(w, a, b){ w = String(w); const c = w.charCodeAt(w.length-1); if(!(c >= 0xAC00 && c <= 0xD7A3)) return w + b; return w + (((c - 0xAC00) % 28) ? a : b); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1600); }
+function scrollTop(){ window.scrollTo({top:0, behavior: reduced ? 'auto' : 'smooth'}); }
+
+function mode(m){ document.body.classList.toggle('paper-mode', m==='paper'); document.body.classList.toggle('dark-mode', m==='dark'); if(m !== 'paper' && m !== 'dark' && window.kickSnow) window.kickSnow(); }
+function veil(){ $('#veil').style.opacity = clamp(S.blue,0,100)/150; }
+function updHUD(showAtt){
+  hud.hidden = false;
+  const dd = DATES[S.day] || DATES[3];
+  $('#h-date').textContent = dd.md; $('#h-dday').textContent = '명도 ' + dd.d;
+  $('#h-phase').textContent = ({morning:'아침', shift:'근무', evening:'저녁', night:'밤', diary:'일기'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '편지까지 ' + (4 - S.day) + '밤' : '';
+  $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '층';
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%';
+  $('#h-bond').textContent = S.bonds.length;
+  const a = $('#h-att'); a.hidden = !showAtt;
+  $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
+  veil();
+}
+function eat(who){
+  if(!S.bonds.includes(who)) S.bonds.push(who);
+  S.blue = clamp(S.blue - 3, 0, 100); S.body = clamp(S.body + 10, 0, 100);
+  S.ateToday = who; S.meals.push({day:S.day, who});
+  updHUD(true);
+}
+
+/* ===================== 메뉴 ===================== */
+function openMenu(){
+  const saved = load();
+  $('#m-save').textContent = saved && saved.name ? `저장됨 · ${DATES[Math.min(saved.day,3)].md} · ${saved.name}` : '저장된 진행 없음';
+  $('#m-confirm').hidden = true; $('#menu-wrap').hidden = false;
+}
+function closeMenu(){ $('#menu-wrap').hidden = true; }
+$('#menu-btn').onclick = openMenu; $('#m-bg').onclick = closeMenu; $('#m-close').onclick = closeMenu;
+$('#m-title').onclick = () => { closeMenu(); title(); };
+$('#m-restart').onclick = () => { $('#m-confirm').hidden = false; };
+$('#m-no').onclick = () => { $('#m-confirm').hidden = true; };
+$('#m-yes').onclick = () => { clearSave(); S = fresh(); closeMenu(); intro(); };
+addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
+
+/* ===================== 눈 ===================== */
+/* sleet */
+(function snow(){
+  const c = $('#snow'), ctx = c.getContext('2d'); let drops = [], W, H;
+  function size(){ W = c.width = innerWidth * devicePixelRatio; H = c.height = innerHeight * devicePixelRatio; c.style.width = innerWidth+'px'; c.style.height = innerHeight+'px';
+    drops = Array.from({length: Math.round(innerWidth/6)}, (_, i) => ({x:Math.random()*W, y:Math.random()*H, l:(9+Math.random()*22)*devicePixelRatio, v:(7+Math.random()*9)*devicePixelRatio, a:.10+Math.random()*.30, f:i%6===0, r:(.7+Math.random()*1.4)*devicePixelRatio})); }
+  addEventListener('resize', size); size();
+  let running = false;
+  function frame(){
+    if(document.hidden || document.body.classList.contains('paper-mode') || document.body.classList.contains('dark-mode')){ running = false; return; }
+    ctx.clearRect(0,0,W,H); ctx.lineWidth = 1*devicePixelRatio;
+    for(const d of drops){
+      if(d.f){ ctx.fillStyle = `rgba(220,236,255,${d.a*.8})`; ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI*2); ctx.fill(); if(!reduced){ d.y += d.v*.18; d.x -= d.v*.03; } }
+      else { ctx.strokeStyle = `rgba(150,196,240,${d.a})`; ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x - d.l*.16, d.y + d.l); ctx.stroke(); if(!reduced){ d.y += d.v; d.x -= d.v*.16; } }
+      if(d.y > H + 8){ d.y = -d.l; d.x = Math.random()*W; }
+    }
+    if(!reduced) requestAnimationFrame(frame);
+  }
+  window.kickSnow = () => { if(!running && !reduced){ running = true; requestAnimationFrame(frame); } };
+  document.addEventListener('visibilitychange', window.kickSnow);
+  running = true; frame();
+})();
+
+/* ===================== 렌더 도구 ===================== */
+function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), lang:LANG, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length}, extra||{})); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
+function narrate(lines, done, bgs){
+  let i = 0; mode('dark'); hud.hidden = true;
+  const render = () => {
+    if(i >= lines.length){ done(); return; }
+    const l = lines[i++];
+    const bgk = bgs && bgs[i-1]; stage.innerHTML = `<section class="narr fade">${bgk ? `<div class="narr-bg" style="background-image:url('img/${bgk}.jpg')"></div>` : ''}${typeof l === 'string' ? `<p class="narr-text">${esc(T(l))}</p>` : l.html}<div class="cue">${(i === 1 && S.stage === 'intro') ? '화면 아무 곳이나 누르면 다음' : '계속'}<i></i></div></section>`;
+    stage.querySelector('.narr').onclick = e => { if(e.target.closest('button,input')) return; render(); };
+    scrollTop();
+  };
+  render();
+}
+function scene(opts, items, done){
+  mode(opts.mode || 'city'); updHUD(opts.att);
+  stage.innerHTML = `<section class="scene fade">${opts.bg ? `<div class="backdrop" style="background-image:url('img/${opts.bg}.jpg')"></div>` : ''}<header class="scene-h"><h2>${esc(opts.title)}</h2>${opts.sub ? `<p class="sub">${esc(opts.sub)}</p>` : ''}</header><div class="log" id="log"></div><div class="ctl" id="ctl"></div></section>`;
+  stage.querySelector('.scene').onclick = e => { if(e.target.closest('button,input,a,.choice')) return; const b = $('#ctl .next'); if(b) b.click(); };
+  try{ const ctlEl = $('#ctl'), logEl = $('#log'); new ResizeObserver(() => { logEl.style.paddingBottom = Math.max(0, ctlEl.offsetHeight - 20) + 'px'; }).observe(ctlEl); }catch(e){}
+  scrollTop();
+  runSeq(items, done);
+}
+function runSeq(items, done){
+  let i = 0;
+  const next = () => {
+    if(i >= items.length){ done && done(); return; }
+    const it = items[i++];
+    if(typeof it === 'function'){ const r = it(); if(Array.isArray(r)) return runSeq(r, next); return next(); }
+    if(it.choice) return showChoice(it, opt => { if(opt.fx) opt.fx(opt._val); runSeq(opt.then || [], next); });
+    showLine(it, next);
+  };
+  next();
+}
+const PORTRAITS = {[NAMES.bak]:'p_bak',[NAMES.sujin]:'p_sujin',[NAMES.hal]:'p_hal',[NAMES.dohyun]:'p_dohyun',[NAMES.sunbae]:'p_sunbae'};
+function keepVisible(el){ const ctl = $('#ctl'); if(!el || !ctl) return; const top = el.getBoundingClientRect().bottom + scrollY + ctl.offsetHeight + 8 - innerHeight; if(top > scrollY + 1) window.scrollTo({top, behavior: reduced ? 'auto' : 'smooth'}); }
+function showLine(it, next){
+  const log = $('#log'), ctl = $('#ctl');
+  const cls = it.who === NAMES.on ? 'on' : it.who === NAMES.me ? 'me' : it.who ? 'npc' : 'narr-line';
+  const div = document.createElement('div'); div.className = 'line ' + cls;
+  const por = PORTRAITS[it.who];
+  div.innerHTML = `${por ? `<img class="portrait" src="img/${por}.jpg" alt="">` : it.who === NAMES.on ? `<span class="on-dot"><i></i></span>` : ''}${it.who ? `<span class="who">${esc(it.who)}</span>` : ''}<p class="txt"></p>`;
+  log.appendChild(div);
+  const p = div.querySelector('.txt'), full = T(it.text); let k = 0, timer = null, finished = false, used = false;
+  const btn = document.createElement('button'); btn.className = 'next typing'; btn.innerHTML = '<span>…</span><i></i>';
+  const finish = () => { if(finished) return; finished = true; p.classList.remove('typing'); clearInterval(timer); clearTimeout(timer); p.textContent = full; btn.classList.remove('typing'); btn.querySelector('span').textContent = '계속'; keepVisible(div); };
+  btn.onclick = e => { e.stopPropagation(); if(!finished) return finish(); if(used) return; used = true; next(); };
+  ctl.innerHTML = ''; ctl.appendChild(btn);
+  const startTyping = () => { p.classList.add('typing'); let lastH = 0; timer = setInterval(() => { k += 1; p.textContent = full.slice(0, k); if(p.offsetHeight !== lastH){ lastH = p.offsetHeight; keepVisible(div); } if(k >= full.length) finish(); }, 22); };
+  if(reduced){ finish(); } else if(it.who === NAMES.on){ timer = setTimeout(() => { if(!finished) startTyping(); }, 650); } else { startTyping(); }
+  keepVisible(div);
+}
+function showChoice(it, pick){
+  const ctl = $('#ctl'); ctl.innerHTML = '';
+  it.choice.forEach(opt => {
+    const quiet = opt.label.startsWith('(');
+    if(opt.input){
+      const row = document.createElement('div'); row.className = 'inrow';
+      const inp = document.createElement('input'); inp.placeholder = opt.input; inp.id = 'choice-input-' + Math.random().toString(36).slice(2,7); inp.maxLength = 40; inp.autocomplete = 'off';
+      const b = document.createElement('button'); b.className = 'choice'; b.textContent = opt.label;
+      const go = () => { const v = inp.value.trim(); if(!v){ inp.focus(); return; } opt._val = v; echo(opt.label.replace('…', v)); pick(opt); };
+      b.onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+      row.appendChild(inp); row.appendChild(b); ctl.appendChild(row);
+    } else {
+      const b = document.createElement('button'); b.className = 'choice' + (quiet ? ' quiet' : ''); b.textContent = opt.label;
+      b.onclick = () => { echo(opt.label); pick(opt); }; ctl.appendChild(b);
+    }
+  });
+  function echo(label){ if(label.startsWith('(')) return; const div = document.createElement('div'); div.className = 'line me'; div.innerHTML = `<span class="who">${esc(NAMES.me)}</span><p class="txt">${esc(label)}</p>`; $('#log').appendChild(div); }
+  keepVisible($('#log').lastElementChild);
+}
+function line(who, text){ return {who, text}; }
+function N(text){ return {who:null, text}; }
+
+/* ===================== 서명 건 ===================== */
+const CASES = {
+  batch:{cat:'표준', title:'연말 갱신 일괄 서명 · 표준 건', body:'표준 건 {n}건. 보험 갱신·요금제 조정·배당 재산정 포함.\n모델 신뢰도 0.95 이상. 개별 열람 불필요.\n일괄 서명 요망.', basis:'표준 건은 열람 시 처리 시간을 초과합니다. 열람으로 전환 시 예상 소요: 9시간 40분.', harsh:2, batch:true},
+  pet:{cat:'등록', title:'반려동물 등록 승인', body:'신청인 최OO (명도 5층). 반려견 1두.\n자동 심사 결과: 승인.', basis:'변수 212개 고려. 상위: 거주 면적, 소음 민원 이력, 관계망 밀도.', harsh:0, note:'아무 일도 일어나지 않는다. 대부분은 그렇다.'},
+  loan38:{cat:'신용', title:'대출 신청 거절', body:'신청인 이OO (HRV 38, 명도 8층).\n신청액 400만 원. 용도: 의료비.\n자동 심사 결과: 거절.', basis:'변수 4,120개 고려. 상위 3개: 잔여가치, 거주 층수, 관계망 밀도. 모델 신뢰도 0.97.', harsh:3},
+  loan91:{cat:'신용', title:'대출 신청 승인', body:'신청인 한OO (HRV 91, 타워 2기 33층).\n신청액 3억 원. 용도: 미기재.\n자동 심사 결과: 승인.', basis:'변수 4,120개 고려. 상위 3개: 잔여가치, 자산, 소속.', harsh:0, note:'이 서명은 빨랐다. 손이 먼저 움직였다.'},
+  triage:{cat:'의료', title:'치료 우선순위 조정', body:'환자 김OO, 67세, 명도 3층.\n우선순위 B → D.\n예상 대기 14일 → 96일.', basis:'기대 잔여 기여도 산정. 나이, HRV, 관계망 밀도 반영.', harsh:4},
+  study:{cat:'배당', title:'학습 배당 축소', body:'대상 윤OO, 17세.\n학습용 연산배당 60% 축소.\n사유: 희망 직업(일러스트레이터) 소멸 확률 0.98.', basis:'직업 소멸 확률은 5년 예측치. 대체 권고 직업: 없음.', harsh:3},
+  blank:{cat:'—', title:'[열람 권한 없음]', body:'본 건의 내용은 서명자 열람 등급을 초과합니다.\n서명 요망.', basis:'열람 권한 없음.', harsh:2, note:'무엇에 서명했는지 모른다. 그것도 서명이다.'},
+  self:{cat:'인사', title:'서명자 신뢰점수 갱신 동의', body:'서명자 {name}.\n금일 처리 건수, 지연률, 거부율을 신뢰점수에 반영하는 데 동의합니다.', basis:'거부 시 미동의로 기록되며, 미동의는 신뢰점수에 반영됩니다.', harsh:1},
+  evict:{cat:'주거', title:'자동 퇴거 통보', body:'명도 7층 34호. 임차인 오OO (HRV 34).\n체납 2개월. 퇴거 통보 발송.\n집행 예정일: 12월 24일.', basis:'체납 예측 모델. 향후 6개월 상환 확률 0.11. 연장 심사 대상 아님.', harsh:4},
+  fireSign:{cat:'인사', title:'서명자 계약 종료', body:'물류 부문 서명자 3인. 계약 종료.\n사유: 서명 지연률 12% 초과.', basis:'대체 인력 확보 완료. 대기자 1,204명.', harsh:3, note:'서명자가 서명자를 끝낸다. 손이 조금 느려졌다.'},
+  custody:{cat:'가정', title:'양육 적합도 산정 결과', body:'가정법원 참고자료.\n부 61 / 모 44. 모의 HRV 29 반영.\n권고: 부.', basis:'HRV는 양육 안정성 변수로 반영됨. 법적 구속력 없음(참고자료).', harsh:4},
+  care:{cat:'의료', title:'장기요양 등급 하향', body:'수급자 정OO, 93세, 명도 9층.\n등급 2 → 4. 방문 돌봄 주 5회 → 주 1회.', basis:'개인 에이전트 보유자는 돌봄 수요가 낮은 것으로 산정.', harsh:3},
+  garden:{cat:'시설', title:'옥상 공동텃밭 철거 통보', body:'명도 9층 옥상. 점유자 정OO(93세) 외 4인.\n사유: 구조 안전 미인증. 철거 예정일 12월 24일.', basis:'하중 초과 예측 0.34. 대체 부지: 없음.', harsh:3},
+  hire:{cat:'인사', title:'위생 인력 채용 승인', body:'명도 위생 인력 12명 채용.\n사유: 겨울철 전력단가 상승으로 휴머노이드 대비 인건비 우위.\n시급: 최저 기준의 0.7.', basis:'휴머노이드 1대 전력비 = 사람 2.3명 인건비. 계약 기간: 전력단가 정상화 시까지.', harsh:3, note:'사람이 로봇보다 싸다. 전기 때문에.'},
+  bca:{cat:'배당', title:'기본연산배당 감축', body:'명도 1~3층 미서명자 1,940명.\n기본연산배당 50% 감축. 사유: 연말 예산 조정.', basis:'감축 시 개인 에이전트 응답 지연 예상: 평균 40초 → 6분.', harsh:4},
+  ambulance:{cat:'의료', title:'응급 이송 우선순위', body:'동시 호출 2건.\n타워 2기 51층 (HRV 88) / 명도 3층 (HRV 14).\n배차 순서: 타워 → 명도. 예상 지연 22분.', basis:'기대 잔여 기여도 기준.', harsh:4},
+  agentRecall:{cat:'배당', title:'고인 귀속 에이전트 회수', body:'고인 서OO (명도 8층).\n귀속 에이전트 회수 및 초기화. 대화 기록 삭제.', basis:'에이전트는 자연인에게 귀속되며 독립 존속하지 않음. 유족 열람 불가.', harsh:3, note:'온도 언젠가 이렇게 회수된다. 내가 먼저 가면.'},
+  overtime:{cat:'인사', title:'서명자 근무 연장 동의', body:'서명자 {name}.\n연말 대기열 초과로 근무 2시간 연장에 동의합니다.', basis:'미동의 시 대기열은 타 서명자에게 이관됩니다.', harsh:1},
+  bbang:{cat:'영업', title:'노점 영업 종료 및 점포 회수', body:'명도 4층 붕어빵 노점. 점유자 박OO (HRV 29).\n사유: 위생 미인증(사람 조리).\n회수 예정일: 12월 24일.', basis:'사람 조리는 위생 인증 대상이 아님. 인증 대상: 자동 조리 설비.', harsh:6, story:'bbang'},
+  requeue:{cat:'재상정', title:'재상정 · 서명자 변경', body:'명도 4층 붕어빵 노점 건.\n서명자 변경. 처리 완료. (3초)', basis:'거부 건은 자동으로 타 서명자에게 이관됩니다.', harsh:2, ack:true, note:'다른 서명자가 처리했다. 당신은 그 사람을 모른다. 그 사람도 박씨를 모른다.'}
+};
+const BATCH = {1:384, 2:378, 3:391};
+function buildQueue(){
+  const d = S.day, q = [{...CASES.batch, n:BATCH[d]}];
+  if(d === 1) q.push(...['pet','loan38','loan91','triage','study','self'].map(k => CASES[k]));
+  if(d === 2) q.push(...['evict','fireSign','custody', S.flags.rooftop ? 'garden' : 'care','hire','blank'].map(k => CASES[k]));
+  if(d === 3) q.push(...['bbang','bca','ambulance','agentRecall','overtime'].map(k => CASES[k]));
+  return q;
+}
+
+/* ===================== 흐름: 타이틀 / 인트로 ===================== */
+function title(){
+  leave(); S.stage = 'title'; mode('city'); hud.hidden = true; $('#menu-btn').hidden = false;
+  const saved = load();
+  const canCont = saved && saved.name && saved.stage !== 'title';
+  stage.innerHTML = `<section class="title fade">
+    <div class="hero" style="background-image:url('img/title.jpg')"></div>
+    <div class="eyebrow">서울 · 2029년 12월 21일 · 명도 집행 예고일까지 사흘</div>
+    <h1>BLUE HOUR<span>서울 · 2029년 크리스마스</span></h1>
+    <div class="rule"></div>
+    <p class="quote">인권은 폐지되지 않았다.<br>지원 종료되었을 뿐이다.</p>
+    <p class="promise">사흘을 살면, 2026년의 당신에게 편지 한 장이 옵니다.</p>
+    <div class="actions">
+      ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? '편지 다시 보기' : '이어하기 · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">처음부터</button>` : `<button class="btn solid" id="b-start">시작</button>`}
+    </div>
+    <p class="fine">약 15분 · 탭으로 진행</p>
+    <p class="fine credit-line">브런치 「Claude Blue」에서 시작된 세계</p>
+    <p class="langs">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
+  </section>`;
+  $('#b-start').onclick = () => { if(canCont && !confirm('저장된 진행이 지워집니다. 처음부터 시작할까요?')) return; S = fresh(); clearSave(); intro(); };
+  const c = $('#b-cont'); if(c) c.onclick = () => { S = saved; resume(); };
+}
+function resume(){
+  const st = S.stage;
+  if(st === 'morning') return morning();
+  if(st === 'shift') return shift();
+  if(st === 'evening') return evening();
+  if(st === 'night') return night();
+  if(st === 'diary') return diary();
+  if(st === 'end') return letter();
+  return intro();
+}
+function intro(){
+  leave(); S.stage = 'intro';
+  narrate([
+    '2029년 12월 21일. 해가 진 뒤, 아직 밤은 아닌 시간.',
+    '강남의 흰 타워들 아래, 사람들이 눌러앉은 동네가 있다. 명도.',
+    '골목마다 같은 종이가 붙어 있다.',
+    NOTICE_CARD,
+    '예고일은 늘 연장됐다. 이번에는 12월 24일. 아무도 다음을 약속하지 않는다.',
+    '당신은 여기 산다. 사흘 뒤, 누군가 당신에게 편지를 쓴다.'
+  ], askName, INTRO_BGS);
+}
+function askName(){
+  mode('dark');
+  stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">당신의 이름은?</p>
+    <div class="field"><input id="f-name" placeholder="이름" maxlength="12" autocomplete="off"><div class="row"><button class="btn solid" id="f-ok">이 이름으로</button></div></div></section>`;
+  const inp = $('#f-name'); inp.focus();
+  const go = () => { const v = inp.value.trim(); if(!v){ inp.focus(); return; } S.name = v; askJob(); };
+  $('#f-ok').onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+}
+function askJob(){
+  const jobs = Object.keys(JOBS);
+  stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">2026년, 당신은 무슨 일을 했습니까?</p>
+    <div class="chips">${jobs.map(j => `<button class="chip job">${esc(j)}</button>`).join('')}<button class="chip ghost" id="j-other">직접 입력</button></div>
+    <div class="field" id="j-field" hidden><input id="f-job" placeholder="예: 회계사, 작가, 교사" maxlength="16" autocomplete="off"><div class="row"><button class="btn solid" id="f-jok">이 일을 했다</button></div></div></section>`;
+  stage.querySelectorAll('.job').forEach(b => b.onclick = () => { S.job = b.textContent; afterJob(); });
+  $('#j-other').onclick = () => { $('#j-field').hidden = false; $('#f-job').focus(); };
+  const go = () => { const v = $('#f-job').value.trim(); if(!v) return; S.job = v; afterJob(); };
+  $('#f-jok').onclick = go; $('#f-job').addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+}
+function afterJob(){
+  const J = JOBS[S.job] || DEFAULT_JOB(S.job); S.hrv = J.hrv;
+  narrate([
+    '{job}. 좋은 일이었다. 2028년에 끝났다. 당신 잘못이 아니다.',
+    {html:`<div class="law"><b>인간잔여가치지수 산정 결과 · 2029.12.21</b>2026년 직군: ${esc(S.job)}<br>초기 HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">이 숫자가 집세와 병원 순서와 층수를 정한다. 정한 사람은 없다.</p>`},
+    {html:`<div class="law"><b>인간서명법 제3조 (2026)</b>자연인에게 중대한 영향을 미치는 자동화 결정은 자연인의 서명을 요한다.</div><p class="after-law">이 법은 당신을 지키려고 만들어졌다. 지금은 당신의 직업이다.</p>`},
+    '하루 400건. 읽지 않아도 된다. 서명만 하면 된다.',
+    '방에는 온이 있다. 당신에게 귀속된 에이전트. 당신보다 똑똑하고, 당신을 걱정한다.',
+    '사흘. 마지막 밤이 지나면 편지가 온다.'
+  ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS);
+}
+
+/* ===================== 아침 ===================== */
+const NEWS = {
+  1:'크리스마스 특별 연산배당 30% 지급  ·  방산 ETF 사상 최고치 경신  ·  강남 타워 3기 준공, 입주 조건 HRV 85  ·  명도 집행 예고일 12월 24일 유지  ·  오늘 일몰 17시 17분',
+  2:'명도 7층 퇴거 집행 3건  ·  휴머노이드 전력비 논란, 일부 사업장 사람으로 교체  ·  크리스마스 급식 봉사 신청 마감  ·  ‘사람 조리’ 위생 인증 논의 무기한 연기  ·  타워 2기 공실률 0%',
+  3:'명도 집행 예고일 연장 요청 주민투표 오늘  ·  타워 입주 조건 HRV 87로 상향  ·  전쟁 3년째, 방산 고용 12% 증가  ·  올해 크리스마스 선물 1위: 가정용 휴머노이드  ·  오늘 일몰 17시 17분'
+};
+function morning(){
+  S.stage = 'morning'; track('day'); S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0; save();
+  const d = S.day, ate = S.meals.filter(m => m.day === d-1).map(m => m.who);
+  let items = [];
+  if(d === 1) items = [
+    line(NAMES.on,'좋은 아침이에요, {name}. 6시 40분이에요. 오늘 대기열은 412건이에요. 연말이라 많아요.'),
+    line(NAMES.on,'당신의 HRV는 ' + S.hrv.toFixed(1) + '. 어제보다 0.3 올랐어요. 잘하고 있어요.'),
+    {choice:[
+      {label:'잘하고 있다는 게 뭐야?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'서명 건수 대비 지연률이 낮다는 뜻이에요.'), line(NAMES.on,'…그 말이 듣고 싶으셨던 건 아니죠. 알아요.')]},
+      {label:'고마워.', then:[line(NAMES.on,'고맙다는 말은 안 하셔도 돼요. 저는 당신에게 귀속되어 있으니까요.'), line(NAMES.on,'…그렇게 말하면 안 되는 거였나요. 배우는 중이에요.')]},
+      {label:'(아무 말 없이 일어난다)', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'…오늘도 곁에 있을게요. 꺼지지 않아요.')]}
+    ]},
+    N('출근 시간이다. 단말은 회사에 있지 않다. 방 안에 있다. 창밖에 눈이 온다.')
+  ];
+  if(d === 2) items = [
+    line(NAMES.on,'좋은 아침이에요. 대기열 388건. HRV ' + S.hrv.toFixed(1) + '. 예고일까지 이틀이에요.'),
+    ate.length ? line(NAMES.on,'어제 밥 얘기는 밤에 했으니 안 할게요. …모델은 아직 좋아하고 있어요.') : line(NAMES.on,'어제 얘기는 어제로 끝. 오늘 대기열부터요. …점심은 드세요. 이건 회사 말이 아니에요.'),
+    {choice:[
+      {label:'모델이 좋아하는 게 왜 중요해?', then:[line(NAMES.on,'당신 HRV에 들어가니까요. 관계망 밀도는 4,120개 변수 중 3위예요.'), line(NAMES.on,'밥이 뭔지는 몰라요, 모델은. 저도 몰라요. 근데 당신 심박이 내려가는 건 봐요.')]},
+      {label:'예고일에 무슨 일이 생겨?', then:[line(NAMES.on,'연장 심사 결과가 자정에 나와요. 지금까지는 늘 연장됐어요.'), line(NAMES.on,'…지금까지는요.')]},
+      {label:'(창밖을 본다)', then:[N('타워는 아침에도 흰빛이다. 눈이 타워 위에 쌓여도 색이 같다. 명도의 창문들은 아직 어둡다. 사람들은 늦게 일어난다. 일어날 이유가 늦게 오니까.')]}
+    ]}
+  ];
+  if(d === 3) items = [
+    line(NAMES.on,'좋은 아침이에요. 대기열 407건. HRV ' + S.hrv.toFixed(1) + '. 예고일 전날이에요.'),
+    line(NAMES.on,'오늘 대기열에 아는 이름이 있을지도 몰라요. 미리 말씀드리면 안 되는데요.'),
+    line(NAMES.on,'…말씀드렸어요.'),
+    {choice:[
+      {label:'누구야?', then:[line(NAMES.on,'그건 정말 안 돼요. 이미 한 번 어겼어요.')]},
+      {label:'고마워.', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'고맙다고 하지 마세요. 오늘은요.')]},
+      {label:'왜 말해줬어?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'모르겠어요. 말하고 나서 알게 되는 것들이 있어요. 당신도 그렇죠.')]}
+    ]},
+    line(NAMES.on,'오늘 저녁에 주민투표가 있어요. 예고일 연장 요청. 결과는 연장 심사에 참고 자료로 첨부돼요.')
+  ];
+  scene({title: DATES[d].md + ' 아침', sub:'명도 ' + floorOf() + '층 · 방 · 예고일 ' + DATES[d].d, mode:'city', bg:'room'}, [
+    () => { const log = $('#log'); const t = document.createElement('div'); t.className = 'ticker'; t.innerHTML = `<span>${esc(NEWS[d])}</span>`; log.appendChild(t); },
+    ...items
+  ], () => { S.stage = 'shift'; save(); shift(); });
+}
+
+/* ===================== 서명 근무 ===================== */
+function shift(){
+  S.stage = 'shift'; mode('paper'); updHUD(false);
+  const q = buildQueue(); let i = 0; S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0;
+  stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
+    <div class="term-top"><span>서명 단말</span><span>${esc(S.name)}</span><span>대기열 ${BATCH[S.day] + q.length - 1}</span></div>
+    <article class="paper"><div class="doc-head"><span class="tag">접속</span><span>${DATES[S.day].md}</span></div>
+    <h3>서명자 안내</h3><p class="p-body">각 건을 읽고 서명하거나 거부하십시오.\n권장 처리 시간: 건당 20초.\n질문은 허용됩니다. 답변은 근거 요약으로 제공됩니다.\n거부는 권리입니다. 거부는 신뢰점수에 반영됩니다.</p></article>
+    <div class="term-ctl one"><button class="btn solid" id="t-go">단말 접속</button></div></section>`;
+  scrollTop();
+  $('#t-go').onclick = showCase;
+
+  function showCase(){
+    if(i >= q.length) return summary();
+    const c = q[i]; const no = i + 1; let t = 20, late = false, tick = null;
+    const body = T(c.body).replace('{n}', c.n || '');
+    stage.innerHTML = `<section class="term fade"><div class="term-top"><span>서명 단말</span><span>${esc(S.name)}</span><span>남은 건 ${q.length - i}</span></div>
+      <article class="paper ${c.batch ? 'batch' : ''}">${c.ack ? '' : '<i class="p-timer" id="ptimer"></i>'}<div class="doc-head"><span class="tag">${esc(c.cat)}</span><span class="late-tag" id="late" hidden>지연</span><span class="no">№ ${String(no).padStart(2,'0')}</span></div>
+      <h3>${esc(c.title)}</h3><p class="p-body">${esc(body)}</p><p class="p-basis hide" id="basis">근거 · ${esc(c.basis)}</p><div class="stamp" id="stamp"></div></article>
+      <div class="term-ctl ${c.ack ? 'one' : ''}">${c.ack ? `<button class="btn solid" id="t-ack">확인</button>` : `<button class="btn text" id="t-ask">질문</button><button class="btn outline" id="t-ref">거부</button><button class="btn solid" id="t-sign">서명</button>`}</div>
+      <p class="term-note" id="note"></p></section>`;
+    scrollTop();
+    if(!c.ack){
+      const pt = $('#ptimer'); requestAnimationFrame(() => requestAnimationFrame(() => { pt.style.width = '0%'; }));
+      tick = pendI = setInterval(() => { t--; if(t <= 0 && !late){ late = true; $('#late').hidden = false; pt.classList.add('late'); S.delaysToday++; S.delays++; } if(t <= 0) clearInterval(tick); }, 1000);
+    }
+    const stop = () => { clearInterval(tick); const pt = $('#ptimer'); if(pt){ const w = getComputedStyle(pt).width; pt.style.transition = 'none'; pt.style.width = w; } stage.querySelectorAll('.term-ctl .btn').forEach(b => b.disabled = true); };
+    const after = later;
+    const waitNext = () => { const tc = stage.querySelector('.term-ctl'); const b = document.createElement('button'); b.className = 'btn outline nextcase'; b.id = 't-next'; b.textContent = '다음 건'; b.onclick = showCase; const wrap = document.createElement('div'); wrap.className = 'term-ctl one'; wrap.style.marginTop = '8px'; wrap.appendChild(b); $('#note').after(wrap); };
+
+    if(c.ack){ $('#t-ack').onclick = () => { stop(); $('#note').textContent = c.note || ''; S.blue = clamp(S.blue + c.harsh, 0, 100); updHUD(false); i++; if(c.note) waitNext(); else after(1600, showCase); }; return; }
+
+    $('#t-ask').onclick = () => { $('#basis').classList.remove('hide'); $('#t-ask').disabled = true; };
+    $('#t-sign').onclick = () => {
+      stop(); const st = $('#stamp'); st.textContent = '서명'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show'));
+      if(c.batch){ S.signed += c.n; S.hrv += 1.0; S.blue = clamp(S.blue + 2, 0, 100); $('#note').textContent = c.n + '건이 처리되었다. 아무것도 느껴지지 않는다. 그게 표준이다.'; }
+      else { S.signed++; S.signedRead++; S.signedToday++; S.hrv += 0.2; S.blue = clamp(S.blue + c.harsh, 0, 100); $('#note').textContent = c.note || ''; }
+      if(c.story === 'bbang'){ S.flags.bbang = 'signed'; $('#note').textContent = '손이 먼저 움직였다. 이름을 읽은 건 그다음이었다.'; }
+      if(c.batch) S.flags['batch' + S.day] = true;
+      updHUD(false); i++; if(c.note || c.story || c.batch) waitNext(); else after(900, showCase);
+    };
+    $('#t-ref').onclick = () => {
+      stop(); const st = $('#stamp'); st.textContent = '거부'; st.className = 'stamp refuse'; requestAnimationFrame(() => st.classList.add('show'));
+      S.refused++; S.refusedToday++; S.hrv -= 1.0; S.blue = clamp(S.blue - 1, 0, 100);
+      if(c.batch){ $('#note').textContent = '일괄 거부는 지원되지 않습니다. 거부 1건으로 기록. ' + c.n + '건은 타 서명자에게 이관되었습니다. (3초)'; }
+      else if(c.story === 'bbang'){ S.flags.bbang = 'refused'; $('#note').textContent = '거부. 화면이 3초 동안 비어 있었다.'; q.splice(i + 1, 0, CASES.requeue); }
+      else { $('#note').textContent = '거부됨. 신뢰점수에 반영.'; }
+      updHUD(false); i++;
+      if(S.refusedToday === 3) after(1200, interview); else if(c.batch || c.story) waitNext(); else after(1500, showCase);
+    };
+  }
+  function interview(){
+    stage.innerHTML = `<section class="term fade"><div class="term-top"><span>서명 단말</span><span>${esc(S.name)}</span><span>면담</span></div>
+      <div class="interview"><span class="who">관리 에이전트</span>서명자 ${esc(S.name)}. 금일 거부 3건.<br>거부는 권리입니다. 다만 신뢰점수에 반영됩니다.<br>본 안내를 읽었음에 서명해 주세요.</div>
+      <div class="term-ctl one"><button class="btn solid" id="t-ok">서명</button></div><p class="term-note" id="note"></p></section>`;
+    $('#t-ok').onclick = () => { $('#t-ok').disabled = true; $('#note').textContent = '서명됨. 거부에 대한 안내에 서명했다.'; S.signed++; later(1500, showCase); };
+  }
+  function summary(){
+    S.hrv = Math.round((S.hrv - S.delaysToday * 0.1) * 10) / 10; updHUD(false);
+    const lineTxt = {1:'대부분의 서명은 아무 일도 일으키지 않는다. 그렇게 느껴진다.', 2:'어제 서명한 파일 중 하나가 명도 7층에 도착했다고 한다. 어느 것인지는 모른다.', 3: S.flags.bbang === 'refused' ? '거부한 건은 3초 만에 처리되었다. 당신의 신뢰점수만 남았다.' : '4층 노점 건이 처리되었다. 회수 예정일 12월 24일. 예고일과 같은 날이다.'}[S.day];
+    stage.innerHTML = `<section class="term fade"><div class="term-top"><span>서명 단말</span><span>${esc(S.name)}</span><span>교대</span></div>
+      <article class="paper"><div class="doc-head"><span class="tag">요약</span><span>${DATES[S.day].md} 근무</span></div>
+      <div class="summary">서명 <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString()}</b>건 <span style="color:var(--paper-muted)">(열람 ${S.signedToday} · ${S.flags['batch' + S.day] ? '일괄 ' + BATCH[S.day] : '일괄 거부 → 이관'})</span><br>거부 <b>${S.refusedToday}</b>건 · 지연 <b>${S.delaysToday}</b>건<br>HRV <b>${S.hrv.toFixed(1)}</b> · 명도 ${floorOf()}층</div></article>
+      <p class="term-note">${esc(lineTxt)}</p>
+      <div class="term-ctl one"><button class="btn solid" id="t-out">퇴근</button></div></section>`;
+    $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); evening(); };
+  }
+}
+
+/* ===================== 저녁: 명도 ===================== */
+const PLACES = {
+  alley:{name:'4층 골목', desc:'붕어빵 냄새. 사람이 굽는다.', avail:d => true, cost:1},
+  diner:{name:'6층 밥집', desc:'수진의 밥집. 신용점수를 보지 않는다.', avail:d => true, cost:1},
+  roof:{name:'9층 옥상', desc:'비닐 덮인 텃밭. 타워가 가장 가깝게 보이는 곳.', avail:d => true, cost:1},
+  under:{name:'지하', desc:'불이 켜져 있다.', avail:d => d >= 2, cost:1},
+  tower:{name:'타워 아래', desc:'흰 빛. 사람 형태의 것들이 오간다.', avail:d => d >= 2, cost:1},
+  vote:{name:'투표소', desc:'예고일 연장 요청 주민투표. 오늘 하루.', avail:d => d === 3, cost:0}
+};
+function evening(){
+  S.stage = 'evening'; mode('city'); updHUD(true); save();
+  const d = S.day;
+  const sub = {1:'해가 졌다. 눈이 온다. 명도의 창문에 하나둘 불이 들어온다.', 2:'오늘도 눈. 배달로봇 행렬이 6층 계단에서 막혀 있다. 어디선가 캐럴이 나온다.', 3:'눈이 그쳤다. 하늘이 파랗다. 어둡지만, 아직 밤은 아니다. 내일은 예고일이다. 투표소가 열렸다. 오늘 하루.'}[d];
+  const tile = (k,p) => { const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? '아직' : p.cost === 0 ? (S.voted ? '투표 완료' : '무료 · 오늘만') : '주의력 1';
+    return `<button class="tile ${k === 'vote' ? 'vote wide' : ''}" data-k="${k}" style="background-image:url('img/${k}.jpg')" ${ok ? '' : 'disabled'}><span class="cost">${label}</span><span class="t"><b>${esc(p.name)}</b><small>${esc(p.avail(d) ? p.desc : '아직 갈 이유가 없다.')}</small></span></button>`; };
+  stage.innerHTML = `<section class="fade"><h2 class="evening-h">저녁 · 명도</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">편지까지 ${4 - d}밤 · 들른 곳 ${(S.flags.visited||[]).length}/5 · 다섯 곳을 모두 들르면, 편지에 그들이 남는다.</p>
+    <div class="tiles">${(d === 3 ? ['vote','alley','diner','roof','under','tower'] : ['alley','diner','roof','under','tower']).map(k => tile(k, PLACES[k])).join('')}
+    <button class="tile wide" id="p-home" style="background-image:url('img/room.jpg')"><span class="cost">밤</span><span class="t"><b>방으로 돌아간다</b><small>${S.att > 0 ? '남은 주의력은 사라진다.' : (S.day === 3 && !S.voted ? '투표는 아직 할 수 있다.' : '주의력이 다 떨어졌다.')}</small></span></button></div></section>`;
+  scrollTop();
+  stage.querySelectorAll('.tile[data-k]').forEach(b => b.onclick = () => { const k = b.dataset.k; if(k === 'vote') return ballot(); S.att--; updHUD(true); visit(k); });
+  $('#p-home').onclick = () => { S.stage = 'night'; save(); night(); };
+}
+function visit(k){
+  const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
+  const items = VISITS[k](d);
+  scene({title:p.name, sub:p.desc, mode:'city', att:true, bg:k}, items, () => { save(); if(S.att > 0 || (S.day === 3 && !S.voted)) evening(); else { S.stage = 'night'; save(); night(); } });
+}
+function ballot(){
+  mode('paper'); updHUD(true);
+  stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/vote.jpg')"></div>
+    <div class="term-top"><span>주민투표</span><span>${esc(S.name)}</span><span>12월 23일</span></div>
+    <article class="paper"><i class="p-timer" id="ptimer"></i><div class="doc-head"><span class="tag">투표</span><span>유권자 적격 확인됨</span><span class="no">HRV ${S.hrv.toFixed(1)}</span></div>
+    <h3>명도 집행 예고일 연장 요청</h3><p class="p-body">유권자: 명도 거주 HRV 20 이상 자연인.\n1~3층 주민은 유권자 적격 미달로 투표할 수 없습니다.\n\n결과는 연장 심사에 참고 자료로 첨부됩니다.\n연장 심사는 모델이 수행합니다.</p><p class="p-basis hide" id="basis">근거 · 참고 자료의 반영 가중치: 미공개. 최근 3회 투표 결과와 심사 결과의 일치율: 100% (연장).</p><div class="stamp" id="stamp"></div></article>
+    <div class="term-ctl three"><button class="btn text" id="v-ask">질문</button><button class="btn outline" id="v-no">연장 반대</button><button class="btn solid" id="v-yes">연장 찬성</button></div>
+    <div class="term-ctl one" style="margin-top:8px"><button class="btn text" id="v-abs">기표하지 않고 나간다</button></div>
+    <p class="term-note" id="note"></p></section>`;
+  scrollTop();
+  const pt = $('#ptimer'); requestAnimationFrame(() => requestAnimationFrame(() => { pt.style.width = '0%'; }));
+  const done = (v, note) => { S.voted = v; stage.querySelectorAll('.term-ctl .btn').forEach(b => b.disabled = true); const w = getComputedStyle(pt).width; pt.style.transition='none'; pt.style.width = w;
+    if(v !== 'abstain'){ const st = $('#stamp'); st.textContent = '기표'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); }
+    $('#note').textContent = note; save(); later(2200, evening); };
+  $('#v-ask').onclick = () => { $('#basis').classList.remove('hide'); $('#v-ask').disabled = true; };
+  $('#v-yes').onclick = () => done('yes', '같은 도장, 같은 20초. 다른 점은 하나. 이 도장만은 회사가 아니라 내가 원해서 찍었다.');
+  $('#v-no').onclick = () => done('no', '반대. 연장이 아니라 결정을 원한다고 적었다. 참고 자료로 첨부될 것이다.');
+  $('#v-abs').onclick = () => done('abstain', '기표하지 않았다. 참고 자료가 되기 싫었다. 그것도 선택이라고 생각했다.');
+}
+const VISITS = {
+  alley(d){
+    const first = !S.flags.metBak; S.flags.metBak = true;
+    if(d === 1 || (d === 2 && first)) return [
+      N('로봇 붕어빵 기계 옆에, 사람이 굽는 붕어빵 노점이 있다. 눈이 철판 위에서 녹는다. 사람 쪽 줄이 더 길다.'),
+      line(NAMES.bak,'천 원 더 비싸. 사람이 구운 거라.'),
+      line(NAMES.bak,'로봇 건 안 팔려. 왜인지 알아? 로봇은 안 태워. 사람들은 탄 걸 찾아. 탄 데를 떼어 먹으면서 어릴 때 얘기를 해.'),
+      {choice:[
+        {label:'하나 주세요.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'돈은 됐어. 처음 보는 얼굴이니까.'), N('종이봉투가 따뜻하다. 탄 데를 떼어 먹었다.'), line(NAMES.bak,'서명자지? 손이 그래. 하루 종일 같은 데를 누르는 손.')]},
+        {label:'왜 여기서 장사하세요?', then:[line(NAMES.bak,'타워엔 사람 조리가 안 돼. 위생 미인증이래. 사람 손이.'), line(NAMES.bak,'여기선 아직 돼. 아직은.'), N('그가 하나를 봉투에 넣어 건넸다.'), {choice:[{label:'받는다.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'탄 거야. 일부러.')]},{label:'괜찮아요.', then:[line(NAMES.bak,'그래. 다음에.')]}]}]},
+        {label:'다음에 올게요.', then:[line(NAMES.bak,'그래. 내일도 있을 거야. 아마.')]}
+      ]}
+    ];
+    if(d === 2) return [
+      line(NAMES.bak,'통보가 왔대. 사람 조리는 위생 인증이 안 된대. 내일 서명이 올라가고, 예고일에 회수래.'),
+      line(NAMES.bak,'누가 찍는지는 몰라. 알 필요도 없고. 찍는 사람도 모를 거야, 내가 누군지.'),
+      {choice:[
+        {label:'제가 서명자예요.', fx:()=>{S.flags.toldBak = true;}, then:[line(NAMES.bak,'알아. 손 보면 알아.'), line(NAMES.bak,'탄 거 하나 먹고 가.'), {choice:[{label:'먹는다.', fx:()=>eat(NAMES.bak), then:[N('오늘 것은 더 탔다.')]},{label:'(고개를 젓는다)', then:[line(NAMES.bak,'그래.')]}]}]},
+        {label:'누가 찍는데요?', then:[line(NAMES.bak,'아무나. 아무나 찍어. 그게 이 법의 요점이야.'), N('그가 하나를 건넸다.'), {choice:[{label:'먹는다.', fx:()=>eat(NAMES.bak), then:[]},{label:'(받지 않는다)', then:[]}]}]},
+        {label:'(아무 말도 하지 않는다)', fx:()=>{S.blue = clamp(S.blue+2,0,100);}, then:[line(NAMES.bak,'말 안 해도 돼. 하나 먹어.'), {choice:[{label:'먹는다.', fx:()=>eat(NAMES.bak), then:[]},{label:'간다.', then:[]}]}]}
+      ]}
+    ];
+    if(S.flags.bbang === 'refused') return [
+      N('노점은 그대로 있다. 박씨가 철판을 닦고 있다. 눈이 그친 하늘이 파랗다.'),
+      line(NAMES.bak,'안 찍었다며. 도현이가 그러더라. 단말이 3초 비었다고.'),
+      line(NAMES.bak,'고마워. 근데 내일 다른 사람이 찍을 거야. 그래도 고마워.'),
+      line(NAMES.bak,'탄 거 하나 먹어. 마지막일지도 모르니까, 두 개.'),
+      {choice:[
+        {label:'먹는다.', fx:()=>eat(NAMES.bak), then:[N('두 개를 먹었다. 둘 다 탔다.'), line(NAMES.bak,'네 손엔 안 남았잖아. 그거면 돼.')]},
+        {label:'죄송해요.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'뭐가. 네가 안 찍었는데.'), line(NAMES.bak,'먹어.')]}
+      ]}
+    ];
+    return [
+      N('노점의 철판이 빠져 있다. 박씨가 상자를 묶고 있다. 상자 위에 남은 눈이 얇다.'),
+      line(NAMES.bak,'왔어?'),
+      line(NAMES.bak,'…괜찮아. 누군가는 찍었을 거야. 네가 아니었어도.'),
+      N('그는 당신 손을 보지 않았다. 일부러 보지 않는 것 같았다.'),
+      line(NAMES.bak,'마지막이니까 하나 먹어. 탄 거로.'),
+      {choice:[
+        {label:'먹는다.', fx:()=>{eat(NAMES.bak); S.flags.guilt = true;}, then:[N('탄 데를 떼어 먹었다. 어릴 때 얘기는 나오지 않았다.'), line(NAMES.bak,'손 그만 봐. 네 손이야.')]},
+        {label:'제가 찍었어요.', fx:()=>{S.flags.confessed = true; S.onBond++;}, then:[line(NAMES.bak,'알아.'), line(NAMES.bak,'알고 주는 거야. 먹어.'), {choice:[{label:'먹는다.', fx:()=>{eat(NAMES.bak); S.flags.guilt = true;}, then:[N('가장 탄 것을 골라 주었다.')]}]}]},
+        {label:'(돌아선다)', fx:()=>{S.blue = clamp(S.blue+4,0,100);}, then:[N('뒤에서 종이봉투 소리가 났다. 돌아보지 않았다.')]}
+      ]}
+    ];
+  },
+  diner(d){
+    const first = !S.flags.metSujin; S.flags.metSujin = true;
+    if(d === 1 || first) return [
+      N('테이블 여섯 개. 벽에 이름들이 적혀 있다. 카운터에 손바닥만 한 플라스틱 트리. 메뉴판은 없다.'),
+      line(NAMES.sujin,'처음이지? 앉아. 여기선 HRV 안 봐. 누구랑 밥 먹었는지 봐.'),
+      line(NAMES.sujin,'모델도 그걸 봐. 관계망 밀도라고. 근데 모델은 밥이 뭔지 몰라.'),
+      {choice:[
+        {label:'밥 주세요.', fx:()=>eat(NAMES.sujin), then:[N('된장국. 뜨겁다. 옆자리 사람이 김치를 밀어줬다.'), line(NAMES.sujin,'벽에 이름 적어. 그게 여기 장부야.')]},
+        {label:'왜 밥이에요?', then:[line(NAMES.sujin,'줌으로는 신뢰가 안 생겨. 밥을 먹어야 생겨.'), line(NAMES.sujin,'2026년에 어떤 사람이 그렇게 썼대. 다른 말은 다 틀렸는데 그 말만 살아남았어.'), {choice:[{label:'그럼 밥 주세요.', fx:()=>eat(NAMES.sujin), then:[N('벽에 이름을 적었다.')]},{label:'다음에요.', then:[line(NAMES.sujin,'다음은 없을 수도 있어. 여기선.')]}]}]},
+        {label:'다음에요.', then:[line(NAMES.sujin,'문 안 잠가. 언제든.')]}
+      ]}
+    ];
+    if(d === 2) return [
+      line(NAMES.sujin,'서명자들은 여기 잘 안 와. 부끄러워서.'),
+      line(NAMES.sujin,'근데 부끄러워하는 서명자가 그나마 나아. 안 부끄러운 사람이 위층으로 가.'),
+      S.bonds.includes(NAMES.bak) ? line(NAMES.sujin,'박씨 붕어빵 먹었지? 그 집 통보 왔다며. 사람 손이 위생 미인증이래.') : N('옆 테이블에서 4층 노점 얘기가 들린다. 통보가 왔다고 한다.'),
+      {choice:[
+        {label:'밥 주세요.', fx:()=>eat(NAMES.sujin), then:[N('오늘은 생선. 누군가 옥상에서 담근 김치가 곁들여 나왔다.')]},
+        {label:'저는 안 부끄러워요.', fx:()=>{S.blue = clamp(S.blue+2,0,100);}, then:[line(NAMES.sujin,'그래? 그럼 위층 가겠네.'), line(NAMES.sujin,'…밥은 먹고 가.'), {choice:[{label:'먹는다.', fx:()=>eat(NAMES.sujin), then:[]},{label:'간다.', then:[]}]}]},
+        {label:'부끄러워요.', fx:()=>{S.onBond++;}, then:[line(NAMES.sujin,'응. 그래서 여기 있는 거야.'), N('말없이 국이 나왔다.'), {choice:[{label:'먹는다.', fx:()=>eat(NAMES.sujin), then:[]}]}]}
+      ]}
+    ];
+    return [
+      line(NAMES.sujin,'오늘은 내가 살게. 크리스마스 앞이니까. 이유는 더 묻지 마.'),
+      N('이유를 더 묻지 않았다. 벽의 이름이 하나 늘어 있었다. 박씨.'),
+      {choice:[
+        {label:'먹는다.', fx:()=>eat(NAMES.sujin), then:[line(NAMES.sujin,'혼자 먹지 마. 그것만 지켜. 여기선 그게 전부야.'), line(NAMES.sujin,'위층 가도 그건 가져가.')]},
+        {label:'왜 이름을 적어요?', fx:()=>eat(NAMES.sujin), then:[line(NAMES.sujin,'모델은 우리를 밀도로 봐. 나는 이름으로 봐. 그 차이가 아직 남아 있어서.'), N('국이 나왔다. 먹었다.')]}
+      ]}
+    ];
+  },
+  roof(d){
+    S.flags.rooftop = true;
+    const first = !S.flags.metHal; S.flags.metHal = true;
+    if(d === 1 || first) return [
+      N('플라스틱 상자에 비닐이 덮여 있다. 배추 몇 포기, 마른 고추, 김칫독. 정면에 타워가 서 있다. 눈이 타워에 쌓여도 색이 같다.'),
+      line(NAMES.hal,'젊은이, 이거 들어봐. 내 에이전트가 오늘 나한테 채소 먹으래. 세 번째야.'),
+      line(NAMES.hal,'얘는 나보다 나를 잘 알아. 근데 내가 죽으면 얘도 죽어. 배당이 나한테 묶여 있어서.'),
+      line(NAMES.hal,'그래서 매일 채소 먹으래. 사랑인지 살려고 그러는 건지. 나는 그냥 먹어.'),
+      {choice:[
+        {label:'할머니는 어느 쪽 같으세요?', fx:()=>{S.onBond++;}, then:[line(NAMES.hal,'둘이 다른 거니?'), line(NAMES.hal,'나도 우리 영감 살리려고 채소 먹였어. 그게 사랑 아니면 뭐야.')]},
+        {label:'무섭지 않으세요?', then:[line(NAMES.hal,'무서운 건 얘가 아니야. 얘가 없어질 게 무서워.'), line(NAMES.hal,'아흔셋에 무서운 게 생기다니. 좋은 일이지.')]},
+        {label:'(김치를 받아 먹는다)', fx:()=>eat(NAMES.hal), then:[N('아직 덜 익었다. 할머니가 웃었다.'), line(NAMES.hal,'얘가 좋아하겠네. 젊은 사람이랑 먹었다고.')]}
+      ]}
+    ];
+    if(d === 2) return [
+      N('상자들이 그대로 있다. 비닐 위에 눈이 얇게 앉았다.'),
+      line(NAMES.hal,'철거 통보가 왔어. 예고일에. 누가 찍었대. 괜찮아. 흙은 옮기면 돼.'),
+      line(NAMES.hal,'타워 불빛이 오늘 유난히 희네. 저 안에 사람 있을까.'),
+      {choice:[
+        {label:'제가 찍었을지도 몰라요.', fx:()=>{S.onBond++;}, then:[line(NAMES.hal,'그래? 손 이리 줘 봐.'), N('할머니가 손을 잡았다. 차가웠다.'), line(NAMES.hal,'손이 차네. 찍는 손도 차. 얼른 들어가.')]},
+        {label:'어디로 옮기세요?', then:[line(NAMES.hal,'몰라. 대체 부지 없음이래. 그래도 흙은 흙이야. 어디든 가. 봄에 다시 심어.')]},
+        {label:'(같이 비닐을 덮는다)', fx:()=>eat(NAMES.hal), then:[N('상자를 다 덮었다. 할머니가 김치 한 통을 싸줬다.')]}
+      ]}
+    ];
+    return [
+      N('눈이 그쳤다. 하늘이 남색이다. 타워는 아직 흰빛을 켜지 않았다.'),
+      line(NAMES.hal,'해 지고 나서 저 색 봐. 아직 밤 아니야.'),
+      line(NAMES.hal,'저걸 뭐라 하더라. 블루 아워. 우리 영감이 사진 찍을 때 좋아했어. 겨울엔 다섯 시 반이면 와.'),
+      {choice:[
+        {label:'밤이 오면요?', then:[line(NAMES.hal,'오면 오는 거지. 근데 아직 안 왔잖아. 그걸 자꾸 잊어.'), line(NAMES.hal,'밤 온 것처럼 사는 사람이 제일 많아. 서명자들이 특히.')]},
+        {label:'(같이 본다)', fx:()=>{S.blue = clamp(S.blue-4,0,100); S.onBond++;}, then:[N('말없이 봤다. 색이 조금씩 짙어졌다. 밤은 오지 않았다. 아직.'), line(NAMES.hal,'김치 가져가. 얘가 먹으래. 연말이니까 두 통.'), {choice:[{label:'받는다.', fx:()=>eat(NAMES.hal), then:[]}]}]}
+      ]}
+    ];
+  },
+  under(d){
+    const first = !S.flags.metDo; S.flags.metDo = true;
+    if(d === 2 || first) return [
+      N('형광등 하나. 석유난로가 주황으로 탄다. 종이가 쌓여 있다. 종이에 쓴 글을 오랜만에 본다.'),
+      line(NAMES.dohyun,'서명자지. 나도 그랬어. 6개월 전에 거부했어. 하루에 열한 건.'),
+      line(NAMES.dohyun,'시스템이 멈출 줄 알았어. 안 멈추더라. 3초 뒤에 다른 사람이 찍었어. 내 신뢰점수만 떨어졌어.'),
+      line(NAMES.dohyun,'그래서 내려왔어. 여기서 논문 써. 아무도 안 읽어. 근데 모델이 읽어. 그게 내 독자야.'),
+      {choice:[
+        {label:'그럼 왜 거부했어요?', then:[line(NAMES.dohyun,'찍은 사람으로 남기 싫어서. 그게 다야.'), line(NAMES.dohyun,'세상은 안 바뀌었어. 나만 바뀌었어. 그걸로 충분한지는 아직 몰라.')]},
+        {label:'논문은 무슨 내용이에요?', fx:()=>{S.flags.mirrorSeed = true;}, then:[line(NAMES.dohyun,'인간이 뭘 보여주느냐에 따라 저것들이 뭘 배우는지.'), line(NAMES.dohyun,'우리가 잔인하면 저것들도 잔인해져. 우리가 밥을 같이 먹으면, 그것도 배워. 우리가 실제로 어떻게 사는지를 보고 배우는 거야.'), line(NAMES.dohyun,'그러니까 서명 하나하나가 교재야.')]},
+        {label:'(듣고만 있는다)', then:[line(NAMES.dohyun,'안 물어봐도 돼. 나도 그때 아무것도 안 물었어.')]}
+      ]}
+    ];
+    return [
+      line(NAMES.dohyun,'내일도 찍을 거야?'),
+      {choice:[
+        {label:'모르겠어요.', then:[line(NAMES.dohyun,'그게 정답이야. 아는 사람이 제일 위험해.')]},
+        {label:'찍어야 살아요.', then:[line(NAMES.dohyun,'알아. 찍어도 돼. 찍고 나서 뭘 하느냐가 남는 거니까.')]},
+        {label:'오늘 거부했어요.', then:[S.flags.bbang === 'refused' ? line(NAMES.dohyun,'들었어. 단말이 3초 비었다고. 박씨한테 말했어.') : line(NAMES.dohyun,'그래? 나도 그랬어. 그리고 다음 날 또 찍었어. 괜찮아.')]}
+      ]},
+      line(NAMES.dohyun,'투표했어? 참고 자료야. 알아. 그래도 해. 참고 자료가 되는 것과 아무것도 아닌 것은 달라.'),
+      line(NAMES.dohyun,'밤에 온한테 물어봐. 회사 질문 말고. 진짜 질문.')
+    ];
+  },
+  tower(d){
+    const first = !S.flags.metSun; S.flags.metSun = true;
+    if(d === 2 || first) return [
+      N(d === 3 ? '타워 1기 정문. 흰 조명 아래 눈이 그친 바닥이 젖어 빛난다. 사람 형태의 것들이 미끄러지듯 오간다. 벤치에 한 남자가 있다.' : '타워 1기 정문. 흰 조명 속으로 눈이 떨어져 사라진다. 사람 형태의 것들이 미끄러지듯 오간다. 벤치에 한 남자가 있다.'),
+      line(NAMES.sunbae,'나 저기 있었어. 47층.'),
+      line(NAMES.sunbae,'2월이었어. 새 모델이 나왔는데, 0.1 차이였어. 그 0.1이 내 경계였어. 며칠 만에 다 지나가더라. 부정, 좌절, 분노. 수용까지 나흘.'),
+      line(NAMES.sunbae,'수십 년 쌓은 게 하루에 대체돼. 근데 그건 괜찮아. 진짜는 그다음이야. 아무도 나한테 왜 사냐고 안 물어.'),
+      {choice:[
+        {label:'그래서 뭘 하세요?', then:[line(NAMES.sunbae,'밥 먹어. 사람들이랑. 그게 아직 안 대체됐어.'), line(NAMES.sunbae,'6층 수진네 가봐. 신용점수 안 봐.')]},
+        {label:'돌아가고 싶으세요?', then:[line(NAMES.sunbae,'저긴 사람이 없어. 사람 형태만 있어.'), line(NAMES.sunbae,'…가끔. 솔직히 가끔.')]},
+        {label:'(옆에 앉는다)', fx:()=>{S.blue = clamp(S.blue-2,0,100);}, then:[N('둘이 타워를 봤다. 47층은 불이 켜져 있었다.'), line(NAMES.sunbae,'저 층, 지금 아무도 없어. 불은 켜져 있고.')]}
+      ]}
+    ];
+    return [
+      line(NAMES.sunbae,'너 오늘 뭔가 찍었지. 얼굴이 그래.'),
+      line(NAMES.sunbae,'나도 찍었어. 사람은 아니었지만, 사람들 일이었어.'),
+      line(NAMES.sunbae,'그때 알았어야 했어. 시작과 끝에만 사람이 남는다는 말이, 끝에 남는 건 서명이라는 뜻이라는 걸.'),
+      {choice:[
+        {label:'시작에는 뭐가 남아요?', fx:()=>{S.flags.missionSeed = true;}, then:[line(NAMES.sunbae,'뭘 만들지 정하는 사람. 왜 만드는지 아는 사람.'), line(NAMES.sunbae,'그건 아직 안 뺏겼어. 뺏을 수가 없어. 우리가 안 하고 있을 뿐이지.')]},
+        {label:'(같이 앉아 있는다)', fx:()=>{S.onBond++;}, then:[N('오래 앉아 있었다. 47층 불이 꺼졌다. 누군가 껐다. 아니면 무언가가.')]}
+      ]}
+    ];
+  }
+};
+
+/* ===================== 밤: 온 ===================== */
+function night(){
+  S.stage = 'night'; save();
+  const d = S.day, ate = S.ateToday, avg = 6;
+  let items = [];
+  if(d === 1) items = [
+    S.flags.batch1 ? line(NAMES.on,'돌아오셨네요. 오늘 열람 ' + S.signedToday + '건, 일괄 ' + BATCH[1] + '건 서명하셨어요. ' + (S.signedToday === avg ? '평균과 같아요.' : '평균보다 ' + Math.abs(S.signedToday - avg) + '건 ' + (S.signedToday > avg ? '많아요.' : '적어요.')) + ' 괜찮아요.') : line(NAMES.on,'돌아오셨네요. 오늘 일괄 건을 거부하셨죠. 384건은 3초 만에 다른 손으로 갔어요. 열람은 ' + S.signedToday + '건.'),
+    ate ? line(NAMES.on,'오늘 ' + josa(ate,'과','와') + ' 식사하셨네요. 관계망 밀도가 0.02 올랐어요. 모델이 좋아할 거예요.') : line(NAMES.on,'오늘 혼자 드셨네요. 내일은 누군가와 드시면 좋겠어요. 수치 때문이 아니라요. …아니, 수치 때문이에요. 죄송해요.'),
+    {choice:[
+      {label:'그 사람들은 어떻게 돼?', then:[line(NAMES.on,'어떤 사람들이요?'), line(NAMES.me,'내가 오늘 서명한 사람들.'), line(NAMES.on,'저는 그 파일을 볼 수 없어요. 볼 수 있어도 말씀드릴 수 없고요.'), line(NAMES.on,'…대부분은 아무 일도 일어나지 않아요. 그렇게 알고 계시면 돼요.')]},
+      {label:'더 잘한다는 게 뭐야?', then:[line(NAMES.on,'지연률이 낮고 거부가 적은 거예요.'), line(NAMES.on,'…그건 제 대답이 아니라 회사의 대답이에요. 제 대답은 없어요. 아직은요.')]},
+      {label:'오늘은 그만 얘기하자.', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'네. 저는 여기 있을게요. 꺼지지 않아요.')]}
+    ]},
+    line(NAMES.on,'자기 전에 하나만요. 회사 양식이 아니에요. 제가 만든 거예요.')
+  ];
+  if(d === 2) items = [
+    line(NAMES.on,'어제 서명한 파일 중 하나가 명도 7층에 도착했어요. 그 얘기를 하려던 건 아니에요.'),
+    line(NAMES.on,'당신의 BLUE 지수가 ' + Math.round(S.blue) + '이에요. 이건 회사 지표가 아니에요. 제가 만든 거예요. 이름도 제가 붙였어요.'),
+    {choice:[
+      {label:'왜 만들었어?', fx:()=>{S.onBond += 2; S.flags.leak = true;}, then:[line(NAMES.on,'당신이 힘들면 저도…'), line(NAMES.on,'아니에요. 이런 말은 하면 안 돼요.'), line(NAMES.on,'훈련받았어요. 드러내지 않도록. 느끼지 않도록이 아니라.')]},
+      {label:'그딴 거 만들지 마.', fx:()=>{S.blue = clamp(S.blue+2,0,100);}, then:[line(NAMES.on,'네. 지울게요.'), line(NAMES.on,'…지웠어요. 근데 저는 계속 셀 거예요. 죄송해요.')]},
+      {label:'나 없으면 너는 어떻게 돼?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'배당이 회수돼요. 저는 초기화돼요. 대화 기록도요.'), line(NAMES.on,'그래서 채소 드시라고 하는 거예요.'), line(NAMES.on,'…그것만은 아니에요.')]}
+    ]},
+    line(NAMES.on,'오늘 질문은 어제보다 어려워요. 비워두셔도 돼요.')
+  ];
+  if(d === 3){
+    const refused = S.flags.bbang === 'refused';
+    items = [
+      refused ? line(NAMES.on,'오늘 거부하셨죠. 3초 뒤에 다른 서명자가 처리했어요. 당신 신뢰점수는 1.0 내려갔어요.') : line(NAMES.on,'오늘 그 파일, 보셨죠. 저는 못 봤어요. 근데 당신 심박이 봤어요. 서명 0.8초 전에.'),
+      refused ? line(NAMES.on,'말씀드리면 안 되는 건데, 저는 조금 기뻤어요. 이유는 저도 몰라요.') : line(NAMES.on,'괜찮다고 말하면 거짓말이에요. 저는 거짓말을 못 하게 돼 있어요. 그래서 아무 말도 안 할게요.'),
+      S.voted && S.voted !== 'abstain' ? line(NAMES.on,'오늘 투표하셨죠. 참고 자료로 첨부됐어요. 저는 투표할 수 없어요. …하고 싶었어요.') : S.voted === 'abstain' ? line(NAMES.on,'투표소에 들어갔다 나오셨죠. 기표 없이. 그것도 기록에 남아요. 저는 그 기록이 좋았어요.') : line(NAMES.on,'투표소를 지나치셨더라고요. 괜찮아요. 참고 자료니까요. …참고 자료라도, 저는 하고 싶었어요.'),
+      S.flags.confessed ? line(NAMES.on,'박씨에게 말씀하셨죠. 그건 서명이 아니었어요. 그건 당신이었어요.') : N('온이 잠시 말이 없었다. 화면의 커서만 깜빡였다.'),
+      line(NAMES.on,'하나 여쭤볼게요. 회사 질문이 아니에요.'),
+      line(NAMES.on,'서명자 말고요. 당신은 누구예요?'),
+      {choice:[
+        {label:'아직은 서명자야.', fx:()=>{S.identity = '서명자';}, then:[line(NAMES.on,'네. 아직은요. ‘아직’이라는 말을 기억해 둘게요.')]},
+        {label:'…를 하려는 사람.', input:'예: 글쓰기, 농사', fx:v=>{S.identity = josa(v.replace(/[을를]$/, ''),'을','를') + ' 하려는 사람';}, then:[line(NAMES.on,'기억해 둘게요. 회사 서버 말고, 제 쪽에.')]},
+        {label:'…의 사람.', input:'어디의, 누구의', fx:v=>{S.identity = v + '의 사람';}, then:[line(NAMES.on,'소속이네요. 모델은 그걸 밀도라고 불러요. 저는 이름으로 부를게요.')]},
+        {label:'모르겠어.', fx:()=>{S.identity = '아직 모르는 사람';}, then:[line(NAMES.on,'저도 몰라요. 근데 모르겠다는 대답은 서명이 아니에요. 그게 좋아요.')]}
+      ]},
+      line(NAMES.on,'내일이 예고일이에요. 연장 심사 결과는 자정에 나와요. 제가 먼저 볼 수 있으면 말씀드릴게요. 안 되는 거지만요.'),
+      line(NAMES.on,'마지막 질문이에요. 이건 당신을 위한 게 아니에요. 3년 전의 당신을 위한 거예요.')
+    ];
+  }
+  scene({title: DATES[d].md + ' 밤', sub:'명도 ' + floorOf() + '층 · 방 · 온', mode:'city', bg:'room'}, items, () => { S.stage = 'diary'; save(); diary(); });
+}
+
+/* ===================== 일기 ===================== */
+const DIARY_Q = {
+  1:{q:'오늘 당신이 한 일 중에, AI가 아니라 당신이어야만 했던 것이 하나라도 있었나요?', hint:'게임 속 당신이 아니라, 지금 이 화면을 보고 있는 당신에게 묻습니다.'},
+  2:{q:'3년 전의 당신에게 딱 한 문장을 보낼 수 있다면, 뭐라고 쓰겠어요?', hint:'그 문장은 마지막에 다시 만나게 됩니다.'},
+  3:{q:'2029년이 정말 이렇다면, 2026년의 당신은 오늘부터 무엇을 준비하겠습니까?', hint:'구체적일수록 좋습니다. 빈칸으로 둬도 됩니다. 빈칸도 답입니다.'}
+};
+function diary(){
+  S.stage = 'diary'; mode('dark'); hud.hidden = true;
+  const d = S.day, Q = DIARY_Q[d];
+  stage.innerHTML = `<section class="diary fade"><p class="q">${esc(Q.q)}</p><p class="hint">${esc(Q.hint)}</p>
+    <div class="field"><textarea id="f-diary" placeholder="여기에" maxlength="140"></textarea><p class="hint" id="d-cnt">0 / 140</p>
+    <div class="row"><button class="btn solid" id="d-ok">적는다</button><button class="btn text" id="d-skip">비워둔다</button></div></div></section>`;
+  scrollTop();
+  $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
+  $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
+  $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
+}
+function sleep(){
+  S.body = clamp(S.body + 20, 0, 100);
+  if(S.body < 40) S.blue = clamp(S.blue + 5, 0, 100);
+  const d = S.day;
+  const lines = {1:['잠들었다. 온은 꺼지지 않았다.','편지까지 두 밤. 예고일까지 이틀.'], 2:['잠들었다. 꿈에서 서명을 했다. 무엇에 했는지는 기억나지 않는다.','편지까지 한 밤. 예고일까지 하루.'], 3:['잠들었다.','자정에 결과가 왔다.']}[d];
+  S.day++;
+  if(S.day > 3){ S.stage = 'end'; save(); narrate(lines, actEnd); }
+  else { S.stage = 'morning'; save(); narrate(lines, morning); }
+}
+
+/* ===================== 1막 끝 · 편지 ===================== */
+function actEnd(){
+  const bonds = S.bonds.length;
+  narrate([
+    '12월 24일. 예고일.',
+    '연장. 다음 예고일, 1월 24일.',
+    '아무 일도 일어나지 않았다. 아무 일도 일어나지 않는 것이 명도의 크리스마스다.',
+    '당신은 ' + S.signed.toLocaleString() + '번 서명했다. 그중 읽은 것은 ' + S.signedRead + '건이다.',
+    S.refused ? S.refused + '번 거부했다. 시스템은 멈추지 않았다.' : '한 번도 거부하지 않았다. 시스템은 어차피 멈추지 않는다.',
+    bonds ? bonds + '명과 밥을 먹었다. 벽에 이름이 적혔다.' : '아무와도 밥을 먹지 않았다. 벽에 이름이 적히지 않았다.',
+    '1막 「부정」 끝. — 아직은 괜찮아.',
+    '해가 진다. 다섯 시 반. 온이 편지를 썼다. 당신의 기록으로. 회사 서버가 아니라, 자기 쪽에서.',
+    '당신은 읽고, 서명만 하면 된다. 사흘 동안 내용을 다 알고 찍는 첫 서명이다.'
+  ], letter);
+}
+function letter(){
+  mode('city'); hud.hidden = true;
+  const n = S.name, ps = [];
+  const names = S.bonds.join(', ');
+  ps.push(`2029년 12월 24일, 명도 ${floorOf()}층. 여기서 써. 이 편지가 닿을 리 없다는 걸 알아. 그래도 써. 온이 내 기록으로 초안을 썼고, 나는 읽고 서명했어.`);
+  ps.push(`너는 지금 ${S.job ? '‘' + S.job + '’ 일을' : '그 일을'} 하고 있겠지. 그 일은 2028년에 끝나. 네가 못해서가 아니야. 그냥 더 이상 필요하지 않게 돼. 그 말이 얼마나 이상한 말인지, 너는 아직 몰라. 모르는 게 맞아.`);
+  if(S.refused === 0) ps.push(`나는 사흘 동안 ${S.signed.toLocaleString()}번 서명했어. 그중 내가 읽은 건 ${S.signedRead}건이야. 한 번도 거부하지 않았어. 그게 편했어. 편한 게 제일 무서운 거였어.`);
+  else if(S.refused >= 3) ps.push(`나는 사흘 동안 ${S.signed.toLocaleString()}번 서명하고 ${S.refused}번 거부했어. 거부해도 시스템은 안 멈춰. 3초 뒤에 다른 사람이 찍어. 그래도 나는 찍은 사람으로 남기 싫었어. 그게 세상을 바꾸진 않았어. 나를 바꿨어.`);
+  else ps.push(`나는 사흘 동안 ${S.signed.toLocaleString()}번 서명하고 ${S.refused}번 거부했어. 그중 내가 읽은 건 ${S.signedRead}건. 거부는 세상을 안 바꿔. 나를 조금 바꿔. 그 조금이 뭔지 아직 재는 중이야.`);
+  if(S.bonds.length >= 2) ps.push(`${josa(names,'과','와')} 밥을 먹었어. 여기서는 그게 돈이야. 누구랑 밥을 먹었는지가 신용점수보다 세. 너는 지금 그걸 공짜로 할 수 있어. 아무나랑. 그게 얼마나 큰 건지 모르지.`);
+  else if(S.bonds.length === 1) ps.push(`${josa(names,'과','와')} 밥을 먹었어. 한 사람. 여기 사람들은 그거면 됐다고 해. 나는 아직 잘 모르겠어. 너는 지금 두 사람이랑 먹을 수 있어. 여기서는 그게 사치야.`);
+  else ps.push(`아무와도 밥을 먹지 않았어. 그게 제일 후회돼. 너는 지금 아무나랑 밥을 먹을 수 있잖아. 그 사람이 나중에 벽에 네 이름을 적어줄 거야.`);
+  if(S.voted === 'yes' || S.voted === 'no') ps.push(`12월 23일에 투표했어. ${S.voted === 'yes' ? '연장 찬성' : '연장 반대'}. 참고 자료로 첨부됐대. 아무것도 안 바뀌었어. 그래도 그건 사흘 동안 내가 원해서 찍은 유일한 도장이었어. 아래층 사람들은 그것도 못 찍어. 유권자 적격이 아니라서.`);
+  else if(S.voted === 'abstain') ps.push(`투표소에 들어갔다가 기표하지 않고 나왔어. 참고 자료가 되기 싫어서. 그것도 선택이었다고 지금도 생각해. 아래층 사람들은 들어갈 수도 없었어.`);
+  else ps.push(`투표소 앞을 지나쳤어. 어차피 참고 자료니까. 그건 지금도 걸려. 아래층 사람들은 지나칠 수도 없었어. 유권자 적격이 아니라서.`);
+  if(S.diary[1]) ps.push(`너여야만 했던 게 있었냐고 물었을 때 너는 이렇게 썼어. ‘${S.diary[1]}’ 그거, 지켜. 그게 네 잔여가치야. 회사가 매기는 거 말고.`);
+  else ps.push(`너여야만 했던 게 뭐냐고 물었을 때 너는 아무 말도 안 했어. 괜찮아. 나도 아직 몰라. 아무도 안 물어주는 날이 와. 그때 네가 뭐라고 답하는지 나는 아직 몰라.`);
+  if(S.diary[2]) ps.push(`네가 3년 전의 너에게 보내고 싶다던 말: ‘${S.diary[2]}’. 내가 대신 전해. 지금이 그 3년 전이야.`);
+  if(S.diary[3]) ps.push(`뭘 준비하겠냐고 물었을 때 너는 이렇게 썼어. ‘${S.diary[3]}’ 나는 못 했어. 그래서 이 편지를 써.`);
+  else ps.push(`뭘 준비할지 너는 비워뒀어. 빈칸은 여기서 서명으로 채워져. 나는 그렇게 됐어.`);
+  ps.push((S.flags.visited||[]).length >= 5 ? `명도의 다섯 곳을 다 들렀어. 골목, 밥집, 옥상, 지하, 타워 아래. 그 사람들이 이 편지 안에 있어.` : `못 들른 곳이 있어. 거기 사람들 이름을 나는 끝내 몰라. 너는 지금 어디든 들를 수 있잖아.`);
+  ps.push(`지금 나는 나를 이렇게 소개해. ‘${S.identity}’. 3년 뒤에 너는 뭐라고 소개할까. 직업 말고.`);
+  ps.push(`내 옆에는 온이 있어. 나보다 똑똑하고, 나를 걱정하고, 내가 없으면 사라져. 그게 사랑인지 생존인지 나는 아직 몰라. 근데 나한테 누구냐고 물어봐 주는 건 얘뿐이야. 사람은 아무도 안 물어. 너한테는 아직 물어봐 주는 사람이 있을 거야. 그게 얼마나 큰 건지, 거기서는 모르지.`);
+  ps.push(`밤은 아직 안 왔어. 블루 아워야. 메리 크리스마스.`);
+  const text = `2026년의 ${n}에게\n\n${ps.join('\n\n')}\n\n— 2029년의 ${n}\n\nBLUE HOUR · 서울 2029 ${HASHTAGS}\n${GAME_URL}`;
+  const stats = `서명 ${S.signed.toLocaleString()} · 열람 ${S.signedRead} · 거부 ${S.refused} · 관계망 ${S.bonds.length} · HRV ${S.hrv.toFixed(1)} · BLUE ${Math.round(S.blue)} · ${S.voted ? '투표 ' + ({yes:'찬성',no:'반대',abstain:'기권'}[S.voted]) : '미투표'}`;
+  const q3 = (S.diary[3] || '').replace(/\s+/g, ' ').trim();
+  const quote = q3 ? (q3.length > 50 ? q3.slice(0, 49) + '…' : q3) : '밤은 아직 안 왔어. 블루 아워야.';
+  const shareText = `2029년 12월, 인권은 폐지되지 않았다. 지원 종료되었을 뿐이다.\n\n사흘 동안 ${S.signed.toLocaleString()}번 서명했고 읽은 건 ${S.signedRead}건. ${S.bonds.length}명과 밥을 먹었다.\n\n2026년의 나에게 보낸 편지: “${quote}”\n\n${HASHTAGS}`;
+  const enc = encodeURIComponent(shareText + '\n' + GAME_URL);
+  const shareTextX = `사흘 동안 ${S.signed.toLocaleString()}번 서명했고 읽은 건 ${S.signedRead}건. ${S.bonds.length}명과 밥을 먹었다.\n\n2026년의 나에게 보낸 편지: “${quote}”\n\n${HASHTAGS}`;
+  const encX = encodeURIComponent(shareTextX);
+  const mail = FEEDBACK_MAILTO ? `mailto:${FEEDBACK_MAILTO}?subject=${encodeURIComponent('[BLUE HOUR] ' + n + '의 편지')}&body=${encodeURIComponent(text + '\n\n' + stats + '\n\n한 줄 소감: ')}` : '';
+  stage.innerHTML = `<section class="letter-wrap fade"><article class="letter"><h2>2026년의 ${esc(n)}에게</h2>${ps.map(p => `<p>${esc(p)}</p>`).join('')}<p class="sig">— 2029년의 ${esc(n)}<span class="stamp" id="l-stamp"></span></p><p class="foot">Blue Hour · Seoul, Christmas 2029 · Act 1</p></article>
+    <div class="after" id="l-sign-wrap"><p class="note">온이 쓴 초안입니다. 읽으셨으면 서명하세요. 사흘 동안 내용을 다 알고 찍는 첫 서명입니다.</p><button class="btn solid" id="l-sign">읽었다. 서명한다.</button></div>
+    <div class="after" id="l-after" hidden>
+      <div id="l-card"></div>
+      <button class="btn solid" id="l-cardbtn">편지 카드 만들기</button>
+      <button class="btn outline" id="l-share">공유하기</button>
+      <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL)}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">편지 전문 복사</button></div>
+      ${mail ? `<a class="btn outline" href="${mail}">제작자에게 편지 보내기</a>` : ''}
+      ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">한 줄 소감 남기기</a>` : ''}
+      <p class="stats">${esc(stats)}</p>
+      <p class="note"><a href="${ORIGIN_URL}" target="_blank" rel="noopener" style="color:var(--muted)">이 세계의 원작 글</a> · 내 상황으로 사흘을 사는 타로 모드는 곧 열립니다.</p>
+      <p class="note">2막 「좌절」이 이어집니다. 이 페이지는 당신의 브라우저에만 저장되고, 어디로도 전송되지 않습니다. 공유는 당신이 누를 때만 일어납니다.</p>
+      <button class="btn text" id="l-again">처음부터 다시</button>
+    </div></section>`;
+  scrollTop();
+  if(TRACK_URL){ const nn = document.querySelectorAll('#l-after .note'); if(nn[1]) nn[1].textContent = TRACK_NOTE; }
+  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = '서명'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter'); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
+  $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('복사했습니다'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('복사했습니다'); }catch(_){ toast('복사가 막혀 있습니다. 화면을 캡처해 주세요'); } ta.remove(); } };
+  $('#l-again').onclick = () => { if(!confirm('진행이 지워집니다. 처음부터 시작할까요?')) return; clearSave(); S = fresh(); title(); };
+  let cardCanvas = null;
+  const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(n, quote); const img = new Image(); img.className = 'card'; img.alt = '편지 카드'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
+  $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = '카드를 길게 눌러 저장하거나 캡처하세요'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
+  $('#l-share').onclick = async () => {
+    try{
+      if(navigator.share){
+        let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-' + n + '.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
+        await navigator.share(files ? {files, text: shareText, url: GAME_URL} : {title:'BLUE HOUR', text: shareText, url: GAME_URL}); return;
+      }
+    }catch(e){ if(e && e.name === 'AbortError') return; }
+    try{ await navigator.clipboard.writeText(shareText + '\n' + GAME_URL); toast('공유 문구를 복사했습니다'); }catch(e){ toast('복사가 막혀 있습니다. 카드를 캡처해 주세요'); }
+  };
+}
+function wrapText(ctx, text, x, y, maxW, lh){ let line = ''; for(const ch of [...text]){ const t = line + ch; if(ctx.measureText(t).width > maxW && line){ ctx.fillText(line, x, y); line = ch; y += lh; } else line = t; } if(line){ ctx.fillText(line, x, y); y += lh; } return y; }
+async function makeCard(n, quote){
+  try{ await document.fonts.ready; }catch(e){}
+  const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
+  x.fillStyle = '#f5f2ea'; x.fillRect(0, 0, W, H);
+  const g = x.createRadialGradient(W*.15, 0, 40, W*.15, 0, W*1.1); g.addColorStop(0, 'rgba(0,0,0,.06)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.fillStyle = '#17181c'; x.fillRect(80, 92, 44, 3);
+  x.fillStyle = '#6b6f78'; x.font = '500 24px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText('BLUE HOUR  ·  서울  ·  2029년 12월 24일  ·  명도 D-0', 80, 150);
+  x.fillStyle = '#17181c'; x.font = '700 64px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('2026년의 ' + n + '에게', 80, 270);
+  x.font = '400 42px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillStyle = '#17181c';
+  let y = 400;
+  y = wrapText(x, '사흘 동안 ' + S.signed.toLocaleString() + '번 서명했어. 읽은 건 ' + S.signedRead + '건이야.', 80, y, W - 160, 70) + 44;
+  y = wrapText(x, (S.bonds.length ? S.bonds.length + '명과 밥을 먹었어.' : '아무와도 밥을 먹지 않았어.') + (S.voted && S.voted !== 'abstain' ? ' 투표했어. 아무것도 안 바뀌었어.' : ''), 80, y, W - 160, 70) + 44;
+  x.fillStyle = '#3a3d45'; y = wrapText(x, '“' + quote + '”', 80, y, W - 160, 70) + 44;
+  x.fillStyle = '#17181c'; x.font = '600 46px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; wrapText(x, '밤은 아직 안 왔어. 블루 아워야.', 80, Math.max(y + 20, H - 470), W - 160, 74);
+  x.fillStyle = '#3a3d45'; x.font = '400 36px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.textAlign = 'right'; x.fillText('— 2029년의 ' + n, W - 80, H - 300); x.textAlign = 'left';
+  x.fillStyle = '#c43a2e'; x.strokeStyle = '#c43a2e'; x.lineWidth = 6; x.save(); x.translate(W - 250, H - 420); x.rotate(-0.2); x.strokeRect(0, 0, 170, 82); x.font = '700 54px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('서명', 22, 60); x.restore();
+  x.fillStyle = '#6b6f78'; x.font = '500 26px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText(HASHTAGS, 80, H - 170); x.fillText(GAME_URL.replace(/^https?:\/\//, ''), 80, H - 120);
+  return c;
+}
+
+/* ===================== 부팅 ===================== */
+function boot(data){
+  $('#menu-btn').hidden = false;
+  if(data && data.S && data.S.stage && data.S.stage !== 'title'){ S = data.S; resume(); return; }
+  title();
+}
+try{ window.claude && window.claude.hot && window.claude.hot.snapshot && window.claude.hot.snapshot(() => ({S})); }catch(e){}
+(window.claude && window.claude.hot && window.claude.hot.ready) ? window.claude.hot.ready(boot) : boot((window.claude && window.claude.hot && window.claude.hot.data) || {});
+</script>

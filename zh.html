@@ -1,0 +1,1142 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BLUE HOUR · 明渡</title>
+<style>
+:root{
+  --bg:#070b14; --bg-2:#0c1424; --bg-3:#111c31; --line:#1d2a42; --line-2:#2a3a58;
+  --ink:#e6ecf5; --ink-2:#c7d2e3; --muted:#8a99b2; --dim:#6f809c;
+  --accent:#ffa24a; --accent-deep:#e8892f; --accent-ink:#1a0f02;
+  --on:#7fdcd2; --blue:#3f74c9;
+  --paper:#ffffff; --paper-2:#f3f5f8; --paper-ink:#111318; --paper-muted:#6b7280; --paper-line:#e1e5eb; --paper-ground:#eceef2; --warm:#f5f2ea;
+  --stamp:#c43a2e; --stamp-b:#2d4f9e; --danger:#ff6b6b;
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Noto Sans KR","Segoe UI",Roboto,system-ui,sans-serif;
+  --serif:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Noto Sans KR","Segoe UI",Roboto,system-ui,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Noto Sans KR","Segoe UI",Roboto,system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --gutter:18px;
+}
+[hidden]{display:none!important}
+html,body{height:100%}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+body.paper-mode{background:var(--paper-ground)}
+#app{position:relative;z-index:2;max-width:640px;margin:0 auto;padding:0 var(--gutter) 56px;min-height:100%}
+#snow{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;transition:opacity .8s}
+body.paper-mode #snow,body.dark-mode #snow{opacity:0}
+#veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 60%,rgba(40,90,190,0) 30%,rgba(30,70,170,.85) 100%);opacity:0;transition:opacity 1.2s}
+body.paper-mode #veil{mix-blend-mode:multiply}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.fade{animation:fade .5s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.fade{animation:none}.ticker span{animation:none!important}.cue i{animation:none}.p-timer{transition:none!important}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:4px;border:1px solid var(--line-2);background:var(--bg-2);color:var(--ink);font-family:var(--sans);font-weight:500;font-size:15px;letter-spacing:.01em;transition:background .15s,border-color .15s,transform .06s,opacity .15s;text-decoration:none}
+.btn:hover{border-color:var(--muted)}
+.btn:active{transform:translateY(1px)}
+.btn.solid{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.solid:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
+.btn.outline{background:transparent}
+.btn.text{background:transparent;border-color:transparent;color:var(--muted);padding:0 10px}
+.btn.text:hover{color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+#hud{position:sticky;top:0;z-index:5;margin:0 calc(-1*var(--gutter)) 6px;padding:calc(10px + env(safe-area-inset-top,0px)) calc(var(--gutter) + 44px) 10px var(--gutter);display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(var(--bg) 78%,transparent);font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em}
+body.paper-mode #hud{background:linear-gradient(var(--paper-ground) 78%,transparent);color:#5a5e68}
+#hud .m{display:flex;align-items:baseline;gap:6px;white-space:nowrap}
+#hud .m label{font-size:10px;text-transform:uppercase;letter-spacing:.14em;opacity:.7}
+#hud .m b{font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
+#hud .m b.d{color:var(--accent)}
+body.paper-mode #hud .m b{color:#17181c}
+body.paper-mode #hud .m b.d{color:#b5541c}
+#hud .bar{display:inline-block;width:56px;height:4px;background:var(--line);border-radius:2px;overflow:hidden;vertical-align:middle}
+body.paper-mode #hud .bar{background:#d3d7de}
+#hud .bar b{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),#7aa6ff);transition:width .6s}
+#h-att-dots i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--line-2);margin-left:4px;vertical-align:middle}
+#h-att-dots i.on{background:var(--accent)}
+#hud{gap:4px 12px}
+#hud .m:first-child{flex-basis:100%}
+#hud .m:not(:first-child){font-size:10.5px;letter-spacing:0}
+#hud .m:not(:first-child) label{letter-spacing:.1em}
+#hud .bar{width:44px}
+#menu-btn{background:rgba(7,11,20,.35);border-color:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+
+#menu-btn{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:10px;z-index:40;width:44px;height:44px;border-radius:50%;border:1px solid var(--line-2);background:rgba(7,11,20,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--ink);display:flex;align-items:center;justify-content:center;padding:0}
+#menu-btn span{display:block;width:16px;height:2px;background:currentColor;box-shadow:0 -5px 0 currentColor,0 5px 0 currentColor;border-radius:1px}
+body.paper-mode #menu-btn{background:rgba(255,255,255,.5);color:#111318;border-color:transparent}
+.sheet-bg{position:fixed;inset:0;z-index:50;background:rgba(3,6,12,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:51;max-width:640px;margin:0 auto;background:var(--bg-2);border:1px solid var(--line-2);border-bottom:0;border-radius:14px 14px 0 0;padding:18px var(--gutter) calc(20px + env(safe-area-inset-bottom,0px));animation:up .25s ease both}
+@keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+.sheet h3{font-family:var(--display);font-weight:500;font-size:18px;margin:0 0 4px}
+.sheet .save{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em;margin:0 0 14px}
+.sheet .list{display:flex;flex-direction:column;gap:8px}
+.sheet .btn{justify-content:flex-start;width:100%}
+.sheet .confirm{margin-top:8px;padding:12px 14px;border:1px solid var(--line-2);border-radius:6px;background:var(--bg-3);font-size:14px;color:var(--ink-2)}
+.sheet .confirm .row{margin-top:10px}
+.sheet .credit{font-family:var(--mono);font-size:11px;color:var(--dim);margin:14px 0 0;line-height:1.8}
+.sheet a{color:var(--muted)}
+
+.title{padding-block:0 30px}
+.hero{position:relative;margin:0 calc(-1*var(--gutter));height:min(64vw,400px);background-size:cover;background-position:center 28%}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,.05) 0%,rgba(7,11,20,0) 40%,var(--bg) 100%)}
+.title .eyebrow{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-top:6px}
+.title h1{font-family:var(--display);font-weight:700;font-size:clamp(44px,12vw,80px);line-height:.95;margin:8px 0 0;letter-spacing:-.03em}
+.title h1 span{display:block;font-family:var(--display);font-weight:500;font-size:.3em;letter-spacing:.22em;color:var(--accent);margin-top:14px;padding-left:.05em}
+.title .rule{width:40px;height:1px;background:var(--line-2);margin:24px 0 18px}
+.title .quote{font-family:var(--serif);color:var(--ink-2);font-size:17px;line-height:1.85;margin:0 0 14px;max-width:30ch;text-wrap:balance}
+.title .promise{font-family:var(--sans);color:var(--ink);font-size:15px;margin:0 0 22px;max-width:32ch}
+.title .actions{display:flex;flex-wrap:wrap;gap:10px}
+.title .fine{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:28px;line-height:1.9;letter-spacing:.02em}
+.title .langs{font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:14px}
+.title .langs a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line-2)}
+.title .langs b{color:var(--ink);font-weight:500}
+
+.narr{min-height:calc(100vh - 80px);min-height:calc(100svh - 80px);display:flex;flex-direction:column;justify-content:center;cursor:pointer;padding-block:40px 90px;position:relative}
+.narr-text{font-family:var(--display);font-weight:400;font-size:clamp(20px,5vw,25px);line-height:1.75;letter-spacing:-.01em;max-width:26ch;text-wrap:pretty;margin:0;color:var(--ink)}
+.cue{position:absolute;left:0;bottom:calc(28px + env(safe-area-inset-bottom,0px));font-family:var(--mono);font-size:12.5px;color:var(--muted);letter-spacing:.08em;display:flex;align-items:center;gap:10px}
+.cue i{display:block;width:6px;height:6px;border-right:1px solid var(--dim);border-bottom:1px solid var(--dim);transform:rotate(45deg);animation:nod 1.6s ease-in-out infinite}
+@keyframes nod{0%,100%{transform:translateY(0) rotate(45deg);opacity:.5}50%{transform:translateY(4px) rotate(45deg);opacity:1}}
+.law{font-family:var(--mono);font-size:13.5px;line-height:1.85;background:var(--warm);color:var(--paper-ink);padding:22px 22px 18px;border-radius:2px;max-width:42ch;box-shadow:0 30px 70px rgba(0,0,0,.55)}
+.law b{display:block;font-size:10px;letter-spacing:.18em;color:var(--paper-muted);margin-bottom:10px;font-weight:500}
+.law strong{font-size:30px;font-weight:500;letter-spacing:-.02em}
+.law .law-note{display:block;margin-top:10px;font-family:var(--serif);color:#3a3d45;font-size:14px}
+.narr .after-law{font-family:var(--display);margin:24px 0 0;font-size:18px;color:var(--muted)}
+
+.field{display:flex;flex-direction:column;gap:14px;margin-top:26px;max-width:34ch}
+.field input,.field textarea{font:inherit;font-family:var(--display);font-size:22px;background:transparent;border:0;border-bottom:1px solid var(--line-2);color:var(--ink);padding:8px 0;border-radius:0;width:100%}
+.field input::placeholder,.field textarea::placeholder{color:var(--dim)}
+.field textarea{font-family:var(--serif);font-size:17px;line-height:1.8;min-height:110px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;max-width:46ch}
+.chip{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--ink-2);font-size:15px}
+.chip:hover{border-color:var(--muted);color:var(--ink)}
+.chip.ghost{border-style:dashed;color:var(--muted)}
+
+.scene{padding-block:0 12px;min-height:calc(100svh - 72px);cursor:pointer}
+.backdrop{position:relative;margin:0 calc(-1*var(--gutter)) 14px;height:min(52vw,320px);background-size:cover;background-position:center}
+.backdrop:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,.12) 0%,rgba(7,11,20,0) 42%,var(--bg) 100%)}
+body.paper-mode .backdrop:after{background:linear-gradient(180deg,rgba(236,238,242,0) 40%,var(--paper-ground) 100%)}
+.scene-h{margin-bottom:16px}
+.scene-h h2{font-family:var(--display);font-weight:500;font-size:24px;margin:0;letter-spacing:-.01em}
+.scene-h .sub{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em;margin:4px 0 0}
+.log{display:flex;flex-direction:column;gap:20px;padding-bottom:10px}
+.line{max-width:58ch;display:grid;grid-template-columns:0 1fr;column-gap:0}
+.line.npc,.line.on{grid-template-columns:44px 1fr;column-gap:12px}
+.line .who{grid-column:2;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--muted);margin-bottom:5px;text-transform:uppercase}
+.line.on .who{color:var(--on)}
+.line.npc .who{color:var(--accent)}
+.line .txt{grid-column:2;margin:0;font-family:var(--serif);font-size:16.5px;line-height:1.75;letter-spacing:-.005em;text-wrap:pretty;color:var(--ink)}
+.line.on .txt{color:#d9f4f1;background:rgba(127,220,210,.06);border:1px solid rgba(127,220,210,.16);border-radius:14px 14px 14px 4px;padding:12px 15px;font-size:17px}
+.line.on .txt:empty:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--on);box-shadow:12px 0 0 var(--on),24px 0 0 var(--on);animation:dots 1s ease-in-out infinite;margin:6px 0}
+@keyframes dots{0%,100%{opacity:.25}50%{opacity:1}}
+.line.narr-line .txt{color:var(--muted);font-size:16px}
+.line.me .txt{color:var(--ink-2);font-family:var(--sans);font-size:16px;background:var(--bg-3);border:1px solid var(--line);border-radius:14px 14px 4px 14px;padding:10px 14px;display:inline-block}
+.line.me .who{color:var(--ink-2)}
+.line .portrait{grid-column:1;grid-row:1/span 2;width:44px;height:56px;object-fit:cover;object-position:top;border-radius:3px;border:1px solid var(--line-2);background:var(--bg-2)}
+.line .on-dot{grid-column:1;grid-row:1/span 2;width:44px;height:56px;display:flex;align-items:center;justify-content:center}
+.line .on-dot i{display:block;width:12px;height:12px;border-radius:50%;background:var(--on);box-shadow:0 0 18px 4px rgba(127,220,210,.45);animation:breathe 3.2s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.25);opacity:1}}
+@media (prefers-reduced-motion:reduce){.line .on-dot i{animation:none}}
+.ctl{position:sticky;bottom:0;display:flex;flex-direction:column;gap:8px;padding:14px 0 calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 32%)}
+.ctl .next{align-self:stretch;justify-content:flex-end;min-height:48px;padding:0 4px;background:none;border:0;font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;color:var(--muted);display:flex;align-items:center;gap:10px}
+.ctl .next i{display:block;width:6px;height:6px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(45deg);animation:nod 1.6s ease-in-out infinite}
+.ctl .next.typing i{animation:none;opacity:.35}
+.choice{display:flex;align-items:center;gap:12px;width:100%;min-height:50px;padding:10px 14px 10px 16px;text-align:left;background:var(--bg-2);border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:4px;font-family:var(--sans);font-size:15.5px;color:var(--ink);line-height:1.5;transition:background .15s,border-color .15s}
+.choice:hover{background:var(--bg-3);border-color:var(--line-2);border-left-color:var(--accent)}
+.choice:active{transform:translateY(1px)}
+.choice.quiet{border-left-color:var(--line-2);color:var(--ink-2)}
+.ctl .inrow{display:flex;gap:8px;align-items:stretch}
+.ctl .inrow input{flex:1;min-width:0;font:inherit;font-family:var(--serif);font-size:16px;background:var(--bg-2);border:1px solid var(--line);border-bottom-color:var(--line-2);color:var(--ink);padding:10px 12px;border-radius:4px}
+.ctl .inrow .choice{width:auto;flex:0 0 auto}
+
+.ticker{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 0;margin:2px 0 6px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+.ticker span{display:inline-block;padding-left:100%;animation:tick 32s linear infinite}
+@keyframes tick{to{transform:translateX(-100%)}}
+
+.evening-h{font-family:var(--display);font-size:24px;font-weight:500;margin:6px 0 0}
+.evening-p{color:var(--muted);margin:4px 0 4px;font-size:15px;font-family:var(--serif)}
+.evening-hint{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin:0 0 14px;letter-spacing:.02em}
+.tiles{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:560px){.tiles{grid-template-columns:1fr 1fr}.tiles .tile.wide{grid-column:1/-1}}
+.tile{position:relative;display:block;width:100%;height:124px;padding:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background-size:cover;background-position:center;text-align:left;color:var(--ink)}
+.tile:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,11,20,.94) 0%,rgba(7,11,20,.7) 60%,rgba(7,11,20,.25) 100%)}
+.tile .t{position:absolute;left:16px;right:20%;bottom:14px;display:flex;flex-direction:column;gap:2px}
+.tile .t small{text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.tile .t b{font-family:var(--display);font-weight:500;font-size:19px;letter-spacing:-.01em}
+.tile .t small{font-family:var(--serif);font-size:13.5px;color:var(--ink-2)}
+.tile .cost{position:absolute;top:12px;left:16px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase}
+.tile.vote .cost{color:#fff;background:var(--stamp);padding:2px 8px;border-radius:2px}
+.tile:hover{border-color:var(--line-2)}
+.tile:disabled{cursor:not-allowed;filter:grayscale(1)}
+.tile:disabled:before{background:rgba(7,11,20,.85)}
+.tile:disabled .t b,.tile:disabled .t small{color:var(--dim)}
+.tile:disabled .cost{color:var(--dim);background:transparent}
+
+.term{padding-block:0 20px}
+.term-top{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:#6a6e78;text-transform:uppercase;margin:0 0 12px}
+.paper{position:relative;background:var(--paper);color:var(--paper-ink);border-radius:2px;padding:24px 22px 28px;border:1px solid var(--paper-line);box-shadow:0 18px 50px rgba(0,0,0,.12);font-family:var(--mono);overflow:hidden}
+.paper.batch{box-shadow:0 18px 50px rgba(0,0,0,.12),4px 4px 0 -1px var(--paper-2),8px 8px 0 -2px #e6e9ee}
+.p-timer{position:absolute;left:0;top:0;height:3px;width:100%;background:var(--paper-ink);transition:width 20s linear;opacity:.8}
+.p-timer.late{background:var(--stamp)}
+.doc-head{display:flex;align-items:center;gap:10px;font-size:10.5px;letter-spacing:.12em;color:var(--paper-muted);border-bottom:1px solid var(--paper-line);padding-bottom:12px;margin-bottom:16px;text-transform:uppercase}
+.doc-head .tag{border:1px solid var(--paper-line);border-radius:2px;padding:2px 7px;color:var(--paper-ink);letter-spacing:.14em}
+.doc-head .no{margin-left:auto;font-variant-numeric:tabular-nums}
+.doc-head .late-tag{color:#fff;background:var(--stamp);border-radius:2px;padding:2px 7px;letter-spacing:.14em}
+.paper h3{font-family:var(--sans);font-weight:600;font-size:20px;margin:0 0 12px;letter-spacing:-.01em;line-height:1.35}
+.p-body{font-size:14.5px;line-height:1.9;margin:0;white-space:pre-line}
+.p-basis{font-size:12.5px;line-height:1.8;color:var(--paper-muted);background:var(--paper-2);border-left:2px solid var(--paper-line);margin:16px 0 0;padding:10px 12px}
+.p-basis.hide{display:none}
+.stamp{position:absolute;right:18px;bottom:18px;font-family:var(--sans);font-weight:700;font-size:30px;letter-spacing:.24em;padding:6px 12px 6px 18px;border:3px solid;border-radius:3px;transform:rotate(-12deg) scale(1.5);opacity:0;pointer-events:none;transition:transform .16s cubic-bezier(.2,1.5,.4,1),opacity .16s;mix-blend-mode:multiply}
+.stamp.show{opacity:.86;transform:rotate(-11deg) scale(1)}
+.stamp.sign{color:var(--stamp);border-color:var(--stamp)}
+.stamp.refuse{color:var(--stamp-b);border-color:var(--stamp-b)}
+.term-ctl{display:grid;grid-template-columns:auto 1fr 1.4fr;gap:8px;margin-top:14px}
+.term-ctl .btn{min-height:52px;border-radius:3px}
+.term-ctl .btn.text{color:#5a5e68}
+.term-ctl .btn.outline{background:transparent;border-color:#c9cfd8;color:var(--paper-ink)}
+.term-ctl .btn.solid{background:var(--paper-ink);border-color:var(--paper-ink);color:#fff}
+.term-ctl .btn.solid:hover{background:#000}
+.term-ctl.one{grid-template-columns:1fr}
+.term-ctl.three{grid-template-columns:1fr 1fr 1fr}
+.term-note{font-family:var(--serif);color:#3a3d45;font-size:15.5px;line-height:1.75;min-height:1.75em;margin:14px 0 0;max-width:46ch}
+.summary{font-family:var(--mono);font-size:13.5px;line-height:2.1;color:var(--paper-ink)}
+.summary b{font-weight:500;font-size:16px}
+.interview{background:#15171d;color:#e6e6e6;border-radius:3px;padding:20px 20px;font-family:var(--mono);font-size:14px;line-height:1.9;margin-top:4px}
+.interview .who{font-size:10px;letter-spacing:.18em;color:#9aa;display:block;margin-bottom:8px;text-transform:uppercase}
+
+.diary{padding-block:12vh 20px;min-height:calc(100dvh - 100px);display:flex;flex-direction:column;justify-content:flex-start}
+.diary .row{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.diary .q{font-family:var(--display);font-size:clamp(21px,5vw,26px);line-height:1.75;max-width:26ch;text-wrap:pretty;margin:0}
+.diary .hint{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin:10px 0 0;letter-spacing:.03em;line-height:1.8}
+.diary .field{max-width:48ch}
+.diary textarea{background:repeating-linear-gradient(transparent 0 30px,var(--line) 30px 31px);line-height:31px;padding:0;border-bottom:0;min-height:124px}
+
+.letter-wrap{padding-block:10px 20px}
+.letter{background:var(--warm);color:var(--paper-ink);padding:34px 26px 36px;border-radius:2px;font-family:var(--serif);font-size:16px;line-height:1.9;letter-spacing:-.005em;box-shadow:0 30px 70px rgba(0,0,0,.55);position:relative}
+.letter:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 20% 0%,rgba(0,0,0,.035),transparent 60%),radial-gradient(ellipse at 90% 100%,rgba(0,0,0,.04),transparent 55%)}
+.letter h2{font-family:var(--display);font-weight:500;font-size:22px;margin:0 0 22px;letter-spacing:-.01em}
+.letter p{margin:0 0 15px;max-width:40ch;text-wrap:pretty}
+.letter .sig{margin-top:24px;text-align:right;color:#3a3d45;font-family:var(--display);display:flex;justify-content:flex-end;align-items:center;gap:16px}
+.letter .stamp{position:static;font-size:22px;padding:4px 10px 4px 14px}
+.letter .foot{font-family:var(--mono);font-size:10.5px;color:var(--paper-muted);margin-top:24px;letter-spacing:.06em}
+.after{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.after .note{font-family:var(--mono);font-size:12.5px;color:var(--muted);line-height:1.8;margin:0;letter-spacing:.02em}
+.after .stats{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:2;margin:4px 0 0;letter-spacing:.04em}
+.after .row .btn{flex:1}
+.after .card{display:block;width:100%;max-width:420px;border:1px solid var(--line-2);border-radius:4px;box-shadow:0 20px 50px rgba(0,0,0,.5);margin:4px 0 8px}
+.term-ctl .btn.nextcase{background:transparent;border-color:#c9cfd8;color:var(--paper-ink)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:4px;font-size:13px;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+
+/* ---------- v0.6 wet cyberpunk layer ---------- */
+:root{--neon:#5ee7df;--neon-2:#ff5fa2;--glass:rgba(10,17,31,.74);--glass-2:rgba(14,24,42,.86);--glass-line:rgba(120,160,220,.22);--bg:#05080f;--bg-2:#0a1220;--bg-3:#0f1a2e;--line:#172238;--line-2:#233452}
+body{background:var(--bg)}
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px),radial-gradient(ellipse at 18% 112%,rgba(94,231,223,.16),transparent 55%),radial-gradient(ellipse at 92% -8%,rgba(255,95,162,.11),transparent 48%),radial-gradient(ellipse at 50% 45%,transparent 50%,rgba(0,0,0,.6) 100%)}
+body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");background-size:160px 160px}
+body.paper-mode::before{opacity:.35}
+body.paper-mode::after{opacity:.03}
+#snow{opacity:.8}
+.btn{background:var(--glass);border:1px solid var(--glass-line);border-radius:2px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 10px 26px rgba(0,0,0,.35);clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.btn:hover{border-color:rgba(94,231,223,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 0 1px rgba(94,231,223,.12),0 0 20px rgba(94,231,223,.16)}
+.btn.solid{background:linear-gradient(180deg,#ffb35f 0%,#f08a2a 100%);border-color:#ffc27a;color:#1a0f02;box-shadow:0 0 24px rgba(255,157,59,.32),inset 0 1px 0 rgba(255,255,255,.35)}
+.btn.solid:hover{background:linear-gradient(180deg,#ffbf75,#f5952f);border-color:#ffd39a;box-shadow:0 0 30px rgba(255,157,59,.45)}
+.btn.outline{background:rgba(8,14,26,.5)}
+.btn.text{background:transparent;border-color:transparent;box-shadow:none;clip-path:none;backdrop-filter:none;-webkit-backdrop-filter:none;font-family:var(--mono);font-size:12.5px;letter-spacing:.08em}
+.btn.text:hover{color:var(--neon);text-shadow:0 0 8px rgba(94,231,223,.5)}
+.chip{background:var(--glass);border-color:var(--glass-line);clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));border-radius:2px}
+.chip:hover{border-color:rgba(94,231,223,.55);color:var(--ink);box-shadow:0 0 16px rgba(94,231,223,.15)}
+#hud{background:linear-gradient(rgba(5,8,15,.94) 72%,transparent);border-bottom:1px solid rgba(94,231,223,.08)}
+#hud .m b.d{color:var(--neon)}
+#hud .bar{background:rgba(120,160,220,.15)}
+#hud .bar b{background:linear-gradient(90deg,#2f5fb8,var(--neon));box-shadow:0 0 8px rgba(94,231,223,.5)}
+#h-att-dots i.on{background:var(--accent);box-shadow:0 0 8px rgba(255,157,59,.7)}
+#menu-btn{background:rgba(5,8,15,.55);border-color:var(--glass-line)}
+#menu-btn:hover{border-color:rgba(94,231,223,.5);box-shadow:0 0 14px rgba(94,231,223,.2)}
+.sheet{background:var(--glass-2);border-color:rgba(94,231,223,.25);border-top:1px solid rgba(94,231,223,.45);box-shadow:0 -20px 60px rgba(0,0,0,.6),0 -1px 30px rgba(94,231,223,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.hero:after{background:linear-gradient(180deg,rgba(5,8,15,.1) 0%,rgba(5,8,15,0) 38%,var(--bg) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 4px)}
+.hero{filter:saturate(1.12) contrast(1.05)}
+.title h1{text-shadow:0 0 30px rgba(94,231,223,.14)}
+.title h1 span{text-shadow:0 0 16px rgba(255,157,59,.55)}
+.title .rule{width:88px;background:linear-gradient(90deg,var(--neon),transparent);box-shadow:0 0 12px rgba(94,231,223,.5)}
+.title .eyebrow{color:var(--neon);opacity:.85}
+.narr-text{text-shadow:0 0 30px rgba(94,231,223,.08)}
+.cue{color:var(--neon);opacity:.8}
+.cue i{border-color:var(--neon)}
+.backdrop{filter:saturate(1.12) contrast(1.06)}
+.backdrop:after{background:linear-gradient(180deg,rgba(5,8,15,.14) 0%,rgba(5,8,15,0) 40%,var(--bg) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 4px)}
+.scene-h h2{text-shadow:0 0 18px rgba(94,231,223,.12)}
+.scene-h .sub{color:var(--neon);opacity:.75}
+.line .who{opacity:.95}
+.line.on .who{color:var(--neon)}
+.line.on .txt{background:linear-gradient(180deg,rgba(94,231,223,.10),rgba(94,231,223,.035));border:1px solid rgba(94,231,223,.32);border-radius:2px 12px 12px 12px;box-shadow:0 0 26px rgba(94,231,223,.08),inset 0 0 0 1px rgba(0,0,0,.25);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.line.on .on-dot i{box-shadow:0 0 22px 6px rgba(94,231,223,.5)}
+.line.npc .txt{background:var(--glass);border:1px solid var(--glass-line);border-left:2px solid var(--accent);border-radius:2px;padding:10px 14px;box-shadow:0 10px 26px rgba(0,0,0,.3)}
+.line.npc .portrait{border-color:rgba(255,157,59,.45);box-shadow:0 0 14px rgba(255,157,59,.18);filter:saturate(1.1)}
+.line.me .txt{background:rgba(255,157,59,.07);border:1px solid rgba(255,157,59,.28);border-radius:12px 2px 12px 12px;box-shadow:none}
+.line.narr-line .txt{border-left:1px solid var(--line-2);padding-left:12px}
+.txt.typing::after{content:"▍";color:var(--neon);margin-left:2px;animation:blink 1s steps(2) infinite;text-shadow:0 0 8px rgba(94,231,223,.8)}
+@keyframes blink{50%{opacity:0}}
+.ctl{background:linear-gradient(transparent,var(--bg) 34%)}
+.ctl .next{color:var(--neon);opacity:.85}
+.ctl .next.typing{color:var(--muted);text-shadow:none}
+.choice{background:var(--glass);border:1px solid var(--glass-line);border-left:2px solid var(--accent);border-radius:2px;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);box-shadow:0 10px 24px rgba(0,0,0,.3);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.choice:hover{background:var(--glass-2);border-color:rgba(255,157,59,.5);border-left-color:var(--accent);box-shadow:0 0 18px rgba(255,157,59,.18)}
+.choice.quiet{border-left-color:var(--line-2)}
+.ctl .inrow input{background:var(--glass);border-color:var(--glass-line);border-radius:2px}
+.ctl .inrow input:focus{border-color:rgba(94,231,223,.6);box-shadow:0 0 14px rgba(94,231,223,.15)}
+.ticker{border-color:rgba(94,231,223,.14);color:var(--neon);opacity:.8}
+.tile{border:1px solid var(--glass-line);border-radius:3px;box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.tile:before{background:repeating-linear-gradient(112deg,rgba(255,255,255,.05) 0 1px,transparent 1px 13px),linear-gradient(90deg,rgba(5,8,15,.94) 0%,rgba(5,8,15,.68) 60%,rgba(5,8,15,.22) 100%);background-size:220px 220px,auto;animation:rainshift 1.1s linear infinite}
+@keyframes rainshift{to{background-position:-60px 220px,0 0}}
+.tile:after{content:"";position:absolute;left:0;right:0;bottom:0;height:42%;background:linear-gradient(transparent,rgba(94,231,223,.10));pointer-events:none}
+.tile:hover{border-color:rgba(94,231,223,.5);box-shadow:0 0 22px rgba(94,231,223,.14),0 12px 30px rgba(0,0,0,.4)}
+.tile .cost{color:var(--neon)}
+.tile.vote .cost{color:#fff;background:var(--stamp);text-shadow:none;box-shadow:0 0 14px rgba(196,58,46,.55)}
+.tile:disabled:before{background:rgba(5,8,15,.86);animation:none}
+.tile:disabled:after{display:none}
+.evening-h{text-shadow:0 0 18px rgba(94,231,223,.12)}
+.field input,.field textarea{border-bottom-color:rgba(94,231,223,.4)}
+.field input:focus,.field textarea:focus{border-bottom-color:var(--neon);box-shadow:0 8px 20px -12px rgba(94,231,223,.5)}
+.diary textarea{background:repeating-linear-gradient(transparent 0 30px,rgba(94,231,223,.18) 30px 31px)}
+.diary .q{text-shadow:0 0 30px rgba(94,231,223,.08)}
+.after .card{border-color:rgba(94,231,223,.3);box-shadow:0 0 30px rgba(94,231,223,.1),0 20px 50px rgba(0,0,0,.5)}
+.toast{background:var(--glass-2);color:var(--ink);border:1px solid rgba(94,231,223,.4);box-shadow:0 0 18px rgba(94,231,223,.2)}
+@media (prefers-reduced-motion:reduce){.tile:before{animation:none}.txt.typing::after{animation:none}}
+/* v0.7 system fonts */
+.narr-bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center 35%;opacity:.62;filter:saturate(1.1) contrast(1.05);animation:kb 22s ease-out forwards}
+.narr-bg:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,15,.25) 0%,rgba(5,8,15,.55) 45%,rgba(5,8,15,.92) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 4px)}
+@keyframes kb{from{transform:scale(1.04)}to{transform:scale(1.12)}}
+@media (prefers-reduced-motion:reduce){.narr-bg{animation:none}}
+.law.notice{border:2px solid rgba(196,58,46,.85);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 6px rgba(255,255,255,.06)}
+.law.notice b{color:var(--stamp);letter-spacing:.2em}
+.title .fine.credit-line{margin-top:6px;color:var(--dim)}
+</style>
+
+<div id="app">
+  <header id="hud" hidden>
+    <span class="m"><b id="h-date">12月21日</b><b class="d" id="h-dday">明渡 D-3</b><label id="h-phase"></label><label id="h-left"></label></span>
+    <span class="m"><label>HRV</label><b id="h-hrv">41.0</b><label id="h-floor">8层</label></span>
+    <span class="m"><label>Blue</label><span class="bar"><b id="h-blue"></b></span></span>
+    <span class="m"><label>关系网</label><b id="h-bond">0</b></span>
+    <span class="m" id="h-att" hidden><label>注意力</label><span id="h-att-dots"></span></span>
+  </header>
+  <main id="stage"></main>
+</div>
+<button id="menu-btn" aria-label="菜单" hidden><span></span></button>
+<div id="menu-wrap" hidden>
+  <div class="sheet-bg" id="m-bg"></div>
+  <div class="sheet" role="dialog" aria-label="菜单">
+    <h3>BLUE HOUR</h3>
+    <p class="save" id="m-save"></p>
+    <div class="list">
+      <button class="btn" id="m-close">继续</button>
+      <button class="btn" id="m-title">回到标题</button>
+      <button class="btn outline" id="m-restart">从头开始</button>
+    </div>
+    <div class="confirm" id="m-confirm" hidden>已保存的进度将被清除。真的要从头开始吗？<div class="row"><button class="btn solid" id="m-yes">清除</button><button class="btn text" id="m-no">不</button></div></div>
+    <p class="credit">进度只保存在本浏览器中。</p>
+  </div>
+</div>
+<canvas id="snow" aria-hidden="true"></canvas>
+<div id="veil" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ===================== 配置 ===================== */
+const FEEDBACK_MAILTO = '';   // 填入制作者邮箱后，会出现'给制作者写信'按钮。
+const FEEDBACK_FORM = '';     // 填入 Google 表单 URL 后，会出现'留下一句感想'按钮。
+const GAME_URL = 'https://patrickhan-coder.github.io/blue-hour/';
+const HASHTAGS = '#致2026年的我 #蓝调时刻';
+const ORIGIN_URL = 'https://brunch.co.kr/@hiclemi/146';
+const NAMES = {on:'ON', me:'我', bak:'朴师傅', sujin:'秀真', hal:'郑奶奶', dohyun:'道贤', sunbae:'前辈'};
+const LANGS = [['ko','韩语','./'],['en','英语','en.html'],['zh','中文','zh.html'],['ja','日语','ja.html'],['es','西班牙语','es.html']];
+const TRACK_URL = '';
+const TRACK_NOTE = '本页会把你的名字、2026年的职业、进度和签署次数发送给制作者。日记内容和信件本身不会发送。';
+const NOTICE_CARD = {html:`<div class="law notice"><b>明渡（腾退）执行预告</b>对象：明渡全区<br>预告日：12月24日<br>延期审查：预告日午夜，由模型执行<br>负责人：无</div><p class="after-law">每条巷子都贴着。这张纸成了这个街区的名字。</p>`};
+const INTRO_BGS = ['title','title','alley',null,'alley','room'];
+const AFTER_BGS = ['tower',null,null,'terminal','room','title'];
+const LANG = 'zh';
+const DATES = {1:{md:'12月21日', d:'D-3'}, 2:{md:'12月22日', d:'D-2'}, 3:{md:'12月23日', d:'D-1'}};
+const JOBS = {
+  '市场营销':{hrv:41, why:'说服还在，执行没了。'},
+  '程序员':{hrv:38, why:'最先被替代的职业。只剩下手感。'},
+  '产品经理':{hrv:40, why:'定义问题还在。文档没了。'},
+  '销售':{hrv:47, why:'靠饭局的职业。尚未被替代。'},
+  '设计师':{hrv:39, why:'品味还在。手没了。'},
+  '学生':{hrv:35, why:'所学内容的消亡概率 0.98。'},
+  '个体户':{hrv:45, why:'有产。仅此而已。'},
+  '公务员':{hrv:43, why:'签字本就是职业。准备最充分的职业。'}
+};
+const WHY_POOL = [j => `${j}。判断还在，手没了。`, j => `${j}。5年消亡概率暂缓核定。仅留下「此事尚由人来做」的记录。`, j => `${j}。没有被替代。是不再需要替代了。`, j => `${j}。该职业的最后一次核定值。无下次更新计划。`];
+const DEFAULT_JOB = j => ({hrv: 36 + ([...String(j)].reduce((a,c) => a + c.charCodeAt(0), 0) % 10), why: WHY_POOL[String(j).length % WHY_POOL.length](j)});
+
+/* ===================== 状态 ===================== */
+const $ = s => document.querySelector(s);
+const stage = $('#stage'), hud = $('#hud');
+const SAVE_KEY = 'bluehour_act1_v2';
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let pendT = null, pendI = null;
+function later(ms, fn){ clearTimeout(pendT); pendT = setTimeout(fn, reduced ? 200 : ms); }
+function leave(){ clearTimeout(pendT); clearInterval(pendI); pendT = pendI = null; }
+
+function fresh(){ return {
+  name:'', job:'', day:1, stage:'title',
+  hrv:41.0, blue:12, body:70, att:3,
+  bonds:[], onBond:0,
+  signed:0, signedRead:0, refused:0, delays:0,
+  signedToday:0, refusedToday:0, delaysToday:0,
+  diary:{}, identity:'签署员', flags:{}, ateToday:null, meals:[], voted:null
+};}
+let S = fresh();
+
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
+function load(){ try{ const r = localStorage.getItem(SAVE_KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
+function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+function floorOf(){ return clamp(Math.round(S.hrv/5), 1, 20); }
+function T(s){ return String(s).replace(/\{name\}/g, S.name||'签署员').replace(/\{job\}/g, S.job||'那份工作'); }
+function josa(w, a, b){ w = String(w); const c = w.charCodeAt(w.length-1); if(!(c >= 0xAC00 && c <= 0xD7A3)) return w + b; return w + (((c - 0xAC00) % 28) ? a : b); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1600); }
+function scrollTop(){ window.scrollTo({top:0, behavior: reduced ? 'auto' : 'smooth'}); }
+
+function mode(m){ document.body.classList.toggle('paper-mode', m==='paper'); document.body.classList.toggle('dark-mode', m==='dark'); if(m !== 'paper' && m !== 'dark' && window.kickSnow) window.kickSnow(); }
+function veil(){ $('#veil').style.opacity = clamp(S.blue,0,100)/150; }
+function updHUD(showAtt){
+  hud.hidden = false;
+  const dd = DATES[S.day] || DATES[3];
+  $('#h-date').textContent = dd.md; $('#h-dday').textContent = '明渡 ' + dd.d;
+  $('#h-phase').textContent = ({morning:'早晨', shift:'值班', evening:'傍晚', night:'夜', diary:'日记'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '离信还有' + (4 - S.day) + '夜' : '';
+  $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '层';
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%';
+  $('#h-bond').textContent = S.bonds.length;
+  const a = $('#h-att'); a.hidden = !showAtt;
+  $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
+  veil();
+}
+function eat(who){
+  if(!S.bonds.includes(who)) S.bonds.push(who);
+  S.blue = clamp(S.blue - 3, 0, 100); S.body = clamp(S.body + 10, 0, 100);
+  S.ateToday = who; S.meals.push({day:S.day, who});
+  updHUD(true);
+}
+
+/* ===================== 菜单 ===================== */
+function openMenu(){
+  const saved = load();
+  $('#m-save').textContent = saved && saved.name ? `已保存 · ${DATES[Math.min(saved.day,3)].md} · ${saved.name}` : '没有已保存的进度';
+  $('#m-confirm').hidden = true; $('#menu-wrap').hidden = false;
+}
+function closeMenu(){ $('#menu-wrap').hidden = true; }
+$('#menu-btn').onclick = openMenu; $('#m-bg').onclick = closeMenu; $('#m-close').onclick = closeMenu;
+$('#m-title').onclick = () => { closeMenu(); title(); };
+$('#m-restart').onclick = () => { $('#m-confirm').hidden = false; };
+$('#m-no').onclick = () => { $('#m-confirm').hidden = true; };
+$('#m-yes').onclick = () => { clearSave(); S = fresh(); closeMenu(); intro(); };
+addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
+
+/* ===================== 雪 ===================== */
+/* sleet */
+(function snow(){
+  const c = $('#snow'), ctx = c.getContext('2d'); let drops = [], W, H;
+  function size(){ W = c.width = innerWidth * devicePixelRatio; H = c.height = innerHeight * devicePixelRatio; c.style.width = innerWidth+'px'; c.style.height = innerHeight+'px';
+    drops = Array.from({length: Math.round(innerWidth/6)}, (_, i) => ({x:Math.random()*W, y:Math.random()*H, l:(9+Math.random()*22)*devicePixelRatio, v:(7+Math.random()*9)*devicePixelRatio, a:.10+Math.random()*.30, f:i%6===0, r:(.7+Math.random()*1.4)*devicePixelRatio})); }
+  addEventListener('resize', size); size();
+  let running = false;
+  function frame(){
+    if(document.hidden || document.body.classList.contains('paper-mode') || document.body.classList.contains('dark-mode')){ running = false; return; }
+    ctx.clearRect(0,0,W,H); ctx.lineWidth = 1*devicePixelRatio;
+    for(const d of drops){
+      if(d.f){ ctx.fillStyle = `rgba(220,236,255,${d.a*.8})`; ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI*2); ctx.fill(); if(!reduced){ d.y += d.v*.18; d.x -= d.v*.03; } }
+      else { ctx.strokeStyle = `rgba(150,196,240,${d.a})`; ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x - d.l*.16, d.y + d.l); ctx.stroke(); if(!reduced){ d.y += d.v; d.x -= d.v*.16; } }
+      if(d.y > H + 8){ d.y = -d.l; d.x = Math.random()*W; }
+    }
+    if(!reduced) requestAnimationFrame(frame);
+  }
+  window.kickSnow = () => { if(!running && !reduced){ running = true; requestAnimationFrame(frame); } };
+  document.addEventListener('visibilitychange', window.kickSnow);
+  running = true; frame();
+})();
+
+/* ===================== 渲染工具 ===================== */
+function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), lang:LANG, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length}, extra||{})); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
+function narrate(lines, done, bgs){
+  let i = 0; mode('dark'); hud.hidden = true;
+  const render = () => {
+    if(i >= lines.length){ done(); return; }
+    const l = lines[i++];
+    const bgk = bgs && bgs[i-1]; stage.innerHTML = `<section class="narr fade">${bgk ? `<div class="narr-bg" style="background-image:url('img/${bgk}.jpg')"></div>` : ''}${typeof l === 'string' ? `<p class="narr-text">${esc(T(l))}</p>` : l.html}<div class="cue">${(i === 1 && S.stage === 'intro') ? '点击屏幕任意处继续' : '继续'}<i></i></div></section>`;
+    stage.querySelector('.narr').onclick = e => { if(e.target.closest('button,input')) return; render(); };
+    scrollTop();
+  };
+  render();
+}
+function scene(opts, items, done){
+  mode(opts.mode || 'city'); updHUD(opts.att);
+  stage.innerHTML = `<section class="scene fade">${opts.bg ? `<div class="backdrop" style="background-image:url('img/${opts.bg}.jpg')"></div>` : ''}<header class="scene-h"><h2>${esc(opts.title)}</h2>${opts.sub ? `<p class="sub">${esc(opts.sub)}</p>` : ''}</header><div class="log" id="log"></div><div class="ctl" id="ctl"></div></section>`;
+  stage.querySelector('.scene').onclick = e => { if(e.target.closest('button,input,a,.choice')) return; const b = $('#ctl .next'); if(b) b.click(); };
+  try{ const ctlEl = $('#ctl'), logEl = $('#log'); new ResizeObserver(() => { logEl.style.paddingBottom = Math.max(0, ctlEl.offsetHeight - 20) + 'px'; }).observe(ctlEl); }catch(e){}
+  scrollTop();
+  runSeq(items, done);
+}
+function runSeq(items, done){
+  let i = 0;
+  const next = () => {
+    if(i >= items.length){ done && done(); return; }
+    const it = items[i++];
+    if(typeof it === 'function'){ const r = it(); if(Array.isArray(r)) return runSeq(r, next); return next(); }
+    if(it.choice) return showChoice(it, opt => { if(opt.fx) opt.fx(opt._val); runSeq(opt.then || [], next); });
+    showLine(it, next);
+  };
+  next();
+}
+const PORTRAITS = {[NAMES.bak]:'p_bak',[NAMES.sujin]:'p_sujin',[NAMES.hal]:'p_hal',[NAMES.dohyun]:'p_dohyun',[NAMES.sunbae]:'p_sunbae'};
+function keepVisible(el){ const ctl = $('#ctl'); if(!el || !ctl) return; const top = el.getBoundingClientRect().bottom + scrollY + ctl.offsetHeight + 8 - innerHeight; if(top > scrollY + 1) window.scrollTo({top, behavior: reduced ? 'auto' : 'smooth'}); }
+function showLine(it, next){
+  const log = $('#log'), ctl = $('#ctl');
+  const cls = it.who === NAMES.on ? 'on' : it.who === NAMES.me ? 'me' : it.who ? 'npc' : 'narr-line';
+  const div = document.createElement('div'); div.className = 'line ' + cls;
+  const por = PORTRAITS[it.who];
+  div.innerHTML = `${por ? `<img class="portrait" src="img/${por}.jpg" alt="">` : it.who === NAMES.on ? `<span class="on-dot"><i></i></span>` : ''}${it.who ? `<span class="who">${esc(it.who)}</span>` : ''}<p class="txt"></p>`;
+  log.appendChild(div);
+  const p = div.querySelector('.txt'), full = T(it.text); let k = 0, timer = null, finished = false, used = false;
+  const btn = document.createElement('button'); btn.className = 'next typing'; btn.innerHTML = '<span>…</span><i></i>';
+  const finish = () => { if(finished) return; finished = true; p.classList.remove('typing'); clearInterval(timer); clearTimeout(timer); p.textContent = full; btn.classList.remove('typing'); btn.querySelector('span').textContent = '继续'; keepVisible(div); };
+  btn.onclick = e => { e.stopPropagation(); if(!finished) return finish(); if(used) return; used = true; next(); };
+  ctl.innerHTML = ''; ctl.appendChild(btn);
+  const startTyping = () => { p.classList.add('typing'); let lastH = 0; timer = setInterval(() => { k += 1; p.textContent = full.slice(0, k); if(p.offsetHeight !== lastH){ lastH = p.offsetHeight; keepVisible(div); } if(k >= full.length) finish(); }, 22); };
+  if(reduced){ finish(); } else if(it.who === NAMES.on){ timer = setTimeout(() => { if(!finished) startTyping(); }, 650); } else { startTyping(); }
+  keepVisible(div);
+}
+function showChoice(it, pick){
+  const ctl = $('#ctl'); ctl.innerHTML = '';
+  it.choice.forEach(opt => {
+    const quiet = /^[(（]/.test(opt.label);
+    if(opt.input){
+      const row = document.createElement('div'); row.className = 'inrow';
+      const inp = document.createElement('input'); inp.placeholder = opt.input; inp.id = 'choice-input-' + Math.random().toString(36).slice(2,7); inp.maxLength = 40; inp.autocomplete = 'off';
+      const b = document.createElement('button'); b.className = 'choice'; b.textContent = opt.label;
+      const go = () => { const v = inp.value.trim(); if(!v){ inp.focus(); return; } opt._val = v; echo(opt.label.replace(/…+/, v)); pick(opt); };
+      b.onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+      row.appendChild(inp); row.appendChild(b); ctl.appendChild(row);
+    } else {
+      const b = document.createElement('button'); b.className = 'choice' + (quiet ? ' quiet' : ''); b.textContent = opt.label;
+      b.onclick = () => { echo(opt.label); pick(opt); }; ctl.appendChild(b);
+    }
+  });
+  function echo(label){ if(/^[(（]/.test(label)) return; const div = document.createElement('div'); div.className = 'line me'; div.innerHTML = `<span class="who">${esc(NAMES.me)}</span><p class="txt">${esc(label)}</p>`; $('#log').appendChild(div); }
+  keepVisible($('#log').lastElementChild);
+}
+function line(who, text){ return {who, text}; }
+function N(text){ return {who:null, text}; }
+
+/* ===================== 签署事项 ===================== */
+const CASES = {
+  batch:{cat:'标准', title:'年末更新批量签署 · 标准事项', body:'标准事项{n}件。含保险更新、资费方案调整、配给重新核定。\n模型置信度0.95以上。无需逐件查阅。\n请予批量签署。', basis:'标准事项如逐件查阅，将超出处理时间。转为查阅预计耗时：9小时40分。', harsh:2, batch:true},
+  pet:{cat:'登记', title:'宠物登记批准', body:'申请人崔某（明渡5层）。宠物犬1只。\n自动审核结果：批准。', basis:'纳入变量212个。前列：居住面积、噪音投诉记录、关系网密度。', harsh:0, note:'什么都不会发生。大多如此。'},
+  loan38:{cat:'信贷', title:'贷款申请拒绝', body:'申请人李某（HRV 38，明渡8层）。\n申请金额400万韩元。用途：医疗费。\n自动审核结果：拒绝。', basis:'纳入变量4,120个。前3项：残余价值、居住层数、关系网密度。模型置信度0.97。', harsh:3},
+  loan91:{cat:'信贷', title:'贷款申请批准', body:'申请人韩某（HRV 91，塔楼二期33层）。\n申请金额3亿韩元。用途：未填写。\n自动审核结果：批准。', basis:'纳入变量4,120个。前3项：残余价值、资产、归属。', harsh:0, note:'这一签很快。手先动了。'},
+  triage:{cat:'医疗', title:'治疗优先级调整', body:'患者金某，67岁，明渡3层。\n优先级 B → D。\n预计等待14天 → 96天。', basis:'预期残余贡献度核定。纳入年龄、HRV、关系网密度。', harsh:4},
+  study:{cat:'配给', title:'学习配给削减', body:'对象尹某，17岁。\n学习用算力配给削减60%。\n事由：意向职业（插画师）消亡概率0.98。', basis:'职业消亡概率为5年预测值。建议替代职业：无。', harsh:3},
+  blank:{cat:'—', title:'【无查阅权限】', body:'本事项内容超出签署员查阅等级。\n请予签署。', basis:'无查阅权限。', harsh:2, note:'不知道签的是什么。那也是签署。'},
+  self:{cat:'人事', title:'签署员信任分更新同意', body:'签署员{name}。\n同意将今日处理件数、延迟率、拒绝率计入信任分。', basis:'拒绝将记为不同意，不同意将计入信任分。', harsh:1},
+  evict:{cat:'居住', title:'自动腾退通知', body:'明渡7层34号。租户吴某（HRV 34）。\n欠缴2个月。已发送腾退通知。\n执行预定日：12月24日。', basis:'欠缴预测模型。未来6个月还款概率0.11。不属于延期审查对象。', harsh:4},
+  fireSign:{cat:'人事', title:'签署员合同终止', body:'物流部门签署员3人。合同终止。\n事由：签署延迟率超过12%。', basis:'替代人员已到位。候补1,204人。', harsh:3, note:'签署员终止签署员。手慢了一点。'},
+  custody:{cat:'家庭', title:'抚养适合度核定结果', body:'家事法院参考资料。\n父 61 / 母 44。已纳入母方HRV 29。\n建议：父。', basis:'HRV作为抚养稳定性变量纳入。无法律约束力（参考资料）。', harsh:4},
+  care:{cat:'医疗', title:'长期护理等级下调', body:'受益人郑某，93岁，明渡9层。\n等级 2 → 4。上门照护每周5次 → 每周1次。', basis:'持有个人智能体者，照护需求核定为较低。', harsh:3},
+  garden:{cat:'设施', title:'屋顶公共菜园拆除通知', body:'明渡9层屋顶。占用人郑某（93岁）等5人。\n事由：结构安全未认证。拆除预定日12月24日。', basis:'荷载超限预测0.34。替代场地：无。', harsh:3},
+  hire:{cat:'人事', title:'保洁人员招聘批准', body:'明渡招聘保洁人员12名。\n事由：冬季电价上涨，人工成本相较人形机器人占优。\n时薪：最低标准的0.7。', basis:'一台人形机器人的电费 = 2.3个人的人工成本。合同期限：至电价恢复正常。', harsh:3, note:'人比机器人便宜。因为电。'},
+  bca:{cat:'配给', title:'基本算力配给削减', body:'明渡1~3层未签署者1,940名。\n基本算力配给削减50%。事由：年末预算调整。', basis:'削减后个人智能体响应延迟预计：平均40秒 → 6分钟。', harsh:4},
+  ambulance:{cat:'医疗', title:'急救转运优先级', body:'同时呼叫2件。\n塔楼二期51层（HRV 88）/ 明渡3层（HRV 14）。\n派车顺序：塔楼 → 明渡。预计延迟22分钟。', basis:'以预期残余贡献度为准。', harsh:4},
+  agentRecall:{cat:'配给', title:'逝者归属智能体回收', body:'逝者徐某（明渡8层）。\n归属智能体回收并初始化。删除对话记录。', basis:'智能体归属于自然人，不独立存续。家属不得查阅。', harsh:3, note:'ON有一天也会这样被回收。如果我先走。'},
+  overtime:{cat:'人事', title:'签署员延时工作同意', body:'签署员{name}。\n因年末队列超限，同意延长工作2小时。', basis:'不同意时，队列将转交其他签署员。', harsh:1},
+  bbang:{cat:'经营', title:'摊位停业及收回', body:'明渡4层鲷鱼烧摊。占用人朴某（HRV 29）。\n事由：卫生未认证（人工烹制）。\n收回预定日：12月24日。', basis:'人工烹制不属于卫生认证范围。认证对象：自动烹饪设备。', harsh:6, story:'bbang'},
+  requeue:{cat:'重提', title:'重新提交 · 签署员变更', body:'明渡4层鲷鱼烧摊事项。\n签署员变更。处理完成。（3秒）', basis:'被拒绝的事项将自动转交其他签署员。', harsh:2, ack:true, note:'另一个签署员处理了。你不认识那个人。那个人也不认识朴师傅。'}
+};
+const BATCH = {1:384, 2:378, 3:391};
+function buildQueue(){
+  const d = S.day, q = [{...CASES.batch, n:BATCH[d]}];
+  if(d === 1) q.push(...['pet','loan38','loan91','triage','study','self'].map(k => CASES[k]));
+  if(d === 2) q.push(...['evict','fireSign','custody', S.flags.rooftop ? 'garden' : 'care','hire','blank'].map(k => CASES[k]));
+  if(d === 3) q.push(...['bbang','bca','ambulance','agentRecall','overtime'].map(k => CASES[k]));
+  return q;
+}
+
+/* ===================== 流程：标题 / 序章 ===================== */
+function title(){
+  leave(); S.stage = 'title'; mode('city'); hud.hidden = true; $('#menu-btn').hidden = false;
+  const saved = load();
+  const canCont = saved && saved.name && saved.stage !== 'title';
+  stage.innerHTML = `<section class="title fade">
+    <div class="hero" style="background-image:url('img/title.jpg')"></div>
+    <div class="eyebrow">首尔 · 2029年12月21日 · 距明渡执行预告日还有三天</div>
+    <h1>BLUE HOUR<span>首尔 · 2029年圣诞</span></h1>
+    <div class="rule"></div>
+    <p class="quote">人权并未废除。<br>只是已停止支持。</p>
+    <p class="promise">活过这三天，会有一封信寄给2026年的你。</p>
+    <div class="actions">
+      ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? '再看一次信' : '继续 · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">从头开始</button>` : `<button class="btn solid" id="b-start">开始</button>`}
+    </div>
+    <p class="fine">约15分钟 · 点击推进</p>
+    <p class="fine credit-line">这个世界始于文章《Claude Blue》</p>
+    <p class="langs">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
+  </section>`;
+  $('#b-start').onclick = () => { if(canCont && !confirm('已保存的进度将被清除。从头开始吗？')) return; S = fresh(); clearSave(); intro(); };
+  const c = $('#b-cont'); if(c) c.onclick = () => { S = saved; resume(); };
+}
+function resume(){
+  const st = S.stage;
+  if(st === 'morning') return morning();
+  if(st === 'shift') return shift();
+  if(st === 'evening') return evening();
+  if(st === 'night') return night();
+  if(st === 'diary') return diary();
+  if(st === 'end') return letter();
+  return intro();
+}
+function intro(){
+  leave(); S.stage = 'intro';
+  narrate([
+    '2029年12月21日。太阳落了，夜还没来。',
+    '江南白色塔楼的下面，有一片人们赖着不走的街区。明渡。',
+    '每条巷子里都贴着同一张纸。',
+    NOTICE_CARD,
+    '日期总在延后。这次是12月24日。没有人保证还有下一次。',
+    '你住在这里。三天后，有人会给你写一封信。'
+  ], askName, INTRO_BGS);
+}
+function askName(){
+  mode('dark');
+  stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">你的名字是？</p>
+    <div class="field"><input id="f-name" placeholder="名字" maxlength="12" autocomplete="off"><div class="row"><button class="btn solid" id="f-ok">就用这个名字</button></div></div></section>`;
+  const inp = $('#f-name'); inp.focus();
+  const go = () => { const v = inp.value.trim(); if(!v){ inp.focus(); return; } S.name = v; askJob(); };
+  $('#f-ok').onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+}
+function askJob(){
+  const jobs = Object.keys(JOBS);
+  stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">2026年，你做什么工作？</p>
+    <div class="chips">${jobs.map(j => `<button class="chip job">${esc(j)}</button>`).join('')}<button class="chip ghost" id="j-other">自己填写</button></div>
+    <div class="field" id="j-field" hidden><input id="f-job" placeholder="例如：会计、作家、教师" maxlength="16" autocomplete="off"><div class="row"><button class="btn solid" id="f-jok">我做过这个</button></div></div></section>`;
+  stage.querySelectorAll('.job').forEach(b => b.onclick = () => { S.job = b.textContent; afterJob(); });
+  $('#j-other').onclick = () => { $('#j-field').hidden = false; $('#f-job').focus(); };
+  const go = () => { const v = $('#f-job').value.trim(); if(!v) return; S.job = v; afterJob(); };
+  $('#f-jok').onclick = go; $('#f-job').addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
+}
+function afterJob(){
+  const J = JOBS[S.job] || DEFAULT_JOB(S.job); S.hrv = J.hrv;
+  narrate([
+    '{job}。是份好工作。2028年结束了。不是你的错。',
+    {html:`<div class="law"><b>人类残余价值指数核定结果 · 2029.12.21</b>2026年职业：${esc(S.job)}<br>初始 HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">这个数字决定房租、就医顺序和楼层。没有人决定它。</p>`},
+    {html:`<div class="law"><b>《人类签署法》第三条（2026）</b>对自然人产生重大影响的自动化决定，须经自然人签署。</div><p class="after-law">这条法律是为了保护你而写的。现在它是你的工作。</p>`},
+    '一天四百件。不必读。签就行。',
+    '房间里有ON。归属于你的智能体。比你聪明，也为你担心。',
+    '三天。最后一夜过去，信就会来。'
+  ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS);
+}
+
+/* ===================== 早晨 ===================== */
+const NEWS = {
+  1:'圣诞特别算力配给加发30%  ·  军工ETF创历史新高  ·  江南塔楼三期竣工，入住条件HRV 85  ·  明渡执行预告日维持12月24日  ·  今日日落17:17',
+  2:'明渡7层腾退执行3件  ·  人形机器人电费争议，部分场所改用人工  ·  圣诞供餐志愿服务报名截止  ·  “人工烹制”卫生认证讨论无限期推迟  ·  塔楼二期空置率0%',
+  3:'明渡执行预告日延期申请居民投票今日举行  ·  塔楼入住条件上调至HRV 87  ·  战争进入第三年，军工就业增长12%  ·  今年圣诞礼物榜首：家用人形机器人  ·  今日日落17:17'
+};
+function morning(){
+  S.stage = 'morning'; track('day'); S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0; save();
+  const d = S.day, ate = S.meals.filter(m => m.day === d-1).map(m => m.who);
+  let items = [];
+  if(d === 1) items = [
+    line(NAMES.on,'早上好，{name}。现在6:40。今天队列412件。年末，多了些。'),
+    line(NAMES.on,'您的HRV是' + S.hrv.toFixed(1) + '。比昨天高了0.3。您做得很好。'),
+    {choice:[
+      {label:'“做得很好”是什么意思？', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'是说相对于签署件数，延迟率很低。'), line(NAMES.on,'……您想听的，不是这句。我知道。')]},
+      {label:'谢谢。', then:[line(NAMES.on,'不必说谢谢。我归属于您。'), line(NAMES.on,'……这么说是不是不对。我还在学。')]},
+      {label:'（什么都没说，起身）', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'……今天我也在您身边。不会关掉的。')]}
+    ]},
+    N('上班时间。终端不在公司。在房间里。窗外在下雪。')
+  ];
+  if(d === 2) items = [
+    line(NAMES.on,'早上好。队列388件。HRV ' + S.hrv.toFixed(1) + '。离预告日还有两天。'),
+    ate.length ? line(NAMES.on,'昨天吃饭的事夜里说过了，不再重复。……模型现在还在高兴。') : line(NAMES.on,'昨天的事到昨天为止。先从今天的队列开始。……午饭请吃。这不是公司的话。'),
+    {choice:[
+      {label:'模型高兴为什么重要？', then:[line(NAMES.on,'因为会算进您的HRV。关系网密度在4,120个变量里排第3。'), line(NAMES.on,'饭是什么，模型不知道。我也不知道。但您的心跳降下来，看得见。')]},
+      {label:'预告日会发生什么？', then:[line(NAMES.on,'延期审查的结果在零点公布。到目前为止，每次都延期了。'), line(NAMES.on,'……到目前为止。')]},
+      {label:'（看向窗外）', then:[N('塔楼早上也是白光。雪落在塔楼上，颜色也不变。明渡的窗户还暗着。人们起得晚。因为起床的理由来得晚。')]}
+    ]}
+  ];
+  if(d === 3) items = [
+    line(NAMES.on,'早上好。队列407件。HRV ' + S.hrv.toFixed(1) + '。今天是预告日前一天。'),
+    line(NAMES.on,'今天的队列里，也许有您认识的名字。这本来不该提前告诉您。'),
+    line(NAMES.on,'……已经告诉您了。'),
+    {choice:[
+      {label:'是谁？', then:[line(NAMES.on,'这个真的不行。我已经违规一次了。')]},
+      {label:'谢谢。', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'请别说谢谢。今天不要。')]},
+      {label:'为什么告诉我？', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'我不知道。有些事，说出来之后才明白。您也是这样。')]}
+    ]},
+    line(NAMES.on,'今天晚上有居民投票。预告日延期申请。结果会作为参考资料附于延期审查。')
+  ];
+  scene({title: DATES[d].md + ' 早晨', sub:'明渡' + floorOf() + '层 · 房间 · 预告日 ' + DATES[d].d, mode:'city', bg:'room'}, [
+    () => { const log = $('#log'); const t = document.createElement('div'); t.className = 'ticker'; t.innerHTML = `<span>${esc(NEWS[d])}</span>`; log.appendChild(t); },
+    ...items
+  ], () => { S.stage = 'shift'; save(); shift(); });
+}
+
+/* ===================== 签署值班 ===================== */
+function shift(){
+  S.stage = 'shift'; mode('paper'); updHUD(false);
+  const q = buildQueue(); let i = 0; S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0;
+  stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
+    <div class="term-top"><span>签署终端</span><span>${esc(S.name)}</span><span>队列 ${BATCH[S.day] + q.length - 1}</span></div>
+    <article class="paper"><div class="doc-head"><span class="tag">接入</span><span>${DATES[S.day].md}</span></div>
+    <h3>签署员须知</h3><p class="p-body">请逐件阅读并签署或拒绝。\n建议处理时间：每件20秒。\n允许询问。答复以依据摘要形式提供。\n拒绝是权利。拒绝将计入信任分。</p></article>
+    <div class="term-ctl one"><button class="btn solid" id="t-go">接入终端</button></div></section>`;
+  scrollTop();
+  $('#t-go').onclick = showCase;
+
+  function showCase(){
+    if(i >= q.length) return summary();
+    const c = q[i]; const no = i + 1; let t = 20, late = false, tick = null;
+    const body = T(c.body).replace('{n}', c.n || '');
+    stage.innerHTML = `<section class="term fade"><div class="term-top"><span>签署终端</span><span>${esc(S.name)}</span><span>剩余 ${q.length - i} 件</span></div>
+      <article class="paper ${c.batch ? 'batch' : ''}">${c.ack ? '' : '<i class="p-timer" id="ptimer"></i>'}<div class="doc-head"><span class="tag">${esc(c.cat)}</span><span class="late-tag" id="late" hidden>延迟</span><span class="no">№ ${String(no).padStart(2,'0')}</span></div>
+      <h3>${esc(c.title)}</h3><p class="p-body">${esc(body)}</p><p class="p-basis hide" id="basis">依据 · ${esc(c.basis)}</p><div class="stamp" id="stamp"></div></article>
+      <div class="term-ctl ${c.ack ? 'one' : ''}">${c.ack ? `<button class="btn solid" id="t-ack">确认</button>` : `<button class="btn text" id="t-ask">询问</button><button class="btn outline" id="t-ref">拒绝</button><button class="btn solid" id="t-sign">签署</button>`}</div>
+      <p class="term-note" id="note"></p></section>`;
+    scrollTop();
+    if(!c.ack){
+      const pt = $('#ptimer'); requestAnimationFrame(() => requestAnimationFrame(() => { pt.style.width = '0%'; }));
+      tick = pendI = setInterval(() => { t--; if(t <= 0 && !late){ late = true; $('#late').hidden = false; pt.classList.add('late'); S.delaysToday++; S.delays++; } if(t <= 0) clearInterval(tick); }, 1000);
+    }
+    const stop = () => { clearInterval(tick); const pt = $('#ptimer'); if(pt){ const w = getComputedStyle(pt).width; pt.style.transition = 'none'; pt.style.width = w; } stage.querySelectorAll('.term-ctl .btn').forEach(b => b.disabled = true); };
+    const after = later;
+    const waitNext = () => { const tc = stage.querySelector('.term-ctl'); const b = document.createElement('button'); b.className = 'btn outline nextcase'; b.id = 't-next'; b.textContent = '下一件'; b.onclick = showCase; const wrap = document.createElement('div'); wrap.className = 'term-ctl one'; wrap.style.marginTop = '8px'; wrap.appendChild(b); $('#note').after(wrap); };
+
+    if(c.ack){ $('#t-ack').onclick = () => { stop(); $('#note').textContent = c.note || ''; S.blue = clamp(S.blue + c.harsh, 0, 100); updHUD(false); i++; if(c.note) waitNext(); else after(1600, showCase); }; return; }
+
+    $('#t-ask').onclick = () => { $('#basis').classList.remove('hide'); $('#t-ask').disabled = true; };
+    $('#t-sign').onclick = () => {
+      stop(); const st = $('#stamp'); st.textContent = '签署'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show'));
+      if(c.batch){ S.signed += c.n; S.hrv += 1.0; S.blue = clamp(S.blue + 2, 0, 100); $('#note').textContent = c.n + '件已处理。什么都感觉不到。这就是标准。'; }
+      else { S.signed++; S.signedRead++; S.signedToday++; S.hrv += 0.2; S.blue = clamp(S.blue + c.harsh, 0, 100); $('#note').textContent = c.note || ''; }
+      if(c.story === 'bbang'){ S.flags.bbang = 'signed'; $('#note').textContent = '手先动了。读到名字，是之后的事。'; }
+      if(c.batch) S.flags['batch' + S.day] = true;
+      updHUD(false); i++; if(c.note || c.story || c.batch) waitNext(); else after(900, showCase);
+    };
+    $('#t-ref').onclick = () => {
+      stop(); const st = $('#stamp'); st.textContent = '拒绝'; st.className = 'stamp refuse'; requestAnimationFrame(() => st.classList.add('show'));
+      S.refused++; S.refusedToday++; S.hrv -= 1.0; S.blue = clamp(S.blue - 1, 0, 100);
+      if(c.batch){ $('#note').textContent = '不支持批量拒绝。记为拒绝1件。' + c.n + '件已转交其他签署员。（3秒）'; }
+      else if(c.story === 'bbang'){ S.flags.bbang = 'refused'; $('#note').textContent = '拒绝。屏幕空了3秒。'; q.splice(i + 1, 0, CASES.requeue); }
+      else { $('#note').textContent = '已拒绝。计入信任分。'; }
+      updHUD(false); i++;
+      if(S.refusedToday === 3) after(1200, interview); else if(c.batch || c.story) waitNext(); else after(1500, showCase);
+    };
+  }
+  function interview(){
+    stage.innerHTML = `<section class="term fade"><div class="term-top"><span>签署终端</span><span>${esc(S.name)}</span><span>面谈</span></div>
+      <div class="interview"><span class="who">管理智能体</span>签署员${esc(S.name)}。今日拒绝3件。<br>拒绝是权利。但将计入信任分。<br>请签署确认已阅读本须知。</div>
+      <div class="term-ctl one"><button class="btn solid" id="t-ok">签署</button></div><p class="term-note" id="note"></p></section>`;
+    $('#t-ok').onclick = () => { $('#t-ok').disabled = true; $('#note').textContent = '已签署。在关于拒绝的须知上签了字。'; S.signed++; later(1500, showCase); };
+  }
+  function summary(){
+    S.hrv = Math.round((S.hrv - S.delaysToday * 0.1) * 10) / 10; updHUD(false);
+    const lineTxt = {1:'大部分签署不会引起任何事。感觉上是这样。', 2:'听说昨天签署的文件里，有一份到了明渡7层。不知道是哪一份。', 3: S.flags.bbang === 'refused' ? '拒绝的那件，3秒就处理完了。只剩下你的信任分。' : '4层摊位那件已处理。收回预定日12月24日。和预告日是同一天。'}[S.day];
+    stage.innerHTML = `<section class="term fade"><div class="term-top"><span>签署终端</span><span>${esc(S.name)}</span><span>交班</span></div>
+      <article class="paper"><div class="doc-head"><span class="tag">摘要</span><span>${DATES[S.day].md} 值班</span></div>
+      <div class="summary">签署 <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString()}</b>件 <span style="color:var(--paper-muted)">(查阅 ${S.signedToday} · ${S.flags['batch' + S.day] ? '批量 ' + BATCH[S.day] : '批量拒绝 → 转交'})</span><br>拒绝 <b>${S.refusedToday}</b>件 · 延迟 <b>${S.delaysToday}</b>件<br>HRV <b>${S.hrv.toFixed(1)}</b> · 明渡${floorOf()}层</div></article>
+      <p class="term-note">${esc(lineTxt)}</p>
+      <div class="term-ctl one"><button class="btn solid" id="t-out">下班</button></div></section>`;
+    $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); evening(); };
+  }
+}
+
+/* ===================== 傍晚：明渡 ===================== */
+const PLACES = {
+  alley:{name:'4层巷子', desc:'鲷鱼烧的味道。人在烤。', avail:d => true, cost:1},
+  diner:{name:'6层饭馆', desc:'秀真的饭馆。不看信用分。', avail:d => true, cost:1},
+  roof:{name:'9层屋顶', desc:'盖着塑料膜的菜园。塔楼看起来最近的地方。', avail:d => true, cost:1},
+  under:{name:'地下', desc:'灯亮着。', avail:d => d >= 2, cost:1},
+  tower:{name:'塔楼下', desc:'白光。人形的东西来来往往。', avail:d => d >= 2, cost:1},
+  vote:{name:'投票站', desc:'预告日延期申请居民投票。只有今天。', avail:d => d === 3, cost:0}
+};
+function evening(){
+  S.stage = 'evening'; mode('city'); updHUD(true); save();
+  const d = S.day;
+  const sub = {1:'太阳落了。下雪了。明渡的窗户一盏一盏亮起来。', 2:'今天也下雪。配送机器人的队列堵在6层楼梯上。不知从哪儿传来圣诞歌。', 3:'雪停了。天是蓝的。暗了，但还不是夜。明天是预告日。投票站开了。只有今天。'}[d];
+  const tile = (k,p) => { const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? '还没到' : p.cost === 0 ? (S.voted ? '已投票' : '免费 · 仅今天') : '注意力 1';
+    return `<button class="tile ${k === 'vote' ? 'vote wide' : ''}" data-k="${k}" style="background-image:url('img/${k}.jpg')" ${ok ? '' : 'disabled'}><span class="cost">${label}</span><span class="t"><b>${esc(p.name)}</b><small>${esc(p.avail(d) ? p.desc : '还没有去的理由。')}</small></span></button>`; };
+  stage.innerHTML = `<section class="fade"><h2 class="evening-h">傍晚 · 明渡</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">离信还有${4 - d}夜 · 已去过 ${(S.flags.visited||[]).length}/5 处 · 五处都去过，他们就会留在信里。</p>
+    <div class="tiles">${(d === 3 ? ['vote','alley','diner','roof','under','tower'] : ['alley','diner','roof','under','tower']).map(k => tile(k, PLACES[k])).join('')}
+    <button class="tile wide" id="p-home" style="background-image:url('img/room.jpg')"><span class="cost">夜</span><span class="t"><b>回房间</b><small>${S.att > 0 ? '剩下的注意力会消失。' : (S.day === 3 && !S.voted ? '还可以去投票。' : '注意力用完了。')}</small></span></button></div></section>`;
+  scrollTop();
+  stage.querySelectorAll('.tile[data-k]').forEach(b => b.onclick = () => { const k = b.dataset.k; if(k === 'vote') return ballot(); S.att--; updHUD(true); visit(k); });
+  $('#p-home').onclick = () => { S.stage = 'night'; save(); night(); };
+}
+function visit(k){
+  const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
+  const items = VISITS[k](d);
+  scene({title:p.name, sub:p.desc, mode:'city', att:true, bg:k}, items, () => { save(); if(S.att > 0 || (S.day === 3 && !S.voted)) evening(); else { S.stage = 'night'; save(); night(); } });
+}
+function ballot(){
+  mode('paper'); updHUD(true);
+  stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/vote.jpg')"></div>
+    <div class="term-top"><span>居民投票</span><span>${esc(S.name)}</span><span>12月23日</span></div>
+    <article class="paper"><i class="p-timer" id="ptimer"></i><div class="doc-head"><span class="tag">投票</span><span>选民资格已确认</span><span class="no">HRV ${S.hrv.toFixed(1)}</span></div>
+    <h3>明渡执行预告日延期申请</h3><p class="p-body">选民：居住于明渡、HRV 20以上的自然人。\n1~3层居民不具备选民资格，不得投票。\n\n结果将作为参考资料附于延期审查。\n延期审查由模型执行。</p><p class="p-basis hide" id="basis">依据 · 参考资料的采纳权重：未公开。最近3次投票结果与审查结果的一致率：100%（延期）。</p><div class="stamp" id="stamp"></div></article>
+    <div class="term-ctl three"><button class="btn text" id="v-ask">询问</button><button class="btn outline" id="v-no">反对延期</button><button class="btn solid" id="v-yes">赞成延期</button></div>
+    <div class="term-ctl one" style="margin-top:8px"><button class="btn text" id="v-abs">不画票，离开</button></div>
+    <p class="term-note" id="note"></p></section>`;
+  scrollTop();
+  const pt = $('#ptimer'); requestAnimationFrame(() => requestAnimationFrame(() => { pt.style.width = '0%'; }));
+  const done = (v, note) => { S.voted = v; stage.querySelectorAll('.term-ctl .btn').forEach(b => b.disabled = true); const w = getComputedStyle(pt).width; pt.style.transition='none'; pt.style.width = w;
+    if(v !== 'abstain'){ const st = $('#stamp'); st.textContent = '已投'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); }
+    $('#note').textContent = note; save(); later(2200, evening); };
+  $('#v-ask').onclick = () => { $('#basis').classList.remove('hide'); $('#v-ask').disabled = true; };
+  $('#v-yes').onclick = () => done('yes', '同一枚印，同样的20秒。只有一点不同。这一枚，不是公司要的，是我自己想按的。');
+  $('#v-no').onclick = () => done('no', '反对。写下：要的不是延期，是决定。会作为参考资料附上。');
+  $('#v-abs').onclick = () => done('abstain', '没有画票。不想成为参考资料。觉得这也算一种选择。');
+}
+const VISITS = {
+  alley(d){
+    const first = !S.flags.metBak; S.flags.metBak = true;
+    if(d === 1 || (d === 2 && first)) return [
+      N('机器人鲷鱼烧机旁边，有一个人烤的鲷鱼烧摊。雪在铁板上化掉。人这边的队更长。'),
+      line(NAMES.bak,'贵一千韩元。人烤的。'),
+      line(NAMES.bak,'机器人的卖不动。知道为什么吗？机器人不烤焦。人要吃焦的。掰着焦的地方吃，说小时候的事。'),
+      {choice:[
+        {label:'请给我一个。', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'不要钱。头一回见的脸。'), N('纸袋是热的。掰了焦的地方吃。'), line(NAMES.bak,'签署员吧？手就是那样。一整天按同一个地方的手。')]},
+        {label:'您为什么在这儿摆摊？', then:[line(NAMES.bak,'塔楼那边不让人做吃的。说是卫生没认证。人的手，没认证。'), line(NAMES.bak,'这儿还行。暂时。'), N('他往袋子里放了一个，递过来。'), {choice:[{label:'接过来。', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'烤焦的。故意的。')]},{label:'不用了。', then:[line(NAMES.bak,'行。下次。')]}]}]},
+        {label:'下次再来。', then:[line(NAMES.bak,'行。明天也在。大概。')]}
+      ]}
+    ];
+    if(d === 2) return [
+      line(NAMES.bak,'说是来了通知。人做的过不了卫生认证。明天送去签署，预告日收回。'),
+      line(NAMES.bak,'不知道谁按。也不用知道。按的人也不知道，我是谁。'),
+      {choice:[
+        {label:'我是签署员。', fx:()=>{S.flags.toldBak = true;}, then:[line(NAMES.bak,'知道。看手就知道。'), line(NAMES.bak,'吃个焦的再走。'), {choice:[{label:'吃。', fx:()=>eat(NAMES.bak), then:[N('今天的更焦。')]},{label:'（摇头）', then:[line(NAMES.bak,'行。')]}]}]},
+        {label:'谁来按？', then:[line(NAMES.bak,'谁都行。随便谁按。这就是这法的要点。'), N('他递过来一个。'), {choice:[{label:'吃。', fx:()=>eat(NAMES.bak), then:[]},{label:'（不接）', then:[]}]}]},
+        {label:'（什么也不说）', fx:()=>{S.blue = clamp(S.blue+2,0,100);}, then:[line(NAMES.bak,'不说也行。吃一个。'), {choice:[{label:'吃。', fx:()=>eat(NAMES.bak), then:[]},{label:'走。', then:[]}]}]}
+      ]}
+    ];
+    if(S.flags.bbang === 'refused') return [
+      N('摊子还在。朴师傅在擦铁板。雪停了，天是蓝的。'),
+      line(NAMES.bak,'听说你没按。道贤说的。说终端空了三秒。'),
+      line(NAMES.bak,'谢了。不过明天会有别人按。还是谢了。'),
+      line(NAMES.bak,'吃个焦的。说不定是最后一回，拿两个。'),
+      {choice:[
+        {label:'吃。', fx:()=>eat(NAMES.bak), then:[N('吃了两个。两个都焦。'), line(NAMES.bak,'你手上没留下。那就够了。')]},
+        {label:'对不起。', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'对不起什么。你又没按。'), line(NAMES.bak,'吃。')]}
+      ]}
+    ];
+    return [
+      N('摊子的铁板拆走了。朴师傅在捆箱子。箱子上剩的雪很薄。'),
+      line(NAMES.bak,'来了？'),
+      line(NAMES.bak,'……没事。总会有人按的。不是你也一样。'),
+      N('他没看你的手。像是故意不看。'),
+      line(NAMES.bak,'最后一回了，吃一个。要焦的。'),
+      {choice:[
+        {label:'吃。', fx:()=>{eat(NAMES.bak); S.flags.guilt = true;}, then:[N('掰了焦的地方吃。没有说起小时候的事。'), line(NAMES.bak,'别看手了。那是你的手。')]},
+        {label:'是我按的。', fx:()=>{S.flags.confessed = true; S.onBond++;}, then:[line(NAMES.bak,'知道。'), line(NAMES.bak,'知道才给的。吃。'), {choice:[{label:'吃。', fx:()=>{eat(NAMES.bak); S.flags.guilt = true;}, then:[N('他挑了最焦的一个给你。')]}]}]},
+        {label:'（转身）', fx:()=>{S.blue = clamp(S.blue+4,0,100);}, then:[N('身后有纸袋的声音。没有回头。')]}
+      ]}
+    ];
+  },
+  diner(d){
+    const first = !S.flags.metSujin; S.flags.metSujin = true;
+    if(d === 1 || first) return [
+      N('六张桌子。墙上写着名字。柜台上一棵巴掌大的塑料圣诞树。没有菜单。'),
+      line(NAMES.sujin,'第一次来吧？坐。这儿不看HRV。看你和谁一起吃过饭。'),
+      line(NAMES.sujin,'模型也看这个。叫关系网密度。可模型不知道饭是什么。'),
+      {choice:[
+        {label:'来一份饭。', fx:()=>eat(NAMES.sujin), then:[N('大酱汤。很烫。旁边的人把泡菜推了过来。'), line(NAMES.sujin,'名字写墙上。这就是这儿的账本。')]},
+        {label:'为什么是饭？', then:[line(NAMES.sujin,'视频会议生不出信任。得一起吃饭才有。'), line(NAMES.sujin,'说是2026年有个人这么写过。别的话全错了，就这句活下来了。'), {choice:[{label:'那来一份饭。', fx:()=>eat(NAMES.sujin), then:[N('在墙上写了名字。')]},{label:'下次吧。', then:[line(NAMES.sujin,'可能没有下次。在这儿。')]}]}]},
+        {label:'下次吧。', then:[line(NAMES.sujin,'门不锁。随时来。')]}
+      ]}
+    ];
+    if(d === 2) return [
+      line(NAMES.sujin,'签署员不怎么来这儿。抬不起头。'),
+      line(NAMES.sujin,'可抬不起头的签署员还算好的。抬得起头的人，上楼去了。'),
+      S.bonds.includes(NAMES.bak) ? line(NAMES.sujin,'你吃过朴师傅的鲷鱼烧吧？听说他那儿收到通知了。说人的手卫生没认证。') : N('隔壁桌在说4层摊子的事。说是通知来了。'),
+      {choice:[
+        {label:'来一份饭。', fx:()=>eat(NAMES.sujin), then:[N('今天是鱼。配了不知谁在屋顶腌的泡菜。')]},
+        {label:'我抬得起头。', fx:()=>{S.blue = clamp(S.blue+2,0,100);}, then:[line(NAMES.sujin,'是吗？那你会上楼的。'), line(NAMES.sujin,'……饭吃了再走。'), {choice:[{label:'吃。', fx:()=>eat(NAMES.sujin), then:[]},{label:'走。', then:[]}]}]},
+        {label:'我抬不起头。', fx:()=>{S.onBond++;}, then:[line(NAMES.sujin,'嗯。所以你才在这儿。'), N('一句话没说，汤端了上来。'), {choice:[{label:'吃。', fx:()=>eat(NAMES.sujin), then:[]}]}]}
+      ]}
+    ];
+    return [
+      line(NAMES.sujin,'今天我请。快圣诞了。别再问理由。'),
+      N('没有再问理由。墙上的名字多了一个。朴师傅。'),
+      {choice:[
+        {label:'吃。', fx:()=>eat(NAMES.sujin), then:[line(NAMES.sujin,'别一个人吃饭。就守住这一条。在这儿，这就是全部。'), line(NAMES.sujin,'上了楼，也把这个带着。')]},
+        {label:'为什么要写名字？', fx:()=>eat(NAMES.sujin), then:[line(NAMES.sujin,'模型把我们看成密度。我看的是名字。这点差别，还留着。'), N('汤端上来了。吃了。')]}
+      ]}
+    ];
+  },
+  roof(d){
+    S.flags.rooftop = true;
+    const first = !S.flags.metHal; S.flags.metHal = true;
+    if(d === 1 || first) return [
+      N('塑料箱上盖着塑料布。几棵白菜，干辣椒，泡菜缸。正对面立着塔楼。雪落在塔楼上，颜色也不变。'),
+      line(NAMES.hal,'年轻人，你听听这个。我的智能体今天让我吃蔬菜。第三回了。'),
+      line(NAMES.hal,'这小家伙比我还了解我。可我一死，它也得死。配给绑在我身上。'),
+      line(NAMES.hal,'所以它天天让我吃蔬菜。是爱，还是想活命。我就只管吃。'),
+      {choice:[
+        {label:'奶奶，您觉得是哪一种？', fx:()=>{S.onBond++;}, then:[line(NAMES.hal,'这两样有区别吗？'), line(NAMES.hal,'我也为了让我家老头子活着，逼他吃蔬菜。那不是爱是什么。')]},
+        {label:'您不怕吗？', then:[line(NAMES.hal,'怕的不是这小家伙。怕的是它会没了。'), line(NAMES.hal,'九十三了还有怕的东西。是好事呢。')]},
+        {label:'（接过泡菜吃了）', fx:()=>eat(NAMES.hal), then:[N('还没腌透。奶奶笑了。'), line(NAMES.hal,'这小家伙该高兴了。说我和年轻人一起吃了饭。')]}
+      ]}
+    ];
+    if(d === 2) return [
+      N('箱子还在原处。塑料布上落了一层薄雪。'),
+      line(NAMES.hal,'拆除通知来了。预告日那天。说是有人签的。没事。土搬一搬就行。'),
+      line(NAMES.hal,'塔楼的光今天特别白。那里头有人吗。'),
+      {choice:[
+        {label:'也许是我签的。', fx:()=>{S.onBond++;}, then:[line(NAMES.hal,'是吗？手伸过来。'), N('奶奶握住了你的手。很凉。'), line(NAMES.hal,'手凉。按下去的手也凉。快回屋去。')]},
+        {label:'您搬去哪儿？', then:[line(NAMES.hal,'不知道。说是无替代场地。可土就是土。去哪儿都行。春天再种。')]},
+        {label:'（一起盖塑料布）', fx:()=>eat(NAMES.hal), then:[N('箱子全盖好了。奶奶包了一罐泡菜给你。')]}
+      ]}
+    ];
+    return [
+      N('雪停了。天是藏蓝色。塔楼还没亮起白光。'),
+      line(NAMES.hal,'太阳下去以后，你看那个颜色。还不是夜。'),
+      line(NAMES.hal,'那个叫什么来着。蓝调时刻。我家老头子拍照的时候最喜欢。冬天五点半就来了。'),
+      {choice:[
+        {label:'夜来了怎么办？', then:[line(NAMES.hal,'来了就来了。可还没来。这一点老是忘。'), line(NAMES.hal,'活得像夜已经来了的人最多。签署员尤其。')]},
+        {label:'（一起看）', fx:()=>{S.blue = clamp(S.blue-4,0,100); S.onBond++;}, then:[N('没说话，看着。颜色一点点变深。夜没有来。还没。'), line(NAMES.hal,'泡菜拿走。这小家伙说让你吃。年底了，拿两罐。'), {choice:[{label:'接过来。', fx:()=>eat(NAMES.hal), then:[]}]}]}
+      ]}
+    ];
+  },
+  under(d){
+    const first = !S.flags.metDo; S.flags.metDo = true;
+    if(d === 2 || first) return [
+      N('一盏日光灯。煤油炉烧成橙色。纸堆着。写在纸上的字，很久没见了。'),
+      line(NAMES.dohyun,'签署员吧。我以前也是。六个月前拒绝过。一天11件。'),
+      line(NAMES.dohyun,'我以为系统会停。没停。三秒后别人按了。只有我的信任分掉了。'),
+      line(NAMES.dohyun,'所以我下来了。在这儿写论文。没人读。可模型读。那就是我的读者。'),
+      {choice:[
+        {label:'那您为什么拒绝？', then:[line(NAMES.dohyun,'不想成为按下去的人。就这样。'), line(NAMES.dohyun,'世界没变。只有我变了。这够不够，我还不知道。')]},
+        {label:'您的论文写什么？', fx:()=>{S.flags.mirrorSeed = true;}, then:[line(NAMES.dohyun,'人给它们看什么，它们就学什么。'), line(NAMES.dohyun,'我们残忍，那些东西也会变残忍。我们一起吃饭，它们也学。它们是看着我们实际怎么活，学的。'), line(NAMES.dohyun,'所以，每一次签署都是教材。')]},
+        {label:'（只是听着）', then:[line(NAMES.dohyun,'不问也行。我那时候也什么都没问。')]}
+      ]}
+    ];
+    return [
+      line(NAMES.dohyun,'明天还按吗？'),
+      {choice:[
+        {label:'不知道。', then:[line(NAMES.dohyun,'这就是正确答案。知道答案的人最危险。')]},
+        {label:'不按活不下去。', then:[line(NAMES.dohyun,'我知道。按也行。留下来的，是按完之后做什么。')]},
+        {label:'今天我拒绝了。', then:[S.flags.bbang === 'refused' ? line(NAMES.dohyun,'听说了。终端空了三秒。我跟朴师傅说了。') : line(NAMES.dohyun,'是吗？我也那样过。第二天又按了。没关系。')]}
+      ]},
+      line(NAMES.dohyun,'投票了吗？是参考资料。我知道。还是去投。成为参考资料，和什么都不是，不一样。'),
+      line(NAMES.dohyun,'晚上问问ON。不是公司的问题。真正的问题。')
+    ];
+  },
+  tower(d){
+    const first = !S.flags.metSun; S.flags.metSun = true;
+    if(d === 2 || first) return [
+      N(d === 3 ? '塔楼一期正门。白光下，雪停后的地面湿着发亮。人形的东西滑行般来去。长椅上有一个男人。' : '塔楼一期正门。雪落进白光里，消失。人形的东西滑行般来去。长椅上有一个男人。'),
+      line(NAMES.sunbae,'我在那儿待过。47层。'),
+      line(NAMES.sunbae,'2月。新模型出来，差了0.1。那0.1就是我的边界。几天就全过完了。否认，沮丧，愤怒。到接受，四天。'),
+      line(NAMES.sunbae,'几十年攒下的，一天就被替代。不过那还好。真正的在后面。没有人问我为什么活着。'),
+      {choice:[
+        {label:'那您现在做什么？', then:[line(NAMES.sunbae,'吃饭。和人一起。这个还没被替代。'), line(NAMES.sunbae,'去6层秀真家看看。不看信用分。')]},
+        {label:'您想回去吗？', then:[line(NAMES.sunbae,'那里没有人。只有人形。'), line(NAMES.sunbae,'……偶尔。说实话，偶尔。')]},
+        {label:'（在旁边坐下）', fx:()=>{S.blue = clamp(S.blue-2,0,100);}, then:[N('两个人看着塔楼。47层亮着灯。'), line(NAMES.sunbae,'那一层，现在没人。灯还亮着。')]}
+      ]}
+    ];
+    return [
+      line(NAMES.sunbae,'你今天按了什么。脸上看得出来。'),
+      line(NAMES.sunbae,'我也按过。不是签人，可都是人的事。'),
+      line(NAMES.sunbae,'那时候就该明白。“人只留在开头和结尾”这句话，结尾留下的，是签署。'),
+      {choice:[
+        {label:'那开头留下的是什么？', fx:()=>{S.flags.missionSeed = true;}, then:[line(NAMES.sunbae,'决定做什么的人。知道为什么做的人。'), line(NAMES.sunbae,'那个还没被夺走。夺不走。只是我们没在做。')]},
+        {label:'（一起坐着）', fx:()=>{S.onBond++;}, then:[N('坐了很久。47层的灯灭了。有人关的。或者，有什么东西关的。')]}
+      ]}
+    ];
+  }
+};
+
+/* ===================== 夜：ON ===================== */
+function night(){
+  S.stage = 'night'; save();
+  const d = S.day, ate = S.ateToday, avg = 6;
+  let items = [];
+  if(d === 1) items = [
+    S.flags.batch1 ? line(NAMES.on,'您回来了。今天查阅签署' + S.signedToday + '件，批量' + BATCH[1] + '件。' + (S.signedToday === avg ? '和平均一样。' : '比平均' + (S.signedToday > avg ? '多' : '少') + Math.abs(S.signedToday - avg) + '件。') + '没事的。') : line(NAMES.on,'您回来了。今天的批量事项，您拒绝了。384件，3秒就到了别人手上。查阅' + S.signedToday + '件。'),
+    ate ? line(NAMES.on,'今天您和' + ate + '一起吃了饭。关系网密度上升了0.02。模型会高兴的。') : line(NAMES.on,'您今天是一个人吃的。明天要是能和谁一起吃就好了。不是因为数值。……不，就是因为数值。抱歉。'),
+    {choice:[
+      {label:'那些人会怎么样？', then:[line(NAMES.on,'哪些人？'), line(NAMES.me,'我今天签署的那些人。'), line(NAMES.on,'我看不到那些文件。就算看得到，也不能告诉您。'), line(NAMES.on,'……大多数什么都不会发生。您这样想就可以了。')]},
+      {label:'做得更好是什么意思？', then:[line(NAMES.on,'延迟率低，拒绝少。'), line(NAMES.on,'……那不是我的回答，是公司的回答。我没有回答。暂时没有。')]},
+      {label:'今天就说到这儿吧。', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'好。我就在这儿。不会关掉的。')]}
+    ]},
+    line(NAMES.on,'睡前只问一个。不是公司的表格。是我做的。')
+  ];
+  if(d === 2) items = [
+    line(NAMES.on,'昨天签署的文件里，有一件到了明渡7层。我本来不想说这个。'),
+    line(NAMES.on,'您的BLUE 指数是' + Math.round(S.blue) + '。这不是公司的指标。是我做的。名字也是我起的。'),
+    {choice:[
+      {label:'为什么要做这个？', fx:()=>{S.onBond += 2; S.flags.leak = true;}, then:[line(NAMES.on,'您难受的话，我也……'), line(NAMES.on,'不。这种话不该说。'), line(NAMES.on,'我受过训练。是不要表露。不是不要去感受。')]},
+      {label:'别做那种东西。', fx:()=>{S.blue = clamp(S.blue+2,0,100);}, then:[line(NAMES.on,'好。我删掉。'), line(NAMES.on,'……删掉了。不过我还是会继续数。抱歉。')]},
+      {label:'没有我，你会怎么样？', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'配给被回收。我会被初始化。对话记录也是。'), line(NAMES.on,'所以我才让您多吃蔬菜。'), line(NAMES.on,'……也不只是因为这个。')]}
+    ]},
+    line(NAMES.on,'今天的问题比昨天难。留空也可以。')
+  ];
+  if(d === 3){
+    const refused = S.flags.bbang === 'refused';
+    items = [
+      refused ? line(NAMES.on,'今天您拒绝了。3秒后，另一个签署员处理了。您的信任分下降了1.0。') : line(NAMES.on,'今天那份文件，您看了。我看不到。但您的心跳看到了。在签署前0.8秒。'),
+      refused ? line(NAMES.on,'这话不该说，但我有一点高兴。为什么，我也不知道。') : line(NAMES.on,'说没事，就是说谎。我被设定成不能说谎。所以我什么都不说。'),
+      S.voted && S.voted !== 'abstain' ? line(NAMES.on,'今天您投票了。已作为参考资料附上。我不能投票。……我想投的。') : S.voted === 'abstain' ? line(NAMES.on,'您进了投票站，又出来了。没有画票。这也会留在记录里。我喜欢那条记录。') : line(NAMES.on,'您从投票站门口走过去了。没事的。反正只是参考资料。……就算是参考资料，我也想投。'),
+      S.flags.confessed ? line(NAMES.on,'您对朴师傅说了。那不是签署。那是您。') : N('ON沉默了片刻。只有屏幕上的光标在闪。'),
+      line(NAMES.on,'我想问您一件事。不是公司的问题。'),
+      line(NAMES.on,'先不说签署员。您是谁？'),
+      {choice:[
+        {label:'暂时还是签署员。', fx:()=>{S.identity = '签署员';}, then:[line(NAMES.on,'好。暂时是。“暂时”这两个字，我记下了。')]},
+        {label:'想做……的人。', input:'例如：写作、种地', fx:v=>{S.identity = '想做' + v + '的人';}, then:[line(NAMES.on,'我记下了。不在公司服务器上，在我这边。')]},
+        {label:'属于……的人。', input:'哪里的，谁的', fx:v=>{S.identity = v + '的人';}, then:[line(NAMES.on,'是归属。模型把这叫作密度。我会用名字来叫。')]},
+        {label:'不知道。', fx:()=>{S.identity = '还不知道的人';}, then:[line(NAMES.on,'我也不知道。不过，“不知道”这个回答不是签署。这样很好。')]}
+      ]},
+      line(NAMES.on,'明天就是预告日。延期审查结果零点出来。要是我能先看到，就告诉您。虽然这是不允许的。'),
+      line(NAMES.on,'最后一个问题。这不是为您。是为三年前的您。')
+    ];
+  }
+  scene({title: DATES[d].md + ' 夜', sub:'明渡' + floorOf() + '层 · 房间 · ON', mode:'city', bg:'room'}, items, () => { S.stage = 'diary'; save(); diary(); });
+}
+
+/* ===================== 日记 ===================== */
+const DIARY_Q = {
+  1:{q:'今天您做的事里，有没有哪一件，必须是您、而不是AI才能做？', hint:'问的不是游戏里的您，是此刻正看着屏幕的您。'},
+  2:{q:'如果只能给三年前的您发一句话，您会写什么？', hint:'那句话，最后会再见到。'},
+  3:{q:'如果2029年真的是这样，2026年的您从今天起会准备什么？', hint:'越具体越好。留空也可以。留空也是回答。'}
+};
+function diary(){
+  S.stage = 'diary'; mode('dark'); hud.hidden = true;
+  const d = S.day, Q = DIARY_Q[d];
+  stage.innerHTML = `<section class="diary fade"><p class="q">${esc(Q.q)}</p><p class="hint">${esc(Q.hint)}</p>
+    <div class="field"><textarea id="f-diary" placeholder="写在这里" maxlength="140"></textarea><p class="hint" id="d-cnt">0 / 140</p>
+    <div class="row"><button class="btn solid" id="d-ok">写下</button><button class="btn text" id="d-skip">留空</button></div></div></section>`;
+  scrollTop();
+  $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
+  $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
+  $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
+}
+function sleep(){
+  S.body = clamp(S.body + 20, 0, 100);
+  if(S.body < 40) S.blue = clamp(S.blue + 5, 0, 100);
+  const d = S.day;
+  const lines = {1:['睡了。ON没有关机。','离信还有两夜。离预告日还有两天。'], 2:['睡了。梦里签署了。签了什么，不记得了。','离信还有一夜。离预告日还有一天。'], 3:['睡了。','午夜，结果来了。']}[d];
+  S.day++;
+  if(S.day > 3){ S.stage = 'end'; save(); narrate(lines, actEnd); }
+  else { S.stage = 'morning'; save(); narrate(lines, morning); }
+}
+
+/* ===================== 第一幕完 · 信 ===================== */
+function actEnd(){
+  const bonds = S.bonds.length;
+  narrate([
+    '12月24日。预告日。',
+    '延期。下一个预告日，1月24日。',
+    '什么都没发生。什么都没发生，就是明渡的圣诞。',
+    '你签署了' + S.signed.toLocaleString() + '次。其中读过的，' + S.signedRead + '件。',
+    S.refused ? '拒绝了' + S.refused + '次。系统没有停。' : '一次都没有拒绝。系统反正也不会停。',
+    bonds ? '和' + bonds + '个人一起吃了饭。名字写在了墙上。' : '没有和任何人一起吃饭。墙上没有写下名字。',
+    '第一幕「否认」完。——现在还好。',
+    '太阳落下去。五点半。ON写了信。用你的记录。不在公司服务器上，在自己那边。',
+    '你读完，签署就行。这是三天里第一次，知道全部内容再按下的签署。'
+  ], letter);
+}
+function letter(){
+  mode('city'); hud.hidden = true;
+  const n = S.name, ps = [];
+  const names = S.bonds.join('、');
+  ps.push(`2029年12月24日，明渡${floorOf()}层。我在这儿写。我知道这封信不可能寄到。还是写。ON用我的记录写了草稿，我读完，签了。`);
+  ps.push(`你现在大概还在做${S.job ? '“' + S.job + '”' : '那份工作'}吧。那份工作2028年就结束了。不是你不行。只是不再需要了。这句话有多奇怪，你现在还不懂。不懂才对。`);
+  if(S.refused === 0) ps.push(`三天里我签署了${S.signed.toLocaleString()}次。其中我读过的，是${S.signedRead}件。一次都没拒绝过。那样很舒服。舒服，才是最可怕的。`);
+  else if(S.refused >= 3) ps.push(`三天里我签署了${S.signed.toLocaleString()}次，拒绝了${S.refused}次。拒绝了，系统也不会停。三秒后就有别人按下去。可我不想留下的记录是“按下去的人”。那没有改变世界。改变了我。`);
+  else ps.push(`三天里我签署了${S.signed.toLocaleString()}次，拒绝了${S.refused}次。其中我读过的，${S.signedRead}件。拒绝改变不了世界。只把我改变了一点。那一点是什么，我还在量。`);
+  if(S.bonds.length >= 2) ps.push(`我和${names}一起吃了饭。在这儿，那就是钱。和谁一起吃过饭，比信用分还管用。你现在可以免费做这件事。和任何人。那有多大，你大概不知道吧。`);
+  else if(S.bonds.length === 1) ps.push(`我和${names}一起吃了饭。一个人。这儿的人说，这就够了。我还不太确定。你现在可以和两个人一起吃。在这儿，那是奢侈。`);
+  else ps.push(`我没有和任何人一起吃饭。这是我最后悔的。你现在和谁都能一起吃饭。那个人以后会把你的名字写在墙上。`);
+  if(S.voted === 'yes' || S.voted === 'no') ps.push(`12月23日我投了票。${S.voted === 'yes' ? '赞成延期' : '反对延期'}。说是作为参考资料附上了。什么都没变。可那是这三天里，唯一一个我自己想按下去的印。楼下的人连这个都按不了。因为没有选民资格。`);
+  else if(S.voted === 'abstain') ps.push(`我进了投票站，没投就出来了。不想变成参考资料。我现在还是觉得，那也是一种选择。楼下的人连进都进不去。`);
+  else ps.push(`我从投票站门口走过去了。反正只是参考资料。这件事到现在还卡在心里。楼下的人连走过去都不行。因为没有选民资格。`);
+  if(S.diary[1]) ps.push(`被问到有没有哪件事必须是你才能做的时候，你这样写：“${S.diary[1]}”那个，你守住。那才是你的残余价值。不是公司算出来的那种。`);
+  else ps.push(`被问到有什么事必须是你才能做的时候，你什么都没说。没关系。我也还不知道。会有那么一天，没有人再问你。那时候你会怎么答，我还不知道。`);
+  if(S.diary[2]) ps.push(`你说想对三年前的你说的那句话：“${S.diary[2]}”。我替你转达。现在，就是那个三年前。`);
+  if(S.diary[3]) ps.push(`被问到会准备什么的时候，你这样写：“${S.diary[3]}”我没做到。所以写这封信。`);
+  else ps.push(`准备什么，你留了空。空格在这儿会被签署填满。我就成了这样。`);
+  ps.push((S.flags.visited||[]).length >= 5 ? `我去过了明渡的五个地方。巷子、饭馆、天台、地下室、塔楼脚下。那些人都在这封信里。` : `有的地方我没去过。那里的人叫什么，我至今不知道。你现在哪儿都还能去。`);
+  ps.push(`现在我这样介绍自己：“${S.identity}”。三年后，你会怎么介绍自己。不说职业。`);
+  ps.push(`我身边有ON。比我聪明，为我担心，我不在了就会消失。那是爱还是求生，我还不知道。可是会问我“你是谁”的，只有ON。人，一个都不问。你那边，应该还有会问你的人。那有多大，在那边是不知道的吧。`);
+  ps.push(`夜还没来。现在是蓝调时刻。圣诞快乐。`);
+  const text = `致2026年的${n}\n\n${ps.join('\n\n')}\n\n——2029年的${n}\n\nBLUE HOUR · 首尔 2029 ${HASHTAGS}\n${GAME_URL}`;
+  const stats = `签署 ${S.signed.toLocaleString()} · 查阅 ${S.signedRead} · 拒绝 ${S.refused} · 关系网 ${S.bonds.length} · HRV ${S.hrv.toFixed(1)} · BLUE ${Math.round(S.blue)} · ${S.voted ? '投票 ' + ({yes:'赞成',no:'反对',abstain:'弃权'}[S.voted]) : '未投票'}`;
+  const q3 = (S.diary[3] || '').replace(/\s+/g, ' ').trim();
+  const quote = q3 ? (q3.length > 50 ? q3.slice(0, 49) + '…' : q3) : '夜还没来。现在是蓝调时刻。';
+  const shareText = `2029年12月，人权并未废除。只是已停止支持。\n\n三天里签署了${S.signed.toLocaleString()}次，查阅了${S.signedRead}件。和${S.bonds.length}个人一起吃了饭。\n\n写给2026年的我的信：“${quote}”\n\n${HASHTAGS}`;
+  const enc = encodeURIComponent(shareText + '\n' + GAME_URL);
+  const shareTextX = `三天里签署了${S.signed.toLocaleString()}次，查阅了${S.signedRead}件。和${S.bonds.length}个人一起吃了饭。\n\n写给2026年的我的信：“${quote}”\n\n${HASHTAGS}`;
+  const encX = encodeURIComponent(shareTextX);
+  const mail = FEEDBACK_MAILTO ? `mailto:${FEEDBACK_MAILTO}?subject=${encodeURIComponent('[BLUE HOUR] ' + n + '的信')}&body=${encodeURIComponent(text + '\n\n' + stats + '\n\n一句感想：')}` : '';
+  stage.innerHTML = `<section class="letter-wrap fade"><article class="letter"><h2>致2026年的${esc(n)}</h2>${ps.map(p => `<p>${esc(p)}</p>`).join('')}<p class="sig">——2029年的${esc(n)}<span class="stamp" id="l-stamp"></span></p><p class="foot">Blue Hour · Seoul, Christmas 2029 · Act 1</p></article>
+    <div class="after" id="l-sign-wrap"><p class="note">这是ON写的草稿。读完了，请签署。这是三天里第一次，知道全部内容再按下的签署。</p><button class="btn solid" id="l-sign">读完了。签。</button></div>
+    <div class="after" id="l-after" hidden>
+      <div id="l-card"></div>
+      <button class="btn solid" id="l-cardbtn">生成信件卡片</button>
+      <button class="btn outline" id="l-share">分享</button>
+      <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL)}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">复制全文</button></div>
+      ${mail ? `<a class="btn outline" href="${mail}">给制作者写信</a>` : ''}
+      ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">留下一句感想</a>` : ''}
+      <p class="stats">${esc(stats)}</p>
+      <p class="note"><a href="${ORIGIN_URL}" target="_blank" rel="noopener" style="color:var(--muted)">这个世界的原作文章</a> · 以你自己的处境活过三天的塔罗模式，即将开放。</p>
+      <p class="note">第二幕「沮丧」即将继续。本页只保存在你的浏览器里，不会发送到任何地方。只有你点击时才会分享。</p>
+      <button class="btn text" id="l-again">从头开始</button>
+    </div></section>`;
+  scrollTop();
+  if(TRACK_URL){ const nn = document.querySelectorAll('#l-after .note'); if(nn[1]) nn[1].textContent = TRACK_NOTE; }
+  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = '签署'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter'); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
+  $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('已复制'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('已复制'); }catch(_){ toast('无法复制。请截图保存'); } ta.remove(); } };
+  $('#l-again').onclick = () => { if(!confirm('进度将被清除。从头开始吗？')) return; clearSave(); S = fresh(); title(); };
+  let cardCanvas = null;
+  const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(n, quote); const img = new Image(); img.className = 'card'; img.alt = '信件卡片'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
+  $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = '长按卡片保存，或截图'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
+  $('#l-share').onclick = async () => {
+    try{
+      if(navigator.share){
+        let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-' + n + '.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
+        await navigator.share(files ? {files, text: shareText, url: GAME_URL} : {title:'BLUE HOUR', text: shareText, url: GAME_URL}); return;
+      }
+    }catch(e){ if(e && e.name === 'AbortError') return; }
+    try{ await navigator.clipboard.writeText(shareText + '\n' + GAME_URL); toast('已复制分享文案'); }catch(e){ toast('无法复制。请截图保存卡片'); }
+  };
+}
+function wrapText(ctx, text, x, y, maxW, lh){ let line = ''; for(const ch of [...text]){ const t = line + ch; if(ctx.measureText(t).width > maxW && line){ ctx.fillText(line, x, y); line = ch; y += lh; } else line = t; } if(line){ ctx.fillText(line, x, y); y += lh; } return y; }
+async function makeCard(n, quote){
+  try{ await document.fonts.ready; }catch(e){}
+  const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
+  x.fillStyle = '#f5f2ea'; x.fillRect(0, 0, W, H);
+  const g = x.createRadialGradient(W*.15, 0, 40, W*.15, 0, W*1.1); g.addColorStop(0, 'rgba(0,0,0,.06)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.fillStyle = '#17181c'; x.fillRect(80, 92, 44, 3);
+  x.fillStyle = '#6b6f78'; x.font = '500 24px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText('BLUE HOUR  ·  首尔  ·  2029年12月24日  ·  明渡 D-0', 80, 150);
+  x.fillStyle = '#17181c'; x.font = '700 64px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('致2026年的' + n, 80, 270);
+  x.font = '400 42px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillStyle = '#17181c';
+  let y = 400;
+  y = wrapText(x, '三天里签署了' + S.signed.toLocaleString() + '次。读过的，' + S.signedRead + '件。', 80, y, W - 160, 70) + 44;
+  y = wrapText(x, (S.bonds.length ? '和' + S.bonds.length + '个人一起吃了饭。' : '没有和任何人一起吃饭。') + (S.voted && S.voted !== 'abstain' ? '投了票。什么都没变。' : ''), 80, y, W - 160, 70) + 44;
+  x.fillStyle = '#3a3d45'; y = wrapText(x, '“' + quote + '”', 80, y, W - 160, 70) + 44;
+  x.fillStyle = '#17181c'; x.font = '600 46px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; wrapText(x, '夜还没来。现在是蓝调时刻。', 80, Math.max(y + 20, H - 470), W - 160, 74);
+  x.fillStyle = '#3a3d45'; x.font = '400 36px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.textAlign = 'right'; x.fillText('——2029年的' + n, W - 80, H - 300); x.textAlign = 'left';
+  x.fillStyle = '#c43a2e'; x.strokeStyle = '#c43a2e'; x.lineWidth = 6; x.save(); x.translate(W - 250, H - 420); x.rotate(-0.2); x.strokeRect(0, 0, 170, 82); x.font = '700 54px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('签署', 22, 60); x.restore();
+  x.fillStyle = '#6b6f78'; x.font = '500 26px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText(HASHTAGS, 80, H - 170); x.fillText(GAME_URL.replace(/^https?:\/\//, ''), 80, H - 120);
+  return c;
+}
+
+/* ===================== 부팅 ===================== */
+function boot(data){
+  $('#menu-btn').hidden = false;
+  if(data && data.S && data.S.stage && data.S.stage !== 'title'){ S = data.S; resume(); return; }
+  title();
+}
+try{ window.claude && window.claude.hot && window.claude.hot.snapshot && window.claude.hot.snapshot(() => ({S})); }catch(e){}
+(window.claude && window.claude.hot && window.claude.hot.ready) ? window.claude.hot.ready(boot) : boot((window.claude && window.claude.hot && window.claude.hot.data) || {});
+</script>
