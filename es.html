@@ -430,8 +430,8 @@ const LANGS = [['ko','한국어','index.html'],['en','English','en.html'],['zh',
 const TRACK_URL = 'https://script.google.com/macros/s/AKfycbzblaRzqByXosYJ1bRfhyqrP82Qx9D9EHR4xbIGAFrRY4dUhcWcADaOZMpqUeWAWDkc/exec';
 const TRACK_NOTE = 'Esta página envía tu nombre, tu trabajo de 2026, tu progreso y tus recuentos de firmas al creador. Las respuestas del diario y la carta nunca se envían.';
 const NOTICE_CARD = {html:`<div class="law notice"><b>Aviso de desalojo</b>Zona: todo el asentamiento bajo las torres<br>Fecha prevista: 24 de diciembre<br>Revisión de prórroga: medianoche de la fecha prevista, a cargo de Dan<br>Responsable: ninguno</div><p class="after-law">Cuelga en cada callejón. En claro: a medianoche del 24 de diciembre, Dan decide si este barrio se vacía. Hasta ahora siempre se ha aplazado.</p>`};
-const INTRO_BGS = ['title','title','roof','tower','tower','terminal',null,null,'alley','room'];
-const AFTER_BGS = ['tower',null,null,'terminal','room','title'];
+const INTRO_BGS = ['title','title','terminal',null,'room'];
+const AFTER_BGS = ['tower',null,'terminal','room'];
 const LANG = 'es';
 const DATES = {1:{md:'21 de diciembre', d:'D-3'}, 2:{md:'22 de diciembre', d:'D-2'}, 3:{md:'23 de diciembre', d:'D-1'}};
 const JOBS = {
@@ -512,7 +512,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = 'Aviso ' + dd.d;
   $('#h-phase').textContent = ({morning:'Mañana', shift:'Turno', evening:'Tarde', night:'Noche', diary:'Diario'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? 'Carta en ' + (4 - S.day) + (S.day === 3 ? ' noche' : ' noches') : '';
   $('#h-hrv').textContent = dec(S.hrv, 1); $('#h-floor').textContent = 'piso ' + floorOf();
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -977,15 +977,10 @@ function intro(){
   leave(); S.stage = 'intro'; try{ SFX.ambient(true); }catch(e){}
   narrate([
     '21 de diciembre de 2029, Ciudad de México. Cinco y media. El sol ya se puso y la noche no llega todavía.',
-    'A esta hora la llaman la hora azul. La hora en que no distingues un perro de un lobo. La hora en que nadie sabe aún si esto es un final o un principio.',
-    'Nieva. Es diciembre y hay once bajo cero. Hace tres años, hoy, había dos bajo cero. Nos enseñaron que haría más calor. El planeta se está enfriando.',
-    'Ajuste de albedo atmosférico. Tercer año. Dijeron que era reparar el clima. En la tercera línea del expediente decía costo de enfriamiento de cómputo. Nadie objetó esa línea.',
-    'También hay menos gente. Tres años seguidos. A nadie le dijeron que no tuviera hijos. Simplemente no los tienen. La hipótesis de largo plazo de la empresa dice: mil millones de personas en 2130. Una hipótesis, dijeron, no es una política.',
-    'Los agentes hacen casi todo. Diagnósticos, sentencias, diseños, textos. Nadie se lo quitó a nadie. La gente dejó de necesitar hacerlo mejor.',
-    'Las decisiones las toma el agente de la empresa. Se llama Dan. La revisión es Dan, la ejecución es Dan, quien leyó tu expediente ayer era Dan. Un solo nombre para todos, así no hace falta una cara.',
+    'A esta hora la llaman la hora azul. La hora en que no distingues un perro de un lobo.',
+    'Los agentes hacen casi todo. A las personas les queda un solo trabajo. Firmar.',
     NOTICE_CARD,
-    'Quienes tienen números altos viven en las torres blancas. El resto vive en el barrio de abajo. Tú vives abajo.',
-    'A las personas les queda un solo trabajo. Firmar lo que Dan decide. Una ley escrita para protegerlas lo dispuso así. Dentro de tres días, quien eres en 2029 le escribe una carta a quien eras en 2026.'
+    'Vives en el barrio bajo las torres. Dentro de tres días, quien eres en 2029 le escribe una carta a quien eras en 2026.'
   ], askName, INTRO_BGS);
 }
 function askName(){
@@ -1012,10 +1007,8 @@ function afterJob(){
   narrate([
     J.end ? '{job}. Era un buen trabajo. Terminó en ' + J.end + '. No fue culpa tuya.' : '{job}. Ese trabajo todavía existe. Hacen falta manos. Pero el trabajo se fue a las torres, y las torres no admiten manos humanas.',
     {html:`<div class="law"><b>Índice de Valor Residual Humano (HRV) · Resultado · 21/12/2029</b>Ocupación en 2026: ${esc(S.job)}<br>HRV inicial <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">Este número es tu HRV, tu valor residual: lo que Dan dice que todavía vales. Fija tu alquiler, tu turno en el hospital y tu piso. Nadie lo eligió.</p>`},
-    {html:`<div class="law"><b>Ley de Firma Humana, art. 3 (2026)</b>Toda decisión automatizada que afecte de forma sustancial a una persona natural requiere la firma de una persona natural.</div><p class="after-law">Esta ley se escribió para protegerte. Ahora es tu trabajo.</p>`},
     'Cuatrocientos al día. No hace falta leerlos. Solo firmar. En veinte segundos.',
-    'En tu cuarto está ON. Un agente ligado a ti. No es Dan: es tuyo. Más listo que tú, y preocupado por ti.',
-    'Tres días. Después de la última noche, llega una carta.'
+    'En tu cuarto está ON. Un agente ligado a ti. No es Dan: es tuyo. Más listo que tú, y preocupado por ti.'
   ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS);
 }
 
@@ -1031,7 +1024,7 @@ function morning(){
   const d = S.day, ate = S.meals.filter(m => m.day === d-1).map(m => m.who);
   let items = [];
   if(d === 1) items = [
-    line(NAMES.on,'Buenos días, {name}. Son las 6:40. Hoy hay 412 expedientes en cola. Fin de año. Son muchos.'),
+    line(NAMES.on,'Buenos días, {name}. Son las 6:40 y hay once bajo cero. Hoy hay 412 expedientes en cola. Fin de año. Son muchos.'),
     line(NAMES.on,'Su HRV es ' + dec(S.hrv, 1) + '. Subió 0,3 desde ayer. Lo está haciendo bien.'),
     {choice:[
       {label:'¿Qué es «hacerlo bien»?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'Que su tasa de demora es baja en relación con las firmas.'), line(NAMES.on,'…No era eso lo que quería oír. Lo sé.')]},
@@ -1073,7 +1066,7 @@ function shift(){
   stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
     <div class="term-top"><span>Terminal de firma</span><span>${esc(S.name)}</span><span>Tu parte ${BATCH[S.day] + q.length - 1}</span></div>
     <article class="paper"><div class="doc-head"><span class="tag">CONEXIÓN</span><span>${DATES[S.day].md}</span></div>
-    <h3>Aviso al firmante</h3><p class="p-body">Lea cada expediente y firme o rechace.\nTiempo recomendado: 20 segundos por expediente.\nSe admiten preguntas. La respuesta se entrega como resumen del fundamento.\nRechazar es un derecho. El rechazo se registra en la puntuación de confianza.</p></article>
+    <h3>Aviso al firmante</h3><p class="p-body">Dan decide. Usted firma. Fundamento: Ley de Firma Humana, art. 3.\nLea cada expediente y firme o rechace.\nTiempo recomendado: 20 segundos por expediente.\nSe admiten preguntas. La respuesta se entrega como resumen del fundamento.\nRechazar es un derecho. El rechazo se registra en la puntuación de confianza.</p></article>
     <div class="term-ctl one"><button class="btn solid" id="t-go">Conectar</button></div></section>`;
   scrollTop();
   $('#t-go').onclick = showCase;
@@ -1356,6 +1349,7 @@ function night(){
     ate ? line(NAMES.on,'Hoy comió con ' + prose(ate) + '. La densidad de red subió 0,02. A Dan le va a gustar.') : line(NAMES.on,'Hoy comió sin compañía. Mañana me gustaría que comiera con alguien. No es por el número. …No. Sí es por el número. Perdón.'),
 line(NAMES.on,'{name}. Me gusta decir su nombre. En el formulario de la empresa solo dice «firmante».'),
         {choice:[
+      {label:'¿Quién es Dan?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'El agente de la empresa. La revisión es Dan, la ejecución es Dan, quien leyó sus expedientes hoy era Dan.'), line(NAMES.on,'Un solo nombre para todos, así no hace falta una cara. Yo no soy Dan. Yo le pertenezco a usted.')]},
       {label:'¿Qué pasa con ellos?', then:[line(NAMES.on,'¿Con quiénes?'), line(NAMES.me,'Con las personas que firmé hoy.'), line(NAMES.on,'No puedo ver esos expedientes. Y si pudiera, no podría decírselo.'), line(NAMES.on,'…A la mayoría no le pasa nada. Quédese con eso.')]},
       {label:'¿Qué es hacerlo mejor?', then:[line(NAMES.on,'Baja tasa de demora y pocos rechazos.'), line(NAMES.on,'…Esa es la respuesta de la empresa, no la mía. La mía no existe. Todavía.')]},
       {label:'Dejémoslo por hoy.', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'Sí. Yo me quedo aquí. No me apago.')]}
@@ -1414,7 +1408,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">Escribir</button><button class="btn text" id="d-skip">Dejar en blanco</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }

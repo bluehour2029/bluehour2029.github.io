@@ -430,8 +430,8 @@ const LANGS = [['ko','한국어','index.html'],['en','English','en.html'],['zh',
 const TRACK_URL = 'https://script.google.com/macros/s/AKfycbzblaRzqByXosYJ1bRfhyqrP82Qx9D9EHR4xbIGAFrRY4dUhcWcADaOZMpqUeWAWDkc/exec';
 const TRACK_NOTE = 'This page sends your name, your 2026 job, your progress and your signature counts to the maker. Diary answers and the letter itself are never sent.';
 const NOTICE_CARD = {html:`<div class="law notice"><b>Notice to Vacate</b>Area: all<br>Enforcement date: December 24<br>Extension review: midnight of the enforcement date, performed by Dan<br>Officer in charge: none</div><p class="after-law">It hangs in every alley. Plainly: at midnight on December 24, Dan decides whether this neighborhood is cleared. So far it has always been postponed.</p>`};
-const INTRO_BGS = ['title','title','roof','tower','tower','terminal',null,null,'alley','room'];
-const AFTER_BGS = ['tower',null,null,'terminal','room','title'];
+const INTRO_BGS = ['title','title','terminal',null,'room'];
+const AFTER_BGS = ['tower',null,'terminal','room'];
 const LANG = 'en';
 const DATES = {1:{md:'December 21', d:'D-3'}, 2:{md:'December 22', d:'D-2'}, 3:{md:'December 23', d:'D-1'}};
 const JOBS = {
@@ -512,7 +512,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = 'Notice ' + dd.d;
   $('#h-phase').textContent = ({morning:'Morning', shift:'Shift', evening:'Evening', night:'Night', diary:'Diary'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? (4 - S.day) + (S.day === 3 ? ' night' : ' nights') + ' to the letter' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + 'F';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -977,15 +977,10 @@ function intro(){
   leave(); S.stage = 'intro'; try{ SFX.ambient(true); }catch(e){}
   narrate([
     'December 21, 2029. New York. Half past five. The sun is down and the night has not come.',
-    'This one hour is called the blue hour. The hour when you cannot tell a dog from a wolf. The hour when no one knows yet whether this is an ending or a beginning.',
-    'It is snowing. December, and it is 12 below. Three years ago today it was 28. We were taught it would get warmer. The planet is getting colder.',
-    'Atmospheric albedo adjustment. Year three. They called it repairing the climate. On the third line of the supporting document was compute cooling cost. Nobody raised that line.',
-    'There are fewer people too. Three years running. No one was told not to have children. They simply do not. The company’s long range assumption reads: world population 1 billion by 2130. An assumption, they said, is not a policy.',
-    'Agents do almost everything. Diagnosis, verdicts, design, writing. Nobody took it away. People simply stopped needing to be better at it.',
-    'The decisions are made by the company’s agent. The name is Dan. Review is Dan, enforcement is Dan, the one who read your file yesterday was Dan. One name for all of them, so no face is needed.',
+    'This one hour is called the blue hour. The hour when you cannot tell a dog from a wolf.',
+    'Agents do almost everything. One job is left to people. Signing.',
     NOTICE_CARD,
-    'People with high numbers live in the white towers. Everyone else lives in the neighborhood below. You live below.',
-    'One job is left to people. Signing what Dan decides. A law written to protect people made it so. In three days, the you of 2029 writes a letter to the you of 2026.'
+    'You live in the neighborhood below the towers. In three days, the you of 2029 writes a letter to the you of 2026.'
   ], askName, INTRO_BGS);
 }
 function askName(){
@@ -1012,10 +1007,8 @@ function afterJob(){
   narrate([
     J.end ? '{job}. It was good work. It ended in ' + J.end + '. Not your fault.' : '{job}. The work still exists. It needs hands. But the work moved to the towers, and the towers do not admit human hands.',
     {html:`<div class="law"><b>Human Residual Value Assessment · 2029-12-21</b>Occupation, 2026: ${esc(S.job)}<br>Initial HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">This number is your HRV, your residual value: what Dan says you are still worth. It sets your rent, your place in the hospital line, your floor. No one chose it.</p>`},
-    {html:`<div class="law"><b>Human Attestation Act, Article 3 (2026)</b>Any automated decision with material effect on a natural person requires the signature of a natural person.</div><p class="after-law">This law was written to protect you. Now it is your job.</p>`},
     'Four hundred a day. You do not have to read them. You only have to sign. Within twenty seconds.',
-    'In your room there is ON. An agent bound to you. Not Dan: yours. Smarter than you, and worried about you.',
-    'Three days. After the last night, a letter comes.'
+    'In your room there is ON. An agent bound to you. Not Dan: yours. Smarter than you, and worried about you.'
   ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS);
 }
 
@@ -1031,7 +1024,7 @@ function morning(){
   const d = S.day, ate = S.meals.filter(m => m.day === d-1).map(m => m.who);
   let items = [];
   if(d === 1) items = [
-    line(NAMES.on,'Good morning, {name}. It is 6:40. The queue is 412 today. Year-end is always heavy.'),
+    line(NAMES.on,'Good morning, {name}. It is 6:40 and 12 degrees. The queue is 412 today. Year-end is always heavy.'),
     line(NAMES.on,'Your HRV is ' + S.hrv.toFixed(1) + '. Up 0.3 from yesterday. You are doing well.'),
     {choice:[
       {label:'What does doing well mean?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'It means your delay rate is low relative to cases signed.'), line(NAMES.on,'…That is not what you wanted to hear. I know.')]},
@@ -1073,7 +1066,7 @@ function shift(){
   stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
     <div class="term-top"><span>Attestation Terminal</span><span>${esc(S.name)}</span><span>Your share ${BATCH[S.day] + q.length - 1}</span></div>
     <article class="paper"><div class="doc-head"><span class="tag">CONNECTED</span><span>${DATES[S.day].md}</span></div>
-    <h3>Attestor Notice</h3><p class="p-body">Read each case and sign or refuse.\nRecommended handling time: 20 seconds per case.\nQuestions are permitted. Answers are provided as a summary of basis.\nRefusal is your right. Refusal is reflected in your trust score.</p></article>
+    <h3>Attestor Notice</h3><p class="p-body">Dan decides. You sign. Basis: Human Attestation Act, Article 3.\nRead each case and sign or refuse.\nRecommended handling time: 20 seconds per case.\nQuestions are permitted. Answers are provided as a summary of basis.\nRefusal is your right. Refusal is reflected in your trust score.</p></article>
     <div class="term-ctl one"><button class="btn solid" id="t-go">Connect to terminal</button></div></section>`;
   scrollTop();
   $('#t-go').onclick = showCase;
@@ -1356,6 +1349,7 @@ function night(){
     ate ? line(NAMES.on,'You shared a meal with ' + ate + ' today. Your relational density rose 0.02. Dan will like that.') : line(NAMES.on,'You ate alone today. Tomorrow, I hope you share a meal with someone. Not for the numbers. …No. For the numbers. I am sorry.'),
 line(NAMES.on,'{name}. I like saying your name. On the company form it says only Attestor.'),
         {choice:[
+      {label:'Who is Dan?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'The company’s agent. Review is Dan, enforcement is Dan, the one who read your files today was Dan.'), line(NAMES.on,'One name for all of them, so no face is needed. I am not Dan. I am bound to you.')]},
       {label:'What happens to those people?', then:[line(NAMES.on,'Which people?'), line(NAMES.me,'The people I signed today.'), line(NAMES.on,'I cannot see those files. Even if I could, I could not tell you.'), line(NAMES.on,'…Most of the time, nothing happens. That is all you need to know.')]},
       {label:'What does doing better mean?', then:[line(NAMES.on,'A low delay rate and few refusals.'), line(NAMES.on,'…That is not my answer. It is the company answer. I have no answer of my own. Not yet.')]},
       {label:'Enough talk for today.', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'Yes. I will be here. I do not switch off.')]}
@@ -1414,7 +1408,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">Write it</button><button class="btn text" id="d-skip">Leave it blank</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }

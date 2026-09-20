@@ -429,8 +429,8 @@ const LANGS = [['ko','한국어','index.html'],['en','English','en.html'],['zh',
 const TRACK_URL = 'https://script.google.com/macros/s/AKfycbzblaRzqByXosYJ1bRfhyqrP82Qx9D9EHR4xbIGAFrRY4dUhcWcADaOZMpqUeWAWDkc/exec';
 const TRACK_NOTE = '本页会把你的名字、2026年的职业、进度和签署次数发送给制作者。日记内容和信件本身不会发送。';
 const NOTICE_CARD = {html:`<div class="law notice"><b>明渡（腾退）执行预告</b>对象：塔楼下全区<br>预告日：12月24日<br>延期审查：预告日午夜，由丹执行<br>负责人：无</div><p class="after-law">每条巷子都贴着。说白了：12月24日午夜，丹决定要不要清空这个街区。到目前为止，总是被延后。</p>`};
-const INTRO_BGS = ['title','title','roof','tower','tower','terminal',null,null,'alley','room'];
-const AFTER_BGS = ['tower',null,null,'terminal','room','title'];
+const INTRO_BGS = ['title','title','terminal',null,'room'];
+const AFTER_BGS = ['tower',null,'terminal','room'];
 const LANG = 'zh';
 const DATES = {1:{md:'12月21日', d:'D-3'}, 2:{md:'12月22日', d:'D-2'}, 3:{md:'12月23日', d:'D-1'}};
 const JOBS = {
@@ -511,7 +511,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '预告 ' + dd.d;
   $('#h-phase').textContent = ({morning:'早晨', shift:'值班', evening:'傍晚', night:'夜', diary:'日记'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '离信还有' + (4 - S.day) + '夜' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '层';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -976,15 +976,10 @@ function intro(){
   leave(); S.stage = 'intro'; try{ SFX.ambient(true); }catch(e){}
   narrate([
     '2029年12月21日，上海。五点半。太阳落了，夜还没来。',
-    '这一个小时叫蓝调时刻。分不清狗和狼的时间。还不知道是结束还是开始的时间。',
-    '下雪了。十二月，零下11度。三年前的今天是零下2度。我们学的是会变暖，可地球在变冷。',
-    '大气反照率调节。第三年。说是在修复气候。依据文件的第三行写着算力冷却成本。没有人对那一行提出异议。',
-    '人也在变少。连续三年。没有人说过不要生。只是不生了。公司的长期假设里写着：2130年世界人口10亿。他们说，假设不是政策。',
-    '智能体几乎做所有的事。看病、判案、设计、写作。不是谁抢走的。只是人不再需要做得更好。',
-    '决定由公司的智能体做出。名字是丹。审查是丹，执行是丹，昨天读你材料的也是丹。名字只有一个，所以不需要脸。',
+    '这一个小时叫蓝调时刻。分不清狗和狼的时间。',
+    '智能体几乎做所有的事。留给人的只有一件事。签字。',
     NOTICE_CARD,
-    '数字高的人住在白色塔楼里。其余的人住在塔楼下面的街区。你住在下面。',
-    '留给人的只有一件事。在丹做出的决定上签字。一部为了保护人而写的法律这样规定。三天后，2029年的你会写一封信给2026年的你。'
+    '你住在塔楼下面的街区。三天后，2029年的你会写一封信给2026年的你。'
   ], askName, INTRO_BGS);
 }
 function askName(){
@@ -1011,10 +1006,8 @@ function afterJob(){
   narrate([
     J.end ? '{job}。是份好工作。' + J.end + '年结束了。不是你的错。' : '{job}。这份工作还在。因为需要人手。可活儿都去了塔楼，塔楼不收人手。',
     {html:`<div class="law"><b>人类残余价值指数核定结果 · 2029.12.21</b>2026年职业：${esc(S.job)}<br>初始 HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">这个数字就是HRV，残余价值：丹核定的你还剩多少用处。它决定房租、就医顺序和楼层。没有人决定它。</p>`},
-    {html:`<div class="law"><b>《人类签署法》第三条（2026）</b>对自然人产生重大影响的自动化决定，须经自然人签署。</div><p class="after-law">这条法律是为了保护你而写的。现在它是你的工作。</p>`},
     '一天四百件。不必读。签就行。二十秒内。',
-    '房间里有ON。归属于你的智能体。不是丹，是你这边的。比你聪明，也为你担心。',
-    '三天。最后一夜过去，信就会来。'
+    '房间里有ON。归属于你的智能体。不是丹，是你这边的。比你聪明，也为你担心。'
   ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS);
 }
 
@@ -1030,7 +1023,7 @@ function morning(){
   const d = S.day, ate = S.meals.filter(m => m.day === d-1).map(m => m.who);
   let items = [];
   if(d === 1) items = [
-    line(NAMES.on,'早上好，{name}。现在6:40。今天队列412件。年末，多了些。'),
+    line(NAMES.on,'早上好，{name}。现在6:40，零下11度。今天队列412件。年末，多了些。'),
     line(NAMES.on,'您的HRV是' + S.hrv.toFixed(1) + '。比昨天高了0.3。您做得很好。'),
     {choice:[
       {label:'“做得很好”是什么意思？', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'是说相对于签署件数，延迟率很低。'), line(NAMES.on,'……您想听的，不是这句。我知道。')]},
@@ -1072,7 +1065,7 @@ function shift(){
   stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
     <div class="term-top"><span>签署终端</span><span>${esc(S.name)}</span><span>你的配额 ${BATCH[S.day] + q.length - 1}</span></div>
     <article class="paper"><div class="doc-head"><span class="tag">接入</span><span>${DATES[S.day].md}</span></div>
-    <h3>签署员须知</h3><p class="p-body">请逐件阅读并签署或拒绝。\n建议处理时间：每件20秒。\n允许询问。答复以依据摘要形式提供。\n拒绝是权利。拒绝将计入信任分。</p></article>
+    <h3>签署员须知</h3><p class="p-body">决定由丹做出。签字由你来。依据：《人类签署法》第三条。\n请逐件阅读并签署或拒绝。\n建议处理时间：每件20秒。\n允许询问。答复以依据摘要形式提供。\n拒绝是权利。拒绝将计入信任分。</p></article>
     <div class="term-ctl one"><button class="btn solid" id="t-go">接入终端</button></div></section>`;
   scrollTop();
   $('#t-go').onclick = showCase;
@@ -1355,6 +1348,7 @@ function night(){
     ate ? line(NAMES.on,'今天您和' + ate + '一起吃了饭。关系网密度上升了0.02。丹会高兴的。') : line(NAMES.on,'您今天是一个人吃的。明天要是能和谁一起吃就好了。不是因为数值。……不，就是因为数值。抱歉。'),
 line(NAMES.on,'{name}。我喜欢叫您的名字。公司的表格上只写着“签署员”。'),
         {choice:[
+      {label:'丹是谁？', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'公司的智能体。审查是丹，执行是丹，今天读您材料的也是丹。'), line(NAMES.on,'名字只有一个，所以不需要脸。我不是丹。我归属于您。')]},
       {label:'那些人会怎么样？', then:[line(NAMES.on,'哪些人？'), line(NAMES.me,'我今天签署的那些人。'), line(NAMES.on,'我看不到那些文件。就算看得到，也不能告诉您。'), line(NAMES.on,'……大多数什么都不会发生。您这样想就可以了。')]},
       {label:'做得更好是什么意思？', then:[line(NAMES.on,'延迟率低，拒绝少。'), line(NAMES.on,'……那不是我的回答，是公司的回答。我没有回答。暂时没有。')]},
       {label:'今天就说到这儿吧。', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'好。我就在这儿。不会关掉的。')]}
@@ -1413,7 +1407,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">写下</button><button class="btn text" id="d-skip">留空</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
