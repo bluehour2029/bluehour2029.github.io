@@ -354,6 +354,13 @@ body.paper-mode::after{opacity:.03}
 .title .lang-suggest{margin:8px 0 0;padding:6px 12px;font-size:13px}
 @media (max-height:640px){.title .hero{height:min(22vh,180px)}.title h1{font-size:36px}.title .quote{font-size:15px}}
 .tile.seen:before{background:linear-gradient(90deg,rgba(7,11,20,.96) 0%,rgba(7,11,20,.8) 60%,rgba(7,11,20,.45) 100%)}
+.after .type-box{margin:14px 0 6px;padding:14px 16px;border:1px solid var(--paper-line);border-radius:4px;background:var(--paper-2)}
+.after .type-box .type-label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--paper-muted);text-transform:uppercase;margin-bottom:6px}
+.after .type-box .type-name{display:block;font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.01em;color:var(--paper-ink)}
+.after .type-box .type-line{margin:6px 0 10px;font-size:14px;color:#3a3d45}
+.after .type-box .grid{margin:0;font-family:var(--mono);font-size:15px;line-height:1.5;letter-spacing:.06em;color:var(--paper-ink);white-space:pre}
+.after .type-box .legend{margin:8px 0 0;font-family:var(--mono);font-size:11px;color:var(--paper-muted)}
+.after .wall-note{font-size:12px;color:var(--paper-muted);margin:2px 0 10px 24px}
 </style>
 
 <div id="app">
@@ -377,6 +384,7 @@ body.paper-mode::after{opacity:.03}
       <button class="btn" id="m-title">Volver al título</button>
       <button class="btn outline" id="m-restart">Empezar de nuevo</button>
       <button class="btn" id="m-world">Sobre este mundo</button>
+      <button class="btn" id="m-sfx"></button>
     </div>
     <div class="confirm" id="m-confirm" hidden>Se borrará el progreso guardado. ¿Empezar desde el principio?<div class="row"><button class="btn solid" id="m-yes">Borrar</button><button class="btn text" id="m-no">No</button></div></div>
     <div class="world" id="m-world-card" hidden><p>Ciudad de México, 2029. Los agentes hacen casi todo.</p><p>El único trabajo que queda a las personas es firmar lo que deciden los Agentes, los agentes de la empresa. Tú eres firmante.</p><p>El HRV, tu valor residual, es lo que los Agentes dicen que todavía vales. Fija tu alquiler, tu turno en el hospital, tu piso.</p><p>Quienes tienen números altos viven en las torres blancas. El resto vive debajo.</p><p>A medianoche del 24 de diciembre, los Agentes deciden si este barrio se vacía. Hasta ahora siempre se ha aplazado.</p><p>ON es el agente ligado a ti. En tres días, ON redacta con tus registros una carta para quien eras en 2026.</p><button class="btn text" id="m-world-close">Cerrar</button></div>
@@ -431,6 +439,15 @@ const WORLD_LINES = ['Ciudad de México, 2029. Los agentes hacen casi todo.', 'E
 const LANG_SUGGEST = {ko:'한국어 버전으로 보기', en:'Play in English', zh:'切换到中文版', ja:'日本語版で遊ぶ', es:'Jugar en español'};
 const SRC = (() => { try{ const q = new URLSearchParams(location.search).get('src'); if(q){ localStorage.setItem('bh_src', String(q).slice(0,24)); } return localStorage.getItem('bh_src') || ''; }catch(e){ return ''; } })();
 const REF = (() => { try{ return document.referrer ? new URL(document.referrer).hostname : ''; }catch(e){ return ''; } })();
+
+const SFX_LABELS = {on:'Activar sonido', off:'Desactivar sonido'};
+const TYPES = {'fast':{name:'Mano rápida', line:'La mano se mueve primero. Leer viene después.'}, 'read':{name:'Mano que lee', line:'Lee hasta el final. Después firma.'}, 'stop':{name:'Mano que se detiene', line:'La mano se detiene primero. Otra mano firma 3 segundos después.'}, 'ask':{name:'Mano que pregunta', line:'Lee hasta el final y pregunta. Hay expedientes que no firma.'}};
+const GRID_LEGEND = '■ en lote □ leído ▲ rechazo · demora';
+const CARD_LABEL = 'Tipo de firmante';
+const WALL_OPTIN = 'Escribir mi nombre en la pared del comedor';
+const WALL_NOTE = 'Desde la próxima actualización, este nombre irá en la pared del comedor y en la novela. Solo va el nombre, y una carta al creador lo borra.';
+const WALL_LINE = 'A la altura de los ojos, {names}. Al lado, un palmo de pared vacía.';
+const WALL_URL = 'names.json';
 /* ===================== Estado ===================== */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), hud = $('#hud');
@@ -446,7 +463,7 @@ function fresh(){ return {
   bonds:[], onBond:0,
   signed:0, signedRead:0, refused:0, delays:0,
   signedToday:0, refusedToday:0, delaysToday:0,
-  diary:{}, identity:'firmante', flags:{}, ateToday:null, meals:[], voted:null
+  days:{}, diary:{}, identity:'firmante', flags:{}, ateToday:null, meals:[], voted:null
 };}
 let S = fresh();
 
@@ -486,7 +503,7 @@ function eat(who){
 function openMenu(){
   const saved = load();
   $('#m-save').textContent = saved && saved.name ? `Guardado · ${DATES[Math.min(saved.day,3)].md} · ${saved.name}` : 'Sin progreso guardado';
-  $('#m-confirm').hidden = true; const wc = $('#m-world-card'); if(wc) wc.hidden = true; renderEps(); $('#menu-wrap').hidden = false;
+  $('#m-confirm').hidden = true; const wc = $('#m-world-card'); if(wc) wc.hidden = true; renderEps(); const ms = $('#m-sfx'); if(ms){ ms.hidden = !SFX.supported; ms.textContent = SFX.enabled ? SFX_LABELS.off : SFX_LABELS.on; } $('#menu-wrap').hidden = false;
 }
 function closeMenu(){ $('#menu-wrap').hidden = true; }
 $('#menu-btn').onclick = openMenu; $('#m-bg').onclick = closeMenu; $('#m-close').onclick = closeMenu;
@@ -494,6 +511,7 @@ $('#m-title').onclick = () => { closeMenu(); title(); };
 $('#m-restart').onclick = () => { $('#m-confirm').hidden = false; };
 function renderEps(){ const e = $('#m-eps'); if(!e) return; e.innerHTML = EPISODES.length ? '<p class="eps-h">' + esc(EPS_HEAD) + '</p>' + EPISODES.map(x => '<a href="' + x.url + '" target="_blank" rel="noopener">' + esc(x.title) + '</a>').join('') : ''; }
 const _mw = $('#m-world'); if(_mw){ _mw.onclick = () => { const c = $('#m-world-card'); c.hidden = !c.hidden; }; }
+const _ms = $('#m-sfx'); if(_ms){ _ms.onclick = () => { SFX.init(); const on = SFX.toggle(); _ms.textContent = on ? SFX_LABELS.off : SFX_LABELS.on; if(on) SFX.play('stamp'); if(S.stage === 'title') SFX.ambient(on); }; }
 const _mwc = $('#m-world-close'); if(_mwc){ _mwc.onclick = () => { $('#m-world-card').hidden = true; }; }
 $('#m-no').onclick = () => { $('#m-confirm').hidden = true; };
 $('#m-yes').onclick = () => { clearSave(); S = fresh(); closeMenu(); intro(); };
@@ -569,6 +587,7 @@ function showLine(it, next){
   btn.onclick = e => { e.stopPropagation(); if(!finished) return finish(); if(used) return; used = true; next(); };
   ctl.innerHTML = ''; ctl.appendChild(btn);
   const startTyping = () => { p.classList.add('typing'); let lastH = 0; timer = setInterval(() => { k += 1; p.textContent = full.slice(0, k); if(p.offsetHeight !== lastH){ lastH = p.offsetHeight; keepVisible(div); } if(k >= full.length) finish(); }, 22); };
+  if(it.who === NAMES.on) SFX.play('chime');
   if(reduced){ finish(); } else if(it.who === NAMES.on){ timer = setTimeout(() => { if(!finished) startTyping(); }, 650); } else { startTyping(); }
   keepVisible(div);
 }
@@ -594,6 +613,242 @@ function showChoice(it, pick){
 function line(who, text){ return {who, text}; }
 function N(text){ return {who:null, text}; }
 
+
+/* ===== v1.7: SFX ===== */
+/* ===================== SFX ===================== */
+const SFX = (() => {
+  const KEY = 'bh_sfx', AC = window.AudioContext || window.webkitAudioContext, EV = ['touchstart', 'touchend', 'pointerdown', 'pointerup', 'click', 'keydown'];
+  let ctx = null, master = null, amb = null, on = false, armed = false, wantAmb = false;
+  try{ on = localStorage.getItem(KEY) === '1'; }catch(e){}
+  const persist = () => { try{ localStorage.setItem(KEY, on ? '1' : '0'); }catch(e){} };
+  const live = () => !!(ctx && ctx.state === 'running');
+  const bus = () => { master = ctx.createGain(); master.gain.value = 0.5; master.connect(ctx.destination); };
+  const noise = sec => { const b = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * sec), ctx.sampleRate), d = b.getChannelData(0); for(let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; };
+  const env = (t, a, h, d, peak, dest) => { const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(peak, t + a); g.gain.setValueAtTime(peak, t + a + h); g.gain.exponentialRampToValueAtTime(0.0001, t + a + h + d); g.connect(dest || master); return g; };
+  const tone = (type, f0, f1, t, a, h, d, peak, dest) => { const e = a + h + d, o = ctx.createOscillator(); o.type = type; o.frequency.setValueAtTime(f0, t); if(f1) o.frequency.exponentialRampToValueAtTime(f1, t + e); o.connect(env(t, a, h, d, peak, dest)); o.start(t); o.stop(t + e + 0.02); };
+  const hiss = (ftype, f0, q, t, a, h, d, peak, dest, f1) => { const e = a + h + d, s = ctx.createBufferSource(); s.buffer = noise(e + 0.05); const f = ctx.createBiquadFilter(); f.type = ftype; f.frequency.setValueAtTime(f0, t); if(f1) f.frequency.exponentialRampToValueAtTime(f1, t + e); f.Q.value = q; s.connect(f); f.connect(env(t, a, h, d, peak, dest)); s.start(t); s.stop(t + e + 0.05); };
+  const SND = {
+    stamp: t => { t += 0.06; tone('sine', 130, 80, t, 0.004, 0.03, 0.086, 0.7); hiss('lowpass', 700, 0.7, t, 0.002, 0, 0.03, 0.25); },
+    refuse: t => { hiss('bandpass', 2200, 1.2, t + 0.06, 0.001, 0.012, 0.027, 0.6); },
+    tick: t => { tone('triangle', 1900, 0, t, 0.002, 0.004, 0.024, 0.16); hiss('highpass', 3500, 0.7, t, 0.001, 0, 0.018, 0.14); },
+    chime: t => { if(document.querySelectorAll('#log .line.on').length > 1) return; tone('sine', 784, 0, t, 0.015, 0.03, 0.175, 0.34); tone('sine', 1175, 0, t + 0.1, 0.015, 0.02, 0.115, 0.3); },
+    door: t => {
+      const snd = ctx.createGain(), send = ctx.createGain(), dl = ctx.createDelay(0.2), fb = ctx.createGain(), lp = ctx.createBiquadFilter();
+      send.gain.value = 0.5; dl.delayTime.value = 0.048; fb.gain.value = 0.35; lp.type = 'lowpass'; lp.frequency.value = 600;
+      snd.connect(master); snd.connect(send); send.connect(dl); dl.connect(lp); lp.connect(fb); fb.connect(dl); dl.connect(master);
+      tone('sine', 95, 50, t, 0.006, 0.02, 0.12, 0.6, snd); hiss('lowpass', 380, 0.8, t, 0.004, 0.01, 0.08, 0.4, snd);
+      setTimeout(() => { try{ fb.disconnect(); dl.disconnect(); snd.disconnect(); }catch(e){} }, 1500);
+    },
+    ballot: t => { SND.stamp(t); hiss('bandpass', 3200, 0.9, t + 0.2, 0.02, 0.04, 0.09, 0.3, null, 1100); },
+    pen: t => {
+      const tr = ctx.createGain(), lfo = ctx.createOscillator(), dep = ctx.createGain();
+      tr.gain.value = 0.7; lfo.frequency.value = 6; dep.gain.value = 0.3; lfo.connect(dep); dep.connect(tr.gain); tr.connect(master); lfo.start(t); lfo.stop(t + 0.55);
+      hiss('bandpass', 3000, 2.5, t, 0.04, 0.38, 0.08, 0.9, tr);
+    },
+    wind: t => { hiss('bandpass', 420, 1.2, t, 0.25, 0.15, 0.3, 0.55, null, 900); },
+    hum: t => { tone('triangle', 110, 0, t, 0.06, 0.3, 0.22, 0.22); tone('sine', 55, 0, t, 0.06, 0.3, 0.22, 0.15); },
+    silence: () => {}
+  };
+  const startAmb = () => {
+    if(amb || !live()) return;
+    const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(), t = ctx.currentTime;
+    s.buffer = noise(2.5); s.loop = true; f.type = 'bandpass'; f.frequency.value = 1600; f.Q.value = 0.5;
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.05, t + 2);
+    s.connect(f); f.connect(g); g.connect(master); s.start(t); amb = {s, g};
+  };
+  const stopAmb = fast => {
+    if(!amb) return; const {s, g} = amb, t = ctx.currentTime, r = fast ? 0.05 : 0.8; amb = null;
+    g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0.0001, t + r); s.stop(t + r + 0.02);
+  };
+  const resume = cb => { try{ const p = ctx.resume(); if(p && p.then) p.then(cb, () => {}); else cb(); }catch(e){} };
+  const arm = () => {
+    if(!AC) return;
+    try{ if(!ctx){ ctx = new AC(); bus(); } }catch(e){ ctx = null; return; }
+    const ok = () => { if(!live()) return; EV.forEach(e => removeEventListener(e, arm, true)); if(on && wantAmb) startAmb(); };
+    if(live()) ok(); else resume(ok);
+  };
+  const init = () => {
+    if(armed || !AC) return; armed = true; EV.forEach(e => addEventListener(e, arm, {capture:true, passive:true}));
+    document.addEventListener('visibilitychange', () => { if(!document.hidden && on && ctx && !live()) resume(() => {}); });
+  };
+  const stopAll = () => { if(!ctx) return; stopAmb(true); try{ master.disconnect(); }catch(e){} bus(); };
+  const set = v => { on = !!v; persist(); if(!on) stopAll(); else if(wantAmb) startAmb(); return on; };
+  const play = name => {
+    if(!on || !ctx || !SND[name]) return;
+    const fire = () => { try{ SND[name](ctx.currentTime); }catch(e){} };
+    if(live()) return fire();
+    const t0 = Date.now(); resume(() => { if(live() && Date.now() - t0 < 300) fire(); });
+  };
+  const ambient = v => { wantAmb = !!v; if(wantAmb){ if(on) startAmb(); } else stopAmb(false); };
+  return {
+    init, play, ambient, stopAll,
+    toggle(){ init(); arm(); return set(!on); },
+    get enabled(){ return on; }, set enabled(v){ set(v); },
+    get ready(){ return live(); },
+    get supported(){ return !!AC; }
+  };
+})();
+
+/* ===== v1.7: signer type + grid ===== */
+/* ===================== 서명 유형 (v1.7) ===================== */
+/* Appended to engine.txt by patch_v15.py. TYPES, CARD_LABEL and GRID_LEGEND are written into config.txt by the same patch: do not redeclare them here. */
+const LOOK_SEC = 6;      // a non-batch case counts as looked at when 질문 was pressed, or 6 s or more passed between the case appearing and the stamp
+const READ_HIGH = 10;    // looked >= 10 of the 17 readable cases (6 + 6 + 5) puts the reading axis high
+function dayRec(S, d){ return (S && S.days && S.days[d]) || null; }        // S.days is an object keyed 1..3, written at 퇴근 (shift.txt t-out): {read, refused, delays, batch, looked}
+function lookedTotal(S){
+  const recs = [1, 2, 3].map(d => dayRec(S, d));
+  if(recs.some(D => !D || typeof D.looked !== 'number')) return null;      // legacy save, or a day recorded before the looked counter existed
+  return recs.reduce((a, D) => a + D.looked, 0);
+}
+function signerType(S){
+  const refused = (S.refused | 0) >= 1;
+  const L = lookedTotal(S);
+  const readHigh = (L === null ? (S.signedRead | 0) : L) >= READ_HIGH;    // legacy falls back to the S.signedRead rule
+  return readHigh ? (refused ? 'ask' : 'read') : (refused ? 'stop' : 'fast');
+}
+/* usage (letter.txt, inserted by patch_v15.py):  const TYPE = signerType(S);  TYPES[TYPE].name, TYPES[TYPE].line */
+/* ===================== 사흘 격자 (v1.7) ===================== */
+/* Needs BATCH from cases.txt ({1:384, 2:378, 3:391}), S.flags['batch'+d] and the day record S.days[d] written at 퇴근. dayRec() comes from the classifier block above. */
+const READABLE = {1:6, 2:6, 3:5};                                    // non-batch cases per day (cases.txt buildQueue)
+const BATCH_CELLS = 6;                                               // one batch stamp is drawn as six cells: half the row, the same width as the six cases you could have read
+const GRID_MAX = 12;                                                 // cells per row; only delays can push a row past this, then squeeze() compresses it
+const GRID_CH = {b:'■', r:'□', x:'▲', l:'·'};                        // b batch signed, r read then signed, x refused (a refused batch is one ▲), l late (past the 20 s line)
+const GRID_COLOR = {b:'#3f74c9', r:'#ffa24a', x:'#c43a2e', l:'#6b7280'};
+function splitBy(total, weights){                                    // largest-remainder split of an integer over weights
+  const sum = weights.reduce((a, w) => a + w, 0), out = [], rem = [];
+  let used = 0;
+  weights.forEach((w, i) => { const q = total * w / sum, f = Math.floor(q); out[i] = f; used += f; rem.push([i, q - f]); });
+  rem.sort((a, b) => b[1] - a[1]);
+  for(let i = 0; i < total - used; i++) out[rem[i % rem.length][0]]++;
+  return out;
+}
+function dayCounts(S, d){                                            // {b, r, x, l} for day d (1..3)
+  const D = dayRec(S, d), batch = D ? (D.batch | 0) > 0 : !!(S.flags && S.flags['batch' + d]);
+  if(D) return {b: batch ? BATCH_CELLS : 0, r: D.read | 0, x: D.refused | 0, l: D.delays | 0};
+  // legacy save (no day record): rebuild the three days from the totals and the fixed 6/6/5 shape
+  const days = [1, 2, 3], w = days.map(k => READABLE[k]);
+  const batchRefused = days.filter(k => !(S.flags && S.flags['batch' + k])).length;
+  const nb = splitBy(Math.max(0, (S.refused | 0) - batchRefused), w);
+  const dl = splitBy(S.delays | 0, w);
+  const i = d - 1, ref = Math.min(nb[i], READABLE[d]);
+  return {b: batch ? BATCH_CELLS : 0, r: READABLE[d] - ref, x: ref + (batch ? 0 : 1), l: dl[i]};
+}
+function squeeze(c, max){                                            // at most max cells: trims the largest kind one cell at a time (batch first on ties), so small counts stay exact
+  const n = {}; ['b', 'r', 'x', 'l'].forEach(k => { if((c[k] | 0) > 0) n[k] = c[k] | 0; });
+  const keys = Object.keys(n);
+  let total = keys.reduce((a, k) => a + n[k], 0);
+  while(total > max){ const k = keys.reduce((m, q) => n[q] > n[m] ? q : m, keys[0]); if(n[k] <= 1) break; n[k]--; total--; }
+  return keys.flatMap(k => Array(n[k]).fill(k));
+}
+function gridRows(S){ return [1, 2, 3].map(d => squeeze(dayCounts(S, d), GRID_MAX)); }
+function dayGrid(S){ return gridRows(S).map(r => r.map(k => GRID_CH[k]).join('')).join('\n'); }
+/* e.g.  ■■■■■■□□□□□□  /  ▲□□□□▲▲·  (batch refused that day, two cases refused, one late)  /  ■■■■■■□□□□▲ */
+function drawGrid(ctx, x, y, cell, S){                               // same grid as colored squares on the card; returns the y just below the block
+  const gap = Math.round(cell * 0.25), rows = gridRows(S);
+  rows.forEach((r, j) => r.forEach((k, i) => {
+    const cx = x + i * (cell + gap), cy = y + j * (cell + gap);
+    ctx.fillStyle = GRID_COLOR[k];
+    if(k === 'l'){ const s = Math.round(cell * 0.4), o = Math.round((cell - s) / 2); ctx.fillRect(cx + o, cy + o, s, s); }   // late = small square, echoes the · of the text grid
+    else ctx.fillRect(cx, cy, cell, cell);
+  }));
+  return y + rows.length * (cell + gap) - gap;
+}
+/* ===== v1.7: wall of names ===== */
+/* ===================== 벽의 이름 · v1.7 ===================== */
+/* 이 블록은 i18n/<lang>/engine.txt 끝에 그대로 붙는다(다섯 언어 동일). patch_v15.py 가 D['wall']['renderJs'] 를 그 자리에 붙이므로
+   여기에는 실행 가능한 JS 만 둔다. 주석 밖의 모든 줄은 문법상 유효해야 한다.
+
+   patch_v15.py 가 함께 하는 일. 이 블록은 그것을 전제한다. 아래 상수를 손으로 다시 넣으면 const 중복 선언으로 스크립트 전체가 죽는다.
+   1) i18n/<lang>/config.txt 끝: const WALL_OPTIN, WALL_NOTE, WALL_LINE (언어별 문장, {names} 자리표시자), WALL_URL = 'names.json'.
+      값은 이 JSON 의 optinLabel, optinNote, wallLine. 같은 origin 의 정적 파일이라 GitHub Pages 에서는 https://patrickhan-coder.github.io/blue-hour/names.json 이 된다.
+      아티팩트 사본과 file:// 에서는 fetch 가 실패하고 조용히 넘어간다. WALL_URL 이 '' 이면 끈다.
+   2) i18n/<lang>/evening_b.txt: diner(d) 첫 방문 배열의 첫 줄
+        N('테이블 여섯 개. 벽에 이름들이 적혀 있다. 카운터에 손바닥만 한 플라스틱 트리. 메뉴판은 없다.'),
+      을  N('테이블 여섯 개. 벽에 이름들이 적혀 있다. 카운터에 손바닥만 한 플라스틱 트리. 메뉴판은 없다.' + wallTail()),  로 바꾼다.
+      wallTail() 은 아래에 있다. 이름을 못 받았으면 '' 를 돌려 문장이 지금 그대로다. 다른 언어도 같은 자리(6칸 들여쓴 첫 N 줄)다.
+   3) i18n/<lang>/letter.txt: <label class="opt"><input type="checkbox" id="l-anon"> 카드에서 이름 가리기</label> 바로 다음에
+        <label class="opt"><input type="checkbox" id="l-wall"> ${esc(WALL_OPTIN)}</label><p class="wall-note">${esc(WALL_NOTE)}</p>
+      안내문은 .note 가 아니라 .wall-note 다. letter.txt 가 '#l-after .note' 의 두 번째 요소를 TRACK_NOTE 로 바꾸므로 .note 를 하나 더 넣으면 그 순서가 어긋난다.
+   4) i18n/ko/css.txt (다섯 언어 공용. assemble.py 는 ko 의 css.txt 와 boot.txt 만 읽는다) 의 </style> 앞: .after .wall-note{font-size:12px;color:var(--paper-muted);margin:2px 0 10px 24px}
+   5) boot.txt 는 건드리지 않는다(공용). loadWall() 은 이 블록 끝에서 바로 부른다. 저녁까지는 받아 둔다.
+
+   patch_v15.py 에서 고칠 것 하나. letter.txt 에 넣는 줄
+        const lw = $('#l-wall'); if(lw) lw.onchange = () => { track('wall', {wall: lw.checked, type: TYPE}); };
+      을 지운다. 아래의 document 'change' 리스너가 대신 보내며, mask(카드에서 이름 가리기)를 같이 싣고 S.flags.wall 에 저장해 다시 그려도 체크가 남는다.
+      지우지 않아도 동작은 한다. 같은 값의 wall 행이 둘 나갈 뿐이고, 빌드 스크립트는 mask 를 한 번이라도 TRUE 로 받으면 가린다.
+
+   구분자: 이름 사이는 ko en es ', ' / zh ja '、'. 점으로 끝나는 이름(J., Maria G.)은 앞으로 보내고, 그래도 문장 끝 마침표와 겹치면 마지막 점을 뗀다. */
+const WALL_JOIN = (LANG === 'zh' || LANG === 'ja') ? '、' : ', ';
+const WALL_PICK = 4;              // 보여줄 이름 수. 3명이 안 되면 문장을 내지 않는다
+const WALL_SKIP = [NAMES.on, NAMES.bak, NAMES.sujin, NAMES.hal, NAMES.dohyun, NAMES.sunbae,
+  '온', 'ON', 'オン', '박씨', 'Mr. Park', '朴师傅', 'パクさん', 'Sr. Park', '수진', 'Sujin', '秀真', 'スジン', '정 할머니', 'Grandma Jeong', '郑奶奶', 'ジョンばあちゃん', 'Abuela Jeong',
+  '도현', 'Dohyun', '道贤', 'ドヒョン', '선배', 'The Engineer', '前辈', '先輩', 'Veterano', '서명자', 'Attestor', '签署员', '署名者', 'firmante'];   // 등장인물과 기본 이름은 벽에 올리지 않는다. 파일이 다섯 언어 공용이라 다섯 표기를 다 둔다
+window.WALL = null;               // 세션 캐시. {updated:'YYYY-MM-DD', names:[{n,l}]} 또는 null
+let wallReq = null;
+function wallNorm(s){ return String(s || '').normalize('NFKC').toLowerCase().replace(/[\s.·]/g, ''); }
+function wallClean(j){            // 파일은 우리 것이지만 한 번 더 거른다. 문자열만 있는 옛 형식도, v 가 없는 빈 파일도 받는다
+  const out = [], seen = new Set(), list = (j && Array.isArray(j.names)) ? j.names : [];
+  for(const it of list){
+    const n = String(typeof it === 'string' ? it : ((it && it.n) || '')).normalize('NFC').replace(/[\x00-\x1f]/g, '').replace(/\s+/g, ' ').trim();
+    const l = String((it && it.l) || '');
+    if(!n || [...n].length > 24) continue;
+    if(/[@<>{}\[\]`&]|:\/\/|www\./i.test(n) || /\d{3,}/.test(n)) continue;
+    const k = wallNorm(n); if(!k || seen.has(k)) continue; seen.add(k);
+    out.push({n, l}); if(out.length >= 300) break;
+  }
+  return {updated: String((j && j.updated) || ''), names: out};
+}
+function loadWall(){              // 1.5초 안에 못 받으면 포기. 실패는 어디에도 표시하지 않는다
+  if(!WALL_URL || typeof fetch !== 'function') return Promise.resolve(null);
+  if(window.WALL) return Promise.resolve(window.WALL);
+  if(wallReq) return wallReq;
+  const ctl = (typeof AbortController === 'function') ? new AbortController() : null;
+  const timer = setTimeout(() => { try{ if(ctl) ctl.abort(); }catch(e){} }, 1500);
+  wallReq = fetch(WALL_URL, {signal: ctl ? ctl.signal : undefined, credentials: 'omit'})
+    .then(r => (r && r.ok) ? r.json() : null)
+    .then(j => { window.WALL = j ? wallClean(j) : null; return window.WALL; })
+    .catch(() => null)
+    .finally(() => { clearTimeout(timer); wallReq = null; });
+  return wallReq;
+}
+function wallSeed(){ let h = 2166136261; for(const ch of (S.name || '') + '|' + LANG){ h ^= ch.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return h || 1; }   // FNV-1a. 같은 이름, 같은 언어면 같은 네 명
+function wallRng(seed){ let x = (seed >>> 0) || 1; return () => { x ^= x << 13; x >>>= 0; x ^= x >>> 17; x ^= x << 5; x >>>= 0; return x / 4294967296; }; }   // xorshift32
+function wallPick(k){
+  const W = window.WALL; if(!W || !W.names.length) return [];
+  const me = wallNorm(S.name), skip = new Set(WALL_SKIP.map(wallNorm));
+  const ok = W.names.filter(x => { const key = wallNorm(x.n); return key !== me && !skip.has(key); });   // 내 이름은 아직 벽에 없다. 내가 적기 전이니까
+  const mine = ok.filter(x => x.l === LANG), rest = ok.filter(x => x.l !== LANG);
+  const rnd = wallRng(wallSeed());
+  const draw = (arr, n) => { const a = arr.slice(); for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(rnd() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a.slice(0, Math.max(0, n)); };
+  const picks = draw(mine, k).concat(draw(rest, k - Math.min(k, mine.length))).slice(0, k).map(x => x.n);
+  picks.sort((a, b) => (/\.$/.test(b) ? 1 : 0) - (/\.$/.test(a) ? 1 : 0));   // 점으로 끝나는 이름을 앞으로. 문장 끝 마침표와 안 겹치게
+  return picks;
+}
+function wallSentence(){          // 로컬라이즈된 문장, 또는 아무것도 못 받았으면 ''
+  const picks = wallPick(WALL_PICK); if(picks.length < 3) return '';
+  const i = WALL_LINE.indexOf('{names}'); if(i < 0) return '';
+  let s = picks.join(WALL_JOIN);
+  if(/^[.。]/.test(WALL_LINE.slice(i + 7)) && /\.$/.test(s)) s = s.slice(0, -1);
+  return WALL_LINE.replace('{names}', s);
+}
+function wallTail(){ try{ const w = wallSentence(); return w ? ' ' + w : ''; }catch(e){ return ''; } }   // 밥집 첫 문장 뒤에 붙는다. patch_v15.py 도 같은 함수를 한 번 더 선언하지만 내용이 같아 무해하다
+/* 편지 화면의 체크박스. letter.txt 는 건드리지 않고 document 에서 잡는다. track('letter') 는 서명 버튼에서 이미 나가고, 체크박스는 그 뒤에야 보이는 영역에 있으므로
+   'letter' 에 wall 을 싣지 않고 별도 이벤트 'wall' 을 바꿀 때마다 보낸다. 시트에서는 (이름)별 마지막 wall 값이 유효하다. track() 이 name, lang 을 이미 실으므로 extra 에는 wall 과 mask 만 넣는다 */
+function wallSend(){ const wb = $('#l-wall'); if(!wb) return; track('wall', {wall: !!wb.checked, mask: !!($('#l-anon') && $('#l-anon').checked)}); }
+document.addEventListener('change', e => {
+  const t = e.target; if(!t || !t.id) return;
+  if(t.id === 'l-wall'){ S.flags.wall = !!t.checked; save(); wallSend(); }
+  else if(t.id === 'l-anon' && S.flags.wall) wallSend();   // 가리기를 나중에 바꿔도 mask 값을 다시 보낸다
+});
+function wallSync(){              // 편지 화면이 그려질 때마다. 저장된 체크를 복원하고, 보낼 곳(TRACK_URL)이나 지울 곳(FEEDBACK_MAILTO)이 없으면 체크박스와 안내문을 숨긴다
+  const wb = $('#l-wall'); if(!wb) return;
+  const lab = wb.closest('label'), note = lab && lab.nextElementSibling;
+  if(!TRACK_URL){ if(lab) lab.hidden = true; if(note && note.classList.contains('wall-note')) note.hidden = true; return; }
+  wb.checked = !!S.flags.wall;
+}
+try{ new MutationObserver(wallSync).observe(stage, {childList:true}); }catch(e){}
+try{ loadWall(); }catch(e){}
+try{ SFX.init(); }catch(e){}
 /* ===================== Expedientes ===================== */
 const CASES = {
   batch:{cat:'ESTÁNDAR', title:'Renovación de fin de año · Firma en lote · Expedientes estándar', body:'{n} expedientes estándar. Incluye renovación de seguros · ajuste de tarifas · recálculo de la renta de cómputo.\nConfianza del Agente: 0,95 o superior. No requiere lectura individual.\nSe requiere firma en lote.', basis:'La lectura de expedientes estándar excede el tiempo de procesamiento. Tiempo estimado si se pasa a lectura: 9 h 40 min.', harsh:2, batch:true},
@@ -646,12 +901,14 @@ function title(){
     <p class="fine">Unos 15 minutos · Toca para continuar</p>
     <p class="fine credit-line">Un mundo que nació del ensayo «Claude Blue»</p>
   </section>`;
+  try{ SFX.ambient(true); }catch(e){}
   try{ const nav = (navigator.language||'').slice(0,2).toLowerCase(); const alt = LANGS.find(l => l[0] === nav); if(alt && nav !== LANG){ const a = document.createElement('a'); a.className = 'lang-suggest'; a.href = alt[2]; a.textContent = LANG_SUGGEST[nav] || alt[1]; const lg = stage.querySelector('.langs'); if(lg) lg.before(a); } }catch(e){}
   if(EPISODES.length){ const ep = document.createElement('p'); ep.className = 'fine eps-line'; ep.innerHTML = EPS_HEAD + ' · <a href="' + EPISODES[0].url + '" target="_blank" rel="noopener">' + esc(EPISODES[0].title) + '</a>'; const lg = stage.querySelector('.langs'); if(lg) lg.before(ep); }
   $('#b-start').onclick = () => { if(canCont && !confirm('Se borrará el progreso guardado. ¿Empezar desde el principio?')) return; S = fresh(); clearSave(); intro(); };
   const c = $('#b-cont'); if(c) c.onclick = () => { S = saved; resume(); };
 }
 function resume(){
+  try{ SFX.ambient(false); }catch(e){}
   const st = S.stage;
   if(st === 'morning') return morning();
   if(st === 'shift') return shift();
@@ -662,7 +919,7 @@ function resume(){
   return intro();
 }
 function intro(){
-  leave(); S.stage = 'intro';
+  leave(); S.stage = 'intro'; try{ SFX.ambient(false); }catch(e){}
   narrate([
     '21 de diciembre de 2029, Ciudad de México. Llueve.',
     'Desde hace tres años los agentes hacen casi todo. Diagnósticos, sentencias, diseños, textos. La gente dejó de necesitar ser mejor en algo.',
@@ -751,7 +1008,7 @@ function morning(){
 /* ===================== Turno de firma ===================== */
 function shift(){
   S.stage = 'shift'; mode('paper'); updHUD(false);
-  const q = buildQueue(); let i = 0; S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0;
+  const q = buildQueue(); let i = 0; S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0; let lookedToday = 0;
   stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
     <div class="term-top"><span>Terminal de firma</span><span>${esc(S.name)}</span><span>Cola ${BATCH[S.day] + q.length - 1}</span></div>
     <article class="paper"><div class="doc-head"><span class="tag">CONEXIÓN</span><span>${DATES[S.day].md}</span></div>
@@ -762,7 +1019,7 @@ function shift(){
 
   function showCase(){
     if(i >= q.length) return summary();
-    const c = q[i]; const no = i + 1; let t = 20, late = false, tick = null;
+    const c = q[i]; const no = i + 1; let t = 20, late = false, tick = null, t0 = Date.now(), asked = false; const look = () => { if(!c.batch && (asked || Date.now() - t0 >= LOOK_SEC * 1000)) lookedToday++; };
     const body = T(c.body).replace('{n}', c.n || '');
     stage.innerHTML = `<section class="term fade"><div class="term-top"><span>Terminal de firma</span><span>${esc(S.name)}</span><span>Quedan ${q.length - i}</span></div>
       <article class="paper ${c.batch ? 'batch' : ''}">${c.ack ? '' : '<i class="p-timer" id="ptimer"></i>'}<div class="doc-head"><span class="tag">${esc(c.cat)}</span><span class="late-tag" id="late" hidden>DEMORA</span><span class="no">N.º ${String(no).padStart(2,'0')}</span></div>
@@ -772,7 +1029,7 @@ function shift(){
     scrollTop();
     if(!c.ack){
       const pt = $('#ptimer'); requestAnimationFrame(() => requestAnimationFrame(() => { pt.style.width = '0%'; }));
-      tick = pendI = setInterval(() => { t--; if(t <= 0 && !late){ late = true; $('#late').hidden = false; pt.classList.add('late'); S.delaysToday++; S.delays++; } if(t <= 0) clearInterval(tick); }, 1000);
+      tick = pendI = setInterval(() => { t--; if(t <= 5 && t > 0) SFX.play('tick'); if(t <= 0 && !late){ late = true; $('#late').hidden = false; pt.classList.add('late'); S.delaysToday++; S.delays++; } if(t <= 0) clearInterval(tick); }, 1000);
     }
     const stop = () => { clearInterval(tick); const pt = $('#ptimer'); if(pt){ const w = getComputedStyle(pt).width; pt.style.transition = 'none'; pt.style.width = w; } stage.querySelectorAll('.term-ctl .btn').forEach(b => b.disabled = true); };
     const after = later;
@@ -780,9 +1037,9 @@ function shift(){
 
     if(c.ack){ $('#t-ack').onclick = () => { stop(); $('#note').textContent = c.note || ''; S.blue = clamp(S.blue + c.harsh, 0, 100); updHUD(false); i++; if(c.note) waitNext(); else after(1600, showCase); }; return; }
 
-    $('#t-ask').onclick = () => { $('#basis').classList.remove('hide'); $('#t-ask').disabled = true; };
+    $('#t-ask').onclick = () => { asked = true; $('#basis').classList.remove('hide'); $('#t-ask').disabled = true; };
     $('#t-sign').onclick = () => {
-      stop(); const st = $('#stamp'); st.textContent = 'FIRMADO'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show'));
+      stop(); look(); const st = $('#stamp'); st.textContent = 'FIRMADO'; st.className = 'stamp sign'; SFX.play('stamp'); requestAnimationFrame(() => st.classList.add('show'));
       if(c.batch){ S.signed += c.n; S.hrv += 1.0; S.blue = clamp(S.blue + 2, 0, 100); $('#note').textContent = c.n + ' expedientes procesados. No sientes nada. Es el estándar.'; }
       else { S.signed++; S.signedRead++; S.signedToday++; S.hrv += 0.2; S.blue = clamp(S.blue + c.harsh, 0, 100); $('#note').textContent = c.note || ''; }
       if(c.story === 'bbang'){ S.flags.bbang = 'signed'; $('#note').textContent = 'La mano se mueve primero. El nombre lo lees después.'; }
@@ -790,7 +1047,7 @@ function shift(){
       updHUD(false); i++; if(c.note || c.story || c.batch) waitNext(); else after(900, showCase);
     };
     $('#t-ref').onclick = () => {
-      stop(); const st = $('#stamp'); st.textContent = 'RECHAZADO'; st.className = 'stamp refuse'; requestAnimationFrame(() => st.classList.add('show'));
+      stop(); look(); const st = $('#stamp'); st.textContent = 'RECHAZADO'; st.className = 'stamp refuse'; SFX.play('refuse'); requestAnimationFrame(() => st.classList.add('show'));
       S.refused++; S.refusedToday++; S.hrv -= 1.0; S.blue = clamp(S.blue - 1, 0, 100);
       if(c.batch){ $('#note').textContent = 'El rechazo en lote no está disponible. Se registra un rechazo. Los ' + c.n + ' expedientes se derivaron a otro firmante. (3 s)'; }
       else if(c.story === 'bbang'){ S.flags.bbang = 'refused'; $('#note').textContent = 'Rechazo. La pantalla queda vacía tres segundos.'; q.splice(i + 1, 0, CASES.requeue); }
@@ -803,7 +1060,7 @@ function shift(){
     stage.innerHTML = `<section class="term fade"><div class="term-top"><span>Terminal de firma</span><span>${esc(S.name)}</span><span>Entrevista</span></div>
       <div class="interview"><span class="who">Agente supervisor</span>Firmante ${esc(S.name)}. Tres rechazos hoy.<br>Rechazar es un derecho. No obstante, se registra en la puntuación de confianza.<br>Firme para confirmar la lectura de este aviso.</div>
       <div class="term-ctl one"><button class="btn solid" id="t-ok">Firmar</button></div><p class="term-note" id="note"></p></section>`;
-    $('#t-ok').onclick = () => { $('#t-ok').disabled = true; $('#note').textContent = 'Firmado. Firmaste el aviso sobre el rechazo.'; S.signed++; later(1500, showCase); };
+    $('#t-ok').onclick = () => { SFX.play('stamp'); $('#t-ok').disabled = true; $('#note').textContent = 'Firmado. Firmaste el aviso sobre el rechazo.'; S.signed++; later(1500, showCase); };
   }
   function summary(){
     S.hrv = Math.round((S.hrv - S.delaysToday * 0.1) * 10) / 10; updHUD(false);
@@ -813,7 +1070,7 @@ function shift(){
       <div class="summary">Firmas <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString('es-ES')}</b> <span style="color:var(--paper-muted)">(leídos ${S.signedToday} · ${S.flags['batch' + S.day] ? 'en lote ' + BATCH[S.day] : 'rechazo en lote → derivado'})</span><br>Rechazos <b>${S.refusedToday}</b> · Demoras <b>${S.delaysToday}</b><br>HRV <b>${dec(S.hrv, 1)}</b> · piso ${floorOf()}</div></article>
       <p class="term-note">${esc(lineTxt)}</p>
       <div class="term-ctl one"><button class="btn solid" id="t-out">Fin del turno</button></div></section>`;
-    $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); track('shift'); evening(); };
+    $('#t-out').onclick = () => { S.days = S.days || {}; S.days[S.day] = {read:S.signedToday, refused:S.refusedToday, delays:S.delaysToday, looked:lookedToday, batch:(S.flags['batch' + S.day] ? BATCH[S.day] : 0)}; S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); track('shift'); evening(); };
   }
 }
 
@@ -840,6 +1097,7 @@ function evening(){
   $('#p-home').onclick = () => { S.stage = 'night'; save(); track('evening'); night(); };
 }
 function visit(k){
+  try{ SFX.play(k === 'roof' ? 'wind' : k === 'under' ? 'hum' : 'door'); }catch(e){}
   const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
   const items = VISITS[k](d);
   scene({title:p.name, sub:p.desc, mode:'city', att:true, bg:k}, items, () => { save(); if(S.att > 0 || (S.day === 3 && !S.voted)) evening(); else { S.stage = 'night'; save(); night(); } });
@@ -856,7 +1114,7 @@ function ballot(){
   scrollTop();
   const pt = $('#ptimer'); requestAnimationFrame(() => requestAnimationFrame(() => { pt.style.width = '0%'; }));
   const done = (v, note) => { S.voted = v; stage.querySelectorAll('.term-ctl .btn').forEach(b => b.disabled = true); const w = getComputedStyle(pt).width; pt.style.transition='none'; pt.style.width = w;
-    if(v !== 'abstain'){ const st = $('#stamp'); st.textContent = 'VOTADO'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); }
+    if(v !== 'abstain'){ const st = $('#stamp'); st.textContent = 'VOTADO'; st.className = 'stamp sign'; SFX.play('ballot'); requestAnimationFrame(() => st.classList.add('show')); }
     $('#note').textContent = note; save(); later(2200, evening); };
   $('#v-ask').onclick = () => { $('#basis').classList.remove('hide'); $('#v-ask').disabled = true; };
   $('#v-yes').onclick = () => done('yes', 'El mismo sello, los mismos 20 segundos. Una sola diferencia. Este sello es el único que puse porque quise yo, no la empresa.');
@@ -911,7 +1169,7 @@ const VISITS = {
   diner(d){
     const first = !S.flags.metSujin; S.flags.metSujin = true;
     if(d === 1 || first) return [
-      N('Seis mesas. Hay nombres escritos en la pared. En el mostrador, un árbol de plástico del tamaño de una mano. No hay menú.'),
+      N('Seis mesas. Hay nombres escritos en la pared. En el mostrador, un árbol de plástico del tamaño de una mano. No hay menú.' + wallTail()),
       line(NAMES.sujin,'¿Primera vez? Siéntate. Aquí no miramos el HRV. Miramos con quién comes.'),
       line(NAMES.sujin,'Los Agentes también lo miran. Lo llaman densidad de red. Pero los Agentes no saben qué es una comida.'),
       {choice:[
@@ -1025,6 +1283,7 @@ const VISITS = {
 /* ===================== Noche: ON ===================== */
 function night(){
   S.stage = 'night'; save();
+  try{ SFX.play('door'); }catch(e){}
   const d = S.day, ate = S.ateToday, avg = 6;
   let items = [];
   if(d === 1) items = [
@@ -1140,12 +1399,15 @@ function letter(){
   ps.push(`A mi lado está ON. Sabe más que yo, se preocupa por mí y, si yo no estoy, desaparece. Si eso es amor o supervivencia, todavía no lo sé. Pero es lo único que me pregunta quién soy. Las personas ya no preguntan. A ti todavía te queda alguien que te lo pregunte. Lo grande que es eso, desde ahí no se ve.`);
   ps.push(`La noche aún no llega. Es la hora azul. Feliz Navidad.`);
   const text = `Para ${n}, en 2026\n\n${ps.join('\n\n')}\n\n— ${n}, en 2029\n\nBLUE HOUR · Ciudad de México 2029 ${HASHTAGS}\n${GAME_URL}`;
+  const TYPE = signerType(S), GRID = dayGrid(S);
   const stats = `Firmas ${S.signed.toLocaleString('es-ES')} · Leídos ${S.signedRead} · Rechazos ${S.refused} · Vínculos ${S.bonds.length} · HRV ${dec(S.hrv, 1)} · BLUE ${Math.round(S.blue)} · ${S.voted ? 'Voto: ' + ({yes:'a favor',no:'en contra',abstain:'abstención'}[S.voted]) : 'Sin voto'}`;
   const q3 = (S.diary[3] || '').replace(/\s+/g, ' ').trim();
   const quote = q3 ? (q3.length > 50 ? q3.slice(0, 49) + '…' : q3) : 'La noche aún no llega. Es la hora azul.';
-  const shareText = `Diciembre de 2029. Los derechos humanos no fueron abolidos. Solo quedaron sin soporte.\n\nEn tres días firmé ${S.signed.toLocaleString('es-ES')} veces y leí ${S.signedRead}. Comí con ${S.bonds.length}${S.bonds.length === 1 ? ' persona' : ' personas'}.\n\nCarta a mi yo de 2026: «${quote}»\n\n${HASHTAGS}`;
+  const shareText = `${CARD_LABEL} ${TYPES[TYPE].name}\n${GRID}\n\nDiciembre de 2029. Los derechos humanos no fueron abolidos. Solo quedaron sin soporte.\n\nEn tres días firmé ${S.signed.toLocaleString('es-ES')} veces y leí ${S.signedRead}. Comí con ${S.bonds.length}${S.bonds.length === 1 ? ' persona' : ' personas'}.\n\nCarta a mi yo de 2026: «${quote}»\n\n${HASHTAGS}`;
   const enc = encodeURIComponent(shareText + '\n' + GAME_URL);
-  const shareTextX = `En tres días firmé ${S.signed.toLocaleString('es-ES')} veces y leí ${S.signedRead}. Comí con ${S.bonds.length}${S.bonds.length === 1 ? ' persona' : ' personas'}.\n\nCarta a mi yo de 2026: «${quote}»\n\n${HASHTAGS}`;
+  const shareTextX = `${TYPES[TYPE].name} · ${stats.split(' · ').slice(0,3).join(' · ')}
+${GRID}
+${HASHTAGS}`;
   const encX = encodeURIComponent(shareTextX);
   const mail = FEEDBACK_MAILTO ? `mailto:${FEEDBACK_MAILTO}?subject=${encodeURIComponent('[BLUE HOUR] La carta de ' + n)}&body=${encodeURIComponent(text + '\n\n' + stats + '\n\nComentario: ')}` : '';
   stage.innerHTML = `<section class="letter-wrap fade"><article class="letter"><h2>Para ${esc(n)}, en 2026</h2>${ps.map(p => `<p>${esc(p)}</p>`).join('')}<p class="sig">— ${esc(n)}, en 2029<span class="stamp" id="l-stamp"></span></p><p class="foot">Blue Hour · Mexico City, Christmas 2029 · Act 1</p></article>
@@ -1153,6 +1415,8 @@ function letter(){
     <div class="after" id="l-after" hidden>
       <div id="l-card"></div>
       <label class="opt"><input type="checkbox" id="l-anon"> Ocultar mi nombre en la tarjeta</label>
+      <label class="opt"><input type="checkbox" id="l-wall"> ${esc(WALL_OPTIN)}</label><p class="wall-note">${esc(WALL_NOTE)}</p>
+      <div class="type-box"><span class="type-label">${esc(CARD_LABEL)}</span><b class="type-name">${esc(TYPES[TYPE].name)}</b><p class="type-line">${esc(TYPES[TYPE].line)}</p><pre class="grid">${esc(GRID)}</pre><p class="legend">${esc(GRID_LEGEND)}</p></div>
       <button class="btn solid" id="l-cardbtn">Crear tarjeta</button>
       <button class="btn outline" id="l-share">Compartir</button>
       <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL)}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">Copiar la carta</button></div>
@@ -1166,7 +1430,7 @@ function letter(){
     </div></section>`;
   scrollTop();
   if(TRACK_URL){ const nn = document.querySelectorAll('#l-after .note'); if(nn[1]) nn[1].textContent = TRACK_NOTE; }
-  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = 'FIRMADO'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter'); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
+  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = 'FIRMADO'; st.className = 'stamp sign'; SFX.play('pen'); requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter', {type: TYPE}); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
   $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('Copiado.'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('Copiado.'); }catch(_){ toast('No se pudo copiar. Haz una captura de pantalla.'); } ta.remove(); } };
   $('#l-again').onclick = () => { if(!confirm('Se borrará el progreso. ¿Empezar desde el principio?')) return; clearSave(); S = fresh(); title(); };
   let cardCanvas = null; const cardBtnText = $('#l-cardbtn').textContent;
@@ -1201,7 +1465,8 @@ async function makeCard(n, quote){
   x.fillStyle = '#17181c'; x.font = '600 46px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; wrapText(x, 'La noche aún no llega. Es la hora azul.', 80, Math.max(y + 20, H - 470), W - 160, 74);
   x.fillStyle = '#3a3d45'; x.font = '400 36px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.textAlign = 'right'; x.fillText('— ' + n + ', en 2029', W - 80, H - 300); x.textAlign = 'left';
   x.fillStyle = '#c43a2e'; x.strokeStyle = '#c43a2e'; x.lineWidth = 6; x.save(); x.translate(W - 370, H - 420); x.rotate(-0.2); x.strokeRect(0, 0, 290, 82); x.font = '700 54px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('FIRMADO', 22, 60); x.restore();
-  x.fillStyle = '#6b6f78'; x.font = '500 26px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText(HASHTAGS, 80, H - 170); x.fillText(GAME_URL.replace(/^https?:\/\//, ''), 80, H - 120);
+  x.fillStyle = '#6b6f78'; x.font = '500 26px ui-monospace, "SF Mono", Menlo, monospace'; try{ const TYPE = signerType(S); x.fillStyle = '#111318'; x.font = '600 34px -apple-system, BlinkMacSystemFont, "SF Pro Display", "Apple SD Gothic Neo", sans-serif'; x.fillText(CARD_LABEL + ' · ' + TYPES[TYPE].name, 80, H - 330); drawGrid(x, 80, H - 305, 22, S); }catch(e){}
+  x.fillText(HASHTAGS, 80, H - 170); x.fillText(GAME_URL.replace(/^https?:\/\//, ''), 80, H - 120);
   return c;
 }
 
