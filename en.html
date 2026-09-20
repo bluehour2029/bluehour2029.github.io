@@ -479,6 +479,7 @@ const CONFIRM_TAP = 'Tap again to erase';
 const REFLECT = ['If the you of 2015 had known what 2026 would be, what would you have done differently?', 'Three more years from there is 2029.', 'If it does not look very different from now, what should you do differently today?'];
 /* DONE_V40 */
 /* DONE_V43 */
+/* DONE_V44 */
 /* ===================== State ===================== */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), hud = $('#hud');
@@ -1221,7 +1222,7 @@ const VISITS = {
     if(d === 1 || (d === 2 && first)) return [
       N('Next to the bungeoppang robot, a stall where a human bakes them. Snow melts on the griddle. The human line is longer.'),
       line(NAMES.bak,'One thousand won more. Baked by a human.'),
-      line(NAMES.bak,'Dan does not burn them. But people like the ones with a burnt edge better. They pick off the burnt part and talk about being a kid.'),
+      line(NAMES.bak,'Dan does not burn them. But people buy the slightly burnt ones sometimes.'),
       {choice:[
         {label:'One, please.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'No charge. New face.'), N('The paper bag is warm. You pick off the burnt edges and eat them.'), line(NAMES.bak,'Attestor, right? The hands say so. Hands that press the same spot all day.')]},
         {label:'Why sell here?', then:[line(NAMES.bak,'No human cooking in the Tower. Not hygiene-certified, they say. Human hands.'), line(NAMES.bak,'Here it is still allowed. For now.'), N('He puts one in a bag and holds it out.'), {choice:[{label:'Take it.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'Burnt. On purpose.')]},{label:'No, thank you.', then:[line(NAMES.bak,'Fine. Next time.')]}]}]},

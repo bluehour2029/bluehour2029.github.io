@@ -479,6 +479,7 @@ const CONFIRM_TAP = '한 번 더 누르면 지워집니다';
 const REFLECT = ['2015년의 당신이 2026년을 미리 알았다면, 무엇을 다르게 했을까.', '거기서 3년을 더 가면 2029년이다.', '지금과 크게 다르지 않다면, 오늘 무엇을 다르게 해야 할까.'];
 /* DONE_V40 */
 /* DONE_V43 */
+/* DONE_V44 */
 /* ===================== 상태 ===================== */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), hud = $('#hud');
@@ -1221,7 +1222,7 @@ const VISITS = {
     if(d === 1 || (d === 2 && first)) return [
       N('붕어빵 로봇 옆에, 사람이 굽는 노점이 있다. 눈이 철판 위에서 녹는다. 사람 쪽 줄이 더 길다.'),
       line(NAMES.bak,'천 원 더 비싸. 사람이 구운 거라.'),
-      line(NAMES.bak,'단(斷)은 붕어빵을 안 태워. 근데 사람들은 끝이 살짝 탄 걸 더 좋아하더라고. 탄 데를 떼어 먹으면서 어릴 때 얘기를 해.'),
+      line(NAMES.bak,'단(斷)은 붕어빵을 안 태워. 근데 사람들은 가끔 끝이 살짝 탄 걸 사 먹어.'),
       {choice:[
         {label:'하나 주세요.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'돈은 됐어. 처음 보는 얼굴이니까.'), N('종이봉투가 따뜻하다. 탄 데를 떼어 먹었다.'), line(NAMES.bak,'서명자지? 손이 그래. 하루 종일 같은 데를 누르는 손.')]},
         {label:'왜 여기서 장사하세요?', then:[line(NAMES.bak,'타워엔 사람 조리가 안 돼. 위생 미인증이래. 사람 손이.'), line(NAMES.bak,'여기선 아직 돼. 아직은.'), N('그가 하나를 봉투에 넣어 건넸다.'), {choice:[{label:'받는다.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'탄 거야. 일부러.')]},{label:'괜찮아요.', then:[line(NAMES.bak,'그래. 다음에.')]}]}]},

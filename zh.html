@@ -478,6 +478,7 @@ const CONFIRM_TAP = '再按一次即删除';
 const REFLECT = ['如果2015年的您早就知道了2026年，您会做些什么不一样的事？', '从那里再走三年，就是2029年。', '如果和现在没有太大差别，今天您该做些什么不一样的事？'];
 /* DONE_V40 */
 /* DONE_V43 */
+/* DONE_V44 */
 /* ===================== 状态 ===================== */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), hud = $('#hud');
@@ -1220,7 +1221,7 @@ const VISITS = {
     if(d === 1 || (d === 2 && first)) return [
       N('鲷鱼烧机器人旁边，有一个人烤的鲷鱼烧摊。雪在铁板上化掉。人这边的队更长。'),
       line(NAMES.bak,'贵一千韩元。人烤的。'),
-      line(NAMES.bak,'丹不烤焦。可人偏偏更喜欢边上有点焦的。掰着焦的地方吃，说小时候的事。'),
+      line(NAMES.bak,'丹不烤焦。可人有时候偏买边上有点焦的。'),
       {choice:[
         {label:'请给我一个。', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'不要钱。头一回见的脸。'), N('纸袋是热的。掰了焦的地方吃。'), line(NAMES.bak,'签署员吧？手就是那样。一整天按同一个地方的手。')]},
         {label:'您为什么在这儿摆摊？', then:[line(NAMES.bak,'塔楼那边不让人做吃的。说是卫生没认证。人的手，没认证。'), line(NAMES.bak,'这儿还行。暂时。'), N('他往袋子里放了一个，递过来。'), {choice:[{label:'接过来。', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'烤焦的。故意的。')]},{label:'不用了。', then:[line(NAMES.bak,'行。下次。')]}]}]},

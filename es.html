@@ -479,6 +479,7 @@ const CONFIRM_TAP = 'Toca otra vez para borrar';
 const REFLECT = ['Si en 2015 hubieras sabido cómo sería 2026, ¿qué habrías hecho distinto?', 'Tres años más allá de ahí está 2029.', 'Si no va a ser muy distinto de ahora, ¿qué deberías hacer distinto hoy?'];
 /* DONE_V40 */
 /* DONE_V43 */
+/* DONE_V44 */
 /* ===================== Estado ===================== */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), hud = $('#hud');
@@ -1221,7 +1222,7 @@ const VISITS = {
     if(d === 1 || (d === 2 && first)) return [
       N('Junto al robot que hace bungeoppang (pastel de pescado con forma de pez, relleno), hay un puesto donde los hace una persona. La nieve se derrite sobre la plancha. La fila del lado humano es más larga.'),
       line(NAMES.bak,'Mil wones más caro. Lo hace una persona.'),
-      line(NAMES.bak,'Dan no los quema. Pero a la gente le gustan más los que tienen el borde quemado. Arrancan la parte quemada, la comen y hablan de cuando eran niños.'),
+      line(NAMES.bak,'Dan no los quema. Pero a veces la gente compra los que tienen el borde quemado.'),
       {choice:[
         {label:'Uno, por favor.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'Guarda el dinero. Cara nueva.'), N('La bolsa de papel está tibia. Arrancas la parte quemada y la comes.'), line(NAMES.bak,'Eres firmante, ¿no? Se te nota en las manos. Manos que aprietan el mismo punto todo el día.')]},
         {label:'¿Por qué vende aquí?', then:[line(NAMES.bak,'En la Torre no se puede cocinar a mano. Dicen que no tiene certificación sanitaria. Las manos humanas.'), line(NAMES.bak,'Aquí todavía se puede. Todavía.'), N('Mete uno en una bolsa y te lo da.'), {choice:[{label:'Lo aceptas.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'Está quemado. A propósito.')]},{label:'No, gracias.', then:[line(NAMES.bak,'Bueno. Otro día.')]}]}]},
