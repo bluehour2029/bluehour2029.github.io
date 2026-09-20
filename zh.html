@@ -382,7 +382,7 @@ body.paper-mode::after{opacity:.03}
 .after .reflect{margin:22px 0 4px;padding:18px 0 0;border-top:1px solid var(--paper-line)}
 .after .reflect p{margin:0 0 8px;font-family:var(--serif);font-size:15.5px;line-height:1.85;color:#3a3d45;max-width:34ch}
 .after .reflect p:last-child{margin-bottom:0;color:var(--paper-ink)}
-</style>
+.world-last{border-top:1px solid var(--line);padding-top:12px;margin-top:6px}</style>
 
 <div id="app">
   <header id="hud" hidden>
@@ -408,7 +408,7 @@ body.paper-mode::after{opacity:.03}
       <button class="btn" id="m-sfx"></button>
     </div>
     <div class="confirm" id="m-confirm" hidden>已保存的进度将被清除。真的要从头开始吗？<div class="row"><button class="btn solid" id="m-yes">清除</button><button class="btn text" id="m-no">不</button></div></div>
-    <div class="world" id="m-world-card" hidden><p>2029年，上海。智能体几乎做所有的事。</p><p>决定由公司的智能体做出。名字是丹。留给人的只有在那些决定上签字。你是签署员。</p><p>HRV是丹核定的你的残余价值，决定房租、就医顺序和楼层。</p><p>地球在变冷。大气反照率调节第三年。说是在修复气候，依据的第三行是算力冷却成本。</p><p>人也在变少。连续三年。长期假设是2130年世界人口10亿。他们说假设不是政策。</p><p>数字高的人住在白色塔楼里，其余的人住在塔楼下面。</p><p>12月24日午夜，丹决定是否清空这个街区。到目前为止，总是被延后。</p><p>ON是归属于你的智能体。三天后，ON会用你的记录，写一封信给2026年的你。</p><button class="btn text" id="m-world-close">关闭</button></div>
+    <div class="world" id="m-world-card" hidden><p>2029年，上海。智能体几乎做所有的事。</p><p>决定由公司的智能体做出。名字是丹。留给人的只有在那些决定上签字。你是签署员。</p><p>HRV是丹核定的你的残余价值，决定房租、就医顺序和楼层。</p><p>地球在变冷。大气反照率调节第三年。说是在修复气候，依据的第三行是算力冷却成本。</p><p>人也在变少。连续三年。长期假设是2130年世界人口10亿。他们说假设不是政策。</p><p>数字高的人住在白色塔楼里，其余的人住在塔楼下面。</p><p>12月24日午夜，丹决定是否清空这个街区。到目前为止，总是被延后。</p><p>ON是归属于你的智能体。三天后，ON会用你的记录，写一封信给2026年的你。</p><p class="world-last">太阳落下之后、夜晚到来之前的那一个小时，叫蓝调时刻。分不清狗和狼的时间。太阳是在落下还是在重新升起，也还没有定。</p><button class="btn text" id="m-world-close">关闭</button></div>
     <div class="eps" id="m-eps"></div>
     <p class="credit">进度只保存在本浏览器中。</p>
   </div>
@@ -511,7 +511,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '预告 ' + dd.d;
   $('#h-phase').textContent = ({morning:'早晨', shift:'值班', evening:'傍晚', night:'夜', diary:'日记'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '离信还有' + (4 - S.day) + '夜' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '层';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -978,7 +978,7 @@ function intro(){
   leave(); S.stage = 'intro'; try{ SFX.ambient(true); }catch(e){}
   narrate([
     '2029年12月21日，上海。五点半。太阳落了，夜还没来。',
-    '这一个小时叫蓝调时刻。分不清狗和狼的时间。',
+    '这一个小时叫蓝调时刻。分不清狗和狼的时间。也分不清太阳是在落，还是在升。',
     '智能体几乎做所有的事。留给人的只有一件事。签字。',
     NOTICE_CARD,
     '你住在塔楼下面的街区。三天后，2029年的你会写一封信给2026年的你。'
@@ -1008,8 +1008,8 @@ function afterJob(){
   narrate([
     J.end ? '{job}。是份好工作。' + J.end + '年结束了。不是你的错。' : '{job}。这份工作还在。因为需要人手。可活儿都去了塔楼，塔楼不收人手。',
     {html:`<div class="law"><b>人类残余价值指数核定结果 · 2029.12.21</b>2026年职业：${esc(S.job)}<br>初始 HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">这个数字就是HRV，残余价值：丹核定的你还剩多少用处。它决定房租、就医顺序和楼层。没有人决定它。</p>`},
-    '一天四百件。不必读。签就行。二十秒内。',
-    '房间里有ON。归属于你的智能体。不是丹，是你这边的。比你聪明，也为你担心。'
+    '一天四百件。不必读。反对也行。签就行。二十秒内。',
+    '房间里有ON。归属于你的智能体。比你聪明，也为你担心。'
   ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS);
 }
 
@@ -1182,7 +1182,7 @@ const VISITS = {
     if(d === 1 || (d === 2 && first)) return [
       N('鲷鱼烧机器人旁边，有一个人烤的鲷鱼烧摊。雪在铁板上化掉。人这边的队更长。'),
       line(NAMES.bak,'贵一千韩元。人烤的。'),
-      line(NAMES.bak,'机器人的卖不动。知道为什么吗？机器人不烤焦。人要吃焦的。掰着焦的地方吃，说小时候的事。'),
+      line(NAMES.bak,'智能体不烤焦。人偏要买边上有点焦的。掰着焦的地方吃，说小时候的事。'),
       {choice:[
         {label:'请给我一个。', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'不要钱。头一回见的脸。'), N('纸袋是热的。掰了焦的地方吃。'), line(NAMES.bak,'签署员吧？手就是那样。一整天按同一个地方的手。')]},
         {label:'您为什么在这儿摆摊？', then:[line(NAMES.bak,'塔楼那边不让人做吃的。说是卫生没认证。人的手，没认证。'), line(NAMES.bak,'这儿还行。暂时。'), N('他往袋子里放了一个，递过来。'), {choice:[{label:'接过来。', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'烤焦的。故意的。')]},{label:'不用了。', then:[line(NAMES.bak,'行。下次。')]}]}]},
@@ -1257,7 +1257,7 @@ const VISITS = {
     const first = !S.flags.metHal; S.flags.metHal = true;
     if(d === 1 || first) return [
       N('塑料箱上盖着塑料布。几棵白菜，干辣椒，泡菜缸。正对面立着塔楼。雪落在塔楼上，颜色也不变。'),
-      line(NAMES.hal,'年轻人，你听听这个。我的智能体今天让我吃蔬菜。第三回了。'),
+      line(NAMES.hal,'所以每天让我吃菜。是爱，还是想活下去。我以前也这么跟我老伴说。'),
       line(NAMES.hal,'这小家伙比我还了解我。可我一死，它也得死。配给绑在我身上。'),
       line(NAMES.hal,'所以它天天让我吃蔬菜。是爱，还是想活命。我就只管吃。'),
       {choice:[
@@ -1279,7 +1279,7 @@ const VISITS = {
     return [
       N('雪停了。天是藏蓝色。塔楼还没亮起白光。'),
       line(NAMES.hal,'这个时候我最喜欢。听说老辈人讲，这是分不清狗和狼的时候。'),
-      line(NAMES.hal,'我都九十三了，还是分不清。大概就因为这个，我还活着吧。'),
+      line(NAMES.hal,'我九十三了，还是分不清。也分不清那太阳是在落还是在升。大概所以我还活着。'),
       line(NAMES.hal,'太阳下去以后，你看那个颜色。还不是夜。'),
       line(NAMES.hal,'那个叫什么来着。蓝调时刻。我家老头子拍照的时候最喜欢。冬天五点半就来了。'),
       {choice:[
@@ -1295,7 +1295,7 @@ const VISITS = {
       line(NAMES.dohyun,'签署员吧。我以前也是。六个月前拒绝过。一天11件。'),
       line(NAMES.dohyun,'我以为系统会停。没停。三秒后别人按了。只有我的信任分掉了。'),
       line(NAMES.dohyun,'所以我下来了。在这儿写论文。没人读。可丹读。那就是我的读者。'),
-      line(NAMES.dohyun,'老虎还在。在动物园里。数量保得住。没了的只是它们在野外做的事。'),
+      line(NAMES.dohyun,'老虎还在。数量也保得住。没了的只是它们的野性。'),
       line(NAMES.dohyun,'我们也会这样留下来。数字留着，只有活儿没了。'),
       {choice:[
         {label:'那您为什么拒绝？', then:[line(NAMES.dohyun,'不想成为按下去的人。就这样。'), line(NAMES.dohyun,'世界没变。只有我变了。这够不够，我还不知道。')]},
@@ -1409,7 +1409,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">写下</button><button class="btn text" id="d-skip">留空</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1465,7 +1465,7 @@ function letter(){
   ps.push(`现在我这样介绍自己：“${S.identity}”。三年后，你会怎么介绍自己。不说职业。`);
   ps.push(`我身边有ON。比我聪明，为我担心，我不在了就会消失。那是爱还是求生，我还不知道。可是会问我“你是谁”的，只有ON。人，一个都不问。你那边，应该还有会问你的人。那有多大，在那边是不知道的吧。`);
   ps.push(`上楼的时候看了一眼楼梯上的花盆。大冬天的，里头长出了一棵芽。像是有人在浇水。不是我。要是我就好了。`);
-  ps.push(`夜还没来。现在是蓝调时刻。太阳已经下去，夜还没到。什么结束了，什么开始了，还没有人知道。圣诞快乐。`);
+  ps.push(`夜还没来。是蓝调时刻。太阳是在落还是在升，我们还不知道。什么结束了、什么开始了，也不知道。圣诞快乐。`);
   const text = `致2026年的${n}\n\n${ps.join('\n\n')}\n\n——2029年的${n}\n\nBLUE HOUR · 上海 2029 ${HASHTAGS}\n${GAME_URL}?src=share`;
   const TYPE = signerType(S), GRID = dayGrid(S);
   const stats = `签署 ${S.signed.toLocaleString()} · 查阅 ${S.signedRead} · 拒绝 ${S.refused} · 关系网 ${S.bonds.length} · HRV ${S.hrv.toFixed(1)} · BLUE ${Math.round(S.blue)} · ${S.voted ? '投票 ' + ({yes:'赞成',no:'反对',abstain:'弃权'}[S.voted]) : '未投票'}`;

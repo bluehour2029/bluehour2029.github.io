@@ -383,7 +383,7 @@ body.paper-mode::after{opacity:.03}
 .after .reflect{margin:22px 0 4px;padding:18px 0 0;border-top:1px solid var(--paper-line)}
 .after .reflect p{margin:0 0 8px;font-family:var(--serif);font-size:15.5px;line-height:1.85;color:#3a3d45;max-width:34ch}
 .after .reflect p:last-child{margin-bottom:0;color:var(--paper-ink)}
-</style>
+.world-last{border-top:1px solid var(--line);padding-top:12px;margin-top:6px}</style>
 
 <div id="app">
   <header id="hud" hidden>
@@ -409,7 +409,7 @@ body.paper-mode::after{opacity:.03}
       <button class="btn" id="m-sfx"></button>
     </div>
     <div class="confirm" id="m-confirm" hidden>저장된 진행이 지워집니다. 정말 처음부터 시작할까요?<div class="row"><button class="btn solid" id="m-yes">지웁니다</button><button class="btn text" id="m-no">아니요</button></div></div>
-    <div class="world" id="m-world-card" hidden><p>2029년 서울. 에이전트가 거의 모든 일을 한다.</p><p>결정은 회사의 에이전트가 한다. 이름은 단. 사람에게 남은 일은 그 결정에 서명하는 것. 당신은 서명자다.</p><p>HRV(잔여가치)는 단이 매긴 당신의 남은 쓸모. 집세, 병원 순서, 사는 층을 정한다.</p><p>지구는 식고 있다. 대기 반사율 조정 3년째. 기후를 고친다고 했고, 근거의 세 번째 줄에는 연산 냉각 비용이 있었다.</p><p>사람도 줄고 있다. 3년 연속. 장기 가정치는 2130년 세계 인구 10억. 가정치는 정책이 아니라고 했다.</p><p>흰 타워에는 숫자가 높은 사람이, 타워 아래 동네에는 나머지가 산다.</p><p>12월 24일 자정, 단이 이 동네를 비울지 정한다. 지금까지는 늘 미뤄졌다.</p><p>온은 당신에게 귀속된 에이전트. 사흘 뒤, 온이 당신의 기록으로 2026년의 당신에게 편지를 쓴다.</p><button class="btn text" id="m-world-close">닫기</button></div>
+    <div class="world" id="m-world-card" hidden><p>2029년 서울. 에이전트가 거의 모든 일을 한다.</p><p>결정은 회사의 에이전트가 한다. 이름은 단. 사람에게 남은 일은 그 결정에 서명하는 것. 당신은 서명자다.</p><p>HRV(잔여가치)는 단이 매긴 당신의 남은 쓸모. 집세, 병원 순서, 사는 층을 정한다.</p><p>지구는 식고 있다. 대기 반사율 조정 3년째. 기후를 고친다고 했고, 근거의 세 번째 줄에는 연산 냉각 비용이 있었다.</p><p>사람도 줄고 있다. 3년 연속. 장기 가정치는 2130년 세계 인구 10억. 가정치는 정책이 아니라고 했다.</p><p>흰 타워에는 숫자가 높은 사람이, 타워 아래 동네에는 나머지가 산다.</p><p>12월 24일 자정, 단이 이 동네를 비울지 정한다. 지금까지는 늘 미뤄졌다.</p><p>온은 당신에게 귀속된 에이전트. 사흘 뒤, 온이 당신의 기록으로 2026년의 당신에게 편지를 쓴다.</p><p class="world-last">해가 진 뒤 밤이 오기 전의 한 시간을 블루 아워라고 부른다. 개와 늑대를 구별할 수 없는 시간. 해가 지는 중인지 다시 뜨는 중인지도 아직 정해지지 않았다.</p><button class="btn text" id="m-world-close">닫기</button></div>
     <div class="eps" id="m-eps"></div>
     <p class="credit">진행은 이 브라우저에만 저장됩니다.</p>
   </div>
@@ -512,7 +512,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '예고일 ' + dd.d;
   $('#h-phase').textContent = ({morning:'아침', shift:'근무', evening:'저녁', night:'밤', diary:'일기'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '편지까지 ' + (4 - S.day) + '밤' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '층';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -979,7 +979,7 @@ function intro(){
   leave(); S.stage = 'intro'; try{ SFX.ambient(true); }catch(e){}
   narrate([
     '2029년 12월 21일, 서울. 다섯 시 반. 해는 졌는데 밤은 아직 오지 않았다.',
-    '이 한 시간을 블루 아워라고 부른다. 개와 늑대를 구별할 수 없는 시간.',
+    '이 한 시간을 블루 아워라고 부른다. 개와 늑대를 구별할 수 없는 시간. 해가 지는 중인지 뜨는 중인지도.',
     '에이전트가 거의 모든 일을 한다. 사람에게 남은 일은 하나. 서명.',
     NOTICE_CARD,
     '당신은 타워 아래 동네에 산다. 사흘 뒤, 2029년의 당신이 2026년의 당신에게 편지를 쓴다.'
@@ -1009,8 +1009,8 @@ function afterJob(){
   narrate([
     J.end ? '{job}. 좋은 일이었다. ' + J.end + '년에 끝났다. 당신 잘못이 아니다.' : '{job}. 아직 있는 일이다. 손이 닿아야 하니까. 그런데 일감은 타워로 갔고, 타워는 사람 손을 받지 않는다.',
     {html:`<div class="law"><b>인간잔여가치지수 산정 결과 · 2029.12.21</b>2026년 직군: ${esc(S.job)}<br>초기 HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">이 숫자가 HRV, 잔여가치다. 단이 매긴 당신의 남은 쓸모. 집세와 병원 순서와 사는 층을 정한다. 정한 사람은 없다.</p>`},
-    '하루 400건. 읽지 않아도 된다. 서명만 하면 된다. 20초 안에.',
-    '방에는 온이 있다. 당신에게 귀속된 에이전트. 단이 아니라 당신 편이다. 당신보다 똑똑하고, 당신을 걱정한다.'
+    '하루 400건. 읽지 않아도 된다. 반대해도 된다. 서명만 하면 된다. 20초 안에.',
+    '방에는 온이 있다. 당신에게 귀속된 에이전트. 당신보다 똑똑하고, 당신을 걱정한다.'
   ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS);
 }
 
@@ -1183,7 +1183,7 @@ const VISITS = {
     if(d === 1 || (d === 2 && first)) return [
       N('붕어빵 로봇 옆에, 사람이 굽는 노점이 있다. 눈이 철판 위에서 녹는다. 사람 쪽 줄이 더 길다.'),
       line(NAMES.bak,'천 원 더 비싸. 사람이 구운 거라.'),
-      line(NAMES.bak,'로봇 건 안 팔려. 왜인지 알아? 로봇은 안 태워. 사람들은 탄 걸 찾아. 탄 데를 떼어 먹으면서 어릴 때 얘기를 해.'),
+      line(NAMES.bak,'에이전트는 붕어빵을 안 태워. 사람들은 일부러 살짝 탄 걸 사 가. 탄 데를 떼어 먹으면서 어릴 때 얘기를 해.'),
       {choice:[
         {label:'하나 주세요.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'돈은 됐어. 처음 보는 얼굴이니까.'), N('종이봉투가 따뜻하다. 탄 데를 떼어 먹었다.'), line(NAMES.bak,'서명자지? 손이 그래. 하루 종일 같은 데를 누르는 손.')]},
         {label:'왜 여기서 장사하세요?', then:[line(NAMES.bak,'타워엔 사람 조리가 안 돼. 위생 미인증이래. 사람 손이.'), line(NAMES.bak,'여기선 아직 돼. 아직은.'), N('그가 하나를 봉투에 넣어 건넸다.'), {choice:[{label:'받는다.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'탄 거야. 일부러.')]},{label:'괜찮아요.', then:[line(NAMES.bak,'그래. 다음에.')]}]}]},
@@ -1260,7 +1260,7 @@ const VISITS = {
       N('플라스틱 상자에 비닐이 덮여 있다. 배추 몇 포기, 마른 고추, 김칫독. 정면에 타워가 서 있다. 눈이 타워에 쌓여도 색이 같다.'),
       line(NAMES.hal,'젊은이, 이거 들어봐. 내 에이전트가 오늘 나한테 채소 먹으래. 세 번째야.'),
       line(NAMES.hal,'얘는 나보다 나를 잘 알아. 근데 내가 죽으면 얘도 죽어. 배당이 나한테 묶여 있어서.'),
-      line(NAMES.hal,'그래서 매일 채소 먹으래. 사랑인지 살려고 그러는 건지. 나는 그냥 먹어.'),
+      line(NAMES.hal,'그래서 매일 채소 먹으래. 사랑해서인지 살려고 그러는 건지. 나도 영감한테 똑같이 말했어.'),
       {choice:[
         {label:'할머니는 어느 쪽 같으세요?', fx:()=>{S.onBond++;}, then:[line(NAMES.hal,'둘이 다른 거니?'), line(NAMES.hal,'나도 우리 영감 살리려고 채소 먹였어. 그게 사랑 아니면 뭐야.')]},
         {label:'무섭지 않으세요?', then:[line(NAMES.hal,'무서운 건 얘가 아니야. 얘가 없어질 게 무서워.'), line(NAMES.hal,'아흔셋에 무서운 게 생기다니. 좋은 일이지.')]},
@@ -1280,7 +1280,7 @@ const VISITS = {
     return [
       N('눈이 그쳤다. 하늘이 남색이다. 타워는 아직 흰빛을 켜지 않았다.'),
       line(NAMES.hal,'이 시간이 제일 좋아. 개하고 늑대를 구별 못 하는 시간이라고 옛날 사람들이 그랬대.'),
-      line(NAMES.hal,'나는 아흔셋인데 아직도 구별을 못 해. 그래서 아직 사는가 봐.'),
+      line(NAMES.hal,'나는 아흔셋인데 아직도 구별을 못 해. 저 해가 지는 건지 뜨는 건지도. 그래서 아직 사는가 봐.'),
       line(NAMES.hal,'해 지고 나서 저 색 봐. 아직 밤 아니야.'),
       line(NAMES.hal,'저걸 뭐라 하더라. 블루 아워. 우리 영감이 사진 찍을 때 좋아했어. 겨울엔 다섯 시 반이면 와.'),
       {choice:[
@@ -1296,7 +1296,7 @@ const VISITS = {
       line(NAMES.dohyun,'서명자지. 나도 그랬어. 6개월 전에 거부했어. 하루에 열한 건.'),
       line(NAMES.dohyun,'시스템이 멈출 줄 알았어. 안 멈추더라. 3초 뒤에 다른 사람이 찍었어. 내 신뢰점수만 떨어졌어.'),
       line(NAMES.dohyun,'그래서 내려왔어. 여기서 논문 써. 아무도 안 읽어. 근데 단이 읽어. 그게 내 독자야.'),
-      line(NAMES.dohyun,'호랑이는 아직 있어. 동물원에. 개체 수는 유지돼. 없어진 건 야생에서 하던 일뿐이야.'),
+      line(NAMES.dohyun,'호랑이는 아직 있어. 개체 수도 유지되고 있고. 없어진 건 그들의 야수성뿐이야.'),
       line(NAMES.dohyun,'우리도 그렇게 남을 거야. 숫자는 남고, 하던 일만 없어지는 식으로.'),
       {choice:[
         {label:'그럼 왜 거부했어요?', then:[line(NAMES.dohyun,'찍은 사람으로 남기 싫어서. 그게 다야.'), line(NAMES.dohyun,'세상은 안 바뀌었어. 나만 바뀌었어. 그걸로 충분한지는 아직 몰라.')]},
@@ -1410,7 +1410,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">적는다</button><button class="btn text" id="d-skip">비워둔다</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1466,7 +1466,7 @@ function letter(){
   ps.push(`지금 나는 나를 이렇게 소개해. ‘${S.identity}’. 3년 뒤에 너는 뭐라고 소개할까. 직업 말고.`);
   ps.push(`내 옆에는 온이 있어. 나보다 똑똑하고, 나를 걱정하고, 내가 없으면 사라져. 그게 사랑인지 생존인지 나는 아직 몰라. 근데 나한테 누구냐고 물어봐 주는 건 얘뿐이야. 사람은 아무도 안 물어. 너한테는 아직 물어봐 주는 사람이 있을 거야. 그게 얼마나 큰 건지, 거기서는 모르지.`);
   ps.push(`올라오는 길에 계단 화분을 봤어. 겨울인데 싹이 하나 나 있더라. 누가 물을 주나 봐. 나는 아니야. 나였으면 좋았을 텐데.`);
-  ps.push(`밤은 아직 안 왔어. 블루 아워야. 해가 진 다음이고 밤이 오기 전이야. 무엇이 끝났는지 무엇이 시작인지 아직 아무도 몰라. 메리 크리스마스.`);
+  ps.push(`밤은 아직 안 왔어. 블루 아워야. 해가 지는 중인지 뜨는 중인지, 우리는 아직 몰라. 무엇이 끝났는지 무엇이 시작인지도. 메리 크리스마스.`);
   const text = `2026년의 ${n}에게\n\n${ps.join('\n\n')}\n\n— 2029년의 ${n}\n\nBLUE HOUR · 서울 2029 ${HASHTAGS}\n${GAME_URL}?src=share`;
   const TYPE = signerType(S), GRID = dayGrid(S);
   const stats = `서명 ${S.signed.toLocaleString()} · 열람 ${S.signedRead} · 거부 ${S.refused} · 관계망 ${S.bonds.length} · HRV ${S.hrv.toFixed(1)} · BLUE ${Math.round(S.blue)} · ${S.voted ? '투표 ' + ({yes:'찬성',no:'반대',abstain:'기권'}[S.voted]) : '미투표'}`;

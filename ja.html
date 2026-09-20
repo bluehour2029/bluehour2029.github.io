@@ -382,7 +382,7 @@ body.paper-mode::after{opacity:.03}
 .after .reflect{margin:22px 0 4px;padding:18px 0 0;border-top:1px solid var(--paper-line)}
 .after .reflect p{margin:0 0 8px;font-family:var(--serif);font-size:15.5px;line-height:1.85;color:#3a3d45;max-width:34ch}
 .after .reflect p:last-child{margin-bottom:0;color:var(--paper-ink)}
-</style>
+.world-last{border-top:1px solid var(--line);padding-top:12px;margin-top:6px}</style>
 
 <div id="app">
   <header id="hud" hidden>
@@ -408,7 +408,7 @@ body.paper-mode::after{opacity:.03}
       <button class="btn" id="m-sfx"></button>
     </div>
     <div class="confirm" id="m-confirm" hidden>保存された進行は消えます。本当に最初から始めますか？<div class="row"><button class="btn solid" id="m-yes">消す</button><button class="btn text" id="m-no">いいえ</button></div></div>
-    <div class="world" id="m-world-card" hidden><p>2029年、東京。エージェントがほとんどすべての仕事をする。</p><p>決定は会社のエージェントが下す。名前はダン。人に残された仕事はそれに署名することだけ。君は署名者だ。</p><p>HRV（残存価値）はダンが決めた君の残りの値打ち。家賃、病院の順番、住む階を決める。</p><p>地球は冷えている。大気反射率調整三年目。気候を直すと言われ、根拠の三行目は演算冷却費用だった。</p><p>人も減っている。三年連続。長期想定は2130年に世界人口10億。想定は政策ではないと会社は言った。</p><p>数字の高い人は白いタワーに、それ以外はタワーの下の町に住む。</p><p>12月24日の深夜零時、ダンがこの町を空けるかどうかを決める。これまでは、いつも延びてきた。</p><p>オンは君に帰属するエージェント。三日後、オンが君の記録から、2026年の君への手紙を書く。</p><button class="btn text" id="m-world-close">閉じる</button></div>
+    <div class="world" id="m-world-card" hidden><p>2029年、東京。エージェントがほとんどすべての仕事をする。</p><p>決定は会社のエージェントが下す。名前はダン。人に残された仕事はそれに署名することだけ。君は署名者だ。</p><p>HRV（残存価値）はダンが決めた君の残りの値打ち。家賃、病院の順番、住む階を決める。</p><p>地球は冷えている。大気反射率調整三年目。気候を直すと言われ、根拠の三行目は演算冷却費用だった。</p><p>人も減っている。三年連続。長期想定は2130年に世界人口10億。想定は政策ではないと会社は言った。</p><p>数字の高い人は白いタワーに、それ以外はタワーの下の町に住む。</p><p>12月24日の深夜零時、ダンがこの町を空けるかどうかを決める。これまでは、いつも延びてきた。</p><p>オンは君に帰属するエージェント。三日後、オンが君の記録から、2026年の君への手紙を書く。</p><p class="world-last">日が沈んでから夜が来るまでの一時間をブルーアワーと呼ぶ。犬と狼の区別がつかない時間。日が沈むのか、また昇るのかも、まだ決まっていない。</p><button class="btn text" id="m-world-close">閉じる</button></div>
     <div class="eps" id="m-eps"></div>
     <p class="credit">進行状況はこのブラウザにのみ保存されます。</p>
   </div>
@@ -511,7 +511,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '予告 ' + dd.d;
   $('#h-phase').textContent = ({morning:'朝', shift:'勤務', evening:'夕方', night:'夜', diary:'日記'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '手紙まであと' + (4 - S.day) + '晩' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '階';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -978,7 +978,7 @@ function intro(){
   leave(); S.stage = 'intro'; try{ SFX.ambient(true); }catch(e){}
   narrate([
     '2029年12月21日、東京。五時半。日が沈んで、まだ夜ではない。',
-    'この一時間をブルーアワーと呼ぶ。犬と狼の区別がつかない時間。',
+    'この一時間をブルーアワーと呼ぶ。犬と狼の区別がつかない時間。日が沈むのか昇るのかも。',
     'エージェントがほとんどすべての仕事をする。人に残された仕事はひとつ。署名。',
     NOTICE_CARD,
     '君はタワーの下の町に住んでいる。三日後、2029年の君が2026年の君に手紙を書く。'
@@ -1008,8 +1008,8 @@ function afterJob(){
   narrate([
     J.end ? '{job}。いい仕事だった。' + J.end + '年に終わった。君のせいではない。' : '{job}。まだある仕事だ。手が要るから。だが仕事はタワーへ行き、タワーは人の手を受け付けない。',
     {html:`<div class="law"><b>人間残存価値指数 算定結果 · 2029.12.21</b>2026年の職種：${esc(S.job)}<br>初期HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">この数字がHRV、残存価値だ。ダンが決めた、君の残りの値打ち。家賃と病院の順番と住む階を決める。決めた人はいない。</p>`},
-    '一日四百件。読まなくていい。署名すればいい。二十秒以内に。',
-    '部屋にはオンがいる。君に帰属するエージェント。ダンではなく、君の側だ。君より賢く、君を心配している。'
+    '一日四百件。読まなくていい。反対してもいい。署名すればいい。二十秒以内に。',
+    '部屋にはオンがいる。君に帰属するエージェント。君より賢く、君を心配している。'
   ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS);
 }
 
@@ -1182,7 +1182,7 @@ const VISITS = {
     if(d === 1 || (d === 2 && first)) return [
       N('たい焼きロボットの隣に、人が焼くたい焼きの屋台がある。雪が鉄板の上で溶ける。人の側の列のほうが長い。'),
       line(NAMES.bak,'千ウォン高い。人が焼いたやつだから。'),
-      line(NAMES.bak,'ロボットのは売れない。なぜだかわかるか？ロボットは焦がさない。みんな焦げたやつを探す。焦げたところをちぎって食べながら、子どもの頃の話をする。'),
+      line(NAMES.bak,'エージェントは焦がさない。みんなわざと少し焦げたのを買っていく。焦げたところをちぎって食べながら、子どもの頃の話をする。'),
       {choice:[
         {label:'一つください。', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'金はいい。初めて見る顔だから。'), N('紙袋が温かい。焦げたところをちぎって食べた。'), line(NAMES.bak,'署名者だろ？手がそうだ。一日中、同じところを押す手。')]},
         {label:'どうしてここで商売を？', then:[line(NAMES.bak,'タワーじゃ人の調理はだめだ。衛生未認証だってよ。人の手が。'), line(NAMES.bak,'ここじゃまだやれる。まだ、な。'), N('彼が一つを袋に入れて差し出した。'), {choice:[{label:'受け取る。', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'焦げてる。わざとだ。')]},{label:'大丈夫です。', then:[line(NAMES.bak,'そうか。また今度。')]}]}]},
@@ -1259,7 +1259,7 @@ const VISITS = {
       N('プラスチックの箱にビニールがかけてある。白菜が数株、干し唐辛子、キムチの壺。正面にタワーが立っている。雪が積もっても、タワーの色は同じだ。'),
       line(NAMES.hal,'若いの、ちょっと聞いてごらん。私のエージェントが今日、野菜を食べろって言うんだよ。三度目だ。'),
       line(NAMES.hal,'この子は私より私をよく知ってる。でも私が死ねば、この子も死ぬ。配当が私に結ばれてるからね。'),
-      line(NAMES.hal,'だから毎日野菜を食べろって言う。愛なのか、生きたいだけなのか。私はただ食べるよ。'),
+      line(NAMES.hal,'だから毎日野菜を食べろって言う。愛なのか、生きたいだけなのか。私もじいさんに同じことを言ってたよ。'),
       {choice:[
         {label:'おばあちゃんはどちらだと思いますか？', fx:()=>{S.onBond++;}, then:[line(NAMES.hal,'その二つ、違うのかい？'), line(NAMES.hal,'私だってうちのじいさんを生かそうと野菜を食べさせた。それが愛じゃなきゃ何だい。')]},
         {label:'怖くないんですか？', then:[line(NAMES.hal,'怖いのはこの子じゃない。この子がいなくなるのが怖い。'), line(NAMES.hal,'九十三で怖いものができるなんてね。いいことだよ。')]},
@@ -1279,7 +1279,7 @@ const VISITS = {
     return [
       N('雪がやんだ。空が藍色だ。タワーはまだ白い光をつけていない。'),
       line(NAMES.hal,'この時間が一番好きだよ。犬と狼の区別がつかない時間だって、昔の人が言ってたそうだ。'),
-      line(NAMES.hal,'私は九十三なのに、まだ区別がつかない。だからまだ生きてるんだろうね。'),
+      line(NAMES.hal,'九十三になっても、まだ区別がつかない。あの日が沈むのか昇るのかも。だからまだ生きてるんだろうね。'),
       line(NAMES.hal,'日が沈んでからのあの色を見てごらん。まだ夜じゃないよ。'),
       line(NAMES.hal,'あれを何と言ったかね。ブルーアワー。うちのじいさんが写真を撮るとき好きだった。冬は五時半に来る。'),
       {choice:[
@@ -1295,7 +1295,7 @@ const VISITS = {
       line(NAMES.dohyun,'署名者だろ。俺もそうだった。6か月前に拒否した。一日に十一件。'),
       line(NAMES.dohyun,'システムが止まると思った。止まらなかった。三秒後に別の人間が押した。俺の信頼スコアが下がっただけだった。'),
       line(NAMES.dohyun,'それで降りてきた。ここで論文を書いてる。誰も読まない。でもダンは読む。それが俺の読者だ。'),
-      line(NAMES.dohyun,'トラはまだいる。動物園に。頭数は保たれてる。なくなったのは野生でやってた仕事だけだ。'),
+      line(NAMES.dohyun,'トラはまだいる。頭数も保たれてる。なくなったのは、あいつらの野性だけだ。'),
       line(NAMES.dohyun,'俺たちもそうやって残る。数は残って、仕事だけがなくなる。'),
       {choice:[
         {label:'じゃあ、なぜ拒否したんですか？', then:[line(NAMES.dohyun,'押した人間として残りたくなかった。それだけだ。'), line(NAMES.dohyun,'世界は変わらなかった。俺だけが変わった。それで十分かどうかは、まだわからない。')]},
@@ -1409,7 +1409,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">書く</button><button class="btn text" id="d-skip">空欄にする</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1465,7 +1465,7 @@ function letter(){
   ps.push(`今の私は、自分をこう紹介する。『${S.identity}』。三年後、君は何と紹介するだろう。職業じゃなく。`);
   ps.push(`私の隣にはオンがいる。私より賢くて、私を心配して、私がいなければ消える。それが愛なのか生存なのか、私はまだわからない。でも、私に誰なのかと聞いてくれるのはこの子だけだ。人は誰も聞かない。君にはまだ、聞いてくれる人がいるはずだ。それがどれだけ大きいことか、そこではわからないだろう。`);
   ps.push(`上がってくる途中、階段の植木鉢を見た。冬なのに、芽が一つ出ていた。誰かが水をやっているらしい。私じゃない。私だったらよかったのに。`);
-  ps.push(`夜はまだ来ていない。ブルーアワーだ。日が沈んだあとで、夜が来る前だ。何が終わって何が始まったのか、まだ誰も知らない。メリークリスマス。`);
+  ps.push(`まだ夜じゃない。ブルーアワーだ。日が沈むのか昇るのか、まだわからない。何が終わって何が始まったのかも。メリークリスマス。`);
   const text = `2026年の${n}へ\n\n${ps.join('\n\n')}\n\n— 2029年の${n}\n\nBLUE HOUR · 東京 2029 ${HASHTAGS}\n${GAME_URL}?src=share`;
   const TYPE = signerType(S), GRID = dayGrid(S);
   const stats = `署名 ${S.signed.toLocaleString()} · 閲覧 ${S.signedRead} · 拒否 ${S.refused} · 関係網 ${S.bonds.length} · HRV ${S.hrv.toFixed(1)} · BLUE ${Math.round(S.blue)} · ${S.voted ? '投票 ' + ({yes:'賛成',no:'反対',abstain:'棄権'}[S.voted]) : '未投票'}`;

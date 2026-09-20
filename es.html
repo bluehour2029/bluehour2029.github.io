@@ -383,7 +383,7 @@ body.paper-mode::after{opacity:.03}
 .after .reflect{margin:22px 0 4px;padding:18px 0 0;border-top:1px solid var(--paper-line)}
 .after .reflect p{margin:0 0 8px;font-family:var(--serif);font-size:15.5px;line-height:1.85;color:#3a3d45;max-width:34ch}
 .after .reflect p:last-child{margin-bottom:0;color:var(--paper-ink)}
-</style>
+.world-last{border-top:1px solid var(--line);padding-top:12px;margin-top:6px}</style>
 
 <div id="app">
   <header id="hud" hidden>
@@ -409,7 +409,7 @@ body.paper-mode::after{opacity:.03}
       <button class="btn" id="m-sfx"></button>
     </div>
     <div class="confirm" id="m-confirm" hidden>Se borrará el progreso guardado. ¿Empezar desde el principio?<div class="row"><button class="btn solid" id="m-yes">Borrar</button><button class="btn text" id="m-no">No</button></div></div>
-    <div class="world" id="m-world-card" hidden><p>Ciudad de México, 2029. Los agentes hacen casi todo.</p><p>Las decisiones las toma el agente de la empresa. Se llama Dan. El único trabajo que queda a las personas es firmarlas. Tú eres firmante.</p><p>El HRV, tu valor residual, es lo que Dan dice que todavía vales. Fija tu alquiler, tu turno en el hospital, tu piso.</p><p>El planeta se está enfriando. Ajuste de albedo, tercer año. Dijeron que era reparar el clima. La tercera línea del fundamento era el costo de enfriamiento de cómputo.</p><p>También hay menos gente. Tres años seguidos. La hipótesis de largo plazo dice mil millones en 2130. Una hipótesis, dijeron, no es una política.</p><p>Quienes tienen números altos viven en las torres blancas. El resto vive debajo.</p><p>A medianoche del 24 de diciembre, Dan decide si este barrio se vacía. Hasta ahora siempre se ha aplazado.</p><p>ON es el agente ligado a ti. En tres días, ON redacta con tus registros una carta para quien eras en 2026.</p><button class="btn text" id="m-world-close">Cerrar</button></div>
+    <div class="world" id="m-world-card" hidden><p>Ciudad de México, 2029. Los agentes hacen casi todo.</p><p>Las decisiones las toma el agente de la empresa. Se llama Dan. El único trabajo que queda a las personas es firmarlas. Tú eres firmante.</p><p>El HRV, tu valor residual, es lo que Dan dice que todavía vales. Fija tu alquiler, tu turno en el hospital, tu piso.</p><p>El planeta se está enfriando. Ajuste de albedo, tercer año. Dijeron que era reparar el clima. La tercera línea del fundamento era el costo de enfriamiento de cómputo.</p><p>También hay menos gente. Tres años seguidos. La hipótesis de largo plazo dice mil millones en 2130. Una hipótesis, dijeron, no es una política.</p><p>Quienes tienen números altos viven en las torres blancas. El resto vive debajo.</p><p>A medianoche del 24 de diciembre, Dan decide si este barrio se vacía. Hasta ahora siempre se ha aplazado.</p><p>ON es el agente ligado a ti. En tres días, ON redacta con tus registros una carta para quien eras en 2026.</p><p class="world-last">La hora entre la puesta del sol y la llegada de la noche se llama la hora azul. La hora en que no distingues un perro de un lobo. Si el sol se está poniendo o volviendo a salir tampoco está decidido todavía.</p><button class="btn text" id="m-world-close">Cerrar</button></div>
     <div class="eps" id="m-eps"></div>
     <p class="credit">El progreso se guarda solo en este navegador.</p>
   </div>
@@ -512,7 +512,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = 'Aviso ' + dd.d;
   $('#h-phase').textContent = ({morning:'Mañana', shift:'Turno', evening:'Tarde', night:'Noche', diary:'Diario'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? 'Carta en ' + (4 - S.day) + (S.day === 3 ? ' noche' : ' noches') : '';
   $('#h-hrv').textContent = dec(S.hrv, 1); $('#h-floor').textContent = 'piso ' + floorOf();
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -979,7 +979,7 @@ function intro(){
   leave(); S.stage = 'intro'; try{ SFX.ambient(true); }catch(e){}
   narrate([
     '21 de diciembre de 2029, Ciudad de México. Cinco y media. El sol ya se puso y la noche no llega todavía.',
-    'A esta hora la llaman la hora azul. La hora en que no distingues un perro de un lobo.',
+    'A esta hora la llaman la hora azul. La hora en que no distingues un perro de un lobo. Ni si el sol se pone o sale.',
     'Los agentes hacen casi todo. A las personas les queda un solo trabajo. Firmar.',
     NOTICE_CARD,
     'Vives en el barrio bajo las torres. Dentro de tres días, quien eres en 2029 le escribe una carta a quien eras en 2026.'
@@ -1009,8 +1009,8 @@ function afterJob(){
   narrate([
     J.end ? '{job}. Era un buen trabajo. Terminó en ' + J.end + '. No fue culpa tuya.' : '{job}. Ese trabajo todavía existe. Hacen falta manos. Pero el trabajo se fue a las torres, y las torres no admiten manos humanas.',
     {html:`<div class="law"><b>Índice de Valor Residual Humano (HRV) · Resultado · 21/12/2029</b>Ocupación en 2026: ${esc(S.job)}<br>HRV inicial <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">Este número es tu HRV, tu valor residual: lo que Dan dice que todavía vales. Fija tu alquiler, tu turno en el hospital y tu piso. Nadie lo eligió.</p>`},
-    'Cuatrocientos al día. No hace falta leerlos. Solo firmar. En veinte segundos.',
-    'En tu cuarto está ON. Un agente ligado a ti. No es Dan: es tuyo. Más listo que tú, y preocupado por ti.'
+    'Cuatrocientos al día. No hace falta leerlos. Puedes incluso oponerte. Solo firmar. En veinte segundos.',
+    'En tu cuarto está ON. Un agente vinculado a ti. Más listo que tú, y preocupado por ti.'
   ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS);
 }
 
@@ -1183,7 +1183,7 @@ const VISITS = {
     if(d === 1 || (d === 2 && first)) return [
       N('Junto al robot que hace bungeoppang (pastel de pescado con forma de pez, relleno), hay un puesto donde los hace una persona. La nieve se derrite sobre la plancha. La fila del lado humano es más larga.'),
       line(NAMES.bak,'Mil wones más caro. Lo hace una persona.'),
-      line(NAMES.bak,'Los del robot no se venden. ¿Sabes por qué? El robot no los quema. La gente busca los quemados. Arrancan la parte quemada, la comen y hablan de cuando eran niños.'),
+      line(NAMES.bak,'Los agentes no los queman. La gente compra a propósito los que tienen el borde quemado. Arrancan la parte quemada, la comen y hablan de cuando eran niños.'),
       {choice:[
         {label:'Uno, por favor.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'Guarda el dinero. Cara nueva.'), N('La bolsa de papel está tibia. Arrancas la parte quemada y la comes.'), line(NAMES.bak,'Eres firmante, ¿no? Se te nota en las manos. Manos que aprietan el mismo punto todo el día.')]},
         {label:'¿Por qué vende aquí?', then:[line(NAMES.bak,'En la Torre no se puede cocinar a mano. Dicen que no tiene certificación sanitaria. Las manos humanas.'), line(NAMES.bak,'Aquí todavía se puede. Todavía.'), N('Mete uno en una bolsa y te lo da.'), {choice:[{label:'Lo aceptas.', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'Está quemado. A propósito.')]},{label:'No, gracias.', then:[line(NAMES.bak,'Bueno. Otro día.')]}]}]},
@@ -1260,7 +1260,7 @@ const VISITS = {
       N('Cajas de plástico cubiertas con una lona. Unas coles, pimientos secos, una tinaja de kimchi. De frente se alza la Torre. Aunque la nieve se acumule encima, el color es el mismo.'),
       line(NAMES.hal,'Joven, escucha esto. Mi agente hoy me dijo que coma verduras. Es la tercera vez.'),
       line(NAMES.hal,'Este me conoce mejor que yo. Pero si yo me muero, él también se muere. La renta está atada a mí.'),
-      line(NAMES.hal,'Por eso me dice que coma verduras todos los días. Si es amor o es por sobrevivir, no sé. Yo simplemente como.'),
+      line(NAMES.hal,'Por eso me dice que coma verduras todos los días. Si es amor o es por sobrevivir, no sé. Yo le decía lo mismo a mi viejo.'),
       {choice:[
         {label:'¿Y usted qué cree, abuela?', fx:()=>{S.onBond++;}, then:[line(NAMES.hal,'¿Y acaso son cosas distintas?'), line(NAMES.hal,'Yo también le daba verduras a mi viejo para que viviera. ¿Y qué es el amor, si no?')]},
         {label:'¿No le da miedo?', then:[line(NAMES.hal,'Miedo no me da este. Me da miedo que desaparezca.'), line(NAMES.hal,'Encontrar un miedo nuevo a los 93. Eso es bueno.')]},
@@ -1280,7 +1280,7 @@ const VISITS = {
     return [
       N('Deja de nevar. El cielo es azul marino. La Torre aún no encendió su luz blanca.'),
       line(NAMES.hal,'Esta hora es la que más me gusta. Los viejos decían que a esta hora no se distingue un perro de un lobo.'),
-      line(NAMES.hal,'Tengo noventa y tres y todavía no los distingo. Por eso sigo viva, digo yo.'),
+      line(NAMES.hal,'Tengo noventa y tres y todavía no los distingo. Ni si ese sol se pone o sale. Por eso sigo viva, digo yo.'),
       line(NAMES.hal,'Mira ese color cuando se va el sol. Aún no es noche.'),
       line(NAMES.hal,'¿Cómo le dicen a eso? La hora azul. A mi viejo le gustaba, cuando sacaba fotos. En invierno llega a las cinco y media.'),
       {choice:[
@@ -1296,7 +1296,7 @@ const VISITS = {
       line(NAMES.dohyun,'Eres firmante. Yo también lo fui. Hace seis meses rechacé. Once expedientes en un día.'),
       line(NAMES.dohyun,'Creí que el sistema se detendría. No se detuvo. Tres segundos después, otra persona firmó. Lo único que bajó fue mi puntuación de confianza.'),
       line(NAMES.dohyun,'Por eso bajé. Aquí escribo un artículo. Nadie lo lee. Pero Dan lo lee. Ese es mi lector.'),
-      line(NAMES.dohyun,'Los tigres siguen aquí. En los zoológicos. La población se mantiene. Lo único que desapareció es lo que hacían en libertad.'),
+      line(NAMES.dohyun,'Los tigres siguen aquí. La población se mantiene. Lo único que desapareció es su fiereza.'),
       line(NAMES.dohyun,'Nosotros nos quedamos igual. El número se mantiene. Solo se va el trabajo.'),
       {choice:[
         {label:'¿Entonces por qué rechazaste?', then:[line(NAMES.dohyun,'No quería quedar como quien firmó. Eso es todo.'), line(NAMES.dohyun,'El mundo no cambió. Cambié yo. Si con eso basta, todavía no lo sé.')]},
@@ -1410,7 +1410,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">Escribir</button><button class="btn text" id="d-skip">Dejar en blanco</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1466,7 +1466,7 @@ function letter(){
   ps.push(`Ahora me presento así: «${S.identity}». ¿Y tú, dentro de tres años, cómo te vas a presentar? Sin decir tu trabajo.`);
   ps.push(`A mi lado está ON. Sabe más que yo, se preocupa por mí y, si yo no estoy, desaparece. Si eso es amor o supervivencia, todavía no lo sé. Pero es lo único que me pregunta quién soy. Las personas ya no preguntan. A ti todavía te queda alguien que te lo pregunte. Lo grande que es eso, desde ahí no se ve.`);
   ps.push(`Subiendo miré la maceta de la escalera. Es invierno y le había salido un brote. Alguien debe de estar regándola. Yo no. Ojalá hubiera sido yo.`);
-  ps.push(`La noche aún no llega. Es la hora azul. El sol ya se fue y la noche todavía no está. Qué terminó y qué empieza, nadie lo sabe aún. Feliz Navidad.`);
+  ps.push(`La noche no ha llegado. Es la hora azul. Si el sol se pone o sale, todavía no lo sabemos. Ni qué terminó ni qué empezó. Feliz Navidad.`);
   const text = `Para ${n}, en 2026\n\n${ps.join('\n\n')}\n\n— ${n}, en 2029\n\nBLUE HOUR · Ciudad de México 2029 ${HASHTAGS}\n${GAME_URL}?src=share`;
   const TYPE = signerType(S), GRID = dayGrid(S);
   const stats = `Firmas ${S.signed.toLocaleString('es-ES')} · Leídos ${S.signedRead} · Rechazos ${S.refused} · Vínculos ${S.bonds.length} · HRV ${dec(S.hrv, 1)} · BLUE ${Math.round(S.blue)} · ${S.voted ? 'Voto: ' + ({yes:'a favor',no:'en contra',abstain:'abstención'}[S.voted]) : 'Sin voto'}`;
