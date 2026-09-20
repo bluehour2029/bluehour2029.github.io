@@ -311,6 +311,12 @@ body.paper-mode::after{opacity:.03}
 .law.notice{border:2px solid rgba(196,58,46,.85);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 6px rgba(255,255,255,.06)}
 .law.notice b{color:var(--stamp);letter-spacing:.2em}
 .title .fine.credit-line{margin-top:6px;color:var(--dim)}
+.title .cta-note{font-size:13px;color:var(--muted);margin:10px 0 0;max-width:36ch}
+.term-hint{font-family:var(--mono);font-size:11.5px;color:var(--paper-muted);margin:12px 0 0;letter-spacing:.02em;line-height:1.6}
+.diary-chips{margin:14px 0 4px}
+.diary-chips .chip{font-size:13.5px;min-height:40px;padding:0 14px;text-align:left}
+.after .opt{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;cursor:pointer}
+.after .opt input{width:16px;height:16px;accent-color:var(--accent)}
 </style>
 
 <div id="app">
@@ -578,6 +584,7 @@ function title(){
     <div class="actions">
       ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? 'Volver a la carta' : 'Continuar · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">Desde el principio</button>` : `<button class="btn solid" id="b-start">Empezar</button>`}
     </div>
+    <p class="cta-note">Primero se calcula tu valor residual de 2029 a partir de tu trabajo de 2026.</p>
     <p class="fine">Unos 15 minutos · Toca para continuar</p>
     <p class="fine credit-line">Un mundo que nació del ensayo «Claude Blue»</p>
     <p class="langs">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
@@ -700,7 +707,7 @@ function shift(){
     const body = T(c.body).replace('{n}', c.n || '');
     stage.innerHTML = `<section class="term fade"><div class="term-top"><span>Terminal de firma</span><span>${esc(S.name)}</span><span>Quedan ${q.length - i}</span></div>
       <article class="paper ${c.batch ? 'batch' : ''}">${c.ack ? '' : '<i class="p-timer" id="ptimer"></i>'}<div class="doc-head"><span class="tag">${esc(c.cat)}</span><span class="late-tag" id="late" hidden>DEMORA</span><span class="no">N.º ${String(no).padStart(2,'0')}</span></div>
-      <h3>${esc(c.title)}</h3><p class="p-body">${esc(body)}</p><p class="p-basis hide" id="basis">Fundamento · ${esc(c.basis)}</p><div class="stamp" id="stamp"></div></article>
+      <h3>${esc(c.title)}</h3><p class="p-body">${esc(body)}</p><p class="p-basis hide" id="basis">Fundamento · ${esc(c.basis)}</p>${(S.day === 1 && no === 1) ? `<p class="term-hint">La barra dura 20 segundos. Decide antes de que se acabe y tu puntuación de confianza se mantiene.</p>` : ''}<div class="stamp" id="stamp"></div></article>
       <div class="term-ctl ${c.ack ? 'one' : ''}">${c.ack ? `<button class="btn solid" id="t-ack">Aceptar</button>` : `<button class="btn text" id="t-ask">Preguntar</button><button class="btn outline" id="t-ref">Rechazar</button><button class="btn solid" id="t-sign">Firmar</button>`}</div>
       <p class="term-note" id="note"></p></section>`;
     scrollTop();
@@ -747,7 +754,7 @@ function shift(){
       <div class="summary">Firmas <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString('es-ES')}</b> <span style="color:var(--paper-muted)">(leídos ${S.signedToday} · ${S.flags['batch' + S.day] ? 'en lote ' + BATCH[S.day] : 'rechazo en lote → derivado'})</span><br>Rechazos <b>${S.refusedToday}</b> · Demoras <b>${S.delaysToday}</b><br>HRV <b>${dec(S.hrv, 1)}</b> · piso ${floorOf()}</div></article>
       <p class="term-note">${esc(lineTxt)}</p>
       <div class="term-ctl one"><button class="btn solid" id="t-out">Fin del turno</button></div></section>`;
-    $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); evening(); };
+    $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); track('shift'); evening(); };
   }
 }
 
@@ -771,7 +778,7 @@ function evening(){
     <button class="tile wide" id="p-home" style="background-image:url('img/room.jpg')"><span class="cost">Noche</span><span class="t"><b>Volver a la habitación</b><small>${S.att > 0 ? 'La atención que te queda se pierde.' : (S.day === 3 && !S.voted ? 'Aún puedes votar.' : 'No te queda atención.')}</small></span></button></div></section>`;
   scrollTop();
   stage.querySelectorAll('.tile[data-k]').forEach(b => b.onclick = () => { const k = b.dataset.k; if(k === 'vote') return ballot(); S.att--; updHUD(true); visit(k); });
-  $('#p-home').onclick = () => { S.stage = 'night'; save(); night(); };
+  $('#p-home').onclick = () => { S.stage = 'night'; save(); track('evening'); night(); };
 }
 function visit(k){
   const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
@@ -972,6 +979,7 @@ function night(){
     line(NAMES.on,'Una cosa antes de dormir. No es un formulario de la empresa. Lo hice yo.')
   ];
   if(d === 2) items = [
+    line(NAMES.on, '{name}. En 2026 trabajabas en {job}. Si ese trabajo aún existiera, ¿algunos expedientes de hoy se leerían distinto?'),
     line(NAMES.on,'Uno de los expedientes que firmó ayer llegó a piso 7. No quería hablarle de eso.'),
     line(NAMES.on,'Su índice BLUE está en ' + Math.round(S.blue) + '. No es un indicador de la empresa. Lo hice yo. El nombre también se lo puse yo.'),
     {choice:[
@@ -1009,14 +1017,17 @@ const DIARY_Q = {
   2:{q:'Si pudieras enviar una sola frase a quien eras hace tres años, ¿qué escribirías?', hint:'Volverás a encontrar esa frase al final.'},
   3:{q:'Si 2029 fuera realmente así, ¿qué empezarías a preparar desde hoy, en 2026?', hint:'Cuanto más concreto, mejor. Puedes dejarlo en blanco. El blanco también es una respuesta.'}
 };
+const DIARY_OPTS = {1:['Miré a alguien a la cara y sonreí','Tomé una decisión y la asumí','Nada. Hoy no'],2:['Deja gente, no solo trabajo','Empieza aunque tengas miedo','Cuida el cuerpo primero'],3:['Gente con quien compartir una comida','Una cosa mía que la IA no puede hacer','No lo sé todavía. Por eso seguiré preguntando']};
 function diary(){
   S.stage = 'diary'; mode('dark'); hud.hidden = true;
   const d = S.day, Q = DIARY_Q[d];
   stage.innerHTML = `<section class="diary fade"><p class="q">${esc(Q.q)}</p><p class="hint">${esc(Q.hint)}</p>
+    <div class="chips diary-chips">${DIARY_OPTS[d].map(o => `<button class="chip">${esc(o)}</button>`).join('')}</div>
     <div class="field"><textarea id="f-diary" placeholder="Aquí" maxlength="140"></textarea><p class="hint" id="d-cnt">0 / 140</p>
     <div class="row"><button class="btn solid" id="d-ok">Escribir</button><button class="btn text" id="d-skip">Dejar en blanco</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1082,9 +1093,11 @@ function letter(){
     <div class="after" id="l-sign-wrap"><p class="note">Es el borrador que escribió ON. Si ya lo leíste, firma. Es la primera firma en tres días que pones sabiendo todo lo que dice.</p><button class="btn solid" id="l-sign">Lo leí. Firmo.</button></div>
     <div class="after" id="l-after" hidden>
       <div id="l-card"></div>
+      <label class="opt"><input type="checkbox" id="l-anon"> Ocultar mi nombre en la tarjeta</label>
       <button class="btn solid" id="l-cardbtn">Crear tarjeta</button>
       <button class="btn outline" id="l-share">Compartir</button>
       <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL)}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">Copiar la carta</button></div>
+      <button class="btn outline" id="l-replay">Vivirlo otra vez con otro trabajo</button>
       ${mail ? `<a class="btn outline" href="${mail}">Escribir al creador</a>` : ''}
       ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">Dejar un comentario</a>` : ''}
       <p class="stats">${esc(stats)}</p>
@@ -1097,8 +1110,10 @@ function letter(){
   $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = 'FIRMADO'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter'); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
   $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('Copiado.'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('Copiado.'); }catch(_){ toast('No se pudo copiar. Haz una captura de pantalla.'); } ta.remove(); } };
   $('#l-again').onclick = () => { if(!confirm('Se borrará el progreso. ¿Empezar desde el principio?')) return; clearSave(); S = fresh(); title(); };
-  let cardCanvas = null;
-  const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(n, quote); const img = new Image(); img.className = 'card'; img.alt = 'Tarjeta de la carta'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
+  let cardCanvas = null; const cardBtnText = $('#l-cardbtn').textContent;
+  $('#l-anon').onchange = () => { cardCanvas = null; $('#l-cardbtn').disabled = false; $('#l-cardbtn').textContent = cardBtnText; $('#l-card').innerHTML = ''; };
+  $('#l-replay').onclick = () => { const keep = S.name; clearSave(); S = fresh(); S.name = keep; track('replay'); askJob(); };
+  const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(($('#l-anon') && $('#l-anon').checked) ? '—' : n, quote); const img = new Image(); img.className = 'card'; img.alt = 'Tarjeta de la carta'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
   $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = 'Mantén pulsada la tarjeta para guardarla, o haz una captura.'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
   $('#l-share').onclick = async () => {
     try{

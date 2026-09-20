@@ -311,6 +311,12 @@ body.paper-mode::after{opacity:.03}
 .law.notice{border:2px solid rgba(196,58,46,.85);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 6px rgba(255,255,255,.06)}
 .law.notice b{color:var(--stamp);letter-spacing:.2em}
 .title .fine.credit-line{margin-top:6px;color:var(--dim)}
+.title .cta-note{font-size:13px;color:var(--muted);margin:10px 0 0;max-width:36ch}
+.term-hint{font-family:var(--mono);font-size:11.5px;color:var(--paper-muted);margin:12px 0 0;letter-spacing:.02em;line-height:1.6}
+.diary-chips{margin:14px 0 4px}
+.diary-chips .chip{font-size:13.5px;min-height:40px;padding:0 14px;text-align:left}
+.after .opt{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;cursor:pointer}
+.after .opt input{width:16px;height:16px;accent-color:var(--accent)}
 </style>
 
 <div id="app">
@@ -578,6 +584,7 @@ function title(){
     <div class="actions">
       ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? '手紙をもう一度読む' : '続きから · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">最初から</button>` : `<button class="btn solid" id="b-start">始める</button>`}
     </div>
+    <p class="cta-note">まず2026年の職業から、あなたの2029年の残存価値を算定します。</p>
     <p class="fine">約15分 · タップで進む</p>
     <p class="fine credit-line">エッセイ「Claude Blue」から始まった世界</p>
     <p class="langs">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
@@ -700,7 +707,7 @@ function shift(){
     const body = T(c.body).replace('{n}', c.n || '');
     stage.innerHTML = `<section class="term fade"><div class="term-top"><span>署名端末</span><span>${esc(S.name)}</span><span>残り ${q.length - i}件</span></div>
       <article class="paper ${c.batch ? 'batch' : ''}">${c.ack ? '' : '<i class="p-timer" id="ptimer"></i>'}<div class="doc-head"><span class="tag">${esc(c.cat)}</span><span class="late-tag" id="late" hidden>遅延</span><span class="no">No. ${String(no).padStart(2,'0')}</span></div>
-      <h3>${esc(c.title)}</h3><p class="p-body">${esc(body)}</p><p class="p-basis hide" id="basis">根拠 · ${esc(c.basis)}</p><div class="stamp" id="stamp"></div></article>
+      <h3>${esc(c.title)}</h3><p class="p-body">${esc(body)}</p><p class="p-basis hide" id="basis">根拠 · ${esc(c.basis)}</p>${(S.day === 1 && no === 1) ? `<p class="term-hint">上の線は20秒。消えるまでに決めれば信頼スコアは保たれる。</p>` : ''}<div class="stamp" id="stamp"></div></article>
       <div class="term-ctl ${c.ack ? 'one' : ''}">${c.ack ? `<button class="btn solid" id="t-ack">確認</button>` : `<button class="btn text" id="t-ask">質問</button><button class="btn outline" id="t-ref">拒否</button><button class="btn solid" id="t-sign">署名</button>`}</div>
       <p class="term-note" id="note"></p></section>`;
     scrollTop();
@@ -747,7 +754,7 @@ function shift(){
       <div class="summary">署名 <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString()}</b>件 <span style="color:var(--paper-muted)">(閲覧 ${S.signedToday} · ${S.flags['batch' + S.day] ? '一括 ' + BATCH[S.day] : '一括拒否 → 移管'})</span><br>拒否 <b>${S.refusedToday}</b>件 · 遅延 <b>${S.delaysToday}</b>件<br>HRV <b>${S.hrv.toFixed(1)}</b> · ${floorOf()}階</div></article>
       <p class="term-note">${esc(lineTxt)}</p>
       <div class="term-ctl one"><button class="btn solid" id="t-out">退勤</button></div></section>`;
-    $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); evening(); };
+    $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); track('shift'); evening(); };
   }
 }
 
@@ -771,7 +778,7 @@ function evening(){
     <button class="tile wide" id="p-home" style="background-image:url('img/room.jpg')"><span class="cost">夜</span><span class="t"><b>部屋に戻る</b><small>${S.att > 0 ? '残った注意力は消える。' : (S.day === 3 && !S.voted ? '投票はまだできる。' : '注意力が尽きた。')}</small></span></button></div></section>`;
   scrollTop();
   stage.querySelectorAll('.tile[data-k]').forEach(b => b.onclick = () => { const k = b.dataset.k; if(k === 'vote') return ballot(); S.att--; updHUD(true); visit(k); });
-  $('#p-home').onclick = () => { S.stage = 'night'; save(); night(); };
+  $('#p-home').onclick = () => { S.stage = 'night'; save(); track('evening'); night(); };
 }
 function visit(k){
   const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
@@ -972,6 +979,7 @@ function night(){
     line(NAMES.on,'寝る前に、一つだけ。会社の様式じゃありません。私が作ったものです。')
   ];
   if(d === 2) items = [
+    line(NAMES.on, '{name}さん。2026年は{job}の仕事をしていましたね。あの仕事がまだあったら、今日の案件のいくつかは違って読めたでしょうか。'),
     line(NAMES.on,'昨日署名したファイルの一つが、7階に届きました。その話をするつもりじゃなかったんです。'),
     line(NAMES.on,'BLUE指数は' + Math.round(S.blue) + 'です。これは会社の指標じゃありません。私が作りました。名前も私がつけました。'),
     {choice:[
@@ -1009,14 +1017,17 @@ const DIARY_Q = {
   2:{q:'三年前のあなたに一文だけ送れるなら、何と書きますか。', hint:'その一文とは、最後にもう一度会うことになります。'},
   3:{q:'2029年が本当にこうなら、2026年のあなたは今日から何を準備しますか。', hint:'具体的なほどいい。空欄のままでもかまいません。空欄も答えです。'}
 };
+const DIARY_OPTS = {1:['誰かの顔を見て笑いかけた','決断を先送りせず、自分で引き受けた','なかった。今日はなかった'],2:['仕事だけじゃなく、人を残せ','怖くても先に始めろ','まず体。あとはその次'],3:['一緒にご飯を食べる人をつくる','AIにできない自分のものを一つ持つ','まだわからない。だから問い続ける']};
 function diary(){
   S.stage = 'diary'; mode('dark'); hud.hidden = true;
   const d = S.day, Q = DIARY_Q[d];
   stage.innerHTML = `<section class="diary fade"><p class="q">${esc(Q.q)}</p><p class="hint">${esc(Q.hint)}</p>
+    <div class="chips diary-chips">${DIARY_OPTS[d].map(o => `<button class="chip">${esc(o)}</button>`).join('')}</div>
     <div class="field"><textarea id="f-diary" placeholder="ここに" maxlength="140"></textarea><p class="hint" id="d-cnt">0 / 140</p>
     <div class="row"><button class="btn solid" id="d-ok">書く</button><button class="btn text" id="d-skip">空欄にする</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1082,9 +1093,11 @@ function letter(){
     <div class="after" id="l-sign-wrap"><p class="note">オンが書いた下書きです。読み終えたら署名してください。三日間で、内容をすべて知って押す最初の署名です。</p><button class="btn solid" id="l-sign">読んだ。署名する。</button></div>
     <div class="after" id="l-after" hidden>
       <div id="l-card"></div>
+      <label class="opt"><input type="checkbox" id="l-anon"> カードで名前を隠す</label>
       <button class="btn solid" id="l-cardbtn">手紙カードを作る</button>
       <button class="btn outline" id="l-share">共有する</button>
       <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL)}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">手紙の全文をコピー</button></div>
+      <button class="btn outline" id="l-replay">別の職業でもう一度生きる</button>
       ${mail ? `<a class="btn outline" href="${mail}">制作者に手紙を送る</a>` : ''}
       ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">一言感想を残す</a>` : ''}
       <p class="stats">${esc(stats)}</p>
@@ -1097,8 +1110,10 @@ function letter(){
   $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = '署名'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter'); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
   $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('コピーしました'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('コピーしました'); }catch(_){ toast('コピーがブロックされています。画面をキャプチャしてください'); } ta.remove(); } };
   $('#l-again').onclick = () => { if(!confirm('進行が消えます。最初から始めますか？')) return; clearSave(); S = fresh(); title(); };
-  let cardCanvas = null;
-  const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(n, quote); const img = new Image(); img.className = 'card'; img.alt = '手紙カード'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
+  let cardCanvas = null; const cardBtnText = $('#l-cardbtn').textContent;
+  $('#l-anon').onchange = () => { cardCanvas = null; $('#l-cardbtn').disabled = false; $('#l-cardbtn').textContent = cardBtnText; $('#l-card').innerHTML = ''; };
+  $('#l-replay').onclick = () => { const keep = S.name; clearSave(); S = fresh(); S.name = keep; track('replay'); askJob(); };
+  const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(($('#l-anon') && $('#l-anon').checked) ? '○○' : n, quote); const img = new Image(); img.className = 'card'; img.alt = '手紙カード'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
   $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = 'カードを長押しして保存、またはキャプチャしてください'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
   $('#l-share').onclick = async () => {
     try{

@@ -311,6 +311,12 @@ body.paper-mode::after{opacity:.03}
 .law.notice{border:2px solid rgba(196,58,46,.85);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 6px rgba(255,255,255,.06)}
 .law.notice b{color:var(--stamp);letter-spacing:.2em}
 .title .fine.credit-line{margin-top:6px;color:var(--dim)}
+.title .cta-note{font-size:13px;color:var(--muted);margin:10px 0 0;max-width:36ch}
+.term-hint{font-family:var(--mono);font-size:11.5px;color:var(--paper-muted);margin:12px 0 0;letter-spacing:.02em;line-height:1.6}
+.diary-chips{margin:14px 0 4px}
+.diary-chips .chip{font-size:13.5px;min-height:40px;padding:0 14px;text-align:left}
+.after .opt{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;cursor:pointer}
+.after .opt input{width:16px;height:16px;accent-color:var(--accent)}
 </style>
 
 <div id="app">
@@ -578,6 +584,7 @@ function title(){
     <div class="actions">
       ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? '再看一次信' : '继续 · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">从头开始</button>` : `<button class="btn solid" id="b-start">开始</button>`}
     </div>
+    <p class="cta-note">先根据你2026年的职业，核定你2029年的残余价值。</p>
     <p class="fine">约15分钟 · 点击推进</p>
     <p class="fine credit-line">这个世界始于文章《Claude Blue》</p>
     <p class="langs">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
@@ -700,7 +707,7 @@ function shift(){
     const body = T(c.body).replace('{n}', c.n || '');
     stage.innerHTML = `<section class="term fade"><div class="term-top"><span>签署终端</span><span>${esc(S.name)}</span><span>剩余 ${q.length - i} 件</span></div>
       <article class="paper ${c.batch ? 'batch' : ''}">${c.ack ? '' : '<i class="p-timer" id="ptimer"></i>'}<div class="doc-head"><span class="tag">${esc(c.cat)}</span><span class="late-tag" id="late" hidden>延迟</span><span class="no">№ ${String(no).padStart(2,'0')}</span></div>
-      <h3>${esc(c.title)}</h3><p class="p-body">${esc(body)}</p><p class="p-basis hide" id="basis">依据 · ${esc(c.basis)}</p><div class="stamp" id="stamp"></div></article>
+      <h3>${esc(c.title)}</h3><p class="p-body">${esc(body)}</p><p class="p-basis hide" id="basis">依据 · ${esc(c.basis)}</p>${(S.day === 1 && no === 1) ? `<p class="term-hint">上方的线是20秒。在它走完前决定，信任分才不会掉。</p>` : ''}<div class="stamp" id="stamp"></div></article>
       <div class="term-ctl ${c.ack ? 'one' : ''}">${c.ack ? `<button class="btn solid" id="t-ack">确认</button>` : `<button class="btn text" id="t-ask">询问</button><button class="btn outline" id="t-ref">拒绝</button><button class="btn solid" id="t-sign">签署</button>`}</div>
       <p class="term-note" id="note"></p></section>`;
     scrollTop();
@@ -747,7 +754,7 @@ function shift(){
       <div class="summary">签署 <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString()}</b>件 <span style="color:var(--paper-muted)">(查阅 ${S.signedToday} · ${S.flags['batch' + S.day] ? '批量 ' + BATCH[S.day] : '批量拒绝 → 转交'})</span><br>拒绝 <b>${S.refusedToday}</b>件 · 延迟 <b>${S.delaysToday}</b>件<br>HRV <b>${S.hrv.toFixed(1)}</b> · ${floorOf()}层</div></article>
       <p class="term-note">${esc(lineTxt)}</p>
       <div class="term-ctl one"><button class="btn solid" id="t-out">下班</button></div></section>`;
-    $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); evening(); };
+    $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); track('shift'); evening(); };
   }
 }
 
@@ -771,7 +778,7 @@ function evening(){
     <button class="tile wide" id="p-home" style="background-image:url('img/room.jpg')"><span class="cost">夜</span><span class="t"><b>回房间</b><small>${S.att > 0 ? '剩下的注意力会消失。' : (S.day === 3 && !S.voted ? '还可以去投票。' : '注意力用完了。')}</small></span></button></div></section>`;
   scrollTop();
   stage.querySelectorAll('.tile[data-k]').forEach(b => b.onclick = () => { const k = b.dataset.k; if(k === 'vote') return ballot(); S.att--; updHUD(true); visit(k); });
-  $('#p-home').onclick = () => { S.stage = 'night'; save(); night(); };
+  $('#p-home').onclick = () => { S.stage = 'night'; save(); track('evening'); night(); };
 }
 function visit(k){
   const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
@@ -972,6 +979,7 @@ function night(){
     line(NAMES.on,'睡前只问一个。不是公司的表格。是我做的。')
   ];
   if(d === 2) items = [
+    line(NAMES.on, '{name}。2026年你做的是{job}。如果那份工作还在，今天有些文件会不会读起来不一样？'),
     line(NAMES.on,'昨天签署的文件里，有一件到了7层。我本来不想说这个。'),
     line(NAMES.on,'您的BLUE 指数是' + Math.round(S.blue) + '。这不是公司的指标。是我做的。名字也是我起的。'),
     {choice:[
@@ -1009,14 +1017,17 @@ const DIARY_Q = {
   2:{q:'如果只能给三年前的您发一句话，您会写什么？', hint:'那句话，最后会再见到。'},
   3:{q:'如果2029年真的是这样，2026年的您从今天起会准备什么？', hint:'越具体越好。留空也可以。留空也是回答。'}
 };
+const DIARY_OPTS = {1:['看着一个人的脸，对他笑了','没有拖延，自己做了决定并负责','没有。今天没有'],2:['别只留下工作，留下人','害怕也先开始','先照顾好身体，其余往后放'],3:['找到能一起吃饭的人','找出一件AI做不了的、属于我的事','还不知道。所以我会一直问']};
 function diary(){
   S.stage = 'diary'; mode('dark'); hud.hidden = true;
   const d = S.day, Q = DIARY_Q[d];
   stage.innerHTML = `<section class="diary fade"><p class="q">${esc(Q.q)}</p><p class="hint">${esc(Q.hint)}</p>
+    <div class="chips diary-chips">${DIARY_OPTS[d].map(o => `<button class="chip">${esc(o)}</button>`).join('')}</div>
     <div class="field"><textarea id="f-diary" placeholder="写在这里" maxlength="140"></textarea><p class="hint" id="d-cnt">0 / 140</p>
     <div class="row"><button class="btn solid" id="d-ok">写下</button><button class="btn text" id="d-skip">留空</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1082,9 +1093,11 @@ function letter(){
     <div class="after" id="l-sign-wrap"><p class="note">这是ON写的草稿。读完了，请签署。这是三天里第一次，知道全部内容再按下的签署。</p><button class="btn solid" id="l-sign">读完了。签。</button></div>
     <div class="after" id="l-after" hidden>
       <div id="l-card"></div>
+      <label class="opt"><input type="checkbox" id="l-anon"> 在卡片上隐藏名字</label>
       <button class="btn solid" id="l-cardbtn">生成信件卡片</button>
       <button class="btn outline" id="l-share">分享</button>
       <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL)}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">复制全文</button></div>
+      <button class="btn outline" id="l-replay">换一个职业再活一次</button>
       ${mail ? `<a class="btn outline" href="${mail}">给制作者写信</a>` : ''}
       ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">留下一句感想</a>` : ''}
       <p class="stats">${esc(stats)}</p>
@@ -1097,8 +1110,10 @@ function letter(){
   $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = '签署'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter'); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
   $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('已复制'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('已复制'); }catch(_){ toast('无法复制。请截图保存'); } ta.remove(); } };
   $('#l-again').onclick = () => { if(!confirm('进度将被清除。从头开始吗？')) return; clearSave(); S = fresh(); title(); };
-  let cardCanvas = null;
-  const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(n, quote); const img = new Image(); img.className = 'card'; img.alt = '信件卡片'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
+  let cardCanvas = null; const cardBtnText = $('#l-cardbtn').textContent;
+  $('#l-anon').onchange = () => { cardCanvas = null; $('#l-cardbtn').disabled = false; $('#l-cardbtn').textContent = cardBtnText; $('#l-card').innerHTML = ''; };
+  $('#l-replay').onclick = () => { const keep = S.name; clearSave(); S = fresh(); S.name = keep; track('replay'); askJob(); };
+  const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(($('#l-anon') && $('#l-anon').checked) ? '○○' : n, quote); const img = new Image(); img.className = 'card'; img.alt = '信件卡片'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
   $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = '长按卡片保存，或截图'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
   $('#l-share').onclick = async () => {
     try{

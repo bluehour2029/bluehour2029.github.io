@@ -311,6 +311,12 @@ body.paper-mode::after{opacity:.03}
 .law.notice{border:2px solid rgba(196,58,46,.85);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 6px rgba(255,255,255,.06)}
 .law.notice b{color:var(--stamp);letter-spacing:.2em}
 .title .fine.credit-line{margin-top:6px;color:var(--dim)}
+.title .cta-note{font-size:13px;color:var(--muted);margin:10px 0 0;max-width:36ch}
+.term-hint{font-family:var(--mono);font-size:11.5px;color:var(--paper-muted);margin:12px 0 0;letter-spacing:.02em;line-height:1.6}
+.diary-chips{margin:14px 0 4px}
+.diary-chips .chip{font-size:13.5px;min-height:40px;padding:0 14px;text-align:left}
+.after .opt{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;cursor:pointer}
+.after .opt input{width:16px;height:16px;accent-color:var(--accent)}
 </style>
 
 <div id="app">
@@ -578,6 +584,7 @@ function title(){
     <div class="actions">
       ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? 'Read the letter again' : 'Continue · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">Start over</button>` : `<button class="btn solid" id="b-start">Begin</button>`}
     </div>
+    <p class="cta-note">First, your 2029 residual value is calculated from your 2026 job.</p>
     <p class="fine">About 15 minutes · Tap to continue</p>
     <p class="fine credit-line">A world that began with the essay “Claude Blue”</p>
     <p class="langs">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
@@ -700,7 +707,7 @@ function shift(){
     const body = T(c.body).replace('{n}', c.n || '');
     stage.innerHTML = `<section class="term fade"><div class="term-top"><span>Attestation Terminal</span><span>${esc(S.name)}</span><span>Remaining: ${q.length - i}</span></div>
       <article class="paper ${c.batch ? 'batch' : ''}">${c.ack ? '' : '<i class="p-timer" id="ptimer"></i>'}<div class="doc-head"><span class="tag">${esc(c.cat)}</span><span class="late-tag" id="late" hidden>LATE</span><span class="no">№ ${String(no).padStart(2,'0')}</span></div>
-      <h3>${esc(c.title)}</h3><p class="p-body">${esc(body)}</p><p class="p-basis hide" id="basis">Basis · ${esc(c.basis)}</p><div class="stamp" id="stamp"></div></article>
+      <h3>${esc(c.title)}</h3><p class="p-body">${esc(body)}</p><p class="p-basis hide" id="basis">Basis · ${esc(c.basis)}</p>${(S.day === 1 && no === 1) ? `<p class="term-hint">The bar is 20 seconds. Decide before it runs out and your trust score holds.</p>` : ''}<div class="stamp" id="stamp"></div></article>
       <div class="term-ctl ${c.ack ? 'one' : ''}">${c.ack ? `<button class="btn solid" id="t-ack">Acknowledge</button>` : `<button class="btn text" id="t-ask">Ask</button><button class="btn outline" id="t-ref">Refuse</button><button class="btn solid" id="t-sign">Sign</button>`}</div>
       <p class="term-note" id="note"></p></section>`;
     scrollTop();
@@ -747,7 +754,7 @@ function shift(){
       <div class="summary">Signed <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString()}</b> <span style="color:var(--paper-muted)">(Read ${S.signedToday} · ${S.flags['batch' + S.day] ? 'Batch ' + BATCH[S.day] : 'Batch refused → transferred'})</span><br>Refused <b>${S.refusedToday}</b> · Late <b>${S.delaysToday}</b><br>HRV <b>${S.hrv.toFixed(1)}</b> · ${floorOf()}F</div></article>
       <p class="term-note">${esc(lineTxt)}</p>
       <div class="term-ctl one"><button class="btn solid" id="t-out">Clock out</button></div></section>`;
-    $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); evening(); };
+    $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); track('shift'); evening(); };
   }
 }
 
@@ -771,7 +778,7 @@ function evening(){
     <button class="tile wide" id="p-home" style="background-image:url('img/room.jpg')"><span class="cost">Night</span><span class="t"><b>Go back to your room</b><small>${S.att > 0 ? 'Any Attention left is lost.' : (S.day === 3 && !S.voted ? 'You can still vote.' : 'You are out of Attention.')}</small></span></button></div></section>`;
   scrollTop();
   stage.querySelectorAll('.tile[data-k]').forEach(b => b.onclick = () => { const k = b.dataset.k; if(k === 'vote') return ballot(); S.att--; updHUD(true); visit(k); });
-  $('#p-home').onclick = () => { S.stage = 'night'; save(); night(); };
+  $('#p-home').onclick = () => { S.stage = 'night'; save(); track('evening'); night(); };
 }
 function visit(k){
   const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
@@ -972,6 +979,7 @@ function night(){
     line(NAMES.on,'One thing before you sleep. This is not a company form. I made it.')
   ];
   if(d === 2) items = [
+    line(NAMES.on, '{name}. In 2026 you worked as {job}. If that job still existed, would some of today\'s files have read differently?'),
     line(NAMES.on,'One of the files you signed yesterday arrived on the seventh floor. That is not what I meant to talk about.'),
     line(NAMES.on,'Your BLUE is at ' + Math.round(S.blue) + '. This is not a company metric. I made it. I named it, too.'),
     {choice:[
@@ -1009,14 +1017,17 @@ const DIARY_Q = {
   2:{q:'If you could send one sentence to yourself three years ago, what would it say?', hint:'You will meet that sentence again at the end.'},
   3:{q:'If 2029 really looks like this, what will the you of 2026 start preparing today?', hint:'The more concrete, the better. You may leave it blank. Blank is also an answer.'}
 };
+const DIARY_OPTS = {1:['I looked at someone and smiled','I made a decision and owned it','Nothing. Not today'],2:['Keep people, not just the job','Start before you feel ready','Take care of your body first'],3:['People I can share a meal with','One thing of mine that AI cannot do','I do not know yet. So I will keep asking']};
 function diary(){
   S.stage = 'diary'; mode('dark'); hud.hidden = true;
   const d = S.day, Q = DIARY_Q[d];
   stage.innerHTML = `<section class="diary fade"><p class="q">${esc(Q.q)}</p><p class="hint">${esc(Q.hint)}</p>
+    <div class="chips diary-chips">${DIARY_OPTS[d].map(o => `<button class="chip">${esc(o)}</button>`).join('')}</div>
     <div class="field"><textarea id="f-diary" placeholder="Here" maxlength="140"></textarea><p class="hint" id="d-cnt">0 / 140</p>
     <div class="row"><button class="btn solid" id="d-ok">Write it</button><button class="btn text" id="d-skip">Leave it blank</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1082,9 +1093,11 @@ function letter(){
     <div class="after" id="l-sign-wrap"><p class="note">A draft written by ON. If you have read it, sign. This is the first signature in three days where you know everything you are signing.</p><button class="btn solid" id="l-sign">I have read it. I sign.</button></div>
     <div class="after" id="l-after" hidden>
       <div id="l-card"></div>
+      <label class="opt"><input type="checkbox" id="l-anon"> Hide my name on the card</label>
       <button class="btn solid" id="l-cardbtn">Make a letter card</button>
       <button class="btn outline" id="l-share">Share</button>
       <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL)}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">Copy full letter</button></div>
+      <button class="btn outline" id="l-replay">Live it again with another job</button>
       ${mail ? `<a class="btn outline" href="${mail}">Send a letter to the maker</a>` : ''}
       ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">Leave one line of feedback</a>` : ''}
       <p class="stats">${esc(stats)}</p>
@@ -1097,8 +1110,10 @@ function letter(){
   $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = 'SIGNED'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter'); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
   $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('Copied'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('Copied'); }catch(_){ toast('Copying is blocked. Please take a screenshot.'); } ta.remove(); } };
   $('#l-again').onclick = () => { if(!confirm('Your saved progress will be erased. Start over?')) return; clearSave(); S = fresh(); title(); };
-  let cardCanvas = null;
-  const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(n, quote); const img = new Image(); img.className = 'card'; img.alt = 'Letter card'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
+  let cardCanvas = null; const cardBtnText = $('#l-cardbtn').textContent;
+  $('#l-anon').onchange = () => { cardCanvas = null; $('#l-cardbtn').disabled = false; $('#l-cardbtn').textContent = cardBtnText; $('#l-card').innerHTML = ''; };
+  $('#l-replay').onclick = () => { const keep = S.name; clearSave(); S = fresh(); S.name = keep; track('replay'); askJob(); };
+  const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(($('#l-anon') && $('#l-anon').checked) ? '—' : n, quote); const img = new Image(); img.className = 'card'; img.alt = 'Letter card'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
   $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = 'Press and hold the card to save, or take a screenshot'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
   $('#l-share').onclick = async () => {
     try{

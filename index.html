@@ -311,6 +311,12 @@ body.paper-mode::after{opacity:.03}
 .law.notice{border:2px solid rgba(196,58,46,.85);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 6px rgba(255,255,255,.06)}
 .law.notice b{color:var(--stamp);letter-spacing:.2em}
 .title .fine.credit-line{margin-top:6px;color:var(--dim)}
+.title .cta-note{font-size:13px;color:var(--muted);margin:10px 0 0;max-width:36ch}
+.term-hint{font-family:var(--mono);font-size:11.5px;color:var(--paper-muted);margin:12px 0 0;letter-spacing:.02em;line-height:1.6}
+.diary-chips{margin:14px 0 4px}
+.diary-chips .chip{font-size:13.5px;min-height:40px;padding:0 14px;text-align:left}
+.after .opt{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;cursor:pointer}
+.after .opt input{width:16px;height:16px;accent-color:var(--accent)}
 </style>
 
 <div id="app">
@@ -578,6 +584,7 @@ function title(){
     <div class="actions">
       ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? '편지 다시 보기' : '이어하기 · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">처음부터</button>` : `<button class="btn solid" id="b-start">시작</button>`}
     </div>
+    <p class="cta-note">먼저 2026년의 직업으로 당신의 2029년 잔여가치를 산정합니다.</p>
     <p class="fine">약 15분 · 탭으로 진행</p>
     <p class="fine credit-line">브런치 「Claude Blue」에서 시작된 세계</p>
     <p class="langs">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
@@ -700,7 +707,7 @@ function shift(){
     const body = T(c.body).replace('{n}', c.n || '');
     stage.innerHTML = `<section class="term fade"><div class="term-top"><span>서명 단말</span><span>${esc(S.name)}</span><span>남은 건 ${q.length - i}</span></div>
       <article class="paper ${c.batch ? 'batch' : ''}">${c.ack ? '' : '<i class="p-timer" id="ptimer"></i>'}<div class="doc-head"><span class="tag">${esc(c.cat)}</span><span class="late-tag" id="late" hidden>지연</span><span class="no">№ ${String(no).padStart(2,'0')}</span></div>
-      <h3>${esc(c.title)}</h3><p class="p-body">${esc(body)}</p><p class="p-basis hide" id="basis">근거 · ${esc(c.basis)}</p><div class="stamp" id="stamp"></div></article>
+      <h3>${esc(c.title)}</h3><p class="p-body">${esc(body)}</p><p class="p-basis hide" id="basis">근거 · ${esc(c.basis)}</p>${(S.day === 1 && no === 1) ? `<p class="term-hint">위의 선이 20초. 그 안에 결정하면 신뢰점수가 유지됩니다.</p>` : ''}<div class="stamp" id="stamp"></div></article>
       <div class="term-ctl ${c.ack ? 'one' : ''}">${c.ack ? `<button class="btn solid" id="t-ack">확인</button>` : `<button class="btn text" id="t-ask">질문</button><button class="btn outline" id="t-ref">거부</button><button class="btn solid" id="t-sign">서명</button>`}</div>
       <p class="term-note" id="note"></p></section>`;
     scrollTop();
@@ -747,7 +754,7 @@ function shift(){
       <div class="summary">서명 <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString()}</b>건 <span style="color:var(--paper-muted)">(열람 ${S.signedToday} · ${S.flags['batch' + S.day] ? '일괄 ' + BATCH[S.day] : '일괄 거부 → 이관'})</span><br>거부 <b>${S.refusedToday}</b>건 · 지연 <b>${S.delaysToday}</b>건<br>HRV <b>${S.hrv.toFixed(1)}</b> · ${floorOf()}층</div></article>
       <p class="term-note">${esc(lineTxt)}</p>
       <div class="term-ctl one"><button class="btn solid" id="t-out">퇴근</button></div></section>`;
-    $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); evening(); };
+    $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); track('shift'); evening(); };
   }
 }
 
@@ -771,7 +778,7 @@ function evening(){
     <button class="tile wide" id="p-home" style="background-image:url('img/room.jpg')"><span class="cost">밤</span><span class="t"><b>방으로 돌아간다</b><small>${S.att > 0 ? '남은 주의력은 사라진다.' : (S.day === 3 && !S.voted ? '투표는 아직 할 수 있다.' : '주의력이 다 떨어졌다.')}</small></span></button></div></section>`;
   scrollTop();
   stage.querySelectorAll('.tile[data-k]').forEach(b => b.onclick = () => { const k = b.dataset.k; if(k === 'vote') return ballot(); S.att--; updHUD(true); visit(k); });
-  $('#p-home').onclick = () => { S.stage = 'night'; save(); night(); };
+  $('#p-home').onclick = () => { S.stage = 'night'; save(); track('evening'); night(); };
 }
 function visit(k){
   const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
@@ -972,6 +979,7 @@ function night(){
     line(NAMES.on,'자기 전에 하나만요. 회사 양식이 아니에요. 제가 만든 거예요.')
   ];
   if(d === 2) items = [
+    line(NAMES.on, '{name}. 2026년에 {job} 일을 하셨죠. 그 일이 아직 있었다면, 오늘 서명 건 몇 개는 다르게 읽혔을까요.'),
     line(NAMES.on,'어제 서명한 파일 중 하나가 7층에 도착했어요. 그 얘기를 하려던 건 아니에요.'),
     line(NAMES.on,'당신의 BLUE 지수가 ' + Math.round(S.blue) + '이에요. 이건 회사 지표가 아니에요. 제가 만든 거예요. 이름도 제가 붙였어요.'),
     {choice:[
@@ -1009,14 +1017,17 @@ const DIARY_Q = {
   2:{q:'3년 전의 당신에게 딱 한 문장을 보낼 수 있다면, 뭐라고 쓰겠어요?', hint:'그 문장은 마지막에 다시 만나게 됩니다.'},
   3:{q:'2029년이 정말 이렇다면, 2026년의 당신은 오늘부터 무엇을 준비하겠습니까?', hint:'구체적일수록 좋습니다. 빈칸으로 둬도 됩니다. 빈칸도 답입니다.'}
 };
+const DIARY_OPTS = {1:['누군가의 얼굴을 보고 웃어줬다','결정을 미루지 않고 내가 책임졌다','없었다. 오늘은 없었다'],2:['지금 하는 일 말고, 사람을 남겨','무서워도 먼저 시작해','몸부터 챙겨. 나머지는 그다음'],3:['같이 밥 먹을 사람을 만든다','AI가 못 하는 내 것 하나를 판다','아직 모르겠다. 그래서 계속 묻겠다']};
 function diary(){
   S.stage = 'diary'; mode('dark'); hud.hidden = true;
   const d = S.day, Q = DIARY_Q[d];
   stage.innerHTML = `<section class="diary fade"><p class="q">${esc(Q.q)}</p><p class="hint">${esc(Q.hint)}</p>
+    <div class="chips diary-chips">${DIARY_OPTS[d].map(o => `<button class="chip">${esc(o)}</button>`).join('')}</div>
     <div class="field"><textarea id="f-diary" placeholder="여기에" maxlength="140"></textarea><p class="hint" id="d-cnt">0 / 140</p>
     <div class="row"><button class="btn solid" id="d-ok">적는다</button><button class="btn text" id="d-skip">비워둔다</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1082,9 +1093,11 @@ function letter(){
     <div class="after" id="l-sign-wrap"><p class="note">온이 쓴 초안입니다. 읽으셨으면 서명하세요. 사흘 동안 내용을 다 알고 찍는 첫 서명입니다.</p><button class="btn solid" id="l-sign">읽었다. 서명한다.</button></div>
     <div class="after" id="l-after" hidden>
       <div id="l-card"></div>
+      <label class="opt"><input type="checkbox" id="l-anon"> 카드에서 이름 가리기</label>
       <button class="btn solid" id="l-cardbtn">편지 카드 만들기</button>
       <button class="btn outline" id="l-share">공유하기</button>
       <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL)}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">편지 전문 복사</button></div>
+      <button class="btn outline" id="l-replay">다른 직업으로 다시 살아보기</button>
       ${mail ? `<a class="btn outline" href="${mail}">제작자에게 편지 보내기</a>` : ''}
       ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">한 줄 소감 남기기</a>` : ''}
       <p class="stats">${esc(stats)}</p>
@@ -1097,8 +1110,10 @@ function letter(){
   $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = '서명'; st.className = 'stamp sign'; requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter'); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
   $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('복사했습니다'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('복사했습니다'); }catch(_){ toast('복사가 막혀 있습니다. 화면을 캡처해 주세요'); } ta.remove(); } };
   $('#l-again').onclick = () => { if(!confirm('진행이 지워집니다. 처음부터 시작할까요?')) return; clearSave(); S = fresh(); title(); };
-  let cardCanvas = null;
-  const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(n, quote); const img = new Image(); img.className = 'card'; img.alt = '편지 카드'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
+  let cardCanvas = null; const cardBtnText = $('#l-cardbtn').textContent;
+  $('#l-anon').onchange = () => { cardCanvas = null; $('#l-cardbtn').disabled = false; $('#l-cardbtn').textContent = cardBtnText; $('#l-card').innerHTML = ''; };
+  $('#l-replay').onclick = () => { const keep = S.name; clearSave(); S = fresh(); S.name = keep; track('replay'); askJob(); };
+  const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(($('#l-anon') && $('#l-anon').checked) ? '○○' : n, quote); const img = new Image(); img.className = 'card'; img.alt = '편지 카드'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
   $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = '카드를 길게 눌러 저장하거나 캡처하세요'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
   $('#l-share').onclick = async () => {
     try{
