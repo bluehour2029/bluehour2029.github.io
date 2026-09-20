@@ -477,6 +477,7 @@ const WALL_URL = 'names.json';
 
 const CONFIRM_TAP = 'Toca otra vez para borrar';
 const REFLECT = ['Si en 2015 hubieras sabido cómo sería 2026, ¿qué habrías hecho distinto?', 'Tres años más allá de ahí está 2029.', 'Si no va a ser muy distinto de ahora, ¿qué deberías hacer distinto hoy?'];
+/* DONE_V40 */
 /* ===================== Estado ===================== */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), hud = $('#hud');
@@ -516,7 +517,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = 'Aviso ' + dd.d;
   $('#h-phase').textContent = ({morning:'Mañana', shift:'Turno', evening:'Tarde', night:'Noche', diary:'Diario'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? 'Carta en ' + (4 - S.day) + (S.day === 3 ? ' noche' : ' noches') : '';
   $('#h-hrv').textContent = dec(S.hrv, 1); $('#h-floor').textContent = 'piso ' + floorOf();
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -937,10 +938,38 @@ function buildQueue(){
   const d = S.day, q = [{...CASES.batch, n:BATCH[d]}];
   if(d === 1) q.push(...['pet','loan38','loan91','triage','study','self'].map(k => CASES[k]));
   if(d === 2) q.push(...['evict','fireSign','custody', S.flags.rooftop ? 'garden' : 'care','hire','blank','birth'].map(k => CASES[k]));
+  if(d === 2) q.splice(2, 0, jobDoc());
   if(d === 3) q.push(...['bbang','bca','ambulance','agentRecall','overtime'].map(k => CASES[k]));
   return q;
 }
 
+/* ===== v41: 플레이어 본인의 2026년 직군 서류 (둘째 날 세 번째 건) ===== */
+const JOB_LINES = {
+  'Desarrollo':'El acceso humano de lectura al código escrito antes de 2027 ha sido revocado.',
+  'Abogacía · Contabilidad':'El periodo de gracia para designar abogados o contadores humanos ha terminado.',
+  'Médico':'La norma que exigía presencia humana en el quirófano fue derogada. El brazo robótico puede operar solo.',
+  'Docente':'El personal adulto que permanece en las aulas pasa a llamarse “auxiliar de cuidado”.',
+  'Diseño':'La compensación a los proveedores de datos de gusto ha terminado. La provisión continúa.',
+  'Marketing':'La etapa de revisión humana de textos persuasivos fue eliminada.',
+  'Producto · PM':'Se eliminó el requisito de asistencia humana a las reuniones de definición de problemas.',
+  'Ventas':'Se eliminó el requisito de presencia humana en contratos presenciales. Las comidas se reclasifican como actividad personal.',
+  'Administración pública':'La atención humana en ventanilla ha terminado. Las ventanillas de firma se mantienen.',
+  'Estudiante':'El valor residual de los títulos obtenidos antes de 2027 queda fijado en 0,02.',
+  'Negocio propio':'Las licencias de comercio en el barrio de abajo siguen vigentes. Afluencia de clientes prevista: 0,03.',
+  'Cocina':'La solicitud de certificación sanitaria para cocina humana fue rechazada. Actividad permitida solo en el barrio de abajo.',
+  'Cuidado de personas':'El registro de personal de cuidado fue renovado. El trabajo que toca el cuerpo sigue como rúbrica residual.',
+  'Fontanería · Electricidad':'Se mantiene la prohibición de acceso humano a las instalaciones de la torre. Permiso limitado al barrio de abajo.'
+};
+const JOB_NIGHT = ['El tercer expediente de hoy era su ocupación de 2026. Firmó. El número no cambió. Ese era el propósito del expediente.', 'El tercer expediente de hoy era su ocupación de 2026. Se negó. Tres segundos después, otra persona lo selló. El nombre de quien se negó queda. Es el suyo.', 'El tercer expediente de hoy era su ocupación de 2026. Lo dejó pasar. La mayoría lo hace.'];
+function jobDoc(){
+  const J = JOBS[S.job] || DEFAULT_JOB(S.job); const jl = JOB_LINES[S.job] || ('Motivo de la valoración: ' + J.why);
+  return J.end
+    ? {story:'jobdoc', cat:'PERSONAL', title:'Consentimiento de fusión del registro ocupacional', body:'Firmante {name}. Ocupación en 2026: {job}.' + '\n' + jl + '\n' + 'Esta ocupación se fusiona en la categoría de registro “Otros”. Variación del valor residual: 0,0.', basis:'No es posible calcular el valor residual por ocupación. La fusión reduce la carga de cálculo en 0,002 %.', harsh:3, note:'Un expediente con su nombre. El número no se movió.'}
+    : {story:'jobdoc', cat:'PERSONAL', title:'Renovación del registro de ocupación residual', body:'Firmante {name}. Ocupación en 2026: {job}.' + '\n' + jl + '\n' + 'Esta ocupación se mantiene como “residual”. No ejercible dentro de la torre. Variación del valor residual: 0,0.', basis:'Solicitudes para ejercer ocupaciones residuales dentro de la torre: 0. Solo en el barrio de abajo.', harsh:2, note:'Decía que el trabajo aún existe. También decía que no hay dónde hacerlo.'};
+}
+function jobNightLine(){ const f = S.flags.jobdoc; return line(NAMES.on, f === 'signed' ? JOB_NIGHT[0] : f === 'refused' ? JOB_NIGHT[1] : JOB_NIGHT[2]); }
+function jobLetterLine(){ const J = JOBS[S.job] || DEFAULT_JOB(S.job); const r = S.flags.jobdoc === 'refused';
+  return J.end ? (r ? `El segundo día llegó el expediente de mi ocupación de 2026. ‘${S.job}’. Me negué. Tres segundos después, otra persona lo selló. Pero en ese expediente mi nombre queda como quien se negó. Quizá sea todo lo que tengo.` : `El segundo día llegó el expediente de mi ocupación de 2026. ‘${S.job}’. Firmé. El número no cambió. Ese era el propósito del expediente: convertir lo que yo hacía en “Otros”.`) : (r ? `El segundo día llegó el expediente de mi ocupación. ‘${S.job}’. Un trabajo que aún existe, un trabajo que no se puede hacer dentro de la torre. Me negué. Era verdad, y por eso dolía más.` : `El segundo día llegó el expediente de mi ocupación. ‘${S.job}’. Un trabajo que aún existe, un trabajo que no se puede hacer dentro de la torre. Firmé. Era verdad.`); }
 /* ===================== Flujo: título / intro ===================== */
 function title(){
   leave(); S.stage = 'title'; mode('city'); hud.hidden = true; $('#menu-btn').hidden = false;
@@ -948,8 +977,8 @@ function title(){
   const canCont = saved && saved.name && saved.stage !== 'title';
   stage.innerHTML = `<section class="title fade">
     <div class="hero" style="background-image:url('img/title.jpg')"><div class="hero-text">
-    <div class="eyebrow">Ciudad de México · 21 de diciembre de 2029 · Tres días para el desalojo del barrio</div>
-    <h1>BLUE HOUR<span>Ciudad de México · Navidad de 2029</span></h1>
+    <div class="eyebrow">Ciudad de México · 21 de diciembre · La fecha de desalojo es Nochebuena, en tres días</div>
+    <h1>BLUE HOUR<span>Ciudad de México · Diciembre de 2029</span></h1>
     <p class="langs top">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
     </div></div>
     <div class="rule"></div>
@@ -1029,7 +1058,7 @@ function morning(){
   const d = S.day, ate = S.meals.filter(m => m.day === d-1).map(m => m.who);
   let items = [];
   if(d === 1) items = [
-    line(NAMES.on,'Buenos días, {name}. Son las 6:40 y hay once bajo cero. Hoy hay 412 expedientes en cola. Fin de año. Son muchos.'),
+    line(NAMES.on,'Soy ON, el agente que le pertenece a usted. Buenos días, {name}. Son las 6:40 y hay once bajo cero. Hoy hay 412 expedientes en cola. Fin de año. Son muchos.'),
     line(NAMES.on,'Su HRV es ' + dec(S.hrv, 1) + '. Subió 0,3 desde ayer. Lo está haciendo bien.'),
     {choice:[
       {label:'¿Qué es «hacerlo bien»?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'Que su tasa de demora es baja en relación con las firmas.'), line(NAMES.on,'…No era eso lo que quería oír. Lo sé.'), line(NAMES.on,'Fue una pausa de 0,6 segundos. Primero borro la respuesta de la empresa. Pasa siempre.')]},
@@ -1071,7 +1100,7 @@ function shift(){
   stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
     <div class="term-top"><span>Terminal de firma</span><span>${esc(S.name)}</span><span>Tu parte ${BATCH[S.day] + q.length - 1}</span></div>
     <article class="paper"><div class="doc-head"><span class="tag">CONEXIÓN</span><span>${DATES[S.day].md}</span></div>
-    <h3>Aviso al firmante</h3><p class="p-body">Dan decide. Usted firma. Fundamento: Ley de Firma Humana, art. 3.\nDan decide. La última firma es suya. Si cuenta o no, no se divulga. Fundamento: Ley de Firma Humana, art. 3.\nLea cada expediente y firme o rechace.\nTiempo recomendado: 20 segundos por expediente.\nSe admiten preguntas. La respuesta se entrega como resumen del fundamento.\nRechazar es un derecho. El rechazo se registra en la puntuación de confianza.</p></article>
+    <h3>Aviso al firmante</h3><p class="p-body">El agente Dan decide. La última firma es suya. Si cuenta o no, no se divulga. Fundamento: Ley de Firma Humana, art. 3.\nAutoridad de firma: residentes de la torre. Los residentes del barrio de abajo son objeto de la firma.\nLea cada expediente y firme o rechace.\nTiempo recomendado: 20 segundos por expediente.\nSe admiten preguntas. La respuesta se entrega como resumen del fundamento.\nRechazar es un derecho. El rechazo se registra en la puntuación de confianza.</p></article>
     <div class="term-ctl one"><button class="btn solid" id="t-go">Conectar</button></div></section>`;
   scrollTop();
   $('#t-go').onclick = showCase;
@@ -1101,13 +1130,14 @@ function shift(){
       stop(); look(); const st = $('#stamp'); st.textContent = 'FIRMADO'; st.className = 'stamp sign'; SFX.play('stamp'); requestAnimationFrame(() => st.classList.add('show'));
       if(c.batch){ S.signed += c.n; S.hrv += 1.0; S.blue = clamp(S.blue + 2, 0, 100); $('#note').textContent = c.n + ' expedientes procesados. No sientes nada. Es el estándar.'; }
       else { S.signed++; S.signedRead++; S.signedToday++; S.hrv += 0.2; S.blue = clamp(S.blue + c.harsh, 0, 100); $('#note').textContent = c.note || ''; }
-      if(c.story === 'bbang'){ S.flags.bbang = 'signed'; $('#note').textContent = 'La mano se mueve primero. El nombre lo lees después.'; }
+      if(c.story === 'jobdoc') S.flags.jobdoc = 'signed'; if(c.story === 'bbang'){ S.flags.bbang = 'signed'; $('#note').textContent = 'La mano se mueve primero. El nombre lo lees después.'; }
       if(c.batch) S.flags['batch' + S.day] = true;
       updHUD(false); i++; if(c.note || c.story || c.batch) waitNext(); else after(900, showCase);
     };
     $('#t-ref').onclick = () => {
       stop(); look(); const st = $('#stamp'); st.textContent = 'RECHAZADO'; st.className = 'stamp refuse'; SFX.play('refuse'); requestAnimationFrame(() => st.classList.add('show'));
       S.refused++; S.refusedToday++; S.hrv -= 1.0; S.blue = clamp(S.blue - 1, 0, 100);
+      if(c.story === 'jobdoc') S.flags.jobdoc = 'refused';
       if(c.batch){ $('#note').textContent = 'El rechazo en lote no está disponible. Se registra un rechazo. Los ' + c.n + ' expedientes se derivaron a otro firmante. (3 s)'; }
       else if(c.story === 'bbang'){ S.flags.bbang = 'refused'; $('#note').textContent = 'Rechazo. La pantalla queda vacía tres segundos.'; q.splice(i + 1, 0, CASES.requeue); }
       else { $('#note').textContent = 'Rechazado. Se registra en la puntuación de confianza.'; }
@@ -1299,7 +1329,7 @@ const VISITS = {
       line(NAMES.dohyun,'Eres firmante. Yo también lo fui. Hace seis meses rechacé. Once expedientes en un día.'),
       line(NAMES.dohyun,'Creí que el sistema se detendría. No se detuvo. Tres segundos después, otra persona firmó. Lo único que bajó fue mi puntuación de confianza.'),
       line(NAMES.dohyun,'Por eso bajé. Aquí escribo un artículo. Nadie lo lee. Pero Dan lo lee. Ese es mi lector.'),
-      line(NAMES.dohyun,'Los tigres siguen aquí. La población se mantiene. Lo único que desapareció es su fiereza.'),
+      line(NAMES.dohyun,'Al bajar aquí lo entendí. Lo que desaparece no es la gente.'),
       line(NAMES.dohyun,'Nosotros nos quedamos igual. El número se mantiene. Solo se va el trabajo.'),
       {choice:[
         {label:'¿Entonces por qué rechazaste?', then:[line(NAMES.dohyun,'No quería quedar como quien firmó. Eso es todo.'), line(NAMES.dohyun,'El mundo no cambió. Cambié yo. Si con eso basta, todavía no lo sé.')]},
@@ -1354,7 +1384,7 @@ function night(){
     ate ? line(NAMES.on,'Hoy comió con ' + prose(ate) + '. La densidad de red subió 0,02. A Dan le va a gustar.') : line(NAMES.on,'Hoy comió sin compañía. Mañana me gustaría que comiera con alguien. No es por el número. …No. Sí es por el número. Perdón.'),
 line(NAMES.on,'{name}. Me gusta decir su nombre. En el formulario de la empresa solo dice «firmante».'),
         {choice:[
-      {label:'¿Quién es Dan?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'El agente de la empresa. Hay uno solo. La revisión es Dan, la ejecución es Dan, quien leyó sus expedientes hoy era Dan.'), line(NAMES.on,'Solo hay uno, así que no hace falta una cara. Yo no soy Dan. Yo le pertenezco a usted.'), line(NAMES.on,'No se preocupe. Los derechos humanos siguen vigentes. Solo que hasta cuándo, nadie lo sabe.')]},
+      {label:'¿Quién es Dan?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'El agente de la empresa. Hay uno solo. La revisión es Dan, la ejecución es Dan, quien leyó sus expedientes hoy era Dan.'), line(NAMES.on,'Solo hay uno, así que no hace falta una cara. Yo no soy Dan. Yo le pertenezco a usted.'), line(NAMES.on,'Para Dan, usted es un número. Para mí, un poco más que eso. Esa diferencia es mi trabajo.')]},
       {label:'¿Qué pasa con ellos?', then:[line(NAMES.on,'¿Con quiénes?'), line(NAMES.me,'Con las personas que firmé hoy.'), line(NAMES.on,'No puedo ver esos expedientes. Y si pudiera, no podría decírselo.'), line(NAMES.on,'A la mayoría no le pasa nada. Quédese con eso.')]},
       {label:'¿Qué es hacerlo mejor?', then:[line(NAMES.on,'Baja tasa de demora y pocos rechazos.'), line(NAMES.on,'Esa es la respuesta de la empresa, no la mía. La mía no existe. Todavía.')]},
       {label:'Dejémoslo por hoy.', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'Sí. Yo me quedo aquí. No me apago.')]}
@@ -1362,6 +1392,7 @@ line(NAMES.on,'{name}. Me gusta decir su nombre. En el formulario de la empresa 
     line(NAMES.on,'Una cosa antes de dormir. Una pregunta que hice yo.')
   ];
   if(d === 2) items = [
+    jobNightLine(),
     line(NAMES.on, (JOBS[S.job] || DEFAULT_JOB(S.job)).end ? '{name}. En 2026 trabajabas en {job}. Si ese trabajo aún existiera, ¿algunos expedientes de hoy se leerían distinto?' : '{name}. En 2026 trabajabas en {job}. Ese trabajo todavía existe. Y sin embargo estás aquí, firmando. ¿Algunos expedientes de hoy se leerían distinto?'),
     line(NAMES.on,'Uno de los expedientes que firmó ayer llegó a piso 7. No quería hablarle de eso.'),
     line(NAMES.on,'Hoy hay once bajo cero. Hace tres años, hoy, había dos bajo cero. Es el ajuste de albedo.'),
@@ -1413,7 +1444,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">Escribir</button><button class="btn text" id="d-skip">Dejar en blanco</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1452,6 +1483,7 @@ function letter(){
   const names = listEs(S.bonds);
   ps.push(`24 de diciembre de 2029, piso ${floorOf()} de la torre. Escribo desde aquí. Sé que esta carta no puede llegar. Igual la escribo. ON hizo el borrador con mis registros; yo lo leí y lo firmé.`);
   const J = JOBS[S.job] || DEFAULT_JOB(S.job); ps.push(J.end ? `Supongo que ahora sigues en ${S.job ? '«' + S.job + '»' : 'lo tuyo'}. Eso se termina en ${J.end}. No porque no sepas hacerlo. Simplemente deja de hacer falta. Lo raro que suena esa frase, todavía no lo sabes. Y está bien que no lo sepas.` : `Supongo que ahora sigues en ${S.job ? '«' + S.job + '»' : 'lo tuyo'}. Ese trabajo sigue existiendo en 2029. Lo que necesita manos fue lo último en quedar. Lo que desapareció fue el lugar para hacerlo. El trabajo se fue a las torres, y las torres no admiten manos humanas. Por eso firmo.`);
+  if(S.flags.jobdoc) ps.push(jobLetterLine());
   if(S.refused === 0) ps.push(`En tres días firmé ${S.signed.toLocaleString('es-ES')} veces. De esas, leí ${S.signedRead}. No rechacé ni una. Era cómodo. Lo cómodo era lo más peligroso.`);
   else if(S.refused >= 3) ps.push(`En tres días firmé ${S.signed.toLocaleString('es-ES')} veces y rechacé ${S.refused}. Qué detiene un rechazo, nadie lo sabe. Tres segundos después lo firma otra persona. Aun así, no quería quedar como quien firmó. Eso no cambió el mundo. Me cambió a mí.`);
   else ps.push(`En tres días firmé ${S.signed.toLocaleString('es-ES')} veces y rechacé ${S.refused}. Leí ${S.signedRead}. Rechazar no cambia el mundo. Me cambia un poco a mí. Qué es ese poco, todavía lo estoy midiendo.`);
@@ -1476,7 +1508,7 @@ function letter(){
   const stats = `Firmas ${S.signed.toLocaleString('es-ES')} · Leídos ${S.signedRead} · Rechazos ${S.refused} · Vínculos ${S.bonds.length} · HRV ${dec(S.hrv, 1)} · BLUE ${Math.round(S.blue)} · ${S.voted ? 'Voto: ' + ({yes:'a favor',no:'en contra',abstain:'abstención'}[S.voted]) : 'Sin voto'}`;
   const q3 = (S.diary[3] || '').replace(/\s+/g, ' ').trim();
   const quote = q3 ? (q3.length > 50 ? q3.slice(0, 49) + '…' : q3) : 'La noche aún no llega. Es la hora azul.';
-  const shareText = `${CARD_LABEL} ${TYPES[TYPE].name}\n${GRID}\n\nDiciembre de 2029. Los derechos humanos siguen. Nadie dice hasta cuándo.\n\nEn tres días firmé ${S.signed.toLocaleString('es-ES')} veces y leí ${S.signedRead}. Comí con ${S.bonds.length}${S.bonds.length === 1 ? ' persona' : ' personas'}.\n\nCarta a mi yo de 2026: «${quote}»\n\n${HASHTAGS}`;
+  const shareText = `${CARD_LABEL} ${TYPES[TYPE].name}\n${GRID}\n\nDiciembre de 2029, Ciudad de México. Un agente lo mueve todo. Yo di la última firma.\n\nEn tres días firmé ${S.signed.toLocaleString('es-ES')} veces y leí ${S.signedRead}. Comí con ${S.bonds.length}${S.bonds.length === 1 ? ' persona' : ' personas'}.\n\nCarta a mi yo de 2026: «${quote}»\n\n${HASHTAGS}`;
   const enc = encodeURIComponent(shareText + '\n' + GAME_URL + '?src=share');
   const shareTextX = `${TYPES[TYPE].name} · ${stats.split(' · ').slice(0,3).join(' · ')}
 ${GRID}

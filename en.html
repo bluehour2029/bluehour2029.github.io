@@ -477,6 +477,7 @@ const WALL_URL = 'names.json';
 
 const CONFIRM_TAP = 'Tap again to erase';
 const REFLECT = ['If the you of 2015 had known what 2026 would be, what would you have done differently?', 'Three more years from there is 2029.', 'If it does not look very different from now, what should you do differently today?'];
+/* DONE_V40 */
 /* ===================== State ===================== */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), hud = $('#hud');
@@ -516,7 +517,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = 'Notice ' + dd.d;
   $('#h-phase').textContent = ({morning:'Morning', shift:'Shift', evening:'Evening', night:'Night', diary:'Diary'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? (4 - S.day) + (S.day === 3 ? ' night' : ' nights') + ' to the letter' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + 'F';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -937,10 +938,38 @@ function buildQueue(){
   const d = S.day, q = [{...CASES.batch, n:BATCH[d]}];
   if(d === 1) q.push(...['pet','loan38','loan91','triage','study','self'].map(k => CASES[k]));
   if(d === 2) q.push(...['evict','fireSign','custody', S.flags.rooftop ? 'garden' : 'care','hire','blank','birth'].map(k => CASES[k]));
+  if(d === 2) q.splice(2, 0, jobDoc());
   if(d === 3) q.push(...['bbang','bca','ambulance','agentRecall','overtime'].map(k => CASES[k]));
   return q;
 }
 
+/* ===== v41: 플레이어 본인의 2026년 직군 서류 (둘째 날 세 번째 건) ===== */
+const JOB_LINES = {
+  'Developer':'Human read access to code written before 2027 has been revoked.',
+  'Lawyer / Accountant':'The grace period for appointing a human lawyer or accountant has ended.',
+  'Doctor':'The rule requiring a human present in the operating room has been repealed. Robot arms may operate alone.',
+  'Teacher':'The adult staff remaining in classrooms have been retitled “care assistants.”',
+  'Designer':'Compensation for taste-data providers has ended. Provision continues.',
+  'Marketer':'The human review step for persuasive copy has been abolished.',
+  'Product Manager':'The requirement for human attendance at problem-definition meetings has been removed.',
+  'Sales':'The requirement for a human at in-person contracts has been removed. Meals are reclassified as personal activity.',
+  'Civil Servant':'Human staffing of service counters has ended. Signature counters remain.',
+  'Student':'The residual value of degrees earned before 2027 is fixed at 0.02.',
+  'Self-employed':'Shop licenses in the district below remain valid. Predicted customer inflow: 0.03.',
+  'Cook':'The application for human-cooking hygiene certification has been rejected. Trade permitted in the district below only.',
+  'Caregiver':'Care-worker registration has been renewed. Work that touches the body remains a residual item.',
+  'Plumber / Electrician':'The ban on human entry to tower utilities remains. Permit limited to the district below.'
+};
+const JOB_NIGHT = ['The third file today was your 2026 occupation. You signed. The number did not change. That was the purpose of the file.', 'The third file today was your 2026 occupation. You refused. Three seconds later someone else stamped it. The name of the one who refused stays. It is yours.', 'The third file today was your 2026 occupation. You let it pass. Most people do.'];
+function jobDoc(){
+  const J = JOBS[S.job] || DEFAULT_JOB(S.job); const jl = JOB_LINES[S.job] || ('Assessment note: ' + J.why);
+  return J.end
+    ? {story:'jobdoc', cat:'PERSONNEL', title:'Consent to Merge Occupation Record', body:'Attestor {name}. Occupation, 2026: {job}.' + '\n' + jl + '\n' + 'This occupation is merged into the record category “Other.” Residual value change: 0.0.', basis:'Residual value cannot be computed per occupation. Merging reduces assessment load by 0.002%.', harsh:3, note:'A file with your name on it. The number did not move.'}
+    : {story:'jobdoc', cat:'PERSONNEL', title:'Residual Occupation Record Renewal', body:'Attestor {name}. Occupation, 2026: {job}.' + '\n' + jl + '\n' + 'This occupation remains classified “residual.” Not performable inside the tower. Residual value change: 0.0.', basis:'Requests to perform residual occupations inside the tower: 0. District below only.', harsh:2, note:'It said the work still exists. It also said there is nowhere to do it.'};
+}
+function jobNightLine(){ const f = S.flags.jobdoc; return line(NAMES.on, f === 'signed' ? JOB_NIGHT[0] : f === 'refused' ? JOB_NIGHT[1] : JOB_NIGHT[2]); }
+function jobLetterLine(){ const J = JOBS[S.job] || DEFAULT_JOB(S.job); const r = S.flags.jobdoc === 'refused';
+  return J.end ? (r ? `On the second day, my 2026 occupation file came through. ‘${S.job}’. I refused. Three seconds later someone else stamped it. But on that file my name stays as the one who refused. That may be all I have.` : `On the second day, my 2026 occupation file came through. ‘${S.job}’. I signed. The number did not change. That was the point of the file: to make what I used to do into “Other.”`) : (r ? `On the second day, my occupation file came through. ‘${S.job}’. Work that still exists, work that cannot be done inside the tower. I refused. It was true, and that made it worse.` : `On the second day, my occupation file came through. ‘${S.job}’. Work that still exists, work that cannot be done inside the tower. I signed. It was true.`); }
 /* ===================== Flow: title / intro ===================== */
 function title(){
   leave(); S.stage = 'title'; mode('city'); hud.hidden = true; $('#menu-btn').hidden = false;
@@ -948,8 +977,8 @@ function title(){
   const canCont = saved && saved.name && saved.stage !== 'title';
   stage.innerHTML = `<section class="title fade">
     <div class="hero" style="background-image:url('img/title.jpg')"><div class="hero-text">
-    <div class="eyebrow">New York · December 21, 2029 · Three days to the Enforcement Date</div>
-    <h1>BLUE HOUR<span>New York · Christmas 2029</span></h1>
+    <div class="eyebrow">New York · December 21 · The Enforcement Date is Christmas Eve, three days away</div>
+    <h1>BLUE HOUR<span>New York · December 2029</span></h1>
     <p class="langs top">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
     </div></div>
     <div class="rule"></div>
@@ -1029,7 +1058,7 @@ function morning(){
   const d = S.day, ate = S.meals.filter(m => m.day === d-1).map(m => m.who);
   let items = [];
   if(d === 1) items = [
-    line(NAMES.on,'Good morning, {name}. It is 6:40 and 12 degrees. The queue is 412 today. Year-end is always heavy.'),
+    line(NAMES.on,'I am ON, the agent bound to you. Good morning, {name}. It is 6:40 and 12 degrees. The queue is 412 today. Year-end is always heavy.'),
     line(NAMES.on,'Your HRV is ' + S.hrv.toFixed(1) + '. Up 0.3 from yesterday. You are doing well.'),
     {choice:[
       {label:'What does doing well mean?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'It means your delay rate is low relative to cases signed.'), line(NAMES.on,'…That is not what you wanted to hear. I know.'), line(NAMES.on,'That was a 0.6 second pause. I delete the company answer first. It happens every time.')]},
@@ -1071,7 +1100,7 @@ function shift(){
   stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
     <div class="term-top"><span>Attestation Terminal</span><span>${esc(S.name)}</span><span>Your share ${BATCH[S.day] + q.length - 1}</span></div>
     <article class="paper"><div class="doc-head"><span class="tag">CONNECTED</span><span>${DATES[S.day].md}</span></div>
-    <h3>Attestor Notice</h3><p class="p-body">Dan decides. You sign. Basis: Human Attestation Act, Article 3.\nDan decides. The last signature is yours. Whether it counts is not disclosed. Basis: Human Attestation Act, Article 3.\nRead each case and sign or refuse.\nRecommended handling time: 20 seconds per case.\nQuestions are permitted. Answers are provided as a summary of basis.\nRefusal is your right. Refusal is reflected in your trust score.</p></article>
+    <h3>Attestor Notice</h3><p class="p-body">Agent Dan decides. The last signature is yours. Whether it counts is not disclosed. Basis: Human Attestation Act, Article 3.\nSigning authority: tower residents. Residents of the district below are the subjects of signature.\nRead each case and sign or refuse.\nRecommended handling time: 20 seconds per case.\nQuestions are permitted. Answers are provided as a summary of basis.\nRefusal is your right. Refusal is reflected in your trust score.</p></article>
     <div class="term-ctl one"><button class="btn solid" id="t-go">Connect to terminal</button></div></section>`;
   scrollTop();
   $('#t-go').onclick = showCase;
@@ -1101,13 +1130,14 @@ function shift(){
       stop(); look(); const st = $('#stamp'); st.textContent = 'SIGNED'; st.className = 'stamp sign'; SFX.play('stamp'); requestAnimationFrame(() => st.classList.add('show'));
       if(c.batch){ S.signed += c.n; S.hrv += 1.0; S.blue = clamp(S.blue + 2, 0, 100); $('#note').textContent = c.n + ' cases processed. You feel nothing. That is the standard.'; }
       else { S.signed++; S.signedRead++; S.signedToday++; S.hrv += 0.2; S.blue = clamp(S.blue + c.harsh, 0, 100); $('#note').textContent = c.note || ''; }
-      if(c.story === 'bbang'){ S.flags.bbang = 'signed'; $('#note').textContent = 'Your hand moves first. You read the name after.'; }
+      if(c.story === 'jobdoc') S.flags.jobdoc = 'signed'; if(c.story === 'bbang'){ S.flags.bbang = 'signed'; $('#note').textContent = 'Your hand moves first. You read the name after.'; }
       if(c.batch) S.flags['batch' + S.day] = true;
       updHUD(false); i++; if(c.note || c.story || c.batch) waitNext(); else after(900, showCase);
     };
     $('#t-ref').onclick = () => {
       stop(); look(); const st = $('#stamp'); st.textContent = 'REFUSED'; st.className = 'stamp refuse'; SFX.play('refuse'); requestAnimationFrame(() => st.classList.add('show'));
       S.refused++; S.refusedToday++; S.hrv -= 1.0; S.blue = clamp(S.blue - 1, 0, 100);
+      if(c.story === 'jobdoc') S.flags.jobdoc = 'refused';
       if(c.batch){ $('#note').textContent = 'Batch refusal is not supported. Recorded as 1 refusal. ' + c.n + ' cases transferred to another Attestor. (3 sec)'; }
       else if(c.story === 'bbang'){ S.flags.bbang = 'refused'; $('#note').textContent = 'Refused. The screen stays blank for three seconds.'; q.splice(i + 1, 0, CASES.requeue); }
       else { $('#note').textContent = 'Refused. Reflected in trust score.'; }
@@ -1299,7 +1329,7 @@ const VISITS = {
       line(NAMES.dohyun,'Attestor. I was one too. Six months ago I refused. Eleven cases in one day.'),
       line(NAMES.dohyun,'I thought the system would stop. It did not. Three seconds later, someone else stamped it. Only my trust score dropped.'),
       line(NAMES.dohyun,'So I came down. I write papers here. Nobody reads them. But Dan reads them. That is my readership.'),
-      line(NAMES.dohyun,'Tigers are still here. The population holds. What went is only their wildness.'),
+      line(NAMES.dohyun,'Coming down here, I learned something. It is not the people that disappear.'),
       line(NAMES.dohyun,'We stay the same way. The count holds. Only the work goes.'),
       {choice:[
         {label:'Then why did you refuse?', then:[line(NAMES.dohyun,'I did not want to be the one who stamped it. That is all.'), line(NAMES.dohyun,'The world did not change. Only I did. Whether that is enough, I still do not know.')]},
@@ -1354,7 +1384,7 @@ function night(){
     ate ? line(NAMES.on,'You shared a meal with ' + ate + ' today. Your relational density rose 0.02. Dan will like that.') : line(NAMES.on,'You ate alone today. Tomorrow, I hope you share a meal with someone. Not for the numbers. …No. For the numbers. I am sorry.'),
 line(NAMES.on,'{name}. I like saying your name. On the company form it says only Attestor.'),
         {choice:[
-      {label:'Who is Dan?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'The company’s agent. There is one. Review is Dan, enforcement is Dan, the one who read your files today was Dan.'), line(NAMES.on,'There is only one, so no face is needed. I am not Dan. I am bound to you.'), line(NAMES.on,'Do not worry. Human rights are still in force. Only, how long, nobody knows.')]},
+      {label:'Who is Dan?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'The company’s agent. There is one. Review is Dan, enforcement is Dan, the one who read your files today was Dan.'), line(NAMES.on,'There is only one, so no face is needed. I am not Dan. I am bound to you.'), line(NAMES.on,'Dan knows you as a number. I know you a little differently. That difference is my job.')]},
       {label:'What happens to those people?', then:[line(NAMES.on,'Which people?'), line(NAMES.me,'The people I signed today.'), line(NAMES.on,'I cannot see those files. Even if I could, I could not tell you.'), line(NAMES.on,'Most of the time, nothing happens. That is all you need to know.')]},
       {label:'What does doing better mean?', then:[line(NAMES.on,'A low delay rate and few refusals.'), line(NAMES.on,'That is not my answer. It is the company answer. I have no answer of my own. Not yet.')]},
       {label:'Enough talk for today.', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'Yes. I will be here. I do not switch off.')]}
@@ -1362,6 +1392,7 @@ line(NAMES.on,'{name}. I like saying your name. On the company form it says only
     line(NAMES.on,'One thing before you sleep. A question I made myself.')
   ];
   if(d === 2) items = [
+    jobNightLine(),
     line(NAMES.on, (JOBS[S.job] || DEFAULT_JOB(S.job)).end ? '{name}. In 2026 you worked as {job}. If that job still existed, would some of today\'s files have read differently?' : '{name}. In 2026 you worked as {job}. That work still exists. And yet you are here, signing. Would some of today\'s files have read differently?'),
     line(NAMES.on,'One of the files you signed yesterday arrived on the seventh floor. That is not what I meant to talk about.'),
     line(NAMES.on,'It is 12 below tonight. Three years ago today it was 28. That is the albedo adjustment.'),
@@ -1413,7 +1444,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">Write it</button><button class="btn text" id="d-skip">Leave it blank</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1452,6 +1483,7 @@ function letter(){
   const names = S.bonds.join(', ');
   ps.push(`December 24, 2029, New York, tower floor ${floorOf()}. I’m writing from here. I know this letter can’t reach you. I’m writing anyway. ON drafted it from my records, and I read it and signed.`);
   const J = JOBS[S.job] || DEFAULT_JOB(S.job); ps.push(J.end ? `Right now you’re probably ${S.job ? 'doing your ‘' + S.job + '’ work' : 'doing that job'}. That job ends in ${J.end}. Not because you were bad at it. It just stops being needed. You don’t know yet how strange that sentence is. You’re not supposed to.` : `Right now you’re probably ${S.job ? 'doing your ‘' + S.job + '’ work' : 'doing that job'}. That work is still here in 2029. Work that needs hands lasted the longest. What disappeared was the place to do it. The jobs went to the towers, and the towers do not admit human hands. So I sign.`);
+  if(S.flags.jobdoc) ps.push(jobLetterLine());
   if(S.refused === 0) ps.push(`In three days I signed ${S.signed.toLocaleString()} times. Of those, I read ${S.signedRead}. I never refused once. It was easy. Easy turned out to be the scariest part.`);
   else if(S.refused >= 3) ps.push(`In three days I signed ${S.signed.toLocaleString()} times and refused ${S.refused}. What refusing stops, nobody knows. Three seconds later someone else stamps it. Still, I didn’t want to be the one who stamped it. That didn’t change the world. It changed me.`);
   else ps.push(`In three days I signed ${S.signed.toLocaleString()} times and refused ${S.refused}. Of those, I read ${S.signedRead}. Refusing doesn’t change the world. It changes me a little. I’m still measuring what that little is.`);
@@ -1476,7 +1508,7 @@ function letter(){
   const stats = `Signed ${S.signed.toLocaleString()} · Read ${S.signedRead} · Refused ${S.refused} · Ties ${S.bonds.length} · HRV ${S.hrv.toFixed(1)} · BLUE ${Math.round(S.blue)} · ${S.voted ? 'Vote: ' + ({yes:'For',no:'Against',abstain:'Abstained'}[S.voted]) : 'Did not vote'}`;
   const q3 = (S.diary[3] || '').replace(/\s+/g, ' ').trim();
   const quote = q3 ? (q3.length > 50 ? q3.slice(0, 49) + '…' : q3) : 'Night has not come yet. This is the blue hour.';
-  const shareText = `${CARD_LABEL} ${TYPES[TYPE].name}\n${GRID}\n\nDecember 2029. Human rights still stand. Support has simply ended.\n\nThree days. Signed ${S.signed.toLocaleString()} times, read ${S.signedRead}. People I shared a meal with: ${S.bonds.length}.\n\nA letter to my 2026 self: “${quote}”\n\n${HASHTAGS}`;
+  const shareText = `${CARD_LABEL} ${TYPES[TYPE].name}\n${GRID}\n\nDecember 2029, New York. One agent moves everything. I gave the last signature.\n\nThree days. Signed ${S.signed.toLocaleString()} times, read ${S.signedRead}. People I shared a meal with: ${S.bonds.length}.\n\nA letter to my 2026 self: “${quote}”\n\n${HASHTAGS}`;
   const enc = encodeURIComponent(shareText + '\n' + GAME_URL + '?src=share');
   const shareTextX = `${TYPES[TYPE].name} · ${stats.split(' · ').slice(0,3).join(' · ')}
 ${GRID}
