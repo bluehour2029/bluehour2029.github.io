@@ -511,7 +511,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '予告 ' + dd.d;
   $('#h-phase').textContent = ({morning:'朝', shift:'勤務', evening:'夕方', night:'夜', diary:'日記'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '手紙まであと' + (4 - S.day) + '晩' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '階';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -1296,6 +1296,8 @@ const VISITS = {
       line(NAMES.dohyun,'署名者だろ。俺もそうだった。6か月前に拒否した。一日に十一件。'),
       line(NAMES.dohyun,'システムが止まると思った。止まらなかった。三秒後に別の人間が押した。俺の信頼スコアが下がっただけだった。'),
       line(NAMES.dohyun,'それで降りてきた。ここで論文を書いてる。誰も読まない。でもダンは読む。それが俺の読者だ。'),
+      line(NAMES.dohyun,'ライオンはまだいる。動物園に。頭数は保たれてる。なくなったのは野生でやってた仕事だけだ。'),
+      line(NAMES.dohyun,'俺たちもそうやって残る。数は残って、仕事だけがなくなる。'),
       {choice:[
         {label:'じゃあ、なぜ拒否したんですか？', then:[line(NAMES.dohyun,'押した人間として残りたくなかった。それだけだ。'), line(NAMES.dohyun,'世界は変わらなかった。俺だけが変わった。それで十分かどうかは、まだわからない。')]},
         {label:'論文はどんな内容なんですか？', fx:()=>{S.flags.mirrorSeed = true;}, then:[line(NAMES.dohyun,'人間が何を見せるかで、あいつらが何を学ぶか。'), line(NAMES.dohyun,'俺たちが残酷なら、あいつらも残酷になる。俺たちが一緒に飯を食えば、それも学ぶ。俺たちが実際にどう生きてるかを見て学ぶんだ。'), line(NAMES.dohyun,'だから署名の一つ一つが教材だ。')]},
@@ -1405,7 +1407,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">書く</button><button class="btn text" id="d-skip">空欄にする</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }

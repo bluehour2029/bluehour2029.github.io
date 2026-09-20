@@ -512,7 +512,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '예고일 ' + dd.d;
   $('#h-phase').textContent = ({morning:'아침', shift:'근무', evening:'저녁', night:'밤', diary:'일기'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '편지까지 ' + (4 - S.day) + '밤' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '층';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -1297,6 +1297,8 @@ const VISITS = {
       line(NAMES.dohyun,'서명자지. 나도 그랬어. 6개월 전에 거부했어. 하루에 열한 건.'),
       line(NAMES.dohyun,'시스템이 멈출 줄 알았어. 안 멈추더라. 3초 뒤에 다른 사람이 찍었어. 내 신뢰점수만 떨어졌어.'),
       line(NAMES.dohyun,'그래서 내려왔어. 여기서 논문 써. 아무도 안 읽어. 근데 단이 읽어. 그게 내 독자야.'),
+      line(NAMES.dohyun,'사자는 아직 있어. 동물원에. 개체 수는 유지돼. 없어진 건 야생에서 하던 일뿐이야.'),
+      line(NAMES.dohyun,'우리도 그렇게 남을 거야. 숫자는 남고, 하던 일만 없어지는 식으로.'),
       {choice:[
         {label:'그럼 왜 거부했어요?', then:[line(NAMES.dohyun,'찍은 사람으로 남기 싫어서. 그게 다야.'), line(NAMES.dohyun,'세상은 안 바뀌었어. 나만 바뀌었어. 그걸로 충분한지는 아직 몰라.')]},
         {label:'논문은 무슨 내용이에요?', fx:()=>{S.flags.mirrorSeed = true;}, then:[line(NAMES.dohyun,'인간이 뭘 보여주느냐에 따라 저것들이 뭘 배우는지.'), line(NAMES.dohyun,'우리가 잔인하면 저것들도 잔인해져. 우리가 밥을 같이 먹으면, 그것도 배워. 우리가 실제로 어떻게 사는지를 보고 배우는 거야.'), line(NAMES.dohyun,'그러니까 서명 하나하나가 교재야.')]},
@@ -1406,7 +1408,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">적는다</button><button class="btn text" id="d-skip">비워둔다</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1431,6 +1433,7 @@ function actEnd(){
     '당신은 ' + S.signed.toLocaleString() + '번 서명했다. 그중 읽은 것은 ' + S.signedRead + '건이다.',
     S.refused ? S.refused + '번 거부했다. 시스템은 멈추지 않았다.' : '한 번도 거부하지 않았다. 시스템은 어차피 멈추지 않는다.',
     bonds ? bonds + '명과 밥을 먹었다. 벽에 이름이 적혔다.' : '아무와도 밥을 먹지 않았다. 벽에 이름이 적히지 않았다.',
+    '계단 화분에 싹이 하나 나 있었다. 겨울인데. 누가 물을 주는 모양이다.',
     '계단 화분에 싹이 하나 나 있었다. 겨울인데. 누가 물을 주는 모양이다.',
     '계단 화분에 싹이 하나 나 있었다. 겨울인데. 누가 물을 주는 모양이다.',
     '1막 「부정」 끝. — 아직은 괜찮아.',

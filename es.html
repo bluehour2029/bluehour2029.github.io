@@ -512,7 +512,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = 'Aviso ' + dd.d;
   $('#h-phase').textContent = ({morning:'Mañana', shift:'Turno', evening:'Tarde', night:'Noche', diary:'Diario'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? 'Carta en ' + (4 - S.day) + (S.day === 3 ? ' noche' : ' noches') : '';
   $('#h-hrv').textContent = dec(S.hrv, 1); $('#h-floor').textContent = 'piso ' + floorOf();
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -1297,6 +1297,8 @@ const VISITS = {
       line(NAMES.dohyun,'Eres firmante. Yo también lo fui. Hace seis meses rechacé. Once expedientes en un día.'),
       line(NAMES.dohyun,'Creí que el sistema se detendría. No se detuvo. Tres segundos después, otra persona firmó. Lo único que bajó fue mi puntuación de confianza.'),
       line(NAMES.dohyun,'Por eso bajé. Aquí escribo un artículo. Nadie lo lee. Pero Dan lo lee. Ese es mi lector.'),
+      line(NAMES.dohyun,'Los leones siguen aquí. En los zoológicos. La población se mantiene. Lo único que desapareció es lo que hacían en libertad.'),
+      line(NAMES.dohyun,'Nosotros nos quedamos igual. El número se mantiene. Solo se va el trabajo.'),
       {choice:[
         {label:'¿Entonces por qué rechazaste?', then:[line(NAMES.dohyun,'No quería quedar como quien firmó. Eso es todo.'), line(NAMES.dohyun,'El mundo no cambió. Cambié yo. Si con eso basta, todavía no lo sé.')]},
         {label:'¿De qué trata el artículo?', fx:()=>{S.flags.mirrorSeed = true;}, then:[line(NAMES.dohyun,'De qué aprenden esas cosas según lo que la humanidad les muestra.'), line(NAMES.dohyun,'Si somos crueles, esas cosas se vuelven crueles. Si comemos con otros, también lo aprenden. Aprenden mirando cómo vivimos de verdad.'), line(NAMES.dohyun,'Así que cada firma es material de estudio.')]},
@@ -1406,7 +1408,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">Escribir</button><button class="btn text" id="d-skip">Dejar en blanco</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
