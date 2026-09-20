@@ -361,6 +361,14 @@ body.paper-mode::after{opacity:.03}
 .after .type-box .grid{margin:0;font-family:var(--mono);font-size:15px;line-height:1.5;letter-spacing:.06em;color:var(--paper-ink);white-space:pre}
 .after .type-box .legend{margin:8px 0 0;font-family:var(--mono);font-size:11px;color:var(--paper-muted)}
 .after .wall-note{font-size:12px;color:var(--paper-muted);margin:2px 0 10px 24px}
+.title .hero{position:relative;height:min(42vh,360px);margin:0 calc(-1*var(--gutter));background-size:cover;background-position:center top;border-radius:0}
+.title .hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,0) 30%,rgba(7,11,20,.55) 62%,rgba(7,11,20,.97) 100%)}
+.title .hero .hero-text{position:absolute;left:var(--gutter);right:var(--gutter);bottom:8px;z-index:2}
+.title .hero .hero-text .eyebrow{margin-top:0}
+.title .hero .hero-text h1{margin-top:6px;text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.title .hero .hero-text .langs.top{margin:6px 0 0}
+.title .rule{margin:12px 0 8px}
+@media (max-height:640px){.title .hero{height:min(38vh,300px)}}
 </style>
 
 <div id="app">
@@ -619,7 +627,7 @@ function N(text){ return {who:null, text}; }
 const SFX = (() => {
   const KEY = 'bh_sfx', AC = window.AudioContext || window.webkitAudioContext, EV = ['touchstart', 'touchend', 'pointerdown', 'pointerup', 'click', 'keydown'];
   let ctx = null, master = null, amb = null, on = false, armed = false, wantAmb = false;
-  try{ on = localStorage.getItem(KEY) === '1'; }catch(e){}
+  try{ on = localStorage.getItem(KEY) !== '0'; }catch(e){ on = true; }
   const persist = () => { try{ localStorage.setItem(KEY, on ? '1' : '0'); }catch(e){} };
   const live = () => !!(ctx && ctx.state === 'running');
   const bus = () => { master = ctx.createGain(); master.gain.value = 0.5; master.connect(ctx.destination); };
@@ -649,6 +657,25 @@ const SFX = (() => {
     hum: t => { tone('triangle', 110, 0, t, 0.06, 0.3, 0.22, 0.22); tone('sine', 55, 0, t, 0.06, 0.3, 0.22, 0.15); },
     silence: () => {}
   };
+  let pad = null;
+  const startPad = () => {
+    if(pad || !live()) return;
+    const t = ctx.currentTime, g = ctx.createGain(), lp = ctx.createBiquadFilter();
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.075, t + 5);
+    lp.type = 'lowpass'; lp.frequency.value = 820; lp.connect(g); g.connect(master);
+    const oscs = [[146.83, 0, 0.32], [220, 3, 0.26], [349.23, -4, 0.2], [659.25, 2, 0.09]].map(([f, d, v], i) => {
+      const o = ctx.createOscillator(), og = ctx.createGain(), lfo = ctx.createOscillator(), lg = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = f; o.detune.value = d; og.gain.value = v;
+      lfo.frequency.value = 0.04 + i * 0.023; lg.gain.value = v * 0.35; lfo.connect(lg); lg.connect(og.gain);
+      o.connect(og); og.connect(lp); o.start(t); lfo.start(t); return {o, lfo};
+    });
+    pad = {g, oscs};
+  };
+  const stopPad = fast => {
+    if(!pad) return; const {g, oscs} = pad, t = ctx.currentTime, r = fast ? 0.1 : 2.5; pad = null;
+    g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(Math.max(g.gain.value, 0.0001), t); g.gain.linearRampToValueAtTime(0.0001, t + r);
+    oscs.forEach(({o, lfo}) => { try{ o.stop(t + r + 0.05); lfo.stop(t + r + 0.05); }catch(e){} });
+  };
   const startAmb = () => {
     if(amb || !live()) return;
     const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(), t = ctx.currentTime;
@@ -664,22 +691,22 @@ const SFX = (() => {
   const arm = () => {
     if(!AC) return;
     try{ if(!ctx){ ctx = new AC(); bus(); } }catch(e){ ctx = null; return; }
-    const ok = () => { if(!live()) return; EV.forEach(e => removeEventListener(e, arm, true)); if(on && wantAmb) startAmb(); };
+    const ok = () => { if(!live()) return; EV.forEach(e => removeEventListener(e, arm, true)); if(on && wantAmb){ startAmb(); startPad(); } };
     if(live()) ok(); else resume(ok);
   };
   const init = () => {
     if(armed || !AC) return; armed = true; EV.forEach(e => addEventListener(e, arm, {capture:true, passive:true}));
     document.addEventListener('visibilitychange', () => { if(!document.hidden && on && ctx && !live()) resume(() => {}); });
   };
-  const stopAll = () => { if(!ctx) return; stopAmb(true); try{ master.disconnect(); }catch(e){} bus(); };
-  const set = v => { on = !!v; persist(); if(!on) stopAll(); else if(wantAmb) startAmb(); return on; };
+  const stopAll = () => { if(!ctx) return; stopAmb(true); stopPad(true); try{ master.disconnect(); }catch(e){} bus(); };
+  const set = v => { on = !!v; persist(); if(!on) stopAll(); else if(wantAmb){ startAmb(); startPad(); } return on; };
   const play = name => {
     if(!on || !ctx || !SND[name]) return;
     const fire = () => { try{ SND[name](ctx.currentTime); }catch(e){} };
     if(live()) return fire();
     const t0 = Date.now(); resume(() => { if(live() && Date.now() - t0 < 300) fire(); });
   };
-  const ambient = v => { wantAmb = !!v; if(wantAmb){ if(on) startAmb(); } else stopAmb(false); };
+  const ambient = v => { wantAmb = !!v; if(wantAmb){ if(on){ startAmb(); startPad(); } } else { stopAmb(false); stopPad(false); } };
   return {
     init, play, ambient, stopAll,
     toggle(){ init(); arm(); return set(!on); },
@@ -887,10 +914,11 @@ function title(){
   const saved = load();
   const canCont = saved && saved.name && saved.stage !== 'title';
   stage.innerHTML = `<section class="title fade">
-    <div class="hero" style="background-image:url('img/title.jpg')"></div>
+    <div class="hero" style="background-image:url('img/title.jpg')"><div class="hero-text">
     <div class="eyebrow">Ciudad de México · 21 de diciembre de 2029 · Tres días para el desalojo del barrio</div>
     <h1>BLUE HOUR<span>Ciudad de México · Navidad de 2029</span></h1>
     <p class="langs top">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
+    </div></div>
     <div class="rule"></div>
     <p class="quote">Los derechos humanos no fueron abolidos.<br>Solo quedaron sin soporte.</p>
     <p class="promise">Vive tres días. Al final, una carta para quien eras en 2026.</p>
@@ -919,7 +947,7 @@ function resume(){
   return intro();
 }
 function intro(){
-  leave(); S.stage = 'intro'; try{ SFX.ambient(false); }catch(e){}
+  leave(); S.stage = 'intro'; try{ SFX.ambient(true); }catch(e){}
   narrate([
     '21 de diciembre de 2029, Ciudad de México. Llueve.',
     'Desde hace tres años los agentes hacen casi todo. Diagnósticos, sentencias, diseños, textos. La gente dejó de necesitar ser mejor en algo.',
@@ -966,6 +994,7 @@ const NEWS = {
   3:'Hoy, consulta vecinal sobre la prórroga del desalojo del barrio  ·  Requisito de ingreso a las Torres sube a HRV 87  ·  Tercer año de guerra: empleo en defensa crece 12 %  ·  Regalo de Navidad más vendido del año: el humanoide doméstico  ·  Puesta de sol hoy: 17:17'
 };
 function morning(){
+  try{ SFX.ambient(false); }catch(e){}
   S.stage = 'morning'; track('day'); S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0; save();
   const d = S.day, ate = S.meals.filter(m => m.day === d-1).map(m => m.who);
   let items = [];
@@ -1097,6 +1126,7 @@ function evening(){
   $('#p-home').onclick = () => { S.stage = 'night'; save(); track('evening'); night(); };
 }
 function visit(k){
+  try{ SFX.play(k === 'roof' ? 'wind' : k === 'under' ? 'hum' : 'door'); }catch(e){}
   try{ SFX.play(k === 'roof' ? 'wind' : k === 'under' ? 'hum' : 'door'); }catch(e){}
   const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
   const items = VISITS[k](d);
@@ -1361,6 +1391,7 @@ function sleep(){
 
 /* ===================== Fin del Acto 1 · Carta ===================== */
 function actEnd(){
+  try{ SFX.ambient(true); }catch(e){}
   const bonds = S.bonds.length;
   narrate([
     '24 de diciembre. El día del desalojo.',
@@ -1375,6 +1406,7 @@ function actEnd(){
   ], letter);
 }
 function letter(){
+  try{ SFX.ambient(true); }catch(e){}
   mode('city'); hud.hidden = true;
   const n = S.name, ps = [];
   const names = listEs(S.bonds);
