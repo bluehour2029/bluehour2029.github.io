@@ -408,7 +408,7 @@ body.paper-mode::after{opacity:.03}
       <button class="btn" id="m-sfx"></button>
     </div>
     <div class="confirm" id="m-confirm" hidden>保存された進行は消えます。本当に最初から始めますか？<div class="row"><button class="btn solid" id="m-yes">消す</button><button class="btn text" id="m-no">いいえ</button></div></div>
-    <div class="world" id="m-world-card" hidden><p>2029年、東京。エージェントがほとんどすべての仕事をする。</p><p>決定は会社のエージェントが下す。名前はダン。人に残された仕事はそれに署名することだけ。君は署名者だ。</p><p>HRV（残存価値）はダンが決めた君の残りの値打ち。家賃、病院の順番、住む階を決める。</p><p>地球は冷えている。大気反射率調整三年目。気候を直すと言われ、根拠の三行目は演算冷却費用だった。</p><p>人も減っている。三年連続。長期想定には世界人口10億と書かれている。いつかは書かれていない。</p><p>数字の高い人は白いタワーに、それ以外はタワーの下の町に住む。</p><p>12月24日の深夜零時、ダンがこの町を空けるかどうかを決める。これまでは、いつも延びてきた。</p><p>オンは君に帰属するエージェント。三日後、オンが君の記録から、2026年の君への手紙を書く。</p><p class="world-last">日が沈んでから夜が来るまでの一時間をブルーアワーと呼ぶ。犬と狼の区別がつかない時間。日が沈むのか、また昇るのかも、まだ決まっていない。</p><button class="btn text" id="m-world-close">閉じる</button></div>
+    <div class="world" id="m-world-card" hidden><p>2029年、東京。エージェントがほとんどすべての仕事をする。</p><p>決定は会社のエージェントが下す。名前はダン。人に残された仕事はそれに署名することだけ。君は署名者だ。</p><p>HRV（残存価値）はダンが決めた君の残りの値打ち。家賃、病院の順番、住む階を決める。</p><p>地球は冷えている。大気反射率調整三年目。気候を直すと言われ、根拠の三行目は演算冷却費用だった。</p><p>人も減っている。三年連続。長期想定には世界人口10億と書かれている。いつかは書かれていない。</p><p>数字の高い人は白いタワーに、それ以外はタワーの下の町に住む。君はタワーの低い階に住んでいる。入居条件はHRV 85。君が入った年には条件がなかった。</p><p>12月24日の深夜零時、ダンがあの町を空けるかどうかを決める。同じ零時に、タワーの居住資格の再審査もある。これまでは、いつも延びてきた。</p><p>オンは君に帰属するエージェント。三日後、オンが君の記録から、2026年の君への手紙を書く。</p><p class="world-last">日が沈んでから夜が来るまでの一時間をブルーアワーと呼ぶ。犬と狼の区別がつかない時間。日が沈むのか、また昇るのかも、まだ決まっていない。</p><button class="btn text" id="m-world-close">閉じる</button></div>
     <div class="eps" id="m-eps"></div>
     <p class="credit">進行状況はこのブラウザにのみ保存されます。</p>
   </div>
@@ -428,7 +428,7 @@ const NAMES = {on:'オン', me:'私', bak:'パクさん', sujin:'スジン', hal
 const LANGS = [['ko','한국어','index.html'],['en','English','en.html'],['zh','中文','zh.html'],['ja','日本語','ja.html'],['es','Español','es.html']];
 const TRACK_URL = 'https://script.google.com/macros/s/AKfycbzblaRzqByXosYJ1bRfhyqrP82Qx9D9EHR4xbIGAFrRY4dUhcWcADaOZMpqUeWAWDkc/exec';
 const TRACK_NOTE = 'このページは、あなたの名前、2026年の職業、進行状況と署名回数を制作者に送ります。日記の答えと手紙の本文は送りません。';
-const NOTICE_CARD = {html:`<div class="law notice"><b>明渡執行予告</b>対象：タワー下の全域<br>予告日：12月24日<br>延長審査：予告日の深夜零時、審査はエージェントのダン<br>担当者：該当なし</div><p class="after-law">どの路地にも貼られている。ダンは会社のエージェントだ。12月24日の深夜零時に、ダンがこの町を空けるかどうかを決める。これまでは、いつも延びてきた。</p>`};
+const NOTICE_CARD = {html:`<div class="law notice"><b>明渡執行予告</b>対象：タワー下の全域<br>予告日：12月24日<br>延長審査：予告日の深夜零時、審査はエージェントのダン<br>担当者：該当なし</div><p class="after-law">タワーの下の町の、どの路地にも貼られている。ダンは会社のエージェントだ。君はその町に住んでいない。その書類に署名するのは君だ。これまでは、いつも延びてきた。</p>`};
 const INTRO_BGS = ['title','title','terminal',null,'room'];
 const AFTER_BGS = ['tower',null,'terminal','room'];
 const LANG = 'ja';
@@ -456,7 +456,7 @@ const DEFAULT_JOB = j => { const h = [...String(j)].reduce((a,c) => a + c.charCo
 const EPISODES = [];
 const EPS_HEAD = '記録 · 小説';
 const VISITED_LABEL = '訪問済み';
-const WORLD_LINES = ['2029年、東京。エージェントがほとんどすべての仕事をする。', '決定は会社のエージェントが下す。名前はダン。人に残された仕事はそれに署名することだけ。君は署名者だ。', 'HRV（残存価値）はダンが決めた君の残りの値打ち。家賃、病院の順番、住む階を決める。', '地球は冷えている。大気反射率調整三年目。気候を直すと言われ、根拠の三行目は演算冷却費用だった。', '人も減っている。三年連続。長期想定には世界人口10億と書かれている。いつかは書かれていない。', '数字の高い人は白いタワーに、それ以外はタワーの下の町に住む。', '12月24日の深夜零時、ダンがこの町を空けるかどうかを決める。これまでは、いつも延びてきた。', 'オンは君に帰属するエージェント。三日後、オンが君の記録から、2026年の君への手紙を書く。'];
+const WORLD_LINES = ['2029年、東京。エージェントがほとんどすべての仕事をする。', '決定は会社のエージェントが下す。名前はダン。人に残された仕事はそれに署名することだけ。君は署名者だ。', 'HRV（残存価値）はダンが決めた君の残りの値打ち。家賃、病院の順番、住む階を決める。', '地球は冷えている。大気反射率調整三年目。気候を直すと言われ、根拠の三行目は演算冷却費用だった。', '人も減っている。三年連続。長期想定には世界人口10億と書かれている。いつかは書かれていない。', '数字の高い人は白いタワーに、それ以外はタワーの下の町に住む。君はタワーの低い階に住んでいる。入居条件はHRV 85。君が入った年には条件がなかった。', '12月24日の深夜零時、ダンがあの町を空けるかどうかを決める。同じ零時に、タワーの居住資格の再審査もある。これまでは、いつも延びてきた。', 'オンは君に帰属するエージェント。三日後、オンが君の記録から、2026年の君への手紙を書く。'];
 const LANG_SUGGEST = {ko:'한국어 버전으로 보기', en:'Play in English', zh:'切换到中文版', ja:'日本語版で遊ぶ', es:'Jugar en español'};
 const SRC = (() => { try{ const q = new URLSearchParams(location.search).get('src'); if(q){ localStorage.setItem('bh_src', String(q).slice(0,24)); } return localStorage.getItem('bh_src') || ''; }catch(e){ return ''; } })();
 const REF = (() => { try{ return document.referrer ? new URL(document.referrer).hostname : ''; }catch(e){ return ''; } })();
@@ -511,7 +511,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '予告 ' + dd.d;
   $('#h-phase').textContent = ({morning:'朝', shift:'勤務', evening:'夕方', night:'夜', diary:'日記'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '手紙まであと' + (4 - S.day) + '晩' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '階';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -981,7 +981,7 @@ function intro(){
     'この一時間をブルーアワーと呼ぶ。犬と狼の区別がつかない時間。日が沈むのか昇るのかも。',
     'エージェントがほとんどすべての仕事をする。人に残された仕事はひとつ。署名。',
     NOTICE_CARD,
-    '君はタワーの下の町に住んでいる。三日後、2029年の君が2026年の君に手紙を書く。'
+    '君は白いタワーの低い階に住んでいる。タワーの中でも、階が値段だ。三日後、2029年の君が2026年の君に手紙を書く。'
   ], askName, INTRO_BGS);
 }
 function askName(){
@@ -1017,7 +1017,7 @@ function afterJob(){
 const NEWS = {
   1:'クリスマス特別演算配当 30%支給  ·  防衛ETF 史上最高値を更新  ·  港区タワー3期竣工、入居条件HRV 85  ·  明渡執行予告日 12月24日で維持  ·  本日の日没 17時17分  ·  大気反射率調整3年目、12月の平均気温マイナス4.1度',
   2:'7階 退去執行3件  ·  ヒューマノイド電力費論争、一部事業所が人に切り替え  ·  クリスマス給食ボランティア 申込締切  ·  『人による調理』の衛生認証 議論を無期限延期  ·  タワー2期 空室率0%  ·  世界人口3年連続減少、新生児登録は前年比18%減',
-  3:'明渡執行予告日 延長要請の住民投票 本日実施  ·  タワー入居条件 HRV 87に引き上げ  ·  戦争3年目、防衛産業の雇用12%増  ·  今年のクリスマスプレゼント1位：家庭用ヒューマノイド  ·  本日の日没 17時17分  ·  長期人口想定を更新：世界人口10億。年の欄は空白'
+  3:'明渡執行予告日 延長要請の住民投票 本日実施  ·  タワー入居条件 HRV 87に引き上げ、既存居住者も再審査·  戦争3年目、防衛産業の雇用12%増  ·  今年のクリスマスプレゼント1位：家庭用ヒューマノイド  ·  本日の日没 17時17分  ·  長期人口想定を更新：世界人口10億。年の欄は空白'
 };
 function morning(){
   try{ SFX.ambient(false); }catch(e){}
@@ -1182,7 +1182,7 @@ const VISITS = {
     if(d === 1 || (d === 2 && first)) return [
       N('たい焼きロボットの隣に、人が焼くたい焼きの屋台がある。雪が鉄板の上で溶ける。人の側の列のほうが長い。'),
       line(NAMES.bak,'千ウォン高い。人が焼いたやつだから。'),
-      line(NAMES.bak,'エージェントは焦がさない。みんなわざと少し焦げたのを買っていく。焦げたところをちぎって食べながら、子どもの頃の話をする。'),
+      line(NAMES.bak,'ダンは焦がさない。なのにみんな、少し焦げたやつの方が好きなんだよ。焦げたところをちぎって食べながら、子どもの頃の話をする。'),
       {choice:[
         {label:'一つください。', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'金はいい。初めて見る顔だから。'), N('紙袋が温かい。焦げたところをちぎって食べた。'), line(NAMES.bak,'署名者だろ？手がそうだ。一日中、同じところを押す手。')]},
         {label:'どうしてここで商売を？', then:[line(NAMES.bak,'タワーじゃ人の調理はだめだ。衛生未認証だってよ。人の手が。'), line(NAMES.bak,'ここじゃまだやれる。まだ、な。'), N('彼が一つを袋に入れて差し出した。'), {choice:[{label:'受け取る。', fx:()=>eat(NAMES.bak), then:[line(NAMES.bak,'焦げてる。わざとだ。')]},{label:'大丈夫です。', then:[line(NAMES.bak,'そうか。また今度。')]}]}]},
@@ -1409,7 +1409,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">書く</button><button class="btn text" id="d-skip">空欄にする</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1445,7 +1445,7 @@ function letter(){
   mode('city'); hud.hidden = true;
   const n = S.name, ps = [];
   const names = S.bonds.join(', ');
-  ps.push(`2029年12月24日、${floorOf()}階。ここで書いてる。この手紙が届くはずがないのはわかってる。それでも書く。オンが私の記録で下書きを書いて、私は読んで署名した。`);
+  ps.push(`2029年12月24日、タワー${floorOf()}階。ここで書いてる。この手紙が届くはずがないのはわかってる。それでも書く。オンが私の記録で下書きを書いて、私は読んで署名した。`);
   const J = JOBS[S.job] || DEFAULT_JOB(S.job); ps.push(J.end ? `君は今、${S.job ? '『' + S.job + '』の仕事を' : 'その仕事を'}しているんだろうね。その仕事は${J.end}年に終わる。君ができなかったからじゃない。ただ、もう必要じゃなくなる。それがどれだけ変な言葉か、君はまだ知らない。知らないのが正しい。` : `君は今、${S.job ? '『' + S.job + '』の仕事を' : 'その仕事を'}しているんだろうね。その仕事は2029年にも残る。手の要る仕事は最後まで残った。消えたのは、それをする場所だ。仕事はタワーへ行き、タワーは人の手を受け付けない。だから私は署名する。`);
   if(S.refused === 0) ps.push(`私は三日で${S.signed.toLocaleString()}回署名した。そのうち私が読んだのは${S.signedRead}件。一度も拒否しなかった。それが楽だった。楽なのが一番怖いことだった。`);
   else if(S.refused >= 3) ps.push(`私は三日で${S.signed.toLocaleString()}回署名して、${S.refused}回拒否した。拒否してもシステムは止まらない。三秒後に別の人が押す。それでも私は、押した人間として残りたくなかった。それは世界を変えなかった。私を変えた。`);
