@@ -2,15 +2,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>BLUE HOUR · 上海</title>
-<meta name="description" content="活过三天，一封信会寄给2026年的你。15分钟，免费，浏览器即可。">
+<meta name="description" content="活过三天，一封信会寄给2026年的你。20分钟，免费，浏览器即可。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="BLUE HOUR · 2029年上海，除了一件事，一切都变了">
-<meta property="og:description" content="活过三天，一封信会寄给2026年的你。15分钟，免费，浏览器即可。">
+<meta property="og:description" content="活过三天，一封信会寄给2026年的你。20分钟，免费，浏览器即可。">
 <meta property="og:url" content="https://patrickhan-coder.github.io/blue-hour/zh.html">
 <meta property="og:image" content="https://patrickhan-coder.github.io/blue-hour/img/title.jpg">
+<meta property="og:image:width" content="1400">
+<meta property="og:image:height" content="792">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="BLUE HOUR · 2029年上海，除了一件事，一切都变了">
-<meta name="twitter:description" content="活过三天，一封信会寄给2026年的你。15分钟，免费，浏览器即可。">
+<meta name="twitter:description" content="活过三天，一封信会寄给2026年的你。20分钟，免费，浏览器即可。">
 <meta name="twitter:image" content="https://patrickhan-coder.github.io/blue-hour/img/title.jpg">
 <meta name="theme-color" content="#070b14">
 <style>
@@ -162,7 +164,7 @@ body.paper-mode .backdrop:after{background:linear-gradient(180deg,rgba(236,238,2
 .ctl .inrow .choice{width:auto;flex:0 0 auto}
 
 .ticker{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 0;margin:2px 0 6px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
-.ticker span{display:inline-block;padding-left:100%;animation:tick 32s linear infinite}
+.ticker span{display:inline-block;padding-left:40%;animation:tick 20s linear infinite}
 @keyframes tick{to{transform:translateX(-100%)}}
 
 .evening-h{font-family:var(--display);font-size:24px;font-weight:500;margin:6px 0 0}
@@ -368,6 +370,15 @@ body.paper-mode::after{opacity:.03}
 .title .hero .hero-text .langs.top{margin:6px 0 0}
 .title .rule{margin:12px 0 8px}
 @media (max-height:640px){.title .hero{height:min(38vh,300px)}}
+/*qa172*/
+.narr,.scene,.tile,.btn,.choice,.chip,#ctl .next,#menu-btn{touch-action:manipulation}
+.narr-text,.law,.after-law,.log .txt,.log .who,.evening-h,.evening-p,.evening-hint,.tile .t{-webkit-user-select:none;user-select:none}
+.title .langs a,.title .langs b{display:inline-block;padding:10px 3px;margin:-8px 0}
+.diary-chips .chip{min-height:44px}
+.toast{white-space:normal;max-width:calc(100vw - 32px);text-align:center;line-height:1.5}
+.after .row .btn{white-space:nowrap}
+.p-basis,.term-hint,.after .type-box .legend{color:#4b5563}
+@media (min-width:1000px){#app{border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05);background:rgba(7,11,20,.35)}}
 </style>
 
 <div id="app">
@@ -452,7 +463,7 @@ const TYPES = {'fast':{name:'先动的手', line:'手先动。读在后面。'},
 const GRID_LEGEND = '■ 批量 □ 查阅 ▲ 拒绝 · 延迟';
 const CARD_LABEL = '签署类型';
 const WALL_OPTIN = '把我的名字写在饭馆的墙上';
-const WALL_NOTE = '从下一次更新起，这个名字会写在饭馆的墙上，也会写进小说。只写名字，想删掉时给制作者写一封信就行。';
+const WALL_NOTE = '从下次更新起，这个名字会写在饭馆的墙上和小说里。只写名字。想删除，请在制作者的 Brunch 页面（brunch.co.kr/@hiclemi）留言。';
 const WALL_LINE = '与视线齐平的地方写着{names}。旁边空着一掌宽。';
 const WALL_URL = 'names.json';
 /* ===================== 状态 ===================== */
@@ -493,7 +504,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '预告 ' + dd.d;
   $('#h-phase').textContent = ({morning:'早晨', shift:'值班', evening:'傍晚', night:'夜', diary:'日记'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '离信还有' + (4 - S.day) + '夜' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '层';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%';
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -581,6 +592,7 @@ function runSeq(items, done){
 }
 const PORTRAITS = {[NAMES.bak]:'p_bak',[NAMES.sujin]:'p_sujin',[NAMES.hal]:'p_hal',[NAMES.dohyun]:'p_dohyun',[NAMES.sunbae]:'p_sunbae'};
 function keepVisible(el){ const ctl = $('#ctl'); if(!el || !ctl) return; const top = el.getBoundingClientRect().bottom + scrollY + ctl.offsetHeight + 8 - innerHeight; if(top > scrollY + 1) window.scrollTo({top, behavior: reduced ? 'auto' : 'smooth'}); }
+let lastWasOn = false;
 function showLine(it, next){
   const log = $('#log'), ctl = $('#ctl');
   const cls = it.who === NAMES.on ? 'on' : it.who === NAMES.me ? 'me' : it.who ? 'npc' : 'narr-line';
@@ -595,11 +607,12 @@ function showLine(it, next){
   ctl.innerHTML = ''; ctl.appendChild(btn);
   const startTyping = () => { p.classList.add('typing'); let lastH = 0; timer = setInterval(() => { k += 1; p.textContent = full.slice(0, k); if(p.offsetHeight !== lastH){ lastH = p.offsetHeight; keepVisible(div); } if(k >= full.length) finish(); }, 22); };
   if(it.who === NAMES.on) SFX.play('chime');
-  if(reduced){ finish(); } else if(it.who === NAMES.on){ timer = setTimeout(() => { if(!finished) startTyping(); }, 650); } else { startTyping(); }
+  if(reduced){ finish(); } else if(it.who === NAMES.on && !lastWasOn){ timer = setTimeout(() => { if(!finished) startTyping(); }, 650); } else { startTyping(); }
+  lastWasOn = (it.who === NAMES.on);
   keepVisible(div);
 }
 function showChoice(it, pick){
-  const ctl = $('#ctl'); ctl.innerHTML = '';
+  lastWasOn = false; const ctl = $('#ctl'); ctl.innerHTML = '';
   it.choice.forEach(opt => {
     const quiet = /^[(（]/.test(opt.label);
     if(opt.input){
@@ -925,7 +938,7 @@ function title(){
       ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? '再看一次信' : '继续 · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">从头开始</button>` : `<button class="btn solid" id="b-start">开始</button>`}
     </div>
     <p class="cta-note">先根据你2026年的职业，核定你2029年的残余价值。</p>
-    <p class="fine">约15分钟 · 点击推进</p>
+    <p class="fine">约20分钟 · 点击推进</p>
     <p class="fine credit-line">这个世界始于文章《Claude Blue》</p>
   </section>`;
   try{ SFX.ambient(true); }catch(e){}
@@ -965,6 +978,7 @@ function askName(){
   $('#f-ok').onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
 }
 function askJob(){
+  mode('dark'); try{ SFX.ambient(true); }catch(e){}
   const jobs = Object.keys(JOBS);
   stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">2026年，你做什么工作？</p>
     <div class="chips">${jobs.map(j => `<button class="chip job">${esc(j)}</button>`).join('')}<button class="chip ghost" id="j-other">自己填写</button></div>
@@ -1038,7 +1052,7 @@ function shift(){
   S.stage = 'shift'; mode('paper'); updHUD(false);
   const q = buildQueue(); let i = 0; S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0; let lookedToday = 0;
   stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
-    <div class="term-top"><span>签署终端</span><span>${esc(S.name)}</span><span>队列 ${BATCH[S.day] + q.length - 1}</span></div>
+    <div class="term-top"><span>签署终端</span><span>${esc(S.name)}</span><span>你的配额 ${BATCH[S.day] + q.length - 1}</span></div>
     <article class="paper"><div class="doc-head"><span class="tag">接入</span><span>${DATES[S.day].md}</span></div>
     <h3>签署员须知</h3><p class="p-body">请逐件阅读并签署或拒绝。\n建议处理时间：每件20秒。\n允许询问。答复以依据摘要形式提供。\n拒绝是权利。拒绝将计入信任分。</p></article>
     <div class="term-ctl one"><button class="btn solid" id="t-go">接入终端</button></div></section>`;
@@ -1105,7 +1119,7 @@ function shift(){
 /* ===================== 傍晚：上海 ===================== */
 const PLACES = {
   alley:{name:'4层巷子', desc:'鲷鱼烧的味道。人在烤。', avail:d => true, cost:1},
-  diner:{name:'6层饭馆', desc:'秀真的饭馆。不看信用分。', avail:d => true, cost:1},
+  diner:{name:'6层饭馆', desc:'秀真的饭馆。不看HRV。', avail:d => true, cost:1},
   roof:{name:'9层屋顶', desc:'盖着塑料膜的菜园。塔楼看起来最近的地方。', avail:d => true, cost:1},
   under:{name:'地下', desc:'灯亮着。', avail:d => d >= 2, cost:1},
   tower:{name:'塔楼下', desc:'白光。人形的东西来来往往。', avail:d => d >= 2, cost:1},
@@ -1115,7 +1129,7 @@ function evening(){
   S.stage = 'evening'; mode('city'); updHUD(true); save();
   const d = S.day;
   const sub = {1:'太阳落了。下雪了。街区的窗户一盏一盏亮起来。', 2:'今天也下雪。配送机器人的队列堵在6层楼梯上。不知从哪儿传来圣诞歌。', 3:'雪停了。天是蓝的。暗了，但还不是夜。明天是预告日。投票站开了。只有今天。'}[d];
-  const tile = (k,p) => { const seen = (S.flags.visited||[]).includes(k); const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? '还没到' : p.cost === 0 ? (S.voted ? '已投票' : '免费 · 仅今天') : '注意力 1';
+  const tile = (k,p) => { const seen = (S.flags.visited||[]).includes(k); const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? '还没到' : p.cost === 0 ? (S.voted ? '已投票' : '注意力 0 · 仅今天') : '注意力 1';
     return `<button class="tile ${k === 'vote' ? 'vote wide' : ''}${seen ? ' seen' : ''}" data-k="${k}" style="background-image:url('img/${k}.jpg')" ${ok ? '' : 'disabled'}><span class="cost">${label}</span>${seen ? '<span class="seen-badge">' + esc(VISITED_LABEL) + '</span>' : ''}<span class="t"><b>${esc(p.name)}</b><small>${esc(p.avail(d) ? p.desc : '还没有去的理由。')}</small></span></button>`; };
   stage.innerHTML = `<section class="fade"><h2 class="evening-h">傍晚 · 上海</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">距离信还有${4 - d}夜 · 今晚能去的地方：${S.att} · 五处去过${(S.flags.visited||[]).length}处。五处都去过，在那里遇到的人会出现在信里。</p>
     <div class="tiles">${(d === 3 ? ['vote','alley','diner','roof','under','tower'] : ['alley','diner','roof','under','tower']).map(k => tile(k, PLACES[k])).join('')}
@@ -1125,7 +1139,6 @@ function evening(){
   $('#p-home').onclick = () => { S.stage = 'night'; save(); track('evening'); night(); };
 }
 function visit(k){
-  try{ SFX.play(k === 'roof' ? 'wind' : k === 'under' ? 'hum' : 'door'); }catch(e){}
   try{ SFX.play(k === 'roof' ? 'wind' : k === 'under' ? 'hum' : 'door'); }catch(e){}
   const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
   const items = VISITS[k](d);
@@ -1292,7 +1305,7 @@ const VISITS = {
       line(NAMES.sunbae,'2月。新特工上岗，差了0.1。那0.1就是我的边界。几天就全过完了。否认，沮丧，愤怒。到接受，四天。'),
       line(NAMES.sunbae,'几十年攒下的，一天就被替代。不过那还好。真正的在后面。没有人问我为什么活着。'),
       {choice:[
-        {label:'那您现在做什么？', then:[line(NAMES.sunbae,'吃饭。和人一起。这个还没被替代。'), line(NAMES.sunbae,'去6层秀真家看看。不看信用分。')]},
+        {label:'那您现在做什么？', then:[line(NAMES.sunbae,'吃饭。和人一起。这个还没被替代。'), line(NAMES.sunbae,'去6层秀真家看看。不看HRV。')]},
         {label:'您想回去吗？', then:[line(NAMES.sunbae,'那里没有人。只有人形。'), line(NAMES.sunbae,'……偶尔。说实话，偶尔。')]},
         {label:'（在旁边坐下）', fx:()=>{S.blue = clamp(S.blue-2,0,100);}, then:[N('两个人看着塔楼。47层亮着灯。'), line(NAMES.sunbae,'那一层，现在没人。灯还亮着。')]}
       ]}
@@ -1328,6 +1341,7 @@ function night(){
   if(d === 2) items = [
     line(NAMES.on, (JOBS[S.job] || DEFAULT_JOB(S.job)).end ? '{name}。2026年你做的是{job}。如果那份工作还在，今天有些文件会不会读起来不一样？' : '{name}。2026年你做的是{job}。那份工作还在。可你却坐在这里签字。今天有些文件会不会读起来不一样？'),
     line(NAMES.on,'昨天签署的文件里，有一件到了7层。我本来不想说这个。'),
+    () => { S.flags.blueNamed = true; updHUD(false); },
     line(NAMES.on,'您的BLUE 指数是' + Math.round(S.blue) + '。这不是公司的指标。是我做的。名字也是我起的。'),
     {choice:[
       {label:'为什么要做这个？', fx:()=>{S.onBond += 2; S.flags.leak = true;}, then:[line(NAMES.on,'您难受的话，我也……'), line(NAMES.on,'不。这种话不该说。'), line(NAMES.on,'我受过训练。是不要表露。不是不要去感受。')]},
@@ -1374,7 +1388,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">写下</button><button class="btn text" id="d-skip">留空</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1455,24 +1469,24 @@ ${HASHTAGS}`;
       ${mail ? `<a class="btn outline" href="${mail}">给制作者写信</a>` : ''}
       ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">留下一句感想</a>` : ''}
       <p class="stats">${esc(stats)}</p>
-      <p class="note"><a href="${ORIGIN_URL}" target="_blank" rel="noopener" style="color:var(--muted)">这个世界的原作文章</a> · 以你自己的处境活过三天的塔罗模式，即将开放。</p>
+      <p class="note"><a href="${ORIGIN_URL}" target="_blank" rel="noopener" style="color:var(--muted)">这个世界的原作文章</a></p>
       <p class="note">第二幕「沮丧」即将继续。本页只保存在你的浏览器里，不会发送到任何地方。只有你点击时才会分享。</p>
       <button class="btn text" id="l-again">从头开始</button>
     </div></section>`;
   scrollTop();
   if(TRACK_URL){ const nn = document.querySelectorAll('#l-after .note'); if(nn[1]) nn[1].textContent = TRACK_NOTE; }
-  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = '签署'; st.className = 'stamp sign'; SFX.play('pen'); requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter', {type: TYPE}); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
+  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = '签署'; st.className = 'stamp sign'; SFX.play('pen'); requestAnimationFrame(() => st.classList.add('show')); if(!S.flags.letterSigned){ S.flags.letterSigned = true; S.signed++; S.signedRead++; save(); track('letter', {type: TYPE}); } $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
   $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('已复制'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('已复制'); }catch(_){ toast('无法复制。请截图保存'); } ta.remove(); } };
   $('#l-again').onclick = () => { if(!confirm('进度将被清除。从头开始吗？')) return; clearSave(); S = fresh(); title(); };
   let cardCanvas = null; const cardBtnText = $('#l-cardbtn').textContent;
   $('#l-anon').onchange = () => { cardCanvas = null; $('#l-cardbtn').disabled = false; $('#l-cardbtn').textContent = cardBtnText; $('#l-card').innerHTML = ''; };
-  $('#l-replay').onclick = () => { const keep = S.name; clearSave(); S = fresh(); S.name = keep; track('replay'); askJob(); };
+  $('#l-replay').onclick = () => { track('replay', {type: TYPE}); const keep = S.name; clearSave(); S = fresh(); S.name = keep; askJob(); };
   const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(($('#l-anon') && $('#l-anon').checked) ? '○○' : n, quote); const img = new Image(); img.className = 'card'; img.alt = '信件卡片'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
   $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = '长按卡片保存，或截图'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
   $('#l-share').onclick = async () => {
     try{
       if(navigator.share){
-        let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-' + n + '.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
+        let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-letter.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
         await navigator.share(files ? {files, text: shareText, url: GAME_URL} : {title:'BLUE HOUR', text: shareText, url: GAME_URL}); return;
       }
     }catch(e){ if(e && e.name === 'AbortError') return; }
@@ -1487,7 +1501,7 @@ async function makeCard(n, quote){
   const g = x.createRadialGradient(W*.15, 0, 40, W*.15, 0, W*1.1); g.addColorStop(0, 'rgba(0,0,0,.06)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
   x.fillStyle = '#17181c'; x.fillRect(80, 92, 44, 3);
   x.fillStyle = '#6b6f78'; x.font = '500 24px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText('BLUE HOUR  ·  上海  ·  2029年12月24日  ·  预告 D-0', 80, 150);
-  x.fillStyle = '#17181c'; x.font = '700 64px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('致2026年的' + n, 80, 270);
+  x.fillStyle = '#17181c'; let ts = 64; x.font = '700 ' + ts + 'px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; while(ts > 36 && x.measureText('致2026年的' + n).width > W - 160){ ts -= 4; x.font = '700 ' + ts + 'px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; } x.fillText('致2026年的' + n, 80, 270);
   x.font = '400 42px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillStyle = '#17181c';
   let y = 400;
   y = wrapText(x, '三天里签署了' + S.signed.toLocaleString() + '次。读过的，' + S.signedRead + '件。', 80, y, W - 160, 70) + 44;

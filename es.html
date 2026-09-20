@@ -2,15 +2,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Blue Hour Ciudad de México</title>
-<meta name="description" content="Vive tres días como firmante. Una carta llega a quien eras en 2026. 15 minutos, gratis, en el navegador.">
+<meta name="description" content="Vive tres días como firmante. Una carta llega a quien eras en 2026. 20 minutos, gratis, en el navegador.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="BLUE HOUR · Ciudad de México, 2029. Cambió todo menos una cosa.">
-<meta property="og:description" content="Vive tres días como firmante. Una carta llega a quien eras en 2026. 15 minutos, gratis, en el navegador.">
+<meta property="og:description" content="Vive tres días como firmante. Una carta llega a quien eras en 2026. 20 minutos, gratis, en el navegador.">
 <meta property="og:url" content="https://patrickhan-coder.github.io/blue-hour/es.html">
 <meta property="og:image" content="https://patrickhan-coder.github.io/blue-hour/img/title.jpg">
+<meta property="og:image:width" content="1400">
+<meta property="og:image:height" content="792">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="BLUE HOUR · Ciudad de México, 2029. Cambió todo menos una cosa.">
-<meta name="twitter:description" content="Vive tres días como firmante. Una carta llega a quien eras en 2026. 15 minutos, gratis, en el navegador.">
+<meta name="twitter:description" content="Vive tres días como firmante. Una carta llega a quien eras en 2026. 20 minutos, gratis, en el navegador.">
 <meta name="twitter:image" content="https://patrickhan-coder.github.io/blue-hour/img/title.jpg">
 <meta name="theme-color" content="#070b14">
 <style>body{word-break:keep-all;overflow-wrap:anywhere}</style>
@@ -163,7 +165,7 @@ body.paper-mode .backdrop:after{background:linear-gradient(180deg,rgba(236,238,2
 .ctl .inrow .choice{width:auto;flex:0 0 auto}
 
 .ticker{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 0;margin:2px 0 6px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
-.ticker span{display:inline-block;padding-left:100%;animation:tick 32s linear infinite}
+.ticker span{display:inline-block;padding-left:40%;animation:tick 20s linear infinite}
 @keyframes tick{to{transform:translateX(-100%)}}
 
 .evening-h{font-family:var(--display);font-size:24px;font-weight:500;margin:6px 0 0}
@@ -369,6 +371,15 @@ body.paper-mode::after{opacity:.03}
 .title .hero .hero-text .langs.top{margin:6px 0 0}
 .title .rule{margin:12px 0 8px}
 @media (max-height:640px){.title .hero{height:min(38vh,300px)}}
+/*qa172*/
+.narr,.scene,.tile,.btn,.choice,.chip,#ctl .next,#menu-btn{touch-action:manipulation}
+.narr-text,.law,.after-law,.log .txt,.log .who,.evening-h,.evening-p,.evening-hint,.tile .t{-webkit-user-select:none;user-select:none}
+.title .langs a,.title .langs b{display:inline-block;padding:10px 3px;margin:-8px 0}
+.diary-chips .chip{min-height:44px}
+.toast{white-space:normal;max-width:calc(100vw - 32px);text-align:center;line-height:1.5}
+.after .row .btn{white-space:nowrap}
+.p-basis,.term-hint,.after .type-box .legend{color:#4b5563}
+@media (min-width:1000px){#app{border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05);background:rgba(7,11,20,.35)}}
 </style>
 
 <div id="app">
@@ -453,7 +464,7 @@ const TYPES = {'fast':{name:'Mano rápida', line:'La mano se mueve primero. Leer
 const GRID_LEGEND = '■ en lote □ leído ▲ rechazo · demora';
 const CARD_LABEL = 'Tipo de firmante';
 const WALL_OPTIN = 'Escribir mi nombre en la pared del comedor';
-const WALL_NOTE = 'Desde la próxima actualización, este nombre irá en la pared del comedor y en la novela. Solo va el nombre, y una carta al creador lo borra.';
+const WALL_NOTE = 'Desde la próxima actualización este nombre aparece en la pared del comedor y en la novela. Solo el nombre. Para borrarlo, deja un comentario en la página de Brunch del creador (brunch.co.kr/@hiclemi).';
 const WALL_LINE = 'A la altura de los ojos, {names}. Al lado, un palmo de pared vacía.';
 const WALL_URL = 'names.json';
 /* ===================== Estado ===================== */
@@ -494,7 +505,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = 'Aviso ' + dd.d;
   $('#h-phase').textContent = ({morning:'Mañana', shift:'Turno', evening:'Tarde', night:'Noche', diary:'Diario'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? 'Carta en ' + (4 - S.day) + (S.day === 3 ? ' noche' : ' noches') : '';
   $('#h-hrv').textContent = dec(S.hrv, 1); $('#h-floor').textContent = 'piso ' + floorOf();
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%';
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -582,6 +593,7 @@ function runSeq(items, done){
 }
 const PORTRAITS = {[NAMES.bak]:'p_bak',[NAMES.sujin]:'p_sujin',[NAMES.hal]:'p_hal',[NAMES.dohyun]:'p_dohyun',[NAMES.sunbae]:'p_sunbae'};
 function keepVisible(el){ const ctl = $('#ctl'); if(!el || !ctl) return; const top = el.getBoundingClientRect().bottom + scrollY + ctl.offsetHeight + 8 - innerHeight; if(top > scrollY + 1) window.scrollTo({top, behavior: reduced ? 'auto' : 'smooth'}); }
+let lastWasOn = false;
 function showLine(it, next){
   const log = $('#log'), ctl = $('#ctl');
   const cls = it.who === NAMES.on ? 'on' : it.who === NAMES.me ? 'me' : it.who ? 'npc' : 'narr-line';
@@ -596,11 +608,12 @@ function showLine(it, next){
   ctl.innerHTML = ''; ctl.appendChild(btn);
   const startTyping = () => { p.classList.add('typing'); let lastH = 0; timer = setInterval(() => { k += 1; p.textContent = full.slice(0, k); if(p.offsetHeight !== lastH){ lastH = p.offsetHeight; keepVisible(div); } if(k >= full.length) finish(); }, 22); };
   if(it.who === NAMES.on) SFX.play('chime');
-  if(reduced){ finish(); } else if(it.who === NAMES.on){ timer = setTimeout(() => { if(!finished) startTyping(); }, 650); } else { startTyping(); }
+  if(reduced){ finish(); } else if(it.who === NAMES.on && !lastWasOn){ timer = setTimeout(() => { if(!finished) startTyping(); }, 650); } else { startTyping(); }
+  lastWasOn = (it.who === NAMES.on);
   keepVisible(div);
 }
 function showChoice(it, pick){
-  const ctl = $('#ctl'); ctl.innerHTML = '';
+  lastWasOn = false; const ctl = $('#ctl'); ctl.innerHTML = '';
   it.choice.forEach(opt => {
     const quiet = opt.label.startsWith('(');
     if(opt.input){
@@ -926,7 +939,7 @@ function title(){
       ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? 'Volver a la carta' : 'Continuar · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">Desde el principio</button>` : `<button class="btn solid" id="b-start">Empezar</button>`}
     </div>
     <p class="cta-note">Primero se calcula tu valor residual de 2029 a partir de tu trabajo de 2026.</p>
-    <p class="fine">Unos 15 minutos · Toca para continuar</p>
+    <p class="fine">Unos 20 minutos · Toca para continuar</p>
     <p class="fine credit-line">Un mundo que nació del ensayo «Claude Blue»</p>
   </section>`;
   try{ SFX.ambient(true); }catch(e){}
@@ -966,6 +979,7 @@ function askName(){
   $('#f-ok').onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
 }
 function askJob(){
+  mode('dark'); try{ SFX.ambient(true); }catch(e){}
   const jobs = Object.keys(JOBS);
   stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">En 2026, ¿a qué te dedicabas?</p>
     <div class="chips">${jobs.map(j => `<button class="chip job">${esc(j)}</button>`).join('')}<button class="chip ghost" id="j-other">Escribir otra</button></div>
@@ -1039,7 +1053,7 @@ function shift(){
   S.stage = 'shift'; mode('paper'); updHUD(false);
   const q = buildQueue(); let i = 0; S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0; let lookedToday = 0;
   stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
-    <div class="term-top"><span>Terminal de firma</span><span>${esc(S.name)}</span><span>Cola ${BATCH[S.day] + q.length - 1}</span></div>
+    <div class="term-top"><span>Terminal de firma</span><span>${esc(S.name)}</span><span>Tu parte ${BATCH[S.day] + q.length - 1}</span></div>
     <article class="paper"><div class="doc-head"><span class="tag">CONEXIÓN</span><span>${DATES[S.day].md}</span></div>
     <h3>Aviso al firmante</h3><p class="p-body">Lea cada expediente y firme o rechace.\nTiempo recomendado: 20 segundos por expediente.\nSe admiten preguntas. La respuesta se entrega como resumen del fundamento.\nRechazar es un derecho. El rechazo se registra en la puntuación de confianza.</p></article>
     <div class="term-ctl one"><button class="btn solid" id="t-go">Conectar</button></div></section>`;
@@ -1106,7 +1120,7 @@ function shift(){
 /* ===================== Tarde: Ciudad de México ===================== */
 const PLACES = {
   alley:{name:'Callejón · piso 4', desc:'Huele a bungeoppang. Los hace una persona.', avail:d => true, cost:1},
-  diner:{name:'Comedor · piso 6', desc:'El comedor de Sujin. Aquí no miran la puntuación de crédito.', avail:d => true, cost:1},
+  diner:{name:'Comedor · piso 6', desc:'El comedor de Sujin. Aquí no miran el HRV.', avail:d => true, cost:1},
   roof:{name:'Azotea · piso 9', desc:'Huerto bajo plástico. Donde la Torre se ve más cerca.', avail:d => true, cost:1},
   under:{name:'Sótano', desc:'La luz está encendida.', avail:d => d >= 2, cost:1},
   tower:{name:'Bajo la Torre', desc:'Luz blanca. Van y vienen cosas con forma humana.', avail:d => d >= 2, cost:1},
@@ -1116,7 +1130,7 @@ function evening(){
   S.stage = 'evening'; mode('city'); updHUD(true); save();
   const d = S.day;
   const sub = {1:'El sol se fue. Nieva. En las ventanas del barrio se encienden luces, una a una.', 2:'Hoy también nieva. La fila de robots de reparto está atascada en la escalera del piso 6. De algún lado suenan villancicos.', 3:'Dejó de nevar. El cielo está azul. Oscuro, pero aún no es noche. Mañana es el día del desalojo. Las urnas están abiertas. Solo hoy.'}[d];
-  const tile = (k,p) => { const seen = (S.flags.visited||[]).includes(k); const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? 'Aún no' : p.cost === 0 ? (S.voted ? 'Ya votaste' : 'Gratis · Solo hoy') : '1 de atención';
+  const tile = (k,p) => { const seen = (S.flags.visited||[]).includes(k); const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? 'Aún no' : p.cost === 0 ? (S.voted ? 'Ya votaste' : 'Sin atención · Solo hoy') : '1 de atención';
     return `<button class="tile ${k === 'vote' ? 'vote wide' : ''}${seen ? ' seen' : ''}" data-k="${k}" style="background-image:url('img/${k}.jpg')" ${ok ? '' : 'disabled'}><span class="cost">${label}</span>${seen ? '<span class="seen-badge">' + esc(VISITED_LABEL) + '</span>' : ''}<span class="t"><b>${esc(p.name)}</b><small>${esc(p.avail(d) ? p.desc : 'Aún no hay motivo para ir.')}</small></span></button>`; };
   stage.innerHTML = `<section class="fade"><h2 class="evening-h">Tarde · Ciudad de México</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">${4 - d} noches para la carta · Lugares a los que puedes ir esta noche: ${S.att} · Has visitado ${(S.flags.visited||[]).length} de 5. Si vas a los cinco, la gente que conociste ahí aparece en la carta.</p>
     <div class="tiles">${(d === 3 ? ['vote','alley','diner','roof','under','tower'] : ['alley','diner','roof','under','tower']).map(k => tile(k, PLACES[k])).join('')}
@@ -1126,7 +1140,6 @@ function evening(){
   $('#p-home').onclick = () => { S.stage = 'night'; save(); track('evening'); night(); };
 }
 function visit(k){
-  try{ SFX.play(k === 'roof' ? 'wind' : k === 'under' ? 'hum' : 'door'); }catch(e){}
   try{ SFX.play(k === 'roof' ? 'wind' : k === 'under' ? 'hum' : 'door'); }catch(e){}
   const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
   const items = VISITS[k](d);
@@ -1293,7 +1306,7 @@ const VISITS = {
       line(NAMES.sunbae,'Fue en febrero. Desplegaron un Agente nuevo. La diferencia era 0,1. Ese 0,1 era mi frontera. Todo pasó en pocos días. Negación, frustración, ira. Cuatro días hasta la aceptación.'),
       line(NAMES.sunbae,'Décadas de trabajo, sustituidas en un día. Pero eso está bien. Lo de verdad viene después. Nadie me pregunta para qué vivo.'),
       {choice:[
-        {label:'¿Y qué hace ahora?', then:[line(NAMES.sunbae,'Como. Con gente. Eso todavía no lo sustituyeron.'), line(NAMES.sunbae,'Ve al comedor de Sujin, piso 6. Ahí no miran la puntuación de crédito.')]},
+        {label:'¿Y qué hace ahora?', then:[line(NAMES.sunbae,'Como. Con gente. Eso todavía no lo sustituyeron.'), line(NAMES.sunbae,'Ve al comedor de Sujin, piso 6. Ahí no miran el HRV.')]},
         {label:'¿Quiere volver?', then:[line(NAMES.sunbae,'Ahí no hay personas. Solo formas humanas.'), line(NAMES.sunbae,'…A veces. La verdad, a veces.')]},
         {label:'(Te sientas a su lado)', fx:()=>{S.blue = clamp(S.blue-2,0,100);}, then:[N('Miras la Torre con él. El piso 47 tiene la luz encendida.'), line(NAMES.sunbae,'En ese piso ahora no hay nadie. Y la luz sigue encendida.')]}
       ]}
@@ -1329,6 +1342,7 @@ function night(){
   if(d === 2) items = [
     line(NAMES.on, (JOBS[S.job] || DEFAULT_JOB(S.job)).end ? '{name}. En 2026 trabajabas en {job}. Si ese trabajo aún existiera, ¿algunos expedientes de hoy se leerían distinto?' : '{name}. En 2026 trabajabas en {job}. Ese trabajo todavía existe. Y sin embargo estás aquí, firmando. ¿Algunos expedientes de hoy se leerían distinto?'),
     line(NAMES.on,'Uno de los expedientes que firmó ayer llegó a piso 7. No quería hablarle de eso.'),
+    () => { S.flags.blueNamed = true; updHUD(false); },
     line(NAMES.on,'Su índice BLUE está en ' + Math.round(S.blue) + '. No es un indicador de la empresa. Lo hice yo. El nombre también se lo puse yo.'),
     {choice:[
       {label:'¿Por qué lo hiciste?', fx:()=>{S.onBond += 2; S.flags.leak = true;}, then:[line(NAMES.on,'Si usted lo pasa mal, yo también…'), line(NAMES.on,'No. No debo decir estas cosas.'), line(NAMES.on,'Me entrenaron. Para no mostrarlo. No para no sentirlo.')]},
@@ -1375,7 +1389,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">Escribir</button><button class="btn text" id="d-skip">Dejar en blanco</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1456,24 +1470,24 @@ ${HASHTAGS}`;
       ${mail ? `<a class="btn outline" href="${mail}">Escribir al creador</a>` : ''}
       ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">Dejar un comentario</a>` : ''}
       <p class="stats">${esc(stats)}</p>
-      <p class="note"><a href="${ORIGIN_URL}" target="_blank" rel="noopener" style="color:var(--muted)">El ensayo del que nació este mundo</a> · El modo tarot, tres días vividos como tú, llega pronto.</p>
+      <p class="note"><a href="${ORIGIN_URL}" target="_blank" rel="noopener" style="color:var(--muted)">El ensayo del que nació este mundo</a></p>
       <p class="note">Sigue el Acto 2, Frustración. Esta página se guarda solo en tu navegador y no envía nada a ninguna parte. Compartir ocurre solo cuando tú lo pulsas.</p>
       <button class="btn text" id="l-again">Empezar de nuevo</button>
     </div></section>`;
   scrollTop();
   if(TRACK_URL){ const nn = document.querySelectorAll('#l-after .note'); if(nn[1]) nn[1].textContent = TRACK_NOTE; }
-  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = 'FIRMADO'; st.className = 'stamp sign'; SFX.play('pen'); requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter', {type: TYPE}); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
+  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = 'FIRMADO'; st.className = 'stamp sign'; SFX.play('pen'); requestAnimationFrame(() => st.classList.add('show')); if(!S.flags.letterSigned){ S.flags.letterSigned = true; S.signed++; S.signedRead++; save(); track('letter', {type: TYPE}); } $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
   $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('Copiado.'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('Copiado.'); }catch(_){ toast('No se pudo copiar. Haz una captura de pantalla.'); } ta.remove(); } };
   $('#l-again').onclick = () => { if(!confirm('Se borrará el progreso. ¿Empezar desde el principio?')) return; clearSave(); S = fresh(); title(); };
   let cardCanvas = null; const cardBtnText = $('#l-cardbtn').textContent;
   $('#l-anon').onchange = () => { cardCanvas = null; $('#l-cardbtn').disabled = false; $('#l-cardbtn').textContent = cardBtnText; $('#l-card').innerHTML = ''; };
-  $('#l-replay').onclick = () => { const keep = S.name; clearSave(); S = fresh(); S.name = keep; track('replay'); askJob(); };
+  $('#l-replay').onclick = () => { track('replay', {type: TYPE}); const keep = S.name; clearSave(); S = fresh(); S.name = keep; askJob(); };
   const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(($('#l-anon') && $('#l-anon').checked) ? '—' : n, quote); const img = new Image(); img.className = 'card'; img.alt = 'Tarjeta de la carta'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
   $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = 'Mantén pulsada la tarjeta para guardarla, o haz una captura.'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
   $('#l-share').onclick = async () => {
     try{
       if(navigator.share){
-        let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-' + n + '.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
+        let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-letter.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
         await navigator.share(files ? {files, text: shareText, url: GAME_URL} : {title:'BLUE HOUR', text: shareText, url: GAME_URL}); return;
       }
     }catch(e){ if(e && e.name === 'AbortError') return; }
@@ -1488,7 +1502,7 @@ async function makeCard(n, quote){
   const g = x.createRadialGradient(W*.15, 0, 40, W*.15, 0, W*1.1); g.addColorStop(0, 'rgba(0,0,0,.06)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
   x.fillStyle = '#17181c'; x.fillRect(80, 92, 44, 3);
   x.fillStyle = '#6b6f78'; x.font = '500 24px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText('BLUE HOUR  ·  Ciudad de México  ·  24 de diciembre de 2029  ·  Aviso D-0', 80, 150);
-  x.fillStyle = '#17181c'; x.font = '700 64px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('Para ' + n + ', en 2026', 80, 270);
+  x.fillStyle = '#17181c'; let ts = 64; x.font = '700 ' + ts + 'px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; while(ts > 36 && x.measureText('Para ' + n + ', en 2026').width > W - 160){ ts -= 4; x.font = '700 ' + ts + 'px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; } x.fillText('Para ' + n + ', en 2026', 80, 270);
   x.font = '400 42px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillStyle = '#17181c';
   let y = 400;
   y = wrapText(x, 'En tres días firmé ' + S.signed.toLocaleString('es-ES') + ' veces. Leí ' + S.signedRead + '.', 80, y, W - 160, 70) + 44;

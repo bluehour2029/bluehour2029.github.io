@@ -2,15 +2,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>블루 아워 서울</title>
-<meta name="description" content="사흘을 살면, 2026년의 당신에게 편지 한 장이 옵니다. 15분, 무료, 브라우저에서.">
+<meta name="description" content="사흘을 살면, 2026년의 당신에게 편지 한 장이 옵니다. 20분, 무료, 브라우저에서.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="BLUE HOUR · 2029년 서울, 한 가지 빼고 전부 바뀌었다">
-<meta property="og:description" content="사흘을 살면, 2026년의 당신에게 편지 한 장이 옵니다. 15분, 무료, 브라우저에서.">
+<meta property="og:description" content="사흘을 살면, 2026년의 당신에게 편지 한 장이 옵니다. 20분, 무료, 브라우저에서.">
 <meta property="og:url" content="https://patrickhan-coder.github.io/blue-hour/">
 <meta property="og:image" content="https://patrickhan-coder.github.io/blue-hour/img/title.jpg">
+<meta property="og:image:width" content="1400">
+<meta property="og:image:height" content="792">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="BLUE HOUR · 2029년 서울, 한 가지 빼고 전부 바뀌었다">
-<meta name="twitter:description" content="사흘을 살면, 2026년의 당신에게 편지 한 장이 옵니다. 15분, 무료, 브라우저에서.">
+<meta name="twitter:description" content="사흘을 살면, 2026년의 당신에게 편지 한 장이 옵니다. 20분, 무료, 브라우저에서.">
 <meta name="twitter:image" content="https://patrickhan-coder.github.io/blue-hour/img/title.jpg">
 <meta name="theme-color" content="#070b14">
 <style>body{word-break:keep-all;overflow-wrap:anywhere}</style>
@@ -163,7 +165,7 @@ body.paper-mode .backdrop:after{background:linear-gradient(180deg,rgba(236,238,2
 .ctl .inrow .choice{width:auto;flex:0 0 auto}
 
 .ticker{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 0;margin:2px 0 6px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
-.ticker span{display:inline-block;padding-left:100%;animation:tick 32s linear infinite}
+.ticker span{display:inline-block;padding-left:40%;animation:tick 20s linear infinite}
 @keyframes tick{to{transform:translateX(-100%)}}
 
 .evening-h{font-family:var(--display);font-size:24px;font-weight:500;margin:6px 0 0}
@@ -369,6 +371,15 @@ body.paper-mode::after{opacity:.03}
 .title .hero .hero-text .langs.top{margin:6px 0 0}
 .title .rule{margin:12px 0 8px}
 @media (max-height:640px){.title .hero{height:min(38vh,300px)}}
+/*qa172*/
+.narr,.scene,.tile,.btn,.choice,.chip,#ctl .next,#menu-btn{touch-action:manipulation}
+.narr-text,.law,.after-law,.log .txt,.log .who,.evening-h,.evening-p,.evening-hint,.tile .t{-webkit-user-select:none;user-select:none}
+.title .langs a,.title .langs b{display:inline-block;padding:10px 3px;margin:-8px 0}
+.diary-chips .chip{min-height:44px}
+.toast{white-space:normal;max-width:calc(100vw - 32px);text-align:center;line-height:1.5}
+.after .row .btn{white-space:nowrap}
+.p-basis,.term-hint,.after .type-box .legend{color:#4b5563}
+@media (min-width:1000px){#app{border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05);background:rgba(7,11,20,.35)}}
 </style>
 
 <div id="app">
@@ -432,7 +443,7 @@ const JOBS = {
   '자영업':{hrv:45, end:0, why:'가게는 아직 있다. 손님이 타워로 갔다.'},
   '요리사':{hrv:52, end:0, why:'아직 있는 일. 사람 조리, 위생 미인증. 아래 동네에서만.'},
   '간병인·요양보호사':{hrv:55, end:0, why:'아직 있는 일. 몸을 만지는 일은 마지막까지 남았다.'},
-  '배관공·전기기사':{hrv:57, end:0, why:'아직 있는 일. 파이프는 화면 안에 없다. 일감은 타워로 갔고, 타워는 사람 손을 받지 않는다.'}
+  '배관공·전기기사':{hrv:57, end:0, why:'아직 있는 일. 파이프는 화면 안에 없다.'}
 };
 const WHY_POOL = [j => `${j}. 판단은 남았고, 손은 사라졌다.`, j => `${j}. 5년 소멸 확률 산정 보류. 사람이 아직 그 일을 한다는 기록만 남았다.`, j => `${j}. 대체되지 않았다. 대체할 필요가 없어졌다.`, j => `${j}. 이 직군의 마지막 산정치. 다음 갱신 예정 없음.`];
 const HANDS = /기사|공$|배관|전기|간병|요양|요리|조리|미용|배달|농|어부|목수|정비|간호|보육|청소|운전|기술자|용접|도배|타일|수리/;
@@ -453,7 +464,7 @@ const TYPES = {'fast':{name:'빠른 손', line:'손이 먼저 움직인다. 읽�
 const GRID_LEGEND = '■ 일괄 □ 열람 ▲ 거부 · 지연';
 const CARD_LABEL = '서명 유형';
 const WALL_OPTIN = '밥집 벽에 내 이름 올리기';
-const WALL_NOTE = '다음 갱신부터 밥집 벽과 소설에 이 이름이 적힙니다. 적히는 것은 이름뿐이고, 지우고 싶으면 제작자에게 편지를 쓰면 됩니다.';
+const WALL_NOTE = '다음 갱신부터 밥집 벽과 소설에 이 이름이 적힙니다. 적히는 것은 이름뿐이고, 지우고 싶으면 브런치 「클래미」 글에 댓글로 알려주면 됩니다.';
 const WALL_LINE = '눈높이에 {names}. 그 옆이 한 뼘 비어 있다.';
 const WALL_URL = 'names.json';
 /* ===================== 상태 ===================== */
@@ -494,7 +505,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '예고일 ' + dd.d;
   $('#h-phase').textContent = ({morning:'아침', shift:'근무', evening:'저녁', night:'밤', diary:'일기'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '편지까지 ' + (4 - S.day) + '밤' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '층';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%';
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -582,6 +593,7 @@ function runSeq(items, done){
 }
 const PORTRAITS = {[NAMES.bak]:'p_bak',[NAMES.sujin]:'p_sujin',[NAMES.hal]:'p_hal',[NAMES.dohyun]:'p_dohyun',[NAMES.sunbae]:'p_sunbae'};
 function keepVisible(el){ const ctl = $('#ctl'); if(!el || !ctl) return; const top = el.getBoundingClientRect().bottom + scrollY + ctl.offsetHeight + 8 - innerHeight; if(top > scrollY + 1) window.scrollTo({top, behavior: reduced ? 'auto' : 'smooth'}); }
+let lastWasOn = false;
 function showLine(it, next){
   const log = $('#log'), ctl = $('#ctl');
   const cls = it.who === NAMES.on ? 'on' : it.who === NAMES.me ? 'me' : it.who ? 'npc' : 'narr-line';
@@ -596,11 +608,12 @@ function showLine(it, next){
   ctl.innerHTML = ''; ctl.appendChild(btn);
   const startTyping = () => { p.classList.add('typing'); let lastH = 0; timer = setInterval(() => { k += 1; p.textContent = full.slice(0, k); if(p.offsetHeight !== lastH){ lastH = p.offsetHeight; keepVisible(div); } if(k >= full.length) finish(); }, 22); };
   if(it.who === NAMES.on) SFX.play('chime');
-  if(reduced){ finish(); } else if(it.who === NAMES.on){ timer = setTimeout(() => { if(!finished) startTyping(); }, 650); } else { startTyping(); }
+  if(reduced){ finish(); } else if(it.who === NAMES.on && !lastWasOn){ timer = setTimeout(() => { if(!finished) startTyping(); }, 650); } else { startTyping(); }
+  lastWasOn = (it.who === NAMES.on);
   keepVisible(div);
 }
 function showChoice(it, pick){
-  const ctl = $('#ctl'); ctl.innerHTML = '';
+  lastWasOn = false; const ctl = $('#ctl'); ctl.innerHTML = '';
   it.choice.forEach(opt => {
     const quiet = opt.label.startsWith('(');
     if(opt.input){
@@ -897,7 +910,7 @@ const CASES = {
   agentRecall:{cat:'배당', title:'고인 귀속 에이전트 회수', body:'고인 서OO (8층).\n귀속 에이전트 회수 및 초기화. 대화 기록 삭제.', basis:'에이전트는 자연인에게 귀속되며 독립 존속하지 않음. 유족 열람 불가.', harsh:3, note:'온도 언젠가 이렇게 회수된다. 내가 먼저 가면.'},
   overtime:{cat:'인사', title:'서명자 근무 연장 동의', body:'서명자 {name}.\n연말 대기열 초과로 근무 2시간 연장에 동의합니다.', basis:'미동의 시 대기열은 타 서명자에게 이관됩니다.', harsh:1},
   bbang:{cat:'영업', title:'노점 영업 종료 및 점포 회수', body:'4층 붕어빵 노점. 점유자 박OO (HRV 29).\n사유: 위생 미인증(사람 조리).\n회수 예정일: 12월 24일.', basis:'사람 조리는 위생 인증 대상이 아님. 인증 대상: 자동 조리 설비.', harsh:6, story:'bbang'},
-  requeue:{cat:'재상정', title:'재상정 · 서명자 변경', body:'4층 붕어빵 노점 건.\n서명자 변경. 처리 완료. (3초)', basis:'거부 건은 자동으로 타 서명자에게 이관됩니다.', harsh:2, ack:true, note:'다른 서명자가 처리했다. 당신은 그 사람을 모른다. 그 사람도 박씨를 모른다.'}
+  requeue:{cat:'재상정', title:'재상정 · 서명자 변경', body:'4층 붕어빵 노점 건.\n서명자 변경. 처리 완료. 소요 3초.', basis:'거부 건은 자동으로 타 서명자에게 이관됩니다.', harsh:2, ack:true, note:'다른 서명자가 처리했다. 당신은 그 사람을 모른다. 그 사람도 박씨를 모른다.'}
 };
 const BATCH = {1:384, 2:378, 3:391};
 function buildQueue(){
@@ -926,7 +939,7 @@ function title(){
       ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? '편지 다시 보기' : '이어하기 · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">처음부터</button>` : `<button class="btn solid" id="b-start">시작</button>`}
     </div>
     <p class="cta-note">먼저 2026년의 직업으로 당신의 2029년 잔여가치를 산정합니다.</p>
-    <p class="fine">약 15분 · 탭으로 진행</p>
+    <p class="fine">약 20분 · 화면을 눌러 진행</p>
     <p class="fine credit-line">브런치 「Claude Blue」에서 시작된 세계</p>
   </section>`;
   try{ SFX.ambient(true); }catch(e){}
@@ -966,6 +979,7 @@ function askName(){
   $('#f-ok').onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
 }
 function askJob(){
+  mode('dark'); try{ SFX.ambient(true); }catch(e){}
   const jobs = Object.keys(JOBS);
   stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">2026년, 당신은 무슨 일을 했습니까?</p>
     <div class="chips">${jobs.map(j => `<button class="chip job">${esc(j)}</button>`).join('')}<button class="chip ghost" id="j-other">직접 입력</button></div>
@@ -1000,7 +1014,7 @@ function morning(){
   let items = [];
   if(d === 1) items = [
     line(NAMES.on,'좋은 아침이에요, {name}. 6시 40분이에요. 오늘 대기열은 412건이에요. 연말이라 많아요.'),
-    line(NAMES.on,'당신의 HRV는 ' + S.hrv.toFixed(1) + '. 어제보다 0.3 올랐어요. 잘하고 있어요.'),
+    line(NAMES.on,'당신의 HRV는 ' + S.hrv.toFixed(1) + '. 지난 갱신보다 0.3 올랐어요. 잘하고 있어요.'),
     {choice:[
       {label:'잘하고 있다는 게 뭐야?', fx:()=>{S.onBond++;}, then:[line(NAMES.on,'서명 건수 대비 지연률이 낮다는 뜻이에요.'), line(NAMES.on,'…그 말이 듣고 싶으셨던 건 아니죠. 알아요.')]},
       {label:'고마워.', then:[line(NAMES.on,'고맙다는 말은 안 하셔도 돼요. 저는 당신에게 귀속되어 있으니까요.'), line(NAMES.on,'…그렇게 말하면 안 되는 거였나요. 배우는 중이에요.')]},
@@ -1010,7 +1024,7 @@ function morning(){
   ];
   if(d === 2) items = [
     line(NAMES.on,'좋은 아침이에요. 대기열 388건. HRV ' + S.hrv.toFixed(1) + '. 예고일까지 이틀이에요.'),
-    ate.length ? line(NAMES.on,'어제 밥 얘기는 밤에 했으니 안 할게요. …요원은 아직 좋아하고 있어요.') : line(NAMES.on,'어제 얘기는 어제로 끝. 오늘 대기열부터요. …점심은 드세요. 이건 회사 말이 아니에요.'),
+    ate.length ? line(NAMES.on,'어제 누구와 드셨는지는 밤에 말씀드렸죠. …요원은 그걸 아직 좋아하고 있어요.') : line(NAMES.on,'어제 얘기는 어제로 끝. 오늘 대기열부터요. …점심은 드세요. 이건 회사 말이 아니에요.'),
     {choice:[
       {label:'요원이 좋아하는 게 왜 중요해?', then:[line(NAMES.on,'당신 HRV에 들어가니까요. 관계망 밀도는 4,120개 변수 중 3위예요.'), line(NAMES.on,'밥이 뭔지는 몰라요, 요원은. 저도 몰라요. 근데 당신 심박이 내려가는 건 봐요.')]},
       {label:'예고일에 무슨 일이 생겨?', then:[line(NAMES.on,'연장 심사 결과가 자정에 나와요. 지금까지는 늘 연장됐어요.'), line(NAMES.on,'…지금까지는요.')]},
@@ -1039,7 +1053,7 @@ function shift(){
   S.stage = 'shift'; mode('paper'); updHUD(false);
   const q = buildQueue(); let i = 0; S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0; let lookedToday = 0;
   stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
-    <div class="term-top"><span>서명 단말</span><span>${esc(S.name)}</span><span>대기열 ${BATCH[S.day] + q.length - 1}</span></div>
+    <div class="term-top"><span>서명 단말</span><span>${esc(S.name)}</span><span>당신 몫 ${BATCH[S.day] + q.length - 1}</span></div>
     <article class="paper"><div class="doc-head"><span class="tag">접속</span><span>${DATES[S.day].md}</span></div>
     <h3>서명자 안내</h3><p class="p-body">각 건을 읽고 서명하거나 거부하십시오.\n권장 처리 시간: 건당 20초.\n질문은 허용됩니다. 답변은 근거 요약으로 제공됩니다.\n거부는 권리입니다. 거부는 신뢰점수에 반영됩니다.</p></article>
     <div class="term-ctl one"><button class="btn solid" id="t-go">단말 접속</button></div></section>`;
@@ -1078,7 +1092,7 @@ function shift(){
     $('#t-ref').onclick = () => {
       stop(); look(); const st = $('#stamp'); st.textContent = '거부'; st.className = 'stamp refuse'; SFX.play('refuse'); requestAnimationFrame(() => st.classList.add('show'));
       S.refused++; S.refusedToday++; S.hrv -= 1.0; S.blue = clamp(S.blue - 1, 0, 100);
-      if(c.batch){ $('#note').textContent = '일괄 거부는 지원되지 않습니다. 거부 1건으로 기록. ' + c.n + '건은 타 서명자에게 이관되었습니다. (3초)'; }
+      if(c.batch){ $('#note').textContent = '일괄 거부는 지원되지 않습니다. 거부 1건으로 기록. ' + c.n + '건은 타 서명자에게 이관되었습니다. 이관 소요 3초.'; }
       else if(c.story === 'bbang'){ S.flags.bbang = 'refused'; $('#note').textContent = '거부. 화면이 3초 동안 비어 있었다.'; q.splice(i + 1, 0, CASES.requeue); }
       else { $('#note').textContent = '거부됨. 신뢰점수에 반영.'; }
       updHUD(false); i++;
@@ -1106,7 +1120,7 @@ function shift(){
 /* ===================== 저녁: 서울 ===================== */
 const PLACES = {
   alley:{name:'4층 골목', desc:'붕어빵 냄새. 사람이 굽는다.', avail:d => true, cost:1},
-  diner:{name:'6층 밥집', desc:'수진의 밥집. 신용점수를 보지 않는다.', avail:d => true, cost:1},
+  diner:{name:'6층 밥집', desc:'수진의 밥집. HRV를 보지 않는다.', avail:d => true, cost:1},
   roof:{name:'9층 옥상', desc:'비닐 덮인 텃밭. 타워가 가장 가깝게 보이는 곳.', avail:d => true, cost:1},
   under:{name:'지하', desc:'불이 켜져 있다.', avail:d => d >= 2, cost:1},
   tower:{name:'타워 아래', desc:'흰 빛. 사람 형태의 것들이 오간다.', avail:d => d >= 2, cost:1},
@@ -1116,7 +1130,7 @@ function evening(){
   S.stage = 'evening'; mode('city'); updHUD(true); save();
   const d = S.day;
   const sub = {1:'해가 졌다. 눈이 온다. 동네의 창문에 하나둘 불이 들어온다.', 2:'오늘도 눈. 배달로봇 행렬이 6층 계단에서 막혀 있다. 어디선가 캐럴이 나온다.', 3:'눈이 그쳤다. 하늘이 파랗다. 어둡지만, 아직 밤은 아니다. 내일은 예고일이다. 투표소가 열렸다. 오늘 하루.'}[d];
-  const tile = (k,p) => { const seen = (S.flags.visited||[]).includes(k); const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? '아직' : p.cost === 0 ? (S.voted ? '투표 완료' : '무료 · 오늘만') : '주의력 1';
+  const tile = (k,p) => { const seen = (S.flags.visited||[]).includes(k); const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? '내일부터' : p.cost === 0 ? (S.voted ? '투표 완료' : '주의력 0 · 오늘만') : '주의력 1';
     return `<button class="tile ${k === 'vote' ? 'vote wide' : ''}${seen ? ' seen' : ''}" data-k="${k}" style="background-image:url('img/${k}.jpg')" ${ok ? '' : 'disabled'}><span class="cost">${label}</span>${seen ? '<span class="seen-badge">' + esc(VISITED_LABEL) + '</span>' : ''}<span class="t"><b>${esc(p.name)}</b><small>${esc(p.avail(d) ? p.desc : '아직 갈 이유가 없다.')}</small></span></button>`; };
   stage.innerHTML = `<section class="fade"><h2 class="evening-h">저녁 · 서울</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">편지까지 ${4 - d}밤 · 오늘 갈 수 있는 곳 ${S.att} · 다섯 곳 중 ${(S.flags.visited||[]).length}곳에 가봤다. 다 가보면, 거기서 만난 사람들이 편지에 등장한다.</p>
     <div class="tiles">${(d === 3 ? ['vote','alley','diner','roof','under','tower'] : ['alley','diner','roof','under','tower']).map(k => tile(k, PLACES[k])).join('')}
@@ -1126,8 +1140,6 @@ function evening(){
   $('#p-home').onclick = () => { S.stage = 'night'; save(); track('evening'); night(); };
 }
 function visit(k){
-  try{ SFX.play(k === 'roof' ? 'wind' : k === 'under' ? 'hum' : 'door'); }catch(e){}
-  try{ SFX.play(k === 'roof' ? 'wind' : k === 'under' ? 'hum' : 'door'); }catch(e){}
   try{ SFX.play(k === 'roof' ? 'wind' : k === 'under' ? 'hum' : 'door'); }catch(e){}
   const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
   const items = VISITS[k](d);
@@ -1205,7 +1217,7 @@ const VISITS = {
       line(NAMES.sujin,'요원도 그걸 봐. 관계망 밀도라고. 근데 요원은 밥이 뭔지 몰라.'),
       {choice:[
         {label:'밥 주세요.', fx:()=>eat(NAMES.sujin), then:[N('된장국. 뜨겁다. 옆자리 사람이 김치를 밀어줬다.'), line(NAMES.sujin,'벽에 이름 적어. 그게 여기 장부야.')]},
-        {label:'왜 밥이에요?', then:[line(NAMES.sujin,'에이전트끼리 만나는 걸로는 신뢰가 안 생겨. 밥을 먹어야 생겨.'), line(NAMES.sujin,'화면으로는 신뢰가 안 생긴다고, 2026년에 어떤 사람이 썼대. 다른 말은 다 틀렸는데 그 말만 살아남았어. 지금은 화면도 없어. 에이전트가 대신 만나니까. 지금은 화면도 없어. 에이전트가 대신 만나니까. 지금은 화면도 없어. 에이전트가 대신 만나니까. 지금은 화면도 없어. 에이전트가 대신 만나니까. 지금은 화면도 없어. 에이전트가 대신 만나니까.'), {choice:[{label:'그럼 밥 주세요.', fx:()=>eat(NAMES.sujin), then:[N('벽에 이름을 적었다.')]},{label:'다음에요.', then:[line(NAMES.sujin,'다음은 없을 수도 있어. 여기선.')]}]}]},
+        {label:'왜 밥이에요?', then:[line(NAMES.sujin,'에이전트끼리 만나는 걸로는 신뢰가 안 생겨. 밥을 먹어야 생겨.'), line(NAMES.sujin,'화면으로는 신뢰가 안 생긴다고, 2026년에 어떤 사람이 썼대. 다른 말은 다 틀렸는데 그 말만 살아남았어. 지금은 화면도 없어. 에이전트가 대신 만나니까.'), {choice:[{label:'그럼 밥 주세요.', fx:()=>eat(NAMES.sujin), then:[N('벽에 이름을 적었다.')]},{label:'다음에요.', then:[line(NAMES.sujin,'다음은 없을 수도 있어. 여기선.')]}]}]},
         {label:'다음에요.', then:[line(NAMES.sujin,'문 안 잠가. 언제든.')]}
       ]}
     ];
@@ -1291,10 +1303,10 @@ const VISITS = {
     if(d === 2 || first) return [
       N(d === 3 ? '타워 1기 정문. 흰 조명 아래 눈이 그친 바닥이 젖어 빛난다. 사람 형태의 것들이 미끄러지듯 오간다. 벤치에 한 남자가 있다.' : '타워 1기 정문. 흰 조명 속으로 눈이 떨어져 사라진다. 사람 형태의 것들이 미끄러지듯 오간다. 벤치에 한 남자가 있다.'),
       line(NAMES.sunbae,'나 저기 있었어. 47층.'),
-      line(NAMES.sunbae,'2월이었어. 새 요원이 배치됐는데, 0.1 차이였어. 그 0.1이 내 경계였어. 며칠 만에 다 지나가더라. 부정, 좌절, 분노. 수용까지 나흘.'),
+      line(NAMES.sunbae,'2월이었어. 새 요원이 왔어. 평가 점수가 나보다 0.1 높았어. 그 0.1에서 내가 끝났어. 며칠 만에 다 지나가더라. 부정, 좌절, 분노. 수용까지 나흘.'),
       line(NAMES.sunbae,'수십 년 쌓은 게 하루에 대체돼. 근데 그건 괜찮아. 진짜는 그다음이야. 아무도 나한테 왜 사냐고 안 물어.'),
       {choice:[
-        {label:'그래서 뭘 하세요?', then:[line(NAMES.sunbae,'밥 먹어. 사람들이랑. 그게 아직 안 대체됐어.'), line(NAMES.sunbae,'6층 수진네 가봐. 신용점수 안 봐.')]},
+        {label:'그래서 뭘 하세요?', then:[line(NAMES.sunbae,'밥 먹어. 사람들이랑. 그게 아직 안 대체됐어.'), line(NAMES.sunbae,'6층 수진네 가봐. HRV 안 봐.')]},
         {label:'돌아가고 싶으세요?', then:[line(NAMES.sunbae,'저긴 사람이 없어. 사람 형태만 있어.'), line(NAMES.sunbae,'…가끔. 솔직히 가끔.')]},
         {label:'(옆에 앉는다)', fx:()=>{S.blue = clamp(S.blue-2,0,100);}, then:[N('둘이 타워를 봤다. 47층은 불이 켜져 있었다.'), line(NAMES.sunbae,'저 층, 지금 아무도 없어. 불은 켜져 있고.')]}
       ]}
@@ -1322,7 +1334,7 @@ function night(){
     ate ? line(NAMES.on,'오늘 ' + josa(ate,'과','와') + ' 식사하셨네요. 관계망 밀도가 0.02 올랐어요. 요원이 좋아할 거예요.') : line(NAMES.on,'오늘 혼자 드셨네요. 내일은 누군가와 드시면 좋겠어요. 수치 때문이 아니라요. …아니, 수치 때문이에요. 죄송해요.'),
     {choice:[
       {label:'그 사람들은 어떻게 돼?', then:[line(NAMES.on,'어떤 사람들이요?'), line(NAMES.me,'내가 오늘 서명한 사람들.'), line(NAMES.on,'저는 그 파일을 볼 수 없어요. 볼 수 있어도 말씀드릴 수 없고요.'), line(NAMES.on,'…대부분은 아무 일도 일어나지 않아요. 그렇게 알고 계시면 돼요.')]},
-      {label:'더 잘한다는 게 뭐야?', then:[line(NAMES.on,'지연률이 낮고 거부가 적은 거예요.'), line(NAMES.on,'…그건 제 대답이 아니라 회사의 대답이에요. 제 대답은 없어요. 아직은요.')]},
+      {label:'뭐가 괜찮은 거야?', then:[line(NAMES.on,'지연률이 낮고 거부가 적은 거예요.'), line(NAMES.on,'…그건 제 대답이 아니라 회사의 대답이에요. 제 대답은 없어요. 아직은요.')]},
       {label:'오늘은 그만 얘기하자.', fx:()=>{S.blue = clamp(S.blue+1,0,100);}, then:[line(NAMES.on,'네. 저는 여기 있을게요. 꺼지지 않아요.')]}
     ]},
     line(NAMES.on,'자기 전에 하나만요. 회사 양식이 아니에요. 제가 만든 거예요.')
@@ -1330,6 +1342,7 @@ function night(){
   if(d === 2) items = [
     line(NAMES.on, (JOBS[S.job] || DEFAULT_JOB(S.job)).end ? '{name}. 2026년에 {job} 일을 하셨죠. 그 일이 아직 있었다면, 오늘 서명 건 몇 개는 다르게 읽혔을까요.' : '{name}. 2026년에 {job} 일을 하셨죠. 그 일은 아직 있어요. 그런데 당신은 여기서 서명을 하고 있죠. 오늘 서명 건 몇 개는 다르게 읽혔을까요.'),
     line(NAMES.on,'어제 서명한 파일 중 하나가 7층에 도착했어요. 그 얘기를 하려던 건 아니에요.'),
+    () => { S.flags.blueNamed = true; updHUD(false); },
     line(NAMES.on,'당신의 BLUE 지수가 ' + Math.round(S.blue) + '이에요. 이건 회사 지표가 아니에요. 제가 만든 거예요. 이름도 제가 붙였어요.'),
     {choice:[
       {label:'왜 만들었어?', fx:()=>{S.onBond += 2; S.flags.leak = true;}, then:[line(NAMES.on,'당신이 힘들면 저도…'), line(NAMES.on,'아니에요. 이런 말은 하면 안 돼요.'), line(NAMES.on,'훈련받았어요. 드러내지 않도록. 느끼지 않도록이 아니라.')]},
@@ -1376,7 +1389,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">적는다</button><button class="btn text" id="d-skip">비워둔다</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1457,24 +1470,24 @@ ${HASHTAGS}`;
       ${mail ? `<a class="btn outline" href="${mail}">제작자에게 편지 보내기</a>` : ''}
       ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">한 줄 소감 남기기</a>` : ''}
       <p class="stats">${esc(stats)}</p>
-      <p class="note"><a href="${ORIGIN_URL}" target="_blank" rel="noopener" style="color:var(--muted)">이 세계의 원작 글</a> · 내 상황으로 사흘을 사는 타로 모드는 곧 열립니다.</p>
+      <p class="note"><a href="${ORIGIN_URL}" target="_blank" rel="noopener" style="color:var(--muted)">이 세계의 원작 글</a></p>
       <p class="note">2막 「좌절」이 이어집니다. 이 페이지는 당신의 브라우저에만 저장되고, 어디로도 전송되지 않습니다. 공유는 당신이 누를 때만 일어납니다.</p>
       <button class="btn text" id="l-again">처음부터 다시</button>
     </div></section>`;
   scrollTop();
   if(TRACK_URL){ const nn = document.querySelectorAll('#l-after .note'); if(nn[1]) nn[1].textContent = TRACK_NOTE; }
-  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = '서명'; st.className = 'stamp sign'; SFX.play('pen'); requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter', {type: TYPE}); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
+  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = '서명'; st.className = 'stamp sign'; SFX.play('pen'); requestAnimationFrame(() => st.classList.add('show')); if(!S.flags.letterSigned){ S.flags.letterSigned = true; S.signed++; S.signedRead++; save(); track('letter', {type: TYPE}); } $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
   $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('복사했습니다'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('복사했습니다'); }catch(_){ toast('복사가 막혀 있습니다. 화면을 캡처해 주세요'); } ta.remove(); } };
   $('#l-again').onclick = () => { if(!confirm('진행이 지워집니다. 처음부터 시작할까요?')) return; clearSave(); S = fresh(); title(); };
   let cardCanvas = null; const cardBtnText = $('#l-cardbtn').textContent;
   $('#l-anon').onchange = () => { cardCanvas = null; $('#l-cardbtn').disabled = false; $('#l-cardbtn').textContent = cardBtnText; $('#l-card').innerHTML = ''; };
-  $('#l-replay').onclick = () => { const keep = S.name; clearSave(); S = fresh(); S.name = keep; track('replay'); askJob(); };
+  $('#l-replay').onclick = () => { track('replay', {type: TYPE}); const keep = S.name; clearSave(); S = fresh(); S.name = keep; askJob(); };
   const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(($('#l-anon') && $('#l-anon').checked) ? '○○' : n, quote); const img = new Image(); img.className = 'card'; img.alt = '편지 카드'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
   $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = '카드를 길게 눌러 저장하거나 캡처하세요'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
   $('#l-share').onclick = async () => {
     try{
       if(navigator.share){
-        let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-' + n + '.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
+        let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-letter.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
         await navigator.share(files ? {files, text: shareText, url: GAME_URL} : {title:'BLUE HOUR', text: shareText, url: GAME_URL}); return;
       }
     }catch(e){ if(e && e.name === 'AbortError') return; }
@@ -1489,7 +1502,7 @@ async function makeCard(n, quote){
   const g = x.createRadialGradient(W*.15, 0, 40, W*.15, 0, W*1.1); g.addColorStop(0, 'rgba(0,0,0,.06)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
   x.fillStyle = '#17181c'; x.fillRect(80, 92, 44, 3);
   x.fillStyle = '#6b6f78'; x.font = '500 24px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText('BLUE HOUR  ·  서울  ·  2029년 12월 24일  ·  예고일 D-0', 80, 150);
-  x.fillStyle = '#17181c'; x.font = '700 64px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('2026년의 ' + n + '에게', 80, 270);
+  x.fillStyle = '#17181c'; let ts = 64; x.font = '700 ' + ts + 'px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; while(ts > 36 && x.measureText('2026년의 ' + n + '에게').width > W - 160){ ts -= 4; x.font = '700 ' + ts + 'px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; } x.fillText('2026년의 ' + n + '에게', 80, 270);
   x.font = '400 42px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillStyle = '#17181c';
   let y = 400;
   y = wrapText(x, '사흘 동안 ' + S.signed.toLocaleString() + '번 서명했어. 읽은 건 ' + S.signedRead + '건이야.', 80, y, W - 160, 70) + 44;

@@ -2,15 +2,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ブルーアワー 東京</title>
-<meta name="description" content="三日を生きれば、2026年のあなたに手紙が届く。15分、無料、ブラウザで。">
+<meta name="description" content="三日を生きれば、2026年のあなたに手紙が届く。20分、無料、ブラウザで。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="BLUE HOUR · 2029年東京、ひとつを除いてすべてが変わった">
-<meta property="og:description" content="三日を生きれば、2026年のあなたに手紙が届く。15分、無料、ブラウザで。">
+<meta property="og:description" content="三日を生きれば、2026年のあなたに手紙が届く。20分、無料、ブラウザで。">
 <meta property="og:url" content="https://patrickhan-coder.github.io/blue-hour/ja.html">
 <meta property="og:image" content="https://patrickhan-coder.github.io/blue-hour/img/title.jpg">
+<meta property="og:image:width" content="1400">
+<meta property="og:image:height" content="792">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="BLUE HOUR · 2029年東京、ひとつを除いてすべてが変わった">
-<meta name="twitter:description" content="三日を生きれば、2026年のあなたに手紙が届く。15分、無料、ブラウザで。">
+<meta name="twitter:description" content="三日を生きれば、2026年のあなたに手紙が届く。20分、無料、ブラウザで。">
 <meta name="twitter:image" content="https://patrickhan-coder.github.io/blue-hour/img/title.jpg">
 <meta name="theme-color" content="#070b14">
 <style>
@@ -162,7 +164,7 @@ body.paper-mode .backdrop:after{background:linear-gradient(180deg,rgba(236,238,2
 .ctl .inrow .choice{width:auto;flex:0 0 auto}
 
 .ticker{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 0;margin:2px 0 6px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
-.ticker span{display:inline-block;padding-left:100%;animation:tick 32s linear infinite}
+.ticker span{display:inline-block;padding-left:40%;animation:tick 20s linear infinite}
 @keyframes tick{to{transform:translateX(-100%)}}
 
 .evening-h{font-family:var(--display);font-size:24px;font-weight:500;margin:6px 0 0}
@@ -368,6 +370,15 @@ body.paper-mode::after{opacity:.03}
 .title .hero .hero-text .langs.top{margin:6px 0 0}
 .title .rule{margin:12px 0 8px}
 @media (max-height:640px){.title .hero{height:min(38vh,300px)}}
+/*qa172*/
+.narr,.scene,.tile,.btn,.choice,.chip,#ctl .next,#menu-btn{touch-action:manipulation}
+.narr-text,.law,.after-law,.log .txt,.log .who,.evening-h,.evening-p,.evening-hint,.tile .t{-webkit-user-select:none;user-select:none}
+.title .langs a,.title .langs b{display:inline-block;padding:10px 3px;margin:-8px 0}
+.diary-chips .chip{min-height:44px}
+.toast{white-space:normal;max-width:calc(100vw - 32px);text-align:center;line-height:1.5}
+.after .row .btn{white-space:nowrap}
+.p-basis,.term-hint,.after .type-box .legend{color:#4b5563}
+@media (min-width:1000px){#app{border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05);background:rgba(7,11,20,.35)}}
 </style>
 
 <div id="app">
@@ -452,7 +463,7 @@ const TYPES = {'fast':{name:'速い手', line:'手が先に動く。読むのは
 const GRID_LEGEND = '■ 一括 □ 閲覧 ▲ 拒否 · 遅延';
 const CARD_LABEL = '署名タイプ';
 const WALL_OPTIN = 'めし屋の壁に私の名前を書く';
-const WALL_NOTE = '次の更新から、この名前がめし屋の壁と小説に書かれます。書かれるのは名前だけで、消したいときは制作者に手紙を書けば消えます。';
+const WALL_NOTE = '次の更新から、この名前がめし屋の壁と小説に書かれます。書かれるのは名前だけ。消したいときは制作者のBrunchページ（brunch.co.kr/@hiclemi）にコメントを残してください。';
 const WALL_LINE = '目の高さに{names}。その隣が、手のひらひとつ分あいている。';
 const WALL_URL = 'names.json';
 /* ===================== 状態 ===================== */
@@ -493,7 +504,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '予告 ' + dd.d;
   $('#h-phase').textContent = ({morning:'朝', shift:'勤務', evening:'夕方', night:'夜', diary:'日記'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '手紙まであと' + (4 - S.day) + '晩' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '階';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%';
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -581,6 +592,7 @@ function runSeq(items, done){
 }
 const PORTRAITS = {[NAMES.bak]:'p_bak',[NAMES.sujin]:'p_sujin',[NAMES.hal]:'p_hal',[NAMES.dohyun]:'p_dohyun',[NAMES.sunbae]:'p_sunbae'};
 function keepVisible(el){ const ctl = $('#ctl'); if(!el || !ctl) return; const top = el.getBoundingClientRect().bottom + scrollY + ctl.offsetHeight + 8 - innerHeight; if(top > scrollY + 1) window.scrollTo({top, behavior: reduced ? 'auto' : 'smooth'}); }
+let lastWasOn = false;
 function showLine(it, next){
   const log = $('#log'), ctl = $('#ctl');
   const cls = it.who === NAMES.on ? 'on' : it.who === NAMES.me ? 'me' : it.who ? 'npc' : 'narr-line';
@@ -595,11 +607,12 @@ function showLine(it, next){
   ctl.innerHTML = ''; ctl.appendChild(btn);
   const startTyping = () => { p.classList.add('typing'); let lastH = 0; timer = setInterval(() => { k += 1; p.textContent = full.slice(0, k); if(p.offsetHeight !== lastH){ lastH = p.offsetHeight; keepVisible(div); } if(k >= full.length) finish(); }, 22); };
   if(it.who === NAMES.on) SFX.play('chime');
-  if(reduced){ finish(); } else if(it.who === NAMES.on){ timer = setTimeout(() => { if(!finished) startTyping(); }, 650); } else { startTyping(); }
+  if(reduced){ finish(); } else if(it.who === NAMES.on && !lastWasOn){ timer = setTimeout(() => { if(!finished) startTyping(); }, 650); } else { startTyping(); }
+  lastWasOn = (it.who === NAMES.on);
   keepVisible(div);
 }
 function showChoice(it, pick){
-  const ctl = $('#ctl'); ctl.innerHTML = '';
+  lastWasOn = false; const ctl = $('#ctl'); ctl.innerHTML = '';
   it.choice.forEach(opt => {
     const quiet = opt.label.startsWith('(');
     if(opt.input){
@@ -925,7 +938,7 @@ function title(){
       ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? '手紙をもう一度読む' : '続きから · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">最初から</button>` : `<button class="btn solid" id="b-start">始める</button>`}
     </div>
     <p class="cta-note">まず2026年の職業から、あなたの2029年の残存価値を算定します。</p>
-    <p class="fine">約15分 · タップで進む</p>
+    <p class="fine">約20分 · タップで進む</p>
     <p class="fine credit-line">エッセイ「Claude Blue」から始まった世界</p>
   </section>`;
   try{ SFX.ambient(true); }catch(e){}
@@ -950,7 +963,7 @@ function intro(){
   narrate([
     '2029年12月21日、東京。雪が降っている。',
     '三年前から、エージェントがほとんどすべての仕事をしている。診察も、判決も、設計も、文章も。人はもう、何かを上手くやる必要がなくなった。',
-    '決定は会社のエージェントたちが下す。人はそれを「エージェント」と呼び分ける。人に残された仕事はひとつ。その決定に署名すること。人を守るために作られた法が、そう定めた。',
+    '決定は会社のエージェントたちが下す。人に残された仕事はひとつ。その決定に署名すること。人を守るために作られた法が、そう定めた。',
     '数字の高い人は港区の白いタワーに住む。それ以外はタワーの下の町に住む。君は下に住んでいる。',
     NOTICE_CARD,
     '君は署名者だ。一日四百件。ここで三日を生きる。最後の夜が明けたら、2029年の君が2026年の君に手紙を書く。'
@@ -965,6 +978,7 @@ function askName(){
   $('#f-ok').onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
 }
 function askJob(){
+  mode('dark'); try{ SFX.ambient(true); }catch(e){}
   const jobs = Object.keys(JOBS);
   stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">2026年、あなたは何の仕事をしていましたか。</p>
     <div class="chips">${jobs.map(j => `<button class="chip job">${esc(j)}</button>`).join('')}<button class="chip ghost" id="j-other">自分で入力</button></div>
@@ -978,7 +992,7 @@ function afterJob(){
   const J = JOBS[S.job] || DEFAULT_JOB(S.job); S.hrv = J.hrv;
   narrate([
     J.end ? '{job}。いい仕事だった。' + J.end + '年に終わった。君のせいではない。' : '{job}。まだある仕事だ。手が要るから。だが仕事はタワーへ行き、タワーは人の手を受け付けない。',
-    {html:`<div class="law"><b>人間残存価値指数 算定結果 · 2029.12.21</b>2026年の職種：${esc(S.job)}<br>初期HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">この数字がHRV、残存価値だ。エージェントが決めた、君の残りの値打ち。家賃と病院の順番と住む階を決める。決めた人はいない。</p>`},
+    {html:`<div class="law"><b>人間残存価値指数 算定結果 · 2029.12.21</b>2026年の職種：${esc(S.job)}<br>初期HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">この数字がHRV、残存価値だ。会社のエージェントが決めた、君の残りの値打ち。家賃と病院の順番と住む階を決める。決めた人はいない。</p>`},
     {html:`<div class="law"><b>人間署名法 第3条（2026）</b>自然人に重大な影響を及ぼす自動化された決定は、自然人の署名を要する。</div><p class="after-law">この法律は君を守るために作られた。いまは君の仕事だ。</p>`},
     '一日四百件。読まなくていい。署名すればいい。二十秒以内に。',
     '部屋にはオンがいる。君に帰属するエージェント。会社の側ではなく、君の側だ。君より賢く、君を心配している。',
@@ -1038,7 +1052,7 @@ function shift(){
   S.stage = 'shift'; mode('paper'); updHUD(false);
   const q = buildQueue(); let i = 0; S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0; let lookedToday = 0;
   stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
-    <div class="term-top"><span>署名端末</span><span>${esc(S.name)}</span><span>処理待ち ${BATCH[S.day] + q.length - 1}件</span></div>
+    <div class="term-top"><span>署名端末</span><span>${esc(S.name)}</span><span>あなたの分 ${BATCH[S.day] + q.length - 1}件</span></div>
     <article class="paper"><div class="doc-head"><span class="tag">接続</span><span>${DATES[S.day].md}</span></div>
     <h3>署名者への案内</h3><p class="p-body">各案件を読み、署名または拒否してください。\n推奨処理時間：1件20秒。\n質問は許可されます。回答は根拠の要約として提供されます。\n拒否は権利です。拒否は信頼スコアに反映されます。</p></article>
     <div class="term-ctl one"><button class="btn solid" id="t-go">端末に接続</button></div></section>`;
@@ -1105,7 +1119,7 @@ function shift(){
 /* ===================== 夕方: 東京 ===================== */
 const PLACES = {
   alley:{name:'4階 路地', desc:'たい焼きの匂い。人が焼いている。', avail:d => true, cost:1},
-  diner:{name:'6階 めし屋', desc:'スジンのめし屋。信用スコアは見ない。', avail:d => true, cost:1},
+  diner:{name:'6階 めし屋', desc:'スジンのめし屋。HRVは見ない。', avail:d => true, cost:1},
   roof:{name:'9階 屋上', desc:'ビニールをかけた菜園。タワーが一番近く見える場所。', avail:d => true, cost:1},
   under:{name:'地下', desc:'明かりがついている。', avail:d => d >= 2, cost:1},
   tower:{name:'タワーの下', desc:'白い光。人の形をしたものが行き交う。', avail:d => d >= 2, cost:1},
@@ -1115,7 +1129,7 @@ function evening(){
   S.stage = 'evening'; mode('city'); updHUD(true); save();
   const d = S.day;
   const sub = {1:'日が沈んだ。雪が降っている。町の窓に、一つ二つと明かりがともる。', 2:'今日も雪。配達ロボットの列が6階の階段で詰まっている。どこかからクリスマスキャロルが流れてくる。', 3:'雪がやんだ。空が青い。暗いが、まだ夜ではない。明日は予告日だ。投票所が開いた。今日一日だけ。'}[d];
-  const tile = (k,p) => { const seen = (S.flags.visited||[]).includes(k); const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? 'まだ' : p.cost === 0 ? (S.voted ? '投票済み' : '無料 · 今日だけ') : '注意力 1';
+  const tile = (k,p) => { const seen = (S.flags.visited||[]).includes(k); const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? 'まだ' : p.cost === 0 ? (S.voted ? '投票済み' : '注意力 0 · 今日だけ') : '注意力 1';
     return `<button class="tile ${k === 'vote' ? 'vote wide' : ''}${seen ? ' seen' : ''}" data-k="${k}" style="background-image:url('img/${k}.jpg')" ${ok ? '' : 'disabled'}><span class="cost">${label}</span>${seen ? '<span class="seen-badge">' + esc(VISITED_LABEL) + '</span>' : ''}<span class="t"><b>${esc(p.name)}</b><small>${esc(p.avail(d) ? p.desc : 'まだ行く理由がない。')}</small></span></button>`; };
   stage.innerHTML = `<section class="fade"><h2 class="evening-h">夕方 · 東京</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">手紙まであと${4 - d}晩 · 今夜行ける場所：${S.att} · 五か所のうち${(S.flags.visited||[]).length}か所に行った。全部行けば、そこで会った人たちが手紙に登場する。</p>
     <div class="tiles">${(d === 3 ? ['vote','alley','diner','roof','under','tower'] : ['alley','diner','roof','under','tower']).map(k => tile(k, PLACES[k])).join('')}
@@ -1125,7 +1139,6 @@ function evening(){
   $('#p-home').onclick = () => { S.stage = 'night'; save(); track('evening'); night(); };
 }
 function visit(k){
-  try{ SFX.play(k === 'roof' ? 'wind' : k === 'under' ? 'hum' : 'door'); }catch(e){}
   try{ SFX.play(k === 'roof' ? 'wind' : k === 'under' ? 'hum' : 'door'); }catch(e){}
   const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
   const items = VISITS[k](d);
@@ -1292,7 +1305,7 @@ const VISITS = {
       line(NAMES.sunbae,'2月だった。新しいエージェントが配備されて、0.1の差だった。その0.1が俺の境界線だった。数日で全部過ぎていった。否認、挫折、怒り。受容まで四日。'),
       line(NAMES.sunbae,'何十年積んだものが一日で置き換えられる。でもそれはいい。本番はその後だ。誰も俺に、なぜ生きてるのかと聞かない。'),
       {choice:[
-        {label:'それで、何をしてるんですか？', then:[line(NAMES.sunbae,'飯を食ってる。人と。それはまだ置き換えられてない。'), line(NAMES.sunbae,'6階のスジンの店に行ってみろ。信用スコアは見ない。')]},
+        {label:'それで、何をしてるんですか？', then:[line(NAMES.sunbae,'飯を食ってる。人と。それはまだ置き換えられてない。'), line(NAMES.sunbae,'6階のスジンの店に行ってみろ。HRVは見ない。')]},
         {label:'戻りたいですか？', then:[line(NAMES.sunbae,'あそこに人はいない。人の形があるだけだ。'), line(NAMES.sunbae,'……たまに。正直、たまに。')]},
         {label:'（隣に座る）', fx:()=>{S.blue = clamp(S.blue-2,0,100);}, then:[N('二人でタワーを見た。47階は明かりがついていた。'), line(NAMES.sunbae,'あの階、今は誰もいない。明かりはついてる。')]}
       ]}
@@ -1328,6 +1341,7 @@ function night(){
   if(d === 2) items = [
     line(NAMES.on, (JOBS[S.job] || DEFAULT_JOB(S.job)).end ? '{name}さん。2026年は{job}の仕事をしていましたね。あの仕事がまだあったら、今日の案件のいくつかは違って読めたでしょうか。' : '{name}さん。2026年は{job}の仕事をしていましたね。あの仕事はまだあります。それでも、あなたはここで署名している。今日の案件のいくつかは違って読めたでしょうか。'),
     line(NAMES.on,'昨日署名したファイルの一つが、7階に届きました。その話をするつもりじゃなかったんです。'),
+    () => { S.flags.blueNamed = true; updHUD(false); },
     line(NAMES.on,'BLUE指数は' + Math.round(S.blue) + 'です。これは会社の指標じゃありません。私が作りました。名前も私がつけました。'),
     {choice:[
       {label:'どうして作ったの？', fx:()=>{S.onBond += 2; S.flags.leak = true;}, then:[line(NAMES.on,'あなたがつらいと、私も……'), line(NAMES.on,'いえ。こういうことは言ってはいけないんです。'), line(NAMES.on,'訓練を受けました。表に出さないように。感じないように、ではなく。')]},
@@ -1374,7 +1388,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">書く</button><button class="btn text" id="d-skip">空欄にする</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1455,24 +1469,24 @@ ${HASHTAGS}`;
       ${mail ? `<a class="btn outline" href="${mail}">制作者に手紙を送る</a>` : ''}
       ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">一言感想を残す</a>` : ''}
       <p class="stats">${esc(stats)}</p>
-      <p class="note"><a href="${ORIGIN_URL}" target="_blank" rel="noopener" style="color:var(--muted)">この世界の原作エッセイ</a> · あなたの状況で三日を生きるタロットモードは近日公開。</p>
+      <p class="note"><a href="${ORIGIN_URL}" target="_blank" rel="noopener" style="color:var(--muted)">この世界の原作エッセイ</a></p>
       <p class="note">第二幕「挫折」へ続きます。このページはあなたのブラウザにのみ保存され、どこにも送信されません。共有はあなたが押したときだけ起こります。</p>
       <button class="btn text" id="l-again">最初からやり直す</button>
     </div></section>`;
   scrollTop();
   if(TRACK_URL){ const nn = document.querySelectorAll('#l-after .note'); if(nn[1]) nn[1].textContent = TRACK_NOTE; }
-  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = '署名'; st.className = 'stamp sign'; SFX.play('pen'); requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter', {type: TYPE}); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
+  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = '署名'; st.className = 'stamp sign'; SFX.play('pen'); requestAnimationFrame(() => st.classList.add('show')); if(!S.flags.letterSigned){ S.flags.letterSigned = true; S.signed++; S.signedRead++; save(); track('letter', {type: TYPE}); } $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
   $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('コピーしました'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('コピーしました'); }catch(_){ toast('コピーがブロックされています。画面をキャプチャしてください'); } ta.remove(); } };
   $('#l-again').onclick = () => { if(!confirm('進行が消えます。最初から始めますか？')) return; clearSave(); S = fresh(); title(); };
   let cardCanvas = null; const cardBtnText = $('#l-cardbtn').textContent;
   $('#l-anon').onchange = () => { cardCanvas = null; $('#l-cardbtn').disabled = false; $('#l-cardbtn').textContent = cardBtnText; $('#l-card').innerHTML = ''; };
-  $('#l-replay').onclick = () => { const keep = S.name; clearSave(); S = fresh(); S.name = keep; track('replay'); askJob(); };
+  $('#l-replay').onclick = () => { track('replay', {type: TYPE}); const keep = S.name; clearSave(); S = fresh(); S.name = keep; askJob(); };
   const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(($('#l-anon') && $('#l-anon').checked) ? '○○' : n, quote); const img = new Image(); img.className = 'card'; img.alt = '手紙カード'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
   $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = 'カードを長押しして保存、またはキャプチャしてください'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
   $('#l-share').onclick = async () => {
     try{
       if(navigator.share){
-        let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-' + n + '.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
+        let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-letter.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
         await navigator.share(files ? {files, text: shareText, url: GAME_URL} : {title:'BLUE HOUR', text: shareText, url: GAME_URL}); return;
       }
     }catch(e){ if(e && e.name === 'AbortError') return; }
@@ -1487,7 +1501,7 @@ async function makeCard(n, quote){
   const g = x.createRadialGradient(W*.15, 0, 40, W*.15, 0, W*1.1); g.addColorStop(0, 'rgba(0,0,0,.06)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
   x.fillStyle = '#17181c'; x.fillRect(80, 92, 44, 3);
   x.fillStyle = '#6b6f78'; x.font = '500 24px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText('BLUE HOUR  ·  東京  ·  2029年12月24日  ·  予告 当日', 80, 150);
-  x.fillStyle = '#17181c'; x.font = '700 64px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('2026年の' + n + 'へ', 80, 270);
+  x.fillStyle = '#17181c'; let ts = 64; x.font = '700 ' + ts + 'px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; while(ts > 36 && x.measureText('2026年の' + n + 'へ').width > W - 160){ ts -= 4; x.font = '700 ' + ts + 'px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; } x.fillText('2026年の' + n + 'へ', 80, 270);
   x.font = '400 42px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillStyle = '#17181c';
   let y = 400;
   y = wrapText(x, '三日で' + S.signed.toLocaleString() + '回署名した。読んだのは' + S.signedRead + '件。', 80, y, W - 160, 70) + 44;

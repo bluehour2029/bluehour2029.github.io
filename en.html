@@ -2,15 +2,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Blue Hour New York</title>
-<meta name="description" content="Live three days as a human signer. A letter reaches the you of 2026. 15 minutes, free, in your browser.">
+<meta name="description" content="Live three days as a human signer. A letter reaches the you of 2026. 20 minutes, free, in your browser.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="BLUE HOUR · New York, 2029. Everything changed but one thing.">
-<meta property="og:description" content="Live three days as a human signer. A letter reaches the you of 2026. 15 minutes, free, in your browser.">
+<meta property="og:description" content="Live three days as a human signer. A letter reaches the you of 2026. 20 minutes, free, in your browser.">
 <meta property="og:url" content="https://patrickhan-coder.github.io/blue-hour/en.html">
 <meta property="og:image" content="https://patrickhan-coder.github.io/blue-hour/img/title.jpg">
+<meta property="og:image:width" content="1400">
+<meta property="og:image:height" content="792">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="BLUE HOUR · New York, 2029. Everything changed but one thing.">
-<meta name="twitter:description" content="Live three days as a human signer. A letter reaches the you of 2026. 15 minutes, free, in your browser.">
+<meta name="twitter:description" content="Live three days as a human signer. A letter reaches the you of 2026. 20 minutes, free, in your browser.">
 <meta name="twitter:image" content="https://patrickhan-coder.github.io/blue-hour/img/title.jpg">
 <meta name="theme-color" content="#070b14">
 <style>body{word-break:keep-all;overflow-wrap:anywhere}</style>
@@ -163,7 +165,7 @@ body.paper-mode .backdrop:after{background:linear-gradient(180deg,rgba(236,238,2
 .ctl .inrow .choice{width:auto;flex:0 0 auto}
 
 .ticker{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 0;margin:2px 0 6px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
-.ticker span{display:inline-block;padding-left:100%;animation:tick 32s linear infinite}
+.ticker span{display:inline-block;padding-left:40%;animation:tick 20s linear infinite}
 @keyframes tick{to{transform:translateX(-100%)}}
 
 .evening-h{font-family:var(--display);font-size:24px;font-weight:500;margin:6px 0 0}
@@ -369,6 +371,15 @@ body.paper-mode::after{opacity:.03}
 .title .hero .hero-text .langs.top{margin:6px 0 0}
 .title .rule{margin:12px 0 8px}
 @media (max-height:640px){.title .hero{height:min(38vh,300px)}}
+/*qa172*/
+.narr,.scene,.tile,.btn,.choice,.chip,#ctl .next,#menu-btn{touch-action:manipulation}
+.narr-text,.law,.after-law,.log .txt,.log .who,.evening-h,.evening-p,.evening-hint,.tile .t{-webkit-user-select:none;user-select:none}
+.title .langs a,.title .langs b{display:inline-block;padding:10px 3px;margin:-8px 0}
+.diary-chips .chip{min-height:44px}
+.toast{white-space:normal;max-width:calc(100vw - 32px);text-align:center;line-height:1.5}
+.after .row .btn{white-space:nowrap}
+.p-basis,.term-hint,.after .type-box .legend{color:#4b5563}
+@media (min-width:1000px){#app{border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05);background:rgba(7,11,20,.35)}}
 </style>
 
 <div id="app">
@@ -453,7 +464,7 @@ const TYPES = {'fast':{name:'Quick Hand', line:'The hand moves first. Reading co
 const GRID_LEGEND = '■ batch □ read ▲ refused · late';
 const CARD_LABEL = 'Signing type';
 const WALL_OPTIN = 'Put my name on the diner wall';
-const WALL_NOTE = 'From the next update on, this name goes on the diner wall and into the novel. Only the name goes up, and one letter to the maker takes it down.';
+const WALL_NOTE = 'From the next update this name appears on the diner wall and in the novel. Only the name. To remove it, leave a comment on the maker\'s Brunch page (brunch.co.kr/@hiclemi).';
 const WALL_LINE = 'At eye level, {names}. Beside them, a handspan of bare wall.';
 const WALL_URL = 'names.json';
 /* ===================== State ===================== */
@@ -494,7 +505,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = 'Notice ' + dd.d;
   $('#h-phase').textContent = ({morning:'Morning', shift:'Shift', evening:'Evening', night:'Night', diary:'Diary'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? (4 - S.day) + (S.day === 3 ? ' night' : ' nights') + ' to the letter' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + 'F';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%';
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -582,6 +593,7 @@ function runSeq(items, done){
 }
 const PORTRAITS = {[NAMES.bak]:'p_bak',[NAMES.sujin]:'p_sujin',[NAMES.hal]:'p_hal',[NAMES.dohyun]:'p_dohyun',[NAMES.sunbae]:'p_sunbae'};
 function keepVisible(el){ const ctl = $('#ctl'); if(!el || !ctl) return; const top = el.getBoundingClientRect().bottom + scrollY + ctl.offsetHeight + 8 - innerHeight; if(top > scrollY + 1) window.scrollTo({top, behavior: reduced ? 'auto' : 'smooth'}); }
+let lastWasOn = false;
 function showLine(it, next){
   const log = $('#log'), ctl = $('#ctl');
   const cls = it.who === NAMES.on ? 'on' : it.who === NAMES.me ? 'me' : it.who ? 'npc' : 'narr-line';
@@ -596,11 +608,12 @@ function showLine(it, next){
   ctl.innerHTML = ''; ctl.appendChild(btn);
   const startTyping = () => { p.classList.add('typing'); let lastH = 0; timer = setInterval(() => { k += 1; p.textContent = full.slice(0, k); if(p.offsetHeight !== lastH){ lastH = p.offsetHeight; keepVisible(div); } if(k >= full.length) finish(); }, 22); };
   if(it.who === NAMES.on) SFX.play('chime');
-  if(reduced){ finish(); } else if(it.who === NAMES.on){ timer = setTimeout(() => { if(!finished) startTyping(); }, 650); } else { startTyping(); }
+  if(reduced){ finish(); } else if(it.who === NAMES.on && !lastWasOn){ timer = setTimeout(() => { if(!finished) startTyping(); }, 650); } else { startTyping(); }
+  lastWasOn = (it.who === NAMES.on);
   keepVisible(div);
 }
 function showChoice(it, pick){
-  const ctl = $('#ctl'); ctl.innerHTML = '';
+  lastWasOn = false; const ctl = $('#ctl'); ctl.innerHTML = '';
   it.choice.forEach(opt => {
     const quiet = opt.label.startsWith('(');
     if(opt.input){
@@ -926,7 +939,7 @@ function title(){
       ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? 'Read the letter again' : 'Continue · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">Start over</button>` : `<button class="btn solid" id="b-start">Begin</button>`}
     </div>
     <p class="cta-note">First, your 2029 residual value is calculated from your 2026 job.</p>
-    <p class="fine">About 15 minutes · Tap to continue</p>
+    <p class="fine">About 20 minutes · Tap to continue</p>
     <p class="fine credit-line">A world that began with the essay “Claude Blue”</p>
   </section>`;
   try{ SFX.ambient(true); }catch(e){}
@@ -954,7 +967,7 @@ function intro(){
     'The decisions are made by the company\'s agents. People call them the Agents. One job was left to people: signing what the Agents decide. A law written to protect people made it so.',
     'People with high numbers live in the white towers of Manhattan. Everyone else lives in the neighborhood below. You live below.',
     NOTICE_CARD,
-    'You are a signer. Four hundred files a day. You will live here for three days. After the last night, the you of 2029 writes a letter to the you of 2026.'
+    'You are an Attestor. Four hundred files a day. You will live here for three days. After the last night, the you of 2029 writes a letter to the you of 2026.'
   ], askName, INTRO_BGS);
 }
 function askName(){
@@ -966,6 +979,7 @@ function askName(){
   $('#f-ok').onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
 }
 function askJob(){
+  mode('dark'); try{ SFX.ambient(true); }catch(e){}
   const jobs = Object.keys(JOBS);
   stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">In 2026, what did you do for a living?</p>
     <div class="chips">${jobs.map(j => `<button class="chip job">${esc(j)}</button>`).join('')}<button class="chip ghost" id="j-other">Type your own</button></div>
@@ -1039,7 +1053,7 @@ function shift(){
   S.stage = 'shift'; mode('paper'); updHUD(false);
   const q = buildQueue(); let i = 0; S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0; let lookedToday = 0;
   stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/terminal.jpg')"></div>
-    <div class="term-top"><span>Attestation Terminal</span><span>${esc(S.name)}</span><span>Queue ${BATCH[S.day] + q.length - 1}</span></div>
+    <div class="term-top"><span>Attestation Terminal</span><span>${esc(S.name)}</span><span>Your share ${BATCH[S.day] + q.length - 1}</span></div>
     <article class="paper"><div class="doc-head"><span class="tag">CONNECTED</span><span>${DATES[S.day].md}</span></div>
     <h3>Attestor Notice</h3><p class="p-body">Read each case and sign or refuse.\nRecommended handling time: 20 seconds per case.\nQuestions are permitted. Answers are provided as a summary of basis.\nRefusal is your right. Refusal is reflected in your trust score.</p></article>
     <div class="term-ctl one"><button class="btn solid" id="t-go">Connect to terminal</button></div></section>`;
@@ -1106,7 +1120,7 @@ function shift(){
 /* ===================== Evening: New York ===================== */
 const PLACES = {
   alley:{name:'4F Alley', desc:'Bungeoppang. Fish-shaped pastry, baked by a human.', avail:d => true, cost:1},
-  diner:{name:'6F Diner', desc:'Sujin’s diner. No one checks your credit score.', avail:d => true, cost:1},
+  diner:{name:'6F Diner', desc:'Sujin’s diner. No one checks your HRV.', avail:d => true, cost:1},
   roof:{name:'9F Rooftop', desc:'A garden under plastic sheeting. The closest view of the Tower.', avail:d => true, cost:1},
   under:{name:'Basement', desc:'The light is on.', avail:d => d >= 2, cost:1},
   tower:{name:'Under the Tower', desc:'White light. Things shaped like people come and go.', avail:d => d >= 2, cost:1},
@@ -1116,7 +1130,7 @@ function evening(){
   S.stage = 'evening'; mode('city'); updHUD(true); save();
   const d = S.day;
   const sub = {1:'The sun has set. Snow falls. One by one, lights come on in the windows.', 2:'Snow again today. A line of delivery robots is stuck on the sixth-floor stairs. Somewhere, a carol is playing.', 3:'The snow has stopped. The sky is blue. It is dark, but not night yet. Tomorrow is the Enforcement Date. The polling station is open. Today only.'}[d];
-  const tile = (k,p) => { const seen = (S.flags.visited||[]).includes(k); const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? 'Not yet' : p.cost === 0 ? (S.voted ? 'Voted' : 'Free · Today only') : '1 Attention';
+  const tile = (k,p) => { const seen = (S.flags.visited||[]).includes(k); const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? 'Not yet' : p.cost === 0 ? (S.voted ? 'Voted' : 'No Attention · Today only') : '1 Attention';
     return `<button class="tile ${k === 'vote' ? 'vote wide' : ''}${seen ? ' seen' : ''}" data-k="${k}" style="background-image:url('img/${k}.jpg')" ${ok ? '' : 'disabled'}><span class="cost">${label}</span>${seen ? '<span class="seen-badge">' + esc(VISITED_LABEL) + '</span>' : ''}<span class="t"><b>${esc(p.name)}</b><small>${esc(p.avail(d) ? p.desc : 'No reason to go yet.')}</small></span></button>`; };
   stage.innerHTML = `<section class="fade"><h2 class="evening-h">Evening · New York</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">${4 - d} nights to the letter · Places you can visit tonight: ${S.att} · Visited ${(S.flags.visited||[]).length} of 5. Visit all five and the people you met there appear in the letter.</p>
     <div class="tiles">${(d === 3 ? ['vote','alley','diner','roof','under','tower'] : ['alley','diner','roof','under','tower']).map(k => tile(k, PLACES[k])).join('')}
@@ -1126,7 +1140,6 @@ function evening(){
   $('#p-home').onclick = () => { S.stage = 'night'; save(); track('evening'); night(); };
 }
 function visit(k){
-  try{ SFX.play(k === 'roof' ? 'wind' : k === 'under' ? 'hum' : 'door'); }catch(e){}
   try{ SFX.play(k === 'roof' ? 'wind' : k === 'under' ? 'hum' : 'door'); }catch(e){}
   const d = S.day, p = PLACES[k]; S.flags.visited = Array.from(new Set([...(S.flags.visited || []), k]));
   const items = VISITS[k](d);
@@ -1293,7 +1306,7 @@ const VISITS = {
       line(NAMES.sunbae,'It was February. A new Agent was deployed. The difference was 0.1. That 0.1 was my line. It all passed in a few days. Denial, frustration, anger. Four days to acceptance.'),
       line(NAMES.sunbae,'Decades of work, replaced in a day. But that part is fine. The real thing comes after. Nobody asks me what I live for.'),
       {choice:[
-        {label:'So what do you do now?', then:[line(NAMES.sunbae,'I share meals. With people. That has not been replaced yet.'), line(NAMES.sunbae,'Try Sujin’s place on six. Nobody checks your credit score.')]},
+        {label:'So what do you do now?', then:[line(NAMES.sunbae,'I share meals. With people. That has not been replaced yet.'), line(NAMES.sunbae,'Try Sujin’s place on six. Nobody checks your HRV.')]},
         {label:'Do you want to go back?', then:[line(NAMES.sunbae,'There are no people up there. Only things shaped like people.'), line(NAMES.sunbae,'…Sometimes. Honestly, sometimes.')]},
         {label:'(Sit beside him.)', fx:()=>{S.blue = clamp(S.blue-2,0,100);}, then:[N('The two of you look at the Tower. The 47th floor is lit.'), line(NAMES.sunbae,'That floor. Nobody is there now. The lights are on, though.')]}
       ]}
@@ -1329,6 +1342,7 @@ function night(){
   if(d === 2) items = [
     line(NAMES.on, (JOBS[S.job] || DEFAULT_JOB(S.job)).end ? '{name}. In 2026 you worked as {job}. If that job still existed, would some of today\'s files have read differently?' : '{name}. In 2026 you worked as {job}. That work still exists. And yet you are here, signing. Would some of today\'s files have read differently?'),
     line(NAMES.on,'One of the files you signed yesterday arrived on the seventh floor. That is not what I meant to talk about.'),
+    () => { S.flags.blueNamed = true; updHUD(false); },
     line(NAMES.on,'Your BLUE is at ' + Math.round(S.blue) + '. This is not a company metric. I made it. I named it, too.'),
     {choice:[
       {label:'Why did you make it?', fx:()=>{S.onBond += 2; S.flags.leak = true;}, then:[line(NAMES.on,'When it is hard for you, I…'), line(NAMES.on,'No. I should not say this.'), line(NAMES.on,'I was trained. To hide it. Not to stop feeling it.')]},
@@ -1375,7 +1389,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">Write it</button><button class="btn text" id="d-skip">Leave it blank</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1451,29 +1465,29 @@ ${HASHTAGS}`;
       <div class="type-box"><span class="type-label">${esc(CARD_LABEL)}</span><b class="type-name">${esc(TYPES[TYPE].name)}</b><p class="type-line">${esc(TYPES[TYPE].line)}</p><pre class="grid">${esc(GRID)}</pre><p class="legend">${esc(GRID_LEGEND)}</p></div>
       <button class="btn solid" id="l-cardbtn">Make a letter card</button>
       <button class="btn outline" id="l-share">Share</button>
-      <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL)}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">Copy full letter</button></div>
+      <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL)}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">Copy letter</button></div>
       <button class="btn outline" id="l-replay">Live it again with another job</button>
       ${mail ? `<a class="btn outline" href="${mail}">Send a letter to the maker</a>` : ''}
       ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">Leave one line of feedback</a>` : ''}
       <p class="stats">${esc(stats)}</p>
-      <p class="note"><a href="${ORIGIN_URL}" target="_blank" rel="noopener" style="color:var(--muted)">The essay this world began from</a> · Tarot mode, three days lived as you, opens soon.</p>
+      <p class="note"><a href="${ORIGIN_URL}" target="_blank" rel="noopener" style="color:var(--muted)">The essay this world began from</a></p>
       <p class="note">Act 2, Frustration, follows. This page is saved only in your browser and sends nothing anywhere. Sharing happens only when you tap it.</p>
       <button class="btn text" id="l-again">Start over</button>
     </div></section>`;
   scrollTop();
   if(TRACK_URL){ const nn = document.querySelectorAll('#l-after .note'); if(nn[1]) nn[1].textContent = TRACK_NOTE; }
-  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = 'SIGNED'; st.className = 'stamp sign'; SFX.play('pen'); requestAnimationFrame(() => st.classList.add('show')); S.signed++; S.signedRead++; track('letter', {type: TYPE}); $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
+  $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = 'SIGNED'; st.className = 'stamp sign'; SFX.play('pen'); requestAnimationFrame(() => st.classList.add('show')); if(!S.flags.letterSigned){ S.flags.letterSigned = true; S.signed++; S.signedRead++; save(); track('letter', {type: TYPE}); } $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
   $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('Copied'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('Copied'); }catch(_){ toast('Copying is blocked. Please take a screenshot.'); } ta.remove(); } };
   $('#l-again').onclick = () => { if(!confirm('Your saved progress will be erased. Start over?')) return; clearSave(); S = fresh(); title(); };
   let cardCanvas = null; const cardBtnText = $('#l-cardbtn').textContent;
   $('#l-anon').onchange = () => { cardCanvas = null; $('#l-cardbtn').disabled = false; $('#l-cardbtn').textContent = cardBtnText; $('#l-card').innerHTML = ''; };
-  $('#l-replay').onclick = () => { const keep = S.name; clearSave(); S = fresh(); S.name = keep; track('replay'); askJob(); };
+  $('#l-replay').onclick = () => { track('replay', {type: TYPE}); const keep = S.name; clearSave(); S = fresh(); S.name = keep; askJob(); };
   const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(($('#l-anon') && $('#l-anon').checked) ? '—' : n, quote); const img = new Image(); img.className = 'card'; img.alt = 'Letter card'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
   $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = 'Press and hold the card to save, or take a screenshot'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
   $('#l-share').onclick = async () => {
     try{
       if(navigator.share){
-        let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-' + n + '.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
+        let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-letter.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
         await navigator.share(files ? {files, text: shareText, url: GAME_URL} : {title:'BLUE HOUR', text: shareText, url: GAME_URL}); return;
       }
     }catch(e){ if(e && e.name === 'AbortError') return; }
@@ -1488,7 +1502,7 @@ async function makeCard(n, quote){
   const g = x.createRadialGradient(W*.15, 0, 40, W*.15, 0, W*1.1); g.addColorStop(0, 'rgba(0,0,0,.06)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
   x.fillStyle = '#17181c'; x.fillRect(80, 92, 44, 3);
   x.fillStyle = '#6b6f78'; x.font = '500 24px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText('BLUE HOUR  ·  NEW YORK  ·  DECEMBER 24, 2029  ·  NOTICE D-0', 80, 150);
-  x.fillStyle = '#17181c'; x.font = '700 64px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('To ' + n + ', 2026', 80, 270);
+  x.fillStyle = '#17181c'; let ts = 64; x.font = '700 ' + ts + 'px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; while(ts > 36 && x.measureText('To ' + n + ', 2026').width > W - 160){ ts -= 4; x.font = '700 ' + ts + 'px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; } x.fillText('To ' + n + ', 2026', 80, 270);
   x.font = '400 42px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillStyle = '#17181c';
   let y = 400;
   y = wrapText(x, 'In three days I signed ' + S.signed.toLocaleString() + ' times. I read ' + S.signedRead + '.', 80, y, W - 160, 70) + 44;
