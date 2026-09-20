@@ -6,14 +6,14 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="BLUE HOUR 2029 · 人权并未废除。只是已停止支持。">
 <meta property="og:description" content="2029年12月，上海。一天四百件的三天。结束时，一封信寄给2026年的你。20分钟，免费。">
-<meta property="og:url" content="https://patrickhan-coder.github.io/blue-hour-2029/zh.html">
-<meta property="og:image" content="https://patrickhan-coder.github.io/blue-hour-2029/img/title.jpg">
+<meta property="og:url" content="https://bluehour2029.github.io/zh.html">
+<meta property="og:image" content="https://bluehour2029.github.io/img/title.jpg">
 <meta property="og:image:width" content="1400">
 <meta property="og:image:height" content="792">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="BLUE HOUR 2029 · 人权并未废除。只是已停止支持。">
 <meta name="twitter:description" content="2029年12月，上海。一天四百件的三天。结束时，一封信寄给2026年的你。20分钟，免费。">
-<meta name="twitter:image" content="https://patrickhan-coder.github.io/blue-hour-2029/img/title.jpg">
+<meta name="twitter:image" content="https://bluehour2029.github.io/img/title.jpg">
 <meta name="theme-color" content="#070b14">
 <style>
 :root{
@@ -421,7 +421,7 @@ body.paper-mode::after{opacity:.03}
 /* ===================== 配置 ===================== */
 const FEEDBACK_MAILTO = '';   // 填入制作者邮箱后，会出现'给制作者写信'按钮。
 const FEEDBACK_FORM = '';     // 填入 Google 表单 URL 后，会出现'留下一句感想'按钮。
-const GAME_URL = 'https://patrickhan-coder.github.io/blue-hour-2029/';
+const GAME_URL = 'https://bluehour2029.github.io/';
 const HASHTAGS = '#致2026年的我 #蓝调时刻';
 const ORIGIN_URL = 'https://brunch.co.kr/@hiclemi/146';
 const NAMES = {on:'ON', me:'我', bak:'朴师傅', sujin:'秀真', hal:'郑奶奶', dohyun:'道贤', sunbae:'前辈'};
@@ -511,7 +511,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '预告 ' + dd.d;
   $('#h-phase').textContent = ({morning:'早晨', shift:'值班', evening:'傍晚', night:'夜', diary:'日记'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '离信还有' + (4 - S.day) + '夜' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '层';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -812,7 +812,7 @@ function drawGrid(ctx, x, y, cell, S){                               // same gri
 
    patch_v15.py 가 함께 하는 일. 이 블록은 그것을 전제한다. 아래 상수를 손으로 다시 넣으면 const 중복 선언으로 스크립트 전체가 죽는다.
    1) i18n/<lang>/config.txt 끝: const WALL_OPTIN, WALL_NOTE, WALL_LINE (언어별 문장, {names} 자리표시자), WALL_URL = 'names.json'.
-      값은 이 JSON 의 optinLabel, optinNote, wallLine. 같은 origin 의 정적 파일이라 GitHub Pages 에서는 https://patrickhan-coder.github.io/blue-hour-2029/names.json 이 된다.
+      값은 이 JSON 의 optinLabel, optinNote, wallLine. 같은 origin 의 정적 파일이라 GitHub Pages 에서는 https://bluehour2029.github.io/names.json 이 된다.
       아티팩트 사본과 file:// 에서는 fetch 가 실패하고 조용히 넘어간다. WALL_URL 이 '' 이면 끈다.
    2) i18n/<lang>/evening_b.txt: diner(d) 첫 방문 배열의 첫 줄
         N('테이블 여섯 개. 벽에 이름들이 적혀 있다. 카운터에 손바닥만 한 플라스틱 트리. 메뉴판은 없다.'),
@@ -1407,7 +1407,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">写下</button><button class="btn text" id="d-skip">留空</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }

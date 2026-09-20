@@ -6,14 +6,14 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="BLUE HOUR 2029 · 인권은 폐지되지 않았다. 지원 종료되었을 뿐이다.">
 <meta property="og:description" content="2029년 12월, 서울. 하루 400건에 서명하는 사흘. 끝나면 2026년의 당신에게 편지가 옵니다. 20분, 무료.">
-<meta property="og:url" content="https://patrickhan-coder.github.io/blue-hour-2029/">
-<meta property="og:image" content="https://patrickhan-coder.github.io/blue-hour-2029/img/title.jpg">
+<meta property="og:url" content="https://bluehour2029.github.io/">
+<meta property="og:image" content="https://bluehour2029.github.io/img/title.jpg">
 <meta property="og:image:width" content="1400">
 <meta property="og:image:height" content="792">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="BLUE HOUR 2029 · 인권은 폐지되지 않았다. 지원 종료되었을 뿐이다.">
 <meta name="twitter:description" content="2029년 12월, 서울. 하루 400건에 서명하는 사흘. 끝나면 2026년의 당신에게 편지가 옵니다. 20분, 무료.">
-<meta name="twitter:image" content="https://patrickhan-coder.github.io/blue-hour-2029/img/title.jpg">
+<meta name="twitter:image" content="https://bluehour2029.github.io/img/title.jpg">
 <meta name="theme-color" content="#070b14">
 <style>body{word-break:keep-all;overflow-wrap:anywhere}</style>
 <style>
@@ -422,7 +422,7 @@ body.paper-mode::after{opacity:.03}
 /* ===================== 설정 ===================== */
 const FEEDBACK_MAILTO = '';   // 제작자 이메일을 넣으면 '제작자에게 편지 보내기' 버튼이 생깁니다.
 const FEEDBACK_FORM = '';     // 구글 폼 URL을 넣으면 '소감 남기기' 버튼이 생깁니다.
-const GAME_URL = 'https://patrickhan-coder.github.io/blue-hour-2029/';
+const GAME_URL = 'https://bluehour2029.github.io/';
 const HASHTAGS = '#2026년의나에게 #블루아워';
 const ORIGIN_URL = 'https://brunch.co.kr/@hiclemi/146';
 const NAMES = {on:'온', me:'나', bak:'박씨', sujin:'수진', hal:'정 할머니', dohyun:'도현', sunbae:'선배'};
@@ -512,7 +512,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '예고일 ' + dd.d;
   $('#h-phase').textContent = ({morning:'아침', shift:'근무', evening:'저녁', night:'밤', diary:'일기'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '편지까지 ' + (4 - S.day) + '밤' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '층';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -813,7 +813,7 @@ function drawGrid(ctx, x, y, cell, S){                               // same gri
 
    patch_v15.py 가 함께 하는 일. 이 블록은 그것을 전제한다. 아래 상수를 손으로 다시 넣으면 const 중복 선언으로 스크립트 전체가 죽는다.
    1) i18n/<lang>/config.txt 끝: const WALL_OPTIN, WALL_NOTE, WALL_LINE (언어별 문장, {names} 자리표시자), WALL_URL = 'names.json'.
-      값은 이 JSON 의 optinLabel, optinNote, wallLine. 같은 origin 의 정적 파일이라 GitHub Pages 에서는 https://patrickhan-coder.github.io/blue-hour-2029/names.json 이 된다.
+      값은 이 JSON 의 optinLabel, optinNote, wallLine. 같은 origin 의 정적 파일이라 GitHub Pages 에서는 https://bluehour2029.github.io/names.json 이 된다.
       아티팩트 사본과 file:// 에서는 fetch 가 실패하고 조용히 넘어간다. WALL_URL 이 '' 이면 끈다.
    2) i18n/<lang>/evening_b.txt: diner(d) 첫 방문 배열의 첫 줄
         N('테이블 여섯 개. 벽에 이름들이 적혀 있다. 카운터에 손바닥만 한 플라스틱 트리. 메뉴판은 없다.'),
@@ -1408,7 +1408,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">적는다</button><button class="btn text" id="d-skip">비워둔다</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1433,6 +1433,8 @@ function actEnd(){
     '당신은 ' + S.signed.toLocaleString() + '번 서명했다. 그중 읽은 것은 ' + S.signedRead + '건이다.',
     S.refused ? S.refused + '번 거부했다. 시스템은 멈추지 않았다.' : '한 번도 거부하지 않았다. 시스템은 어차피 멈추지 않는다.',
     bonds ? bonds + '명과 밥을 먹었다. 벽에 이름이 적혔다.' : '아무와도 밥을 먹지 않았다. 벽에 이름이 적히지 않았다.',
+    '계단 화분에 싹이 하나 나 있었다. 겨울인데. 누가 물을 주는 모양이다.',
+    '계단 화분에 싹이 하나 나 있었다. 겨울인데. 누가 물을 주는 모양이다.',
     '계단 화분에 싹이 하나 나 있었다. 겨울인데. 누가 물을 주는 모양이다.',
     '계단 화분에 싹이 하나 나 있었다. 겨울인데. 누가 물을 주는 모양이다.',
     '계단 화분에 싹이 하나 나 있었다. 겨울인데. 누가 물을 주는 모양이다.',
