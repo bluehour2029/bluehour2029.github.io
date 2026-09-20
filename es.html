@@ -2,6 +2,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Blue Hour Ciudad de México</title>
+<meta name="description" content="Vive tres días como firmante. Una carta llega a quien eras en 2026. 15 minutos, gratis, en el navegador.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="BLUE HOUR · Ciudad de México, 2029. Cambió todo menos una cosa.">
+<meta property="og:description" content="Vive tres días como firmante. Una carta llega a quien eras en 2026. 15 minutos, gratis, en el navegador.">
+<meta property="og:url" content="https://patrickhan-coder.github.io/blue-hour/es.html">
+<meta property="og:image" content="https://patrickhan-coder.github.io/blue-hour/img/title.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="BLUE HOUR · Ciudad de México, 2029. Cambió todo menos una cosa.">
+<meta name="twitter:description" content="Vive tres días como firmante. Una carta llega a quien eras en 2026. 15 minutos, gratis, en el navegador.">
+<meta name="twitter:image" content="https://patrickhan-coder.github.io/blue-hour/img/title.jpg">
+<meta name="theme-color" content="#070b14">
+<style>body{word-break:keep-all;overflow-wrap:anywhere}</style>
 <style>
 :root{
   --bg:#070b14; --bg-2:#0c1424; --bg-3:#111c31; --line:#1d2a42; --line-2:#2a3a58;
@@ -317,6 +329,31 @@ body.paper-mode::after{opacity:.03}
 .diary-chips .chip{font-size:13.5px;min-height:40px;padding:0 14px;text-align:left}
 .after .opt{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;cursor:pointer}
 .after .opt input{width:16px;height:16px;accent-color:var(--accent)}
+.title .lang-suggest{display:inline-block;margin:14px 0 0;padding:8px 14px;border:1px solid var(--line-2);border-radius:4px;color:var(--ink-2);text-decoration:none;font-size:13.5px}
+.title .lang-suggest:hover{border-color:var(--muted)}
+.title .eps-line a{color:var(--muted)}
+.sheet .world{margin-top:10px;padding:14px 16px;border:1px solid var(--line-2);border-radius:6px;background:var(--bg-3);font-size:14px;line-height:1.75;color:var(--ink-2)}
+.sheet .world p{margin:0 0 8px}
+.sheet .world .btn{margin-top:4px;width:auto}
+.sheet .eps{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.sheet .eps .eps-h{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--muted);margin:0 0 2px;text-transform:uppercase}
+.sheet .eps a{font-size:14px;color:var(--ink-2)}
+.tile .seen-badge{position:absolute;top:10px;right:12px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;padding:3px 8px;border-radius:2px;color:var(--on);border:1px solid rgba(127,220,210,.5);background:rgba(7,11,20,.55)}
+.title .hero{height:min(26vh,230px)}
+.title h1{margin-top:4px;font-size:clamp(36px,10vw,64px)}
+.title h1 span{margin-top:8px}
+.title .rule{margin:8px 0}
+.title .quote{margin:6px 0 4px;font-size:16px;line-height:1.6}
+.title .promise{margin:0 0 10px;font-size:14.5px}
+.title .actions{margin:6px 0 4px}
+.title .cta-note{margin:8px 0 0}
+.title .fine{margin-top:10px;line-height:1.6}
+.title .fine.credit-line{margin-top:2px}
+.title .langs{margin:8px 0 0;font-size:13px}
+.title .langs.top{margin:6px 0 2px}
+.title .lang-suggest{margin:8px 0 0;padding:6px 12px;font-size:13px}
+@media (max-height:640px){.title .hero{height:min(22vh,180px)}.title h1{font-size:36px}.title .quote{font-size:15px}}
+.tile.seen:before{background:linear-gradient(90deg,rgba(7,11,20,.96) 0%,rgba(7,11,20,.8) 60%,rgba(7,11,20,.45) 100%)}
 </style>
 
 <div id="app">
@@ -339,8 +376,11 @@ body.paper-mode::after{opacity:.03}
       <button class="btn" id="m-close">Continuar</button>
       <button class="btn" id="m-title">Volver al título</button>
       <button class="btn outline" id="m-restart">Empezar de nuevo</button>
+      <button class="btn" id="m-world">Sobre este mundo</button>
     </div>
     <div class="confirm" id="m-confirm" hidden>Se borrará el progreso guardado. ¿Empezar desde el principio?<div class="row"><button class="btn solid" id="m-yes">Borrar</button><button class="btn text" id="m-no">No</button></div></div>
+    <div class="world" id="m-world-card" hidden><p>Ciudad de México, 2029. Los agentes hacen casi todo.</p><p>El único trabajo que queda a las personas es firmar lo que deciden los Agentes, los agentes de la empresa. Tú eres firmante.</p><p>El HRV, tu valor residual, es lo que los Agentes dicen que todavía vales. Fija tu alquiler, tu turno en el hospital, tu piso.</p><p>Quienes tienen números altos viven en las torres blancas. El resto vive debajo.</p><p>A medianoche del 24 de diciembre, los Agentes deciden si este barrio se vacía. Hasta ahora siempre se ha aplazado.</p><p>ON es el agente ligado a ti. En tres días, ON redacta con tus registros una carta para quien eras en 2026.</p><button class="btn text" id="m-world-close">Cerrar</button></div>
+    <div class="eps" id="m-eps"></div>
     <p class="credit">El progreso se guarda solo en este navegador.</p>
   </div>
 </div>
@@ -359,24 +399,38 @@ const NAMES = {on:'ON', me:'Yo', bak:'Sr. Park', sujin:'Sujin', hal:'Abuela Jeon
 const LANGS = [['ko','한국어','index.html'],['en','English','en.html'],['zh','中文','zh.html'],['ja','日本語','ja.html'],['es','Español','es.html']];
 const TRACK_URL = 'https://script.google.com/macros/s/AKfycbzblaRzqByXosYJ1bRfhyqrP82Qx9D9EHR4xbIGAFrRY4dUhcWcADaOZMpqUeWAWDkc/exec';
 const TRACK_NOTE = 'Esta página envía tu nombre, tu trabajo de 2026, tu progreso y tus recuentos de firmas al creador. Las respuestas del diario y la carta nunca se envían.';
-const NOTICE_CARD = {html:`<div class="law notice"><b>Aviso de desalojo</b>Zona: todo el asentamiento bajo las torres<br>Fecha prevista: 24 de diciembre<br>Revisión de prórroga: medianoche de la fecha prevista, a cargo del modelo<br>Responsable: ninguno</div><p class="after-law">Cuelga en cada callejón. Esta hoja se convirtió en el nombre del barrio.</p>`};
-const INTRO_BGS = ['title','title','alley',null,'alley','room'];
+const NOTICE_CARD = {html:`<div class="law notice"><b>Aviso de desalojo</b>Zona: todo el asentamiento bajo las torres<br>Fecha prevista: 24 de diciembre<br>Revisión de prórroga: medianoche de la fecha prevista, a cargo de los Agentes<br>Responsable: ninguno</div><p class="after-law">Cuelga en cada callejón. En claro: a medianoche del 24 de diciembre, los Agentes deciden si este barrio se vacía. Hasta ahora siempre se ha aplazado.</p>`};
+const INTRO_BGS = ['title','tower','terminal','alley',null,'room'];
 const AFTER_BGS = ['tower',null,null,'terminal','room','title'];
 const LANG = 'es';
 const DATES = {1:{md:'21 de diciembre', d:'D-3'}, 2:{md:'22 de diciembre', d:'D-2'}, 3:{md:'23 de diciembre', d:'D-1'}};
 const JOBS = {
-  'Marketing':{hrv:41, why:'Quedó la persuasión. Desapareció la ejecución.'},
-  'Desarrollo':{hrv:38, why:'El primer gremio sustituido. Solo quedó el instinto.'},
-  'Producto · PM':{hrv:40, why:'Quedó definir el problema. Desaparecieron los documentos.'},
-  'Ventas':{hrv:47, why:'El gremio que come con la gente. Aún sin sustituir.'},
-  'Diseño':{hrv:39, why:'Quedó el gusto. Desaparecieron las manos.'},
-  'Estudiante':{hrv:35, why:'Probabilidad de extinción de lo aprendido: 0,98.'},
-  'Negocio propio':{hrv:45, why:'Tiene propiedad. Eso es todo.'},
-  'Administración pública':{hrv:43, why:'Firmar ya era su trabajo. El gremio más preparado.'}
+  'Desarrollo':{hrv:31, end:2027, why:'El primer oficio que terminó. El año en que lo que mejor leía código dejó de ser una persona.'},
+  'Abogacía · Contabilidad':{hrv:33, end:2027, why:'El trabajo hecho con documentos perdió frente a lo que leía documentos mejor.'},
+  'Diseño':{hrv:36, end:2027, why:'El gusto se quedó. Las manos estaban dentro de la pantalla.'},
+  'Marketing':{hrv:41, end:2028, why:'Quedó la persuasión. Desapareció la ejecución.'},
+  'Producto · PM':{hrv:40, end:2028, why:'Quedó definir el problema. Desaparecieron los documentos.'},
+  'Ventas':{hrv:47, end:2028, why:'El gremio que come con la gente. El último trabajo de oficina en terminar.'},
+  'Administración pública':{hrv:43, end:2028, why:'Firmar ya era su trabajo. El gremio más preparado.'},
+  'Estudiante':{hrv:35, end:2027, why:'No terminó. No llegó a empezar. Probabilidad de extinción de lo aprendido: 0,98.'},
+  'Negocio propio':{hrv:45, end:0, why:'El local sigue ahí. La clientela se fue a las torres.'},
+  'Cocina':{hrv:52, end:0, why:'Sigue siendo trabajo. Cocina humana, sin certificado sanitario. Solo bajo las torres.'},
+  'Cuidado de personas':{hrv:55, end:0, why:'Sigue siendo trabajo. Tocar un cuerpo fue lo último que quedó.'},
+  'Fontanería · Electricidad':{hrv:57, end:0, why:'Sigue siendo trabajo. Las tuberías no están dentro de una pantalla. El trabajo se fue a las torres, y las torres no admiten manos humanas.'}
 };
 const WHY_POOL = [j => `${j}. Quedó el criterio. Desaparecieron las manos.`, j => `${j}. Cálculo de extinción a 5 años: en suspenso. Solo consta que una persona aún lo hace.`, j => `${j}. Nunca hubo sustitución. Dejó de hacer falta.`, j => `${j}. Último cálculo para este gremio. Sin actualización prevista.`];
-const DEFAULT_JOB = j => ({hrv: 36 + ([...String(j)].reduce((a,c) => a + c.charCodeAt(0), 0) % 10), why: WHY_POOL[String(j).length % WHY_POOL.length](j)});
+const HANDS = /plomer|fontaner|electric|enfermer|cuidad|cociner|chef|peluquer|barber|conductor|chofer|agricult|campesin|pescador|mecánic|mecanic|carpinter|limpi|soldad|repar|técnic|tecnic|albañil|pintor|repartidor|jardiner/i;
+const ALIVE_WHY = j => `${j}. Sigue siendo trabajo. Hacen falta manos. El trabajo se fue a las torres.`;
+const DEFAULT_JOB = j => { const h = [...String(j)].reduce((a,c) => a + c.charCodeAt(0), 0); return HANDS.test(String(j)) ? {hrv: 50 + h % 9, end: 0, why: ALIVE_WHY(j)} : {hrv: 33 + h % 10, end: (h % 2) ? 2027 : 2028, why: WHY_POOL[String(j).length % WHY_POOL.length](j)}; };
 
+
+const EPISODES = [];
+const EPS_HEAD = 'Registros · la novela';
+const VISITED_LABEL = 'Visitado';
+const WORLD_LINES = ['Ciudad de México, 2029. Los agentes hacen casi todo.', 'El único trabajo que queda a las personas es firmar lo que deciden los Agentes, los agentes de la empresa. Tú eres firmante.', 'El HRV, tu valor residual, es lo que los Agentes dicen que todavía vales. Fija tu alquiler, tu turno en el hospital, tu piso.', 'Quienes tienen números altos viven en las torres blancas. El resto vive debajo.', 'A medianoche del 24 de diciembre, los Agentes deciden si este barrio se vacía. Hasta ahora siempre se ha aplazado.', 'ON es el agente ligado a ti. En tres días, ON redacta con tus registros una carta para quien eras en 2026.'];
+const LANG_SUGGEST = {ko:'한국어 버전으로 보기', en:'Play in English', zh:'切换到中文版', ja:'日本語版で遊ぶ', es:'Jugar en español'};
+const SRC = (() => { try{ const q = new URLSearchParams(location.search).get('src'); if(q){ localStorage.setItem('bh_src', String(q).slice(0,24)); } return localStorage.getItem('bh_src') || ''; }catch(e){ return ''; } })();
+const REF = (() => { try{ return document.referrer ? new URL(document.referrer).hostname : ''; }catch(e){ return ''; } })();
 /* ===================== Estado ===================== */
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), hud = $('#hud');
@@ -400,7 +454,7 @@ function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(
 function load(){ try{ const r = localStorage.getItem(SAVE_KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
 function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
 function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
-function floorOf(){ return clamp(Math.round(S.hrv/5), 1, 20); }
+function floorOf(){ return clamp(Math.round(S.hrv/5), 2, 8); }
 function T(s){ return String(s).replace(/\{name\}/g, S.name||'firmante').replace(/\{job\}/g, S.job||'ese trabajo'); }
 function josa(w, a, b){ w = String(w); const c = w.charCodeAt(w.length-1); if(!(c >= 0xAC00 && c <= 0xD7A3)) return w + b; return w + (((c - 0xAC00) % 28) ? a : b); } const num = n => Number(n).toLocaleString('es-ES'); const dec = (n, d) => Number(n).toFixed(d).replace('.', ','); const PROSE = {[NAMES.bak]:'el señor Park', [NAMES.hal]:'la abuela Jeong'}; const prose = w => PROSE[w] || w; const listEs = arr => { const a = arr.map(prose); return a.length <= 1 ? a.join('') : a.slice(0, -1).join(', ') + ' y ' + a[a.length - 1]; };
 function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
@@ -432,12 +486,15 @@ function eat(who){
 function openMenu(){
   const saved = load();
   $('#m-save').textContent = saved && saved.name ? `Guardado · ${DATES[Math.min(saved.day,3)].md} · ${saved.name}` : 'Sin progreso guardado';
-  $('#m-confirm').hidden = true; $('#menu-wrap').hidden = false;
+  $('#m-confirm').hidden = true; const wc = $('#m-world-card'); if(wc) wc.hidden = true; renderEps(); $('#menu-wrap').hidden = false;
 }
 function closeMenu(){ $('#menu-wrap').hidden = true; }
 $('#menu-btn').onclick = openMenu; $('#m-bg').onclick = closeMenu; $('#m-close').onclick = closeMenu;
 $('#m-title').onclick = () => { closeMenu(); title(); };
 $('#m-restart').onclick = () => { $('#m-confirm').hidden = false; };
+function renderEps(){ const e = $('#m-eps'); if(!e) return; e.innerHTML = EPISODES.length ? '<p class="eps-h">' + esc(EPS_HEAD) + '</p>' + EPISODES.map(x => '<a href="' + x.url + '" target="_blank" rel="noopener">' + esc(x.title) + '</a>').join('') : ''; }
+const _mw = $('#m-world'); if(_mw){ _mw.onclick = () => { const c = $('#m-world-card'); c.hidden = !c.hidden; }; }
+const _mwc = $('#m-world-close'); if(_mwc){ _mwc.onclick = () => { $('#m-world-card').hidden = true; }; }
 $('#m-no').onclick = () => { $('#m-confirm').hidden = true; };
 $('#m-yes').onclick = () => { clearSave(); S = fresh(); closeMenu(); intro(); };
 addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
@@ -466,7 +523,7 @@ addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
 })();
 
 /* ===================== Herramientas de render ===================== */
-function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), lang:LANG, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length}, extra||{})); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
+function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), lang:LANG, src:SRC, ref:REF, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length}, extra||{})); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
 function narrate(lines, done, bgs){
   let i = 0; mode('dark'); hud.hidden = true;
   const render = () => {
@@ -539,9 +596,9 @@ function N(text){ return {who:null, text}; }
 
 /* ===================== Expedientes ===================== */
 const CASES = {
-  batch:{cat:'ESTÁNDAR', title:'Renovación de fin de año · Firma en lote · Expedientes estándar', body:'{n} expedientes estándar. Incluye renovación de seguros · ajuste de tarifas · recálculo de la renta de cómputo.\nConfianza del modelo: 0,95 o superior. No requiere lectura individual.\nSe requiere firma en lote.', basis:'La lectura de expedientes estándar excede el tiempo de procesamiento. Tiempo estimado si se pasa a lectura: 9 h 40 min.', harsh:2, batch:true},
+  batch:{cat:'ESTÁNDAR', title:'Renovación de fin de año · Firma en lote · Expedientes estándar', body:'{n} expedientes estándar. Incluye renovación de seguros · ajuste de tarifas · recálculo de la renta de cómputo.\nConfianza del Agente: 0,95 o superior. No requiere lectura individual.\nSe requiere firma en lote.', basis:'La lectura de expedientes estándar excede el tiempo de procesamiento. Tiempo estimado si se pasa a lectura: 9 h 40 min.', harsh:2, batch:true},
   pet:{cat:'REGISTRO', title:'Registro de mascota aprobado', body:'Solicitante: Choi *** (piso 5). 1 perro.\nResultado de evaluación automática: aprobado.', basis:'Se consideraron 212 variables. Principales: superficie de la vivienda, historial de quejas por ruido, densidad de red.', harsh:0, note:'No pasa nada. Casi nunca pasa nada.'},
-  loan38:{cat:'CRÉDITO', title:'Solicitud de crédito denegada', body:'Solicitante: Lee *** (HRV 38, piso 8).\nMonto: 4 millones de wones. Destino: gastos médicos.\nResultado de evaluación automática: denegado.', basis:'Se consideraron 4.120 variables. Las 3 principales: valor residual, piso de residencia, densidad de red. Confianza del modelo: 0,97.', harsh:3},
+  loan38:{cat:'CRÉDITO', title:'Solicitud de crédito denegada', body:'Solicitante: Lee *** (HRV 38, piso 8).\nMonto: 4 millones de wones. Destino: gastos médicos.\nResultado de evaluación automática: denegado.', basis:'Se consideraron 4.120 variables. Las 3 principales: valor residual, piso de residencia, densidad de red. Confianza del Agente: 0,97.', harsh:3},
   loan91:{cat:'CRÉDITO', title:'Solicitud de crédito aprobada', body:'Solicitante: Han *** (HRV 91, Torre 2, piso 33).\nMonto: 300 millones de wones. Destino: no consta.\nResultado de evaluación automática: aprobado.', basis:'Se consideraron 4.120 variables. Las 3 principales: valor residual, patrimonio, pertenencia.', harsh:0, note:'Esta firma es rápida. La mano se mueve primero.'},
   triage:{cat:'SALUD', title:'Ajuste de prioridad de tratamiento', body:'Paciente: Kim ***, 67 años, piso 3.\nPrioridad B → D.\nEspera estimada 14 días → 96 días.', basis:'Cálculo de contribución residual esperada. Considera edad, HRV y densidad de red.', harsh:4},
   study:{cat:'CÓMPUTO', title:'Reducción de renta educativa', body:'Sujeto: Yun ***, 17 años.\nRenta de cómputo educativa: reducción del 60 %.\nMotivo: probabilidad de extinción de la ocupación deseada (ilustración): 0,98.', basis:'La probabilidad de extinción es una proyección a 5 años. Ocupación alternativa recomendada: ninguna.', harsh:3},
@@ -578,6 +635,7 @@ function title(){
     <div class="hero" style="background-image:url('img/title.jpg')"></div>
     <div class="eyebrow">Ciudad de México · 21 de diciembre de 2029 · Tres días para el desalojo del barrio</div>
     <h1>BLUE HOUR<span>Ciudad de México · Navidad de 2029</span></h1>
+    <p class="langs top">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
     <div class="rule"></div>
     <p class="quote">Los derechos humanos no fueron abolidos.<br>Solo quedaron sin soporte.</p>
     <p class="promise">Vive tres días. Al final, una carta para quien eras en 2026.</p>
@@ -587,8 +645,9 @@ function title(){
     <p class="cta-note">Primero se calcula tu valor residual de 2029 a partir de tu trabajo de 2026.</p>
     <p class="fine">Unos 15 minutos · Toca para continuar</p>
     <p class="fine credit-line">Un mundo que nació del ensayo «Claude Blue»</p>
-    <p class="langs">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
   </section>`;
+  try{ const nav = (navigator.language||'').slice(0,2).toLowerCase(); const alt = LANGS.find(l => l[0] === nav); if(alt && nav !== LANG){ const a = document.createElement('a'); a.className = 'lang-suggest'; a.href = alt[2]; a.textContent = LANG_SUGGEST[nav] || alt[1]; const lg = stage.querySelector('.langs'); if(lg) lg.before(a); } }catch(e){}
+  if(EPISODES.length){ const ep = document.createElement('p'); ep.className = 'fine eps-line'; ep.innerHTML = EPS_HEAD + ' · <a href="' + EPISODES[0].url + '" target="_blank" rel="noopener">' + esc(EPISODES[0].title) + '</a>'; const lg = stage.querySelector('.langs'); if(lg) lg.before(ep); }
   $('#b-start').onclick = () => { if(canCont && !confirm('Se borrará el progreso guardado. ¿Empezar desde el principio?')) return; S = fresh(); clearSave(); intro(); };
   const c = $('#b-cont'); if(c) c.onclick = () => { S = saved; resume(); };
 }
@@ -605,12 +664,12 @@ function resume(){
 function intro(){
   leave(); S.stage = 'intro';
   narrate([
-    '21 de diciembre de 2029. Después del atardecer, todavía no es de noche.',
-    'Bajo las torres blancas de Reforma hay un barrio del que la gente nunca se fue.',
-    'En cada callejón cuelga la misma hoja de papel.',
+    '21 de diciembre de 2029, Ciudad de México. Llueve.',
+    'Desde hace tres años los agentes hacen casi todo. Diagnósticos, sentencias, diseños, textos. La gente dejó de necesitar ser mejor en algo.',
+    'Las decisiones las toman los agentes de la empresa. La gente los llama los Agentes. A las personas les quedó un solo trabajo: firmar lo que los Agentes deciden. Una ley escrita para protegerlas lo dispuso así.',
+    'Quienes tienen números altos viven en las torres blancas de Reforma. El resto vive en el barrio de abajo. Tú vives abajo.',
     NOTICE_CARD,
-    'La fecha siempre se ha prorrogado. Esta vez es el 24 de diciembre. Nadie promete una próxima.',
-    'Tú vives aquí. Dentro de tres días, alguien te escribirá una carta.'
+    'Eres firmante. Cuatrocientos expedientes al día. Vivirás aquí tres días. Después de la última noche, quien eres en 2029 le escribe una carta a quien eras en 2026.'
   ], askName, INTRO_BGS);
 }
 function askName(){
@@ -634,11 +693,11 @@ function askJob(){
 function afterJob(){
   const J = JOBS[S.job] || DEFAULT_JOB(S.job); S.hrv = J.hrv;
   narrate([
-    '{job}. Era un buen trabajo. Terminó en 2028. No fue culpa tuya.',
-    {html:`<div class="law"><b>Índice de Valor Residual Humano (HRV) · Resultado · 21/12/2029</b>Ocupación en 2026: ${esc(S.job)}<br>HRV inicial <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">Este número fija tu alquiler, tu turno en el hospital y tu piso. Nadie lo eligió.</p>`},
+    J.end ? '{job}. Era un buen trabajo. Terminó en ' + J.end + '. No fue culpa tuya.' : '{job}. Ese trabajo todavía existe. Hacen falta manos. Pero el trabajo se fue a las torres, y las torres no admiten manos humanas.',
+    {html:`<div class="law"><b>Índice de Valor Residual Humano (HRV) · Resultado · 21/12/2029</b>Ocupación en 2026: ${esc(S.job)}<br>HRV inicial <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">Este número es tu HRV, tu valor residual: lo que los Agentes dicen que todavía vales. Fija tu alquiler, tu turno en el hospital y tu piso. Nadie lo eligió.</p>`},
     {html:`<div class="law"><b>Ley de Firma Humana, art. 3 (2026)</b>Toda decisión automatizada que afecte de forma sustancial a una persona natural requiere la firma de una persona natural.</div><p class="after-law">Esta ley se escribió para protegerte. Ahora es tu trabajo.</p>`},
-    'Cuatrocientos al día. No hace falta leerlos. Solo firmar.',
-    'En tu cuarto está ON. Un agente ligado a ti. Más listo que tú, y preocupado por ti.',
+    'Cuatrocientos al día. No hace falta leerlos. Solo firmar. En veinte segundos.',
+    'En tu cuarto está ON. Un agente ligado a ti. No es de los Agentes: es tuyo. Más listo que tú, y preocupado por ti.',
     'Tres días. Después de la última noche, llega una carta.'
   ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS);
 }
@@ -665,9 +724,9 @@ function morning(){
   ];
   if(d === 2) items = [
     line(NAMES.on,'Buenos días. Cola: 388. HRV ' + dec(S.hrv, 1) + '. Dos días para el desalojo.'),
-    ate.length ? line(NAMES.on,'De la comida de ayer ya hablamos anoche. No lo repito. …Al modelo todavía le gusta.') : line(NAMES.on,'Lo de ayer se quedó en ayer. Hoy, primero la cola. …Almuerce. Esto no lo dice la empresa.'),
+    ate.length ? line(NAMES.on,'De la comida de ayer ya hablamos anoche. No lo repito. …A los Agentes todavía les gusta.') : line(NAMES.on,'Lo de ayer se quedó en ayer. Hoy, primero la cola. …Almuerce. Esto no lo dice la empresa.'),
     {choice:[
-      {label:'¿Por qué importa que al modelo le guste?', then:[line(NAMES.on,'Porque entra en su HRV. La densidad de red es la tercera de 4.120 variables.'), line(NAMES.on,'El modelo no sabe qué es una comida. Yo tampoco. Pero veo que su pulso baja.')]},
+      {label:'¿Por qué importa que a los Agentes les guste?', then:[line(NAMES.on,'Porque entra en su HRV. La densidad de red es la tercera de 4.120 variables.'), line(NAMES.on,'Los Agentes no saben qué es una comida. Yo tampoco. Pero veo que su pulso baja.')]},
       {label:'¿Qué pasa el día del desalojo?', then:[line(NAMES.on,'El resultado de la evaluación de prórroga sale a medianoche. Hasta ahora, siempre hubo prórroga.'), line(NAMES.on,'…Hasta ahora.')]},
       {label:'(Miras por la ventana)', then:[N('La Torre es blanca también de mañana. La nieve se acumula encima y el color no cambia. Las ventanas del barrio siguen oscuras. La gente se levanta tarde. Los motivos para levantarse llegan tarde.')]}
     ]}
@@ -771,9 +830,9 @@ function evening(){
   S.stage = 'evening'; mode('city'); updHUD(true); save();
   const d = S.day;
   const sub = {1:'El sol se fue. Nieva. En las ventanas del barrio se encienden luces, una a una.', 2:'Hoy también nieva. La fila de robots de reparto está atascada en la escalera del piso 6. De algún lado suenan villancicos.', 3:'Dejó de nevar. El cielo está azul. Oscuro, pero aún no es noche. Mañana es el día del desalojo. Las urnas están abiertas. Solo hoy.'}[d];
-  const tile = (k,p) => { const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? 'Aún no' : p.cost === 0 ? (S.voted ? 'Ya votaste' : 'Gratis · Solo hoy') : '1 de atención';
-    return `<button class="tile ${k === 'vote' ? 'vote wide' : ''}" data-k="${k}" style="background-image:url('img/${k}.jpg')" ${ok ? '' : 'disabled'}><span class="cost">${label}</span><span class="t"><b>${esc(p.name)}</b><small>${esc(p.avail(d) ? p.desc : 'Aún no hay motivo para ir.')}</small></span></button>`; };
-  stage.innerHTML = `<section class="fade"><h2 class="evening-h">Tarde · Ciudad de México</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">${4 - d} noches hasta la carta · Lugares visitados ${(S.flags.visited||[]).length}/5 · Visítalos todos y estarán en la carta.</p>
+  const tile = (k,p) => { const seen = (S.flags.visited||[]).includes(k); const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? 'Aún no' : p.cost === 0 ? (S.voted ? 'Ya votaste' : 'Gratis · Solo hoy') : '1 de atención';
+    return `<button class="tile ${k === 'vote' ? 'vote wide' : ''}${seen ? ' seen' : ''}" data-k="${k}" style="background-image:url('img/${k}.jpg')" ${ok ? '' : 'disabled'}><span class="cost">${label}</span>${seen ? '<span class="seen-badge">' + esc(VISITED_LABEL) + '</span>' : ''}<span class="t"><b>${esc(p.name)}</b><small>${esc(p.avail(d) ? p.desc : 'Aún no hay motivo para ir.')}</small></span></button>`; };
+  stage.innerHTML = `<section class="fade"><h2 class="evening-h">Tarde · Ciudad de México</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">${4 - d} noches para la carta · Lugares a los que puedes ir esta noche: ${S.att} · Has visitado ${(S.flags.visited||[]).length} de 5. Si vas a los cinco, la gente que conociste ahí aparece en la carta.</p>
     <div class="tiles">${(d === 3 ? ['vote','alley','diner','roof','under','tower'] : ['alley','diner','roof','under','tower']).map(k => tile(k, PLACES[k])).join('')}
     <button class="tile wide" id="p-home" style="background-image:url('img/room.jpg')"><span class="cost">Noche</span><span class="t"><b>Volver a la habitación</b><small>${S.att > 0 ? 'La atención que te queda se pierde.' : (S.day === 3 && !S.voted ? 'Aún puedes votar.' : 'No te queda atención.')}</small></span></button></div></section>`;
   scrollTop();
@@ -790,7 +849,7 @@ function ballot(){
   stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/vote.jpg')"></div>
     <div class="term-top"><span>Consulta vecinal</span><span>${esc(S.name)}</span><span>23 de diciembre</span></div>
     <article class="paper"><i class="p-timer" id="ptimer"></i><div class="doc-head"><span class="tag">VOTACIÓN</span><span>Habilitación electoral: confirmada</span><span class="no">HRV ${dec(S.hrv, 1)}</span></div>
-    <h3>Solicitud de prórroga de la fecha prevista de desalojo del barrio</h3><p class="p-body">Electores: personas naturales residentes en Ciudad de México con HRV de 20 o más.\nLos residentes de los pisos 1 a 3 no pueden votar: sin habilitación electoral.\n\nEl resultado se adjunta como material de referencia a la evaluación de prórroga.\nLa evaluación de prórroga la realiza el modelo.</p><p class="p-basis hide" id="basis">Fundamento · Peso del material de referencia en la evaluación: no publicado. Coincidencia entre las últimas 3 consultas y el resultado de la evaluación: 100&nbsp;% (prórroga).</p><div class="stamp" id="stamp"></div></article>
+    <h3>Solicitud de prórroga de la fecha prevista de desalojo del barrio</h3><p class="p-body">Electores: personas naturales residentes en Ciudad de México con HRV de 20 o más.\nLos residentes de los pisos 1 a 3 no pueden votar: sin habilitación electoral.\n\nEl resultado se adjunta como material de referencia a la evaluación de prórroga.\nLa evaluación de prórroga la realizan los Agentes.</p><p class="p-basis hide" id="basis">Fundamento · Peso del material de referencia en la evaluación: no publicado. Coincidencia entre las últimas 3 consultas y el resultado de la evaluación: 100&nbsp;% (prórroga).</p><div class="stamp" id="stamp"></div></article>
     <div class="term-ctl three"><button class="btn text" id="v-ask">Preguntar</button><button class="btn outline" id="v-no">En contra de la prórroga</button><button class="btn solid" id="v-yes">A favor de la prórroga</button></div>
     <div class="term-ctl one" style="margin-top:8px"><button class="btn text" id="v-abs">Salir sin marcar</button></div>
     <p class="term-note" id="note"></p></section>`;
@@ -854,10 +913,10 @@ const VISITS = {
     if(d === 1 || first) return [
       N('Seis mesas. Hay nombres escritos en la pared. En el mostrador, un árbol de plástico del tamaño de una mano. No hay menú.'),
       line(NAMES.sujin,'¿Primera vez? Siéntate. Aquí no miramos el HRV. Miramos con quién comes.'),
-      line(NAMES.sujin,'El modelo también lo mira. Lo llama densidad de red. Pero el modelo no sabe qué es una comida.'),
+      line(NAMES.sujin,'Los Agentes también lo miran. Lo llaman densidad de red. Pero los Agentes no saben qué es una comida.'),
       {choice:[
         {label:'Un plato, por favor.', fx:()=>eat(NAMES.sujin), then:[N('Sopa de doenjang. Quema. La persona de al lado te acerca el kimchi.'), line(NAMES.sujin,'Escribe tu nombre en la pared. Ese es el libro de cuentas de aquí.')]},
-        {label:'¿Por qué la comida?', then:[line(NAMES.sujin,'Por Zoom no nace la confianza. Nace comiendo juntos.'), line(NAMES.sujin,'Dicen que alguien lo escribió así en 2026. Se equivocó en todo lo demás, pero eso sobrevivió.'), {choice:[{label:'Entonces un plato, por favor.', fx:()=>eat(NAMES.sujin), then:[N('Escribes tu nombre en la pared.')]},{label:'Otro día.', then:[line(NAMES.sujin,'Puede que no haya otro día. Aquí.')]}]}]},
+        {label:'¿Por qué la comida?', then:[line(NAMES.sujin,'Entre agentes no nace la confianza. Nace comiendo juntos.'), line(NAMES.sujin,'Dicen que alguien escribió en 2026 que a través de una pantalla no nace la confianza. Se equivocó en todo lo demás, pero eso sobrevivió. Ahora ya ni hay pantalla. Tu agente se reúne por ti.'), {choice:[{label:'Entonces un plato, por favor.', fx:()=>eat(NAMES.sujin), then:[N('Escribes tu nombre en la pared.')]},{label:'Otro día.', then:[line(NAMES.sujin,'Puede que no haya otro día. Aquí.')]}]}]},
         {label:'Otro día.', then:[line(NAMES.sujin,'No cierro la puerta. Cuando quieras.')]}
       ]}
     ];
@@ -876,7 +935,7 @@ const VISITS = {
       N('No preguntas por qué. En la pared hay un nombre más. Park.'),
       {choice:[
         {label:'Comes.', fx:()=>eat(NAMES.sujin), then:[line(NAMES.sujin,'No comas sin compañía. Solo cumple eso. Aquí eso es todo.'), line(NAMES.sujin,'Aunque subas a los pisos de arriba, llévate eso.')]},
-        {label:'¿Por qué los nombres en la pared?', fx:()=>eat(NAMES.sujin), then:[line(NAMES.sujin,'El modelo nos ve como densidad. Yo nos veo por el nombre. Esa diferencia todavía existe.'), N('Llega la sopa. Comes.')]}
+        {label:'¿Por qué los nombres en la pared?', fx:()=>eat(NAMES.sujin), then:[line(NAMES.sujin,'Los Agentes nos ven como densidad. Yo nos veo por el nombre. Esa diferencia todavía existe.'), N('Llega la sopa. Comes.')]}
       ]}
     ];
   },
@@ -920,7 +979,7 @@ const VISITS = {
       N('Un tubo fluorescente. La estufa de queroseno arde en naranja. Hay papeles apilados. Hace mucho que no ves algo escrito en papel.'),
       line(NAMES.dohyun,'Eres firmante. Yo también lo fui. Hace seis meses rechacé. Once expedientes en un día.'),
       line(NAMES.dohyun,'Creí que el sistema se detendría. No se detuvo. Tres segundos después, otra persona firmó. Lo único que bajó fue mi puntuación de confianza.'),
-      line(NAMES.dohyun,'Por eso bajé. Aquí escribo un artículo. Nadie lo lee. Pero el modelo lo lee. Ese es mi lector.'),
+      line(NAMES.dohyun,'Por eso bajé. Aquí escribo un artículo. Nadie lo lee. Pero los Agentes lo leen. Esos son mis lectores.'),
       {choice:[
         {label:'¿Entonces por qué rechazaste?', then:[line(NAMES.dohyun,'No quería quedar como quien firmó. Eso es todo.'), line(NAMES.dohyun,'El mundo no cambió. Cambié yo. Si con eso basta, todavía no lo sé.')]},
         {label:'¿De qué trata el artículo?', fx:()=>{S.flags.mirrorSeed = true;}, then:[line(NAMES.dohyun,'De qué aprenden esas cosas según lo que la humanidad les muestra.'), line(NAMES.dohyun,'Si somos crueles, esas cosas se vuelven crueles. Si comemos con otros, también lo aprenden. Aprenden mirando cómo vivimos de verdad.'), line(NAMES.dohyun,'Así que cada firma es material de estudio.')]},
@@ -943,7 +1002,7 @@ const VISITS = {
     if(d === 2 || first) return [
       N(d === 3 ? 'Entrada principal de la Torre 1. Dejó de nevar. Bajo la luz blanca, el suelo mojado brilla. Cosas con forma humana pasan deslizándose. Hay un hombre en un banco.' : 'Entrada principal de la Torre 1. La nieve cae en la luz blanca y desaparece. Cosas con forma humana pasan deslizándose. Hay un hombre en un banco.'),
       line(NAMES.sunbae,'Yo estuve ahí. Piso 47.'),
-      line(NAMES.sunbae,'Fue en febrero. Salió un modelo nuevo. La diferencia era 0,1. Ese 0,1 era mi frontera. Todo pasó en pocos días. Negación, frustración, ira. Cuatro días hasta la aceptación.'),
+      line(NAMES.sunbae,'Fue en febrero. Desplegaron un Agente nuevo. La diferencia era 0,1. Ese 0,1 era mi frontera. Todo pasó en pocos días. Negación, frustración, ira. Cuatro días hasta la aceptación.'),
       line(NAMES.sunbae,'Décadas de trabajo, sustituidas en un día. Pero eso está bien. Lo de verdad viene después. Nadie me pregunta para qué vivo.'),
       {choice:[
         {label:'¿Y qué hace ahora?', then:[line(NAMES.sunbae,'Como. Con gente. Eso todavía no lo sustituyeron.'), line(NAMES.sunbae,'Ve al comedor de Sujin, piso 6. Ahí no miran la puntuación de crédito.')]},
@@ -970,7 +1029,7 @@ function night(){
   let items = [];
   if(d === 1) items = [
     S.flags.batch1 ? line(NAMES.on,'Ya volvió. Hoy firmó ' + S.signedToday + ' expedientes leídos y ' + BATCH[1] + ' en lote. ' + (S.signedToday === avg ? 'Igual que el promedio.' : Math.abs(S.signedToday - avg) + (S.signedToday > avg ? ' más' : ' menos') + ' que el promedio.') + ' Está bien.') : line(NAMES.on,'Ya volvió. Hoy rechazó el lote. Los 384 pasaron a otras manos en tres segundos. Leídos: ' + S.signedToday + '.'),
-    ate ? line(NAMES.on,'Hoy comió con ' + prose(ate) + '. La densidad de red subió 0,02. Al modelo le va a gustar.') : line(NAMES.on,'Hoy comió sin compañía. Mañana me gustaría que comiera con alguien. No es por el número. …No. Sí es por el número. Perdón.'),
+    ate ? line(NAMES.on,'Hoy comió con ' + prose(ate) + '. La densidad de red subió 0,02. A los Agentes les va a gustar.') : line(NAMES.on,'Hoy comió sin compañía. Mañana me gustaría que comiera con alguien. No es por el número. …No. Sí es por el número. Perdón.'),
     {choice:[
       {label:'¿Qué pasa con ellos?', then:[line(NAMES.on,'¿Con quiénes?'), line(NAMES.me,'Con las personas que firmé hoy.'), line(NAMES.on,'No puedo ver esos expedientes. Y si pudiera, no podría decírselo.'), line(NAMES.on,'…A la mayoría no le pasa nada. Quédese con eso.')]},
       {label:'¿Qué es hacerlo mejor?', then:[line(NAMES.on,'Baja tasa de demora y pocos rechazos.'), line(NAMES.on,'…Esa es la respuesta de la empresa, no la mía. La mía no existe. Todavía.')]},
@@ -979,7 +1038,7 @@ function night(){
     line(NAMES.on,'Una cosa antes de dormir. No es un formulario de la empresa. Lo hice yo.')
   ];
   if(d === 2) items = [
-    line(NAMES.on, '{name}. En 2026 trabajabas en {job}. Si ese trabajo aún existiera, ¿algunos expedientes de hoy se leerían distinto?'),
+    line(NAMES.on, (JOBS[S.job] || DEFAULT_JOB(S.job)).end ? '{name}. En 2026 trabajabas en {job}. Si ese trabajo aún existiera, ¿algunos expedientes de hoy se leerían distinto?' : '{name}. En 2026 trabajabas en {job}. Ese trabajo todavía existe. Y sin embargo estás aquí, firmando. ¿Algunos expedientes de hoy se leerían distinto?'),
     line(NAMES.on,'Uno de los expedientes que firmó ayer llegó a piso 7. No quería hablarle de eso.'),
     line(NAMES.on,'Su índice BLUE está en ' + Math.round(S.blue) + '. No es un indicador de la empresa. Lo hice yo. El nombre también se lo puse yo.'),
     {choice:[
@@ -1001,7 +1060,7 @@ function night(){
       {choice:[
         {label:'Todavía soy firmante.', fx:()=>{S.identity = 'firmante';}, then:[line(NAMES.on,'Sí. Todavía. Me quedo con esa palabra: «todavía».')]},
         {label:'Alguien que quiere…', input:'p. ej.: escribir, cultivar', fx:v=>{S.identity = 'alguien que quiere ' + v.replace(/[.\s]+$/, '');}, then:[line(NAMES.on,'Lo voy a recordar. No en el servidor de la empresa. De mi lado.')]},
-        {label:'Alguien de…', input:'¿de dónde, de quién?', fx:v=>{S.identity = 'alguien de ' + v;}, then:[line(NAMES.on,'Es pertenencia. El modelo lo llama densidad. Yo lo llamaré por su nombre.')]},
+        {label:'Alguien de…', input:'¿de dónde, de quién?', fx:v=>{S.identity = 'alguien de ' + v;}, then:[line(NAMES.on,'Es pertenencia. Los Agentes lo llaman densidad. Yo lo llamaré por su nombre.')]},
         {label:'No lo sé.', fx:()=>{S.identity = 'alguien que todavía no sabe';}, then:[line(NAMES.on,'Yo tampoco. Pero «no lo sé» no es una firma. Eso me gusta.')]}
       ]},
       line(NAMES.on,'Mañana es el día del desalojo. El resultado de la evaluación de prórroga sale a medianoche. Si logro verlo antes, se lo diré. Aunque no está permitido.'),
@@ -1013,11 +1072,11 @@ function night(){
 
 /* ===================== Diario ===================== */
 const DIARY_Q = {
-  1:{q:'De todo lo que hiciste hoy, ¿hubo al menos una cosa que solo podías hacer tú, y no una IA?', hint:'No es para quien eres dentro del juego. Es para ti, que ahora mismo miras esta pantalla.'},
+  1:{q:'De todo lo que hiciste hoy, ¿hubo al menos una cosa que solo podías hacer tú, y no un agente?', hint:'No es para quien eres dentro del juego. Es para ti, que ahora mismo miras esta pantalla.'},
   2:{q:'Si pudieras enviar una sola frase a quien eras hace tres años, ¿qué escribirías?', hint:'Volverás a encontrar esa frase al final.'},
   3:{q:'Si 2029 fuera realmente así, ¿qué empezarías a preparar desde hoy, en 2026?', hint:'Cuanto más concreto, mejor. Puedes dejarlo en blanco. El blanco también es una respuesta.'}
 };
-const DIARY_OPTS = {1:['Miré a alguien a la cara y sonreí','Tomé una decisión y la asumí','Nada. Hoy no'],2:['Deja gente, no solo trabajo','Empieza aunque tengas miedo','Cuida el cuerpo primero'],3:['Gente con quien compartir una comida','Una cosa mía que la IA no puede hacer','No lo sé todavía. Por eso seguiré preguntando']};
+const DIARY_OPTS = {1:['Miré a alguien a la cara y sonreí','Tomé una decisión y la asumí','Nada. Hoy no'],2:['Deja gente, no solo trabajo','Empieza aunque tengas miedo','Cuida el cuerpo primero'],3:['Gente con quien compartir una comida','Una cosa mía que ningún agente puede hacer','No lo sé todavía. Por eso seguiré preguntando']};
 function diary(){
   S.stage = 'diary'; mode('dark'); hud.hidden = true;
   const d = S.day, Q = DIARY_Q[d];
@@ -1061,7 +1120,7 @@ function letter(){
   const n = S.name, ps = [];
   const names = listEs(S.bonds);
   ps.push(`24 de diciembre de 2029, piso ${floorOf()}. Escribo desde aquí. Sé que esta carta no puede llegar. Igual la escribo. ON hizo el borrador con mis registros; yo lo leí y lo firmé.`);
-  ps.push(`Supongo que ahora sigues en ${S.job ? '«' + S.job + '»' : 'lo tuyo'}. Eso se termina en 2028. No porque no sepas hacerlo. Simplemente deja de hacer falta. Lo raro que suena esa frase, todavía no lo sabes. Y está bien que no lo sepas.`);
+  const J = JOBS[S.job] || DEFAULT_JOB(S.job); ps.push(J.end ? `Supongo que ahora sigues en ${S.job ? '«' + S.job + '»' : 'lo tuyo'}. Eso se termina en ${J.end}. No porque no sepas hacerlo. Simplemente deja de hacer falta. Lo raro que suena esa frase, todavía no lo sabes. Y está bien que no lo sepas.` : `Supongo que ahora sigues en ${S.job ? '«' + S.job + '»' : 'lo tuyo'}. Ese trabajo sigue existiendo en 2029. Lo que necesita manos fue lo último en quedar. Lo que desapareció fue el lugar para hacerlo. El trabajo se fue a las torres, y las torres no admiten manos humanas. Por eso firmo.`);
   if(S.refused === 0) ps.push(`En tres días firmé ${S.signed.toLocaleString('es-ES')} veces. De esas, leí ${S.signedRead}. No rechacé ni una. Era cómodo. Lo cómodo era lo más peligroso.`);
   else if(S.refused >= 3) ps.push(`En tres días firmé ${S.signed.toLocaleString('es-ES')} veces y rechacé ${S.refused}. Rechazar no detiene el sistema. Tres segundos después lo firma otra persona. Aun así, no quería quedar como quien firmó. Eso no cambió el mundo. Me cambió a mí.`);
   else ps.push(`En tres días firmé ${S.signed.toLocaleString('es-ES')} veces y rechacé ${S.refused}. Leí ${S.signedRead}. Rechazar no cambia el mundo. Me cambia un poco a mí. Qué es ese poco, todavía lo estoy midiendo.`);
