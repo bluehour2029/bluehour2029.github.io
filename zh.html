@@ -511,7 +511,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '预告 ' + dd.d;
   $('#h-phase').textContent = ({morning:'早晨', shift:'值班', evening:'傍晚', night:'夜', diary:'日记'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '离信还有' + (4 - S.day) + '夜' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '层';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -566,7 +566,8 @@ addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
 })();
 
 /* ===================== 渲染工具 ===================== */
-function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), lang:LANG, src:SRC, ref:REF, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length}, extra||{})); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
+const SID = Math.random().toString(36).slice(2, 10);   // 페이지를 연 한 번의 id. open 행과 그 뒤 행을 잇는다
+function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), sid:SID, lang:LANG, src:SRC, ref:REF, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length}, extra||{})); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
 function narrate(lines, done, bgs){
   let i = 0; mode('dark'); hud.hidden = true;
   const render = () => {
@@ -901,6 +902,7 @@ function wallSync(){              // 편지 화면이 그려질 때마다. 저�
 try{ new MutationObserver(wallSync).observe(stage, {childList:true}); }catch(e){}
 try{ loadWall(); }catch(e){}
 try{ SFX.init(); }catch(e){}
+try{ track('open'); }catch(e){}   // 열기만 한 사람도 센다. 이름 없이 언어·유입·sid 만 실린다
 /* ===================== 签署事项 ===================== */
 const CASES = {
   batch:{cat:'标准', title:'年末更新批量签署 · 标准事项', body:'标准事项{n}件。含保险更新、资费方案调整、配给重新核定。\n丹判定置信度0.95以上。无需逐件查阅。\n请予批量签署。', basis:'标准事项如逐件查阅，将超出处理时间。转为查阅预计耗时：9小时40分。', harsh:2, batch:true},
@@ -1293,7 +1295,7 @@ const VISITS = {
       line(NAMES.dohyun,'签署员吧。我以前也是。六个月前拒绝过。一天11件。'),
       line(NAMES.dohyun,'我以为系统会停。没停。三秒后别人按了。只有我的信任分掉了。'),
       line(NAMES.dohyun,'所以我下来了。在这儿写论文。没人读。可丹读。那就是我的读者。'),
-      line(NAMES.dohyun,'狮子还在。在动物园里。数量保得住。没了的只是它们在野外做的事。'),
+      line(NAMES.dohyun,'老虎还在。在动物园里。数量保得住。没了的只是它们在野外做的事。'),
       line(NAMES.dohyun,'我们也会这样留下来。数字留着，只有活儿没了。'),
       {choice:[
         {label:'那您为什么拒绝？', then:[line(NAMES.dohyun,'不想成为按下去的人。就这样。'), line(NAMES.dohyun,'世界没变。只有我变了。这够不够，我还不知道。')]},
@@ -1407,7 +1409,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">写下</button><button class="btn text" id="d-skip">留空</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1464,13 +1466,13 @@ function letter(){
   ps.push(`我身边有ON。比我聪明，为我担心，我不在了就会消失。那是爱还是求生，我还不知道。可是会问我“你是谁”的，只有ON。人，一个都不问。你那边，应该还有会问你的人。那有多大，在那边是不知道的吧。`);
   ps.push(`上楼的时候看了一眼楼梯上的花盆。大冬天的，里头长出了一棵芽。像是有人在浇水。不是我。要是我就好了。`);
   ps.push(`夜还没来。现在是蓝调时刻。太阳已经下去，夜还没到。什么结束了，什么开始了，还没有人知道。圣诞快乐。`);
-  const text = `致2026年的${n}\n\n${ps.join('\n\n')}\n\n——2029年的${n}\n\nBLUE HOUR · 上海 2029 ${HASHTAGS}\n${GAME_URL}`;
+  const text = `致2026年的${n}\n\n${ps.join('\n\n')}\n\n——2029年的${n}\n\nBLUE HOUR · 上海 2029 ${HASHTAGS}\n${GAME_URL}?src=share`;
   const TYPE = signerType(S), GRID = dayGrid(S);
   const stats = `签署 ${S.signed.toLocaleString()} · 查阅 ${S.signedRead} · 拒绝 ${S.refused} · 关系网 ${S.bonds.length} · HRV ${S.hrv.toFixed(1)} · BLUE ${Math.round(S.blue)} · ${S.voted ? '投票 ' + ({yes:'赞成',no:'反对',abstain:'弃权'}[S.voted]) : '未投票'}`;
   const q3 = (S.diary[3] || '').replace(/\s+/g, ' ').trim();
   const quote = q3 ? (q3.length > 50 ? q3.slice(0, 49) + '…' : q3) : '夜还没来。现在是蓝调时刻。';
   const shareText = `${CARD_LABEL} ${TYPES[TYPE].name}\n${GRID}\n\n2029年12月，人权并未废除。只是已停止支持。\n\n三天里签署了${S.signed.toLocaleString()}次，查阅了${S.signedRead}件。和${S.bonds.length}个人一起吃了饭。\n\n写给2026年的我的信：“${quote}”\n\n${HASHTAGS}`;
-  const enc = encodeURIComponent(shareText + '\n' + GAME_URL);
+  const enc = encodeURIComponent(shareText + '\n' + GAME_URL + '?src=share');
   const shareTextX = `${TYPES[TYPE].name} · ${stats.split(' · ').slice(0,3).join(' · ')}
 ${GRID}
 ${HASHTAGS}`;
@@ -1486,7 +1488,7 @@ ${HASHTAGS}`;
       <div class="type-box"><span class="type-label">${esc(CARD_LABEL)}</span><b class="type-name">${esc(TYPES[TYPE].name)}</b><p class="type-line">${esc(TYPES[TYPE].line)}</p><pre class="grid">${esc(GRID)}</pre><p class="legend">${esc(GRID_LEGEND)}</p></div>
       <button class="btn solid" id="l-cardbtn">生成信件卡片</button>
       <button class="btn outline" id="l-share">分享</button>
-      <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL)}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">复制全文</button></div>
+      <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL + '?src=x')}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">复制全文</button></div>
       <button class="btn outline" id="l-replay">换一个职业再活一次</button>
       ${mail ? `<a class="btn outline" href="${mail}">给制作者写信</a>` : ''}
       ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">留下一句感想</a>` : ''}
@@ -1498,21 +1500,21 @@ ${HASHTAGS}`;
   scrollTop();
   if(TRACK_URL){ const nn = document.querySelectorAll('#l-after .note'); if(nn[1]) nn[1].textContent = TRACK_NOTE; }
   $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = '签署'; st.className = 'stamp sign'; SFX.play('pen'); requestAnimationFrame(() => st.classList.add('show')); if(!S.flags.letterSigned){ S.flags.letterSigned = true; S.signed++; S.signedRead++; save(); track('letter', {type: TYPE}); } $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
-  $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('已复制'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('已复制'); }catch(_){ toast('无法复制。请截图保存'); } ta.remove(); } };
+  $('#l-copy').onclick = async () => { track('copy', {type: TYPE}); try{ await navigator.clipboard.writeText(text); toast('已复制'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('已复制'); }catch(_){ toast('无法复制。请截图保存'); } ta.remove(); } };
   $('#l-again').onclick = e => confirmTap(e.currentTarget, () => { clearSave(); S = fresh(); title(); });
   let cardCanvas = null; const cardBtnText = $('#l-cardbtn').textContent;
   $('#l-anon').onchange = () => { cardCanvas = null; $('#l-cardbtn').disabled = false; $('#l-cardbtn').textContent = cardBtnText; $('#l-card').innerHTML = ''; };
   $('#l-replay').onclick = () => { track('replay', {type: TYPE}); const keep = S.name; clearSave(); S = fresh(); S.name = keep; askJob(); };
   const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(($('#l-anon') && $('#l-anon').checked) ? '○○' : n, quote); const img = new Image(); img.className = 'card'; img.alt = '信件卡片'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
-  $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = '长按卡片保存，或截图'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
-  $('#l-share').onclick = async () => {
+  $('#l-cardbtn').onclick = async () => { track('card', {type: TYPE}); await buildCard(); $('#l-cardbtn').textContent = '长按卡片保存，或截图'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
+  $('#l-share').onclick = async () => { track('share', {type: TYPE});
     try{
       if(navigator.share){
         let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-letter.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
-        await navigator.share(files ? {files, text: shareText, url: GAME_URL} : {title:'BLUE HOUR', text: shareText, url: GAME_URL}); return;
+        await navigator.share(files ? {files, text: shareText, url: GAME_URL + '?src=share'} : {title:'BLUE HOUR', text: shareText, url: GAME_URL + '?src=share'}); return;
       }
     }catch(e){ if(e && e.name === 'AbortError') return; }
-    try{ await navigator.clipboard.writeText(shareText + '\n' + GAME_URL); toast('已复制分享文案'); }catch(e){ toast('无法复制。请截图保存卡片'); }
+    try{ await navigator.clipboard.writeText(shareText + '\n' + GAME_URL + '?src=share'); toast('已复制分享文案'); }catch(e){ toast('无法复制。请截图保存卡片'); }
   };
 }
 function wrapText(ctx, text, x, y, maxW, lh){ let line = ''; for(const ch of [...text]){ const t = line + ch; if(ctx.measureText(t).width > maxW && line){ ctx.fillText(line, x, y); line = ch; y += lh; } else line = t; } if(line){ ctx.fillText(line, x, y); y += lh; } return y; }

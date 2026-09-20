@@ -512,7 +512,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = 'Notice ' + dd.d;
   $('#h-phase').textContent = ({morning:'Morning', shift:'Shift', evening:'Evening', night:'Night', diary:'Diary'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? (4 - S.day) + (S.day === 3 ? ' night' : ' nights') + ' to the letter' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + 'F';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -567,7 +567,8 @@ addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
 })();
 
 /* ===================== Render tools ===================== */
-function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), lang:LANG, src:SRC, ref:REF, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length}, extra||{})); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
+const SID = Math.random().toString(36).slice(2, 10);   // 페이지를 연 한 번의 id. open 행과 그 뒤 행을 잇는다
+function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), sid:SID, lang:LANG, src:SRC, ref:REF, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length}, extra||{})); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
 function narrate(lines, done, bgs){
   let i = 0; mode('dark'); hud.hidden = true;
   const render = () => {
@@ -902,6 +903,7 @@ function wallSync(){              // 편지 화면이 그려질 때마다. 저�
 try{ new MutationObserver(wallSync).observe(stage, {childList:true}); }catch(e){}
 try{ loadWall(); }catch(e){}
 try{ SFX.init(); }catch(e){}
+try{ track('open'); }catch(e){}   // 열기만 한 사람도 센다. 이름 없이 언어·유입·sid 만 실린다
 /* ===================== Cases ===================== */
 const CASES = {
   batch:{cat:'STANDARD', title:'Year-End Renewal Batch · Standard Cases', body:'{n} standard cases. Includes insurance renewals, rate-plan adjustments and allowance recalculations.\nDan’s confidence 0.95 or above. Individual reading not required.\nBatch signature required.', basis:'Reading standard cases exceeds handling time. Estimated time if switched to reading: 9 hours 40 minutes.', harsh:2, batch:true},
@@ -1294,7 +1296,7 @@ const VISITS = {
       line(NAMES.dohyun,'Attestor. I was one too. Six months ago I refused. Eleven cases in one day.'),
       line(NAMES.dohyun,'I thought the system would stop. It did not. Three seconds later, someone else stamped it. Only my trust score dropped.'),
       line(NAMES.dohyun,'So I came down. I write papers here. Nobody reads them. But Dan reads them. That is my readership.'),
-      line(NAMES.dohyun,'Lions are still here. In zoos. The population holds. What went is only the work they did in the wild.'),
+      line(NAMES.dohyun,'Tigers are still here. In zoos. The population holds. What went is only the work they did in the wild.'),
       line(NAMES.dohyun,'We stay the same way. The count holds. Only the work goes.'),
       {choice:[
         {label:'Then why did you refuse?', then:[line(NAMES.dohyun,'I did not want to be the one who stamped it. That is all.'), line(NAMES.dohyun,'The world did not change. Only I did. Whether that is enough, I still do not know.')]},
@@ -1408,7 +1410,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">Write it</button><button class="btn text" id="d-skip">Leave it blank</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
@@ -1465,13 +1467,13 @@ function letter(){
   ps.push(`ON is beside me. Smarter than me, worried about me, gone if I’m gone. Whether that’s love or survival, I don’t know yet. But ON is the only one who asks me who I am. No person asks. Where you are, someone still asks you. You have no idea how big that is, from there.`);
   ps.push(`On my way up I looked at the flowerpot on the stairs. It’s winter, and there was one sprout in it. Someone must be watering it. Not me. I wish it had been me.`);
   ps.push(`Night has not come yet. This is the blue hour. The sun is down and the night is not here. What has ended and what is beginning, nobody knows yet. Merry Christmas.`);
-  const text = `To ${n}, 2026\n\n${ps.join('\n\n')}\n\n— ${n}, 2029\n\nBLUE HOUR · New York 2029 ${HASHTAGS}\n${GAME_URL}`;
+  const text = `To ${n}, 2026\n\n${ps.join('\n\n')}\n\n— ${n}, 2029\n\nBLUE HOUR · New York 2029 ${HASHTAGS}\n${GAME_URL}?src=share`;
   const TYPE = signerType(S), GRID = dayGrid(S);
   const stats = `Signed ${S.signed.toLocaleString()} · Read ${S.signedRead} · Refused ${S.refused} · Ties ${S.bonds.length} · HRV ${S.hrv.toFixed(1)} · BLUE ${Math.round(S.blue)} · ${S.voted ? 'Vote: ' + ({yes:'For',no:'Against',abstain:'Abstained'}[S.voted]) : 'Did not vote'}`;
   const q3 = (S.diary[3] || '').replace(/\s+/g, ' ').trim();
   const quote = q3 ? (q3.length > 50 ? q3.slice(0, 49) + '…' : q3) : 'Night has not come yet. This is the blue hour.';
   const shareText = `${CARD_LABEL} ${TYPES[TYPE].name}\n${GRID}\n\nDecember 2029. Human rights were not abolished. Support has simply ended.\n\nThree days. Signed ${S.signed.toLocaleString()} times, read ${S.signedRead}. People I shared a meal with: ${S.bonds.length}.\n\nA letter to my 2026 self: “${quote}”\n\n${HASHTAGS}`;
-  const enc = encodeURIComponent(shareText + '\n' + GAME_URL);
+  const enc = encodeURIComponent(shareText + '\n' + GAME_URL + '?src=share');
   const shareTextX = `${TYPES[TYPE].name} · ${stats.split(' · ').slice(0,3).join(' · ')}
 ${GRID}
 ${HASHTAGS}`;
@@ -1487,7 +1489,7 @@ ${HASHTAGS}`;
       <div class="type-box"><span class="type-label">${esc(CARD_LABEL)}</span><b class="type-name">${esc(TYPES[TYPE].name)}</b><p class="type-line">${esc(TYPES[TYPE].line)}</p><pre class="grid">${esc(GRID)}</pre><p class="legend">${esc(GRID_LEGEND)}</p></div>
       <button class="btn solid" id="l-cardbtn">Make a letter card</button>
       <button class="btn outline" id="l-share">Share</button>
-      <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL)}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">Copy letter</button></div>
+      <div class="row"><a class="btn text" href="https://twitter.com/intent/tweet?text=${encX}&url=${encodeURIComponent(GAME_URL + '?src=x')}" target="_blank" rel="noopener">X</a><a class="btn text" href="https://www.threads.net/intent/post?text=${enc}" target="_blank" rel="noopener">Threads</a><button class="btn text" id="l-copy">Copy letter</button></div>
       <button class="btn outline" id="l-replay">Live it again with another job</button>
       ${mail ? `<a class="btn outline" href="${mail}">Send a letter to the maker</a>` : ''}
       ${FEEDBACK_FORM ? `<a class="btn outline" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">Leave one line of feedback</a>` : ''}
@@ -1499,21 +1501,21 @@ ${HASHTAGS}`;
   scrollTop();
   if(TRACK_URL){ const nn = document.querySelectorAll('#l-after .note'); if(nn[1]) nn[1].textContent = TRACK_NOTE; }
   $('#l-sign').onclick = () => { const st = $('#l-stamp'); st.textContent = 'SIGNED'; st.className = 'stamp sign'; SFX.play('pen'); requestAnimationFrame(() => st.classList.add('show')); if(!S.flags.letterSigned){ S.flags.letterSigned = true; S.signed++; S.signedRead++; save(); track('letter', {type: TYPE}); } $('#l-sign').disabled = true; later(900, () => { $('#l-sign-wrap').hidden = true; $('#l-after').hidden = false; $('#l-after').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); }); };
-  $('#l-copy').onclick = async () => { try{ await navigator.clipboard.writeText(text); toast('Copied'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('Copied'); }catch(_){ toast('Copying is blocked. Please take a screenshot.'); } ta.remove(); } };
+  $('#l-copy').onclick = async () => { track('copy', {type: TYPE}); try{ await navigator.clipboard.writeText(text); toast('Copied'); }catch(e){ const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast('Copied'); }catch(_){ toast('Copying is blocked. Please take a screenshot.'); } ta.remove(); } };
   $('#l-again').onclick = e => confirmTap(e.currentTarget, () => { clearSave(); S = fresh(); title(); });
   let cardCanvas = null; const cardBtnText = $('#l-cardbtn').textContent;
   $('#l-anon').onchange = () => { cardCanvas = null; $('#l-cardbtn').disabled = false; $('#l-cardbtn').textContent = cardBtnText; $('#l-card').innerHTML = ''; };
   $('#l-replay').onclick = () => { track('replay', {type: TYPE}); const keep = S.name; clearSave(); S = fresh(); S.name = keep; askJob(); };
   const buildCard = async () => { if(cardCanvas) return cardCanvas; cardCanvas = await makeCard(($('#l-anon') && $('#l-anon').checked) ? '—' : n, quote); const img = new Image(); img.className = 'card'; img.alt = 'Letter card'; img.src = cardCanvas.toDataURL('image/png'); $('#l-card').innerHTML = ''; $('#l-card').appendChild(img); return cardCanvas; };
-  $('#l-cardbtn').onclick = async () => { await buildCard(); $('#l-cardbtn').textContent = 'Press and hold the card to save, or take a screenshot'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
-  $('#l-share').onclick = async () => {
+  $('#l-cardbtn').onclick = async () => { track('card', {type: TYPE}); await buildCard(); $('#l-cardbtn').textContent = 'Press and hold the card to save, or take a screenshot'; $('#l-cardbtn').disabled = true; $('#l-card').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'start'}); };
+  $('#l-share').onclick = async () => { track('share', {type: TYPE});
     try{
       if(navigator.share){
         let files; try{ const c = await buildCard(); const blob = await new Promise(r => c.toBlob(r, 'image/png')); const f = new File([blob], 'blue-hour-letter.png', {type:'image/png'}); if(navigator.canShare && navigator.canShare({files:[f]})) files = [f]; }catch(e){}
-        await navigator.share(files ? {files, text: shareText, url: GAME_URL} : {title:'BLUE HOUR', text: shareText, url: GAME_URL}); return;
+        await navigator.share(files ? {files, text: shareText, url: GAME_URL + '?src=share'} : {title:'BLUE HOUR', text: shareText, url: GAME_URL + '?src=share'}); return;
       }
     }catch(e){ if(e && e.name === 'AbortError') return; }
-    try{ await navigator.clipboard.writeText(shareText + '\n' + GAME_URL); toast('Share text copied'); }catch(e){ toast('Copying is blocked. Please capture the card.'); }
+    try{ await navigator.clipboard.writeText(shareText + '\n' + GAME_URL + '?src=share'); toast('Share text copied'); }catch(e){ toast('Copying is blocked. Please capture the card.'); }
   };
 }
 function wrapText(ctx, text, x, y, maxW, lh){ let line = ''; const put = s => { ctx.fillText(s, x, y); y += lh; }; for(const w of String(text).split(' ')){ const t = line ? line + ' ' + w : w; if(ctx.measureText(t).width <= maxW){ line = t; continue; } if(line){ put(line); line = ''; } if(ctx.measureText(w).width <= maxW){ line = w; continue; } for(const ch of [...w]){ if(line && ctx.measureText(line + ch).width > maxW){ put(line); line = ch; } else line += ch; } } if(line) put(line); return y; }
