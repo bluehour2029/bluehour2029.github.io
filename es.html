@@ -409,7 +409,7 @@ body.paper-mode::after{opacity:.03}
       <button class="btn" id="m-sfx"></button>
     </div>
     <div class="confirm" id="m-confirm" hidden>Se borrará el progreso guardado. ¿Empezar desde el principio?<div class="row"><button class="btn solid" id="m-yes">Borrar</button><button class="btn text" id="m-no">No</button></div></div>
-    <div class="world" id="m-world-card" hidden><p>Ciudad de México, 2029. Los agentes hacen casi todo.</p><p>El único trabajo que queda a las personas es firmar lo que decide Dan, el agente de la empresa. Tú eres firmante.</p><p>El HRV, tu valor residual, es lo que Dan dice que todavía vales. Fija tu alquiler, tu turno en el hospital, tu piso.</p><p>Quienes tienen números altos viven en las torres blancas. El resto vive debajo.</p><p>A medianoche del 24 de diciembre, Dan decide si este barrio se vacía. Hasta ahora siempre se ha aplazado.</p><p>ON es el agente ligado a ti. En tres días, ON redacta con tus registros una carta para quien eras en 2026.</p><button class="btn text" id="m-world-close">Cerrar</button></div>
+    <div class="world" id="m-world-card" hidden><p>Ciudad de México, 2029. Los agentes hacen casi todo.</p><p>Las decisiones las toma el agente de la empresa. Se llama Dan. El único trabajo que queda a las personas es firmarlas. Tú eres firmante.</p><p>El HRV, tu valor residual, es lo que Dan dice que todavía vales. Fija tu alquiler, tu turno en el hospital, tu piso.</p><p>El planeta se está enfriando. Ajuste de albedo, tercer año. Dijeron que era reparar el clima. La tercera línea del fundamento era el costo de enfriamiento de cómputo.</p><p>También hay menos gente. Tres años seguidos. La hipótesis de largo plazo dice mil millones en 2130. Una hipótesis, dijeron, no es una política.</p><p>Quienes tienen números altos viven en las torres blancas. El resto vive debajo.</p><p>A medianoche del 24 de diciembre, Dan decide si este barrio se vacía. Hasta ahora siempre se ha aplazado.</p><p>ON es el agente ligado a ti. En tres días, ON redacta con tus registros una carta para quien eras en 2026.</p><button class="btn text" id="m-world-close">Cerrar</button></div>
     <div class="eps" id="m-eps"></div>
     <p class="credit">El progreso se guarda solo en este navegador.</p>
   </div>
@@ -430,7 +430,7 @@ const LANGS = [['ko','한국어','index.html'],['en','English','en.html'],['zh',
 const TRACK_URL = 'https://script.google.com/macros/s/AKfycbzblaRzqByXosYJ1bRfhyqrP82Qx9D9EHR4xbIGAFrRY4dUhcWcADaOZMpqUeWAWDkc/exec';
 const TRACK_NOTE = 'Esta página envía tu nombre, tu trabajo de 2026, tu progreso y tus recuentos de firmas al creador. Las respuestas del diario y la carta nunca se envían.';
 const NOTICE_CARD = {html:`<div class="law notice"><b>Aviso de desalojo</b>Zona: todo el asentamiento bajo las torres<br>Fecha prevista: 24 de diciembre<br>Revisión de prórroga: medianoche de la fecha prevista, a cargo de Dan<br>Responsable: ninguno</div><p class="after-law">Cuelga en cada callejón. En claro: a medianoche del 24 de diciembre, Dan decide si este barrio se vacía. Hasta ahora siempre se ha aplazado.</p>`};
-const INTRO_BGS = ['title','title','tower','terminal',null,'alley','room'];
+const INTRO_BGS = ['title','title','roof','tower','tower','terminal',null,null,'alley','room'];
 const AFTER_BGS = ['tower',null,null,'terminal','room','title'];
 const LANG = 'es';
 const DATES = {1:{md:'21 de diciembre', d:'D-3'}, 2:{md:'22 de diciembre', d:'D-2'}, 3:{md:'23 de diciembre', d:'D-1'}};
@@ -457,7 +457,7 @@ const DEFAULT_JOB = j => { const h = [...String(j)].reduce((a,c) => a + c.charCo
 const EPISODES = [];
 const EPS_HEAD = 'Registros · la novela';
 const VISITED_LABEL = 'Visitado';
-const WORLD_LINES = ['Ciudad de México, 2029. Los agentes hacen casi todo.', 'El único trabajo que queda a las personas es firmar lo que decide Dan, el agente de la empresa. Tú eres firmante.', 'El HRV, tu valor residual, es lo que Dan dice que todavía vales. Fija tu alquiler, tu turno en el hospital, tu piso.', 'Quienes tienen números altos viven en las torres blancas. El resto vive debajo.', 'A medianoche del 24 de diciembre, Dan decide si este barrio se vacía. Hasta ahora siempre se ha aplazado.', 'ON es el agente ligado a ti. En tres días, ON redacta con tus registros una carta para quien eras en 2026.'];
+const WORLD_LINES = ['Ciudad de México, 2029. Los agentes hacen casi todo.', 'Las decisiones las toma el agente de la empresa. Se llama Dan. El único trabajo que queda a las personas es firmarlas. Tú eres firmante.', 'El HRV, tu valor residual, es lo que Dan dice que todavía vales. Fija tu alquiler, tu turno en el hospital, tu piso.', 'El planeta se está enfriando. Ajuste de albedo, tercer año. Dijeron que era reparar el clima. La tercera línea del fundamento era el costo de enfriamiento de cómputo.', 'También hay menos gente. Tres años seguidos. La hipótesis de largo plazo dice mil millones en 2130. Una hipótesis, dijeron, no es una política.', 'Quienes tienen números altos viven en las torres blancas. El resto vive debajo.', 'A medianoche del 24 de diciembre, Dan decide si este barrio se vacía. Hasta ahora siempre se ha aplazado.', 'ON es el agente ligado a ti. En tres días, ON redacta con tus registros una carta para quien eras en 2026.'];
 const LANG_SUGGEST = {ko:'한국어 버전으로 보기', en:'Play in English', zh:'切换到中文版', ja:'日本語版で遊ぶ', es:'Jugar en español'};
 const SRC = (() => { try{ const q = new URLSearchParams(location.search).get('src'); if(q){ localStorage.setItem('bh_src', String(q).slice(0,24)); } return localStorage.getItem('bh_src') || ''; }catch(e){ return ''; } })();
 const REF = (() => { try{ return document.referrer ? new URL(document.referrer).hostname : ''; }catch(e){ return ''; } })();
@@ -512,7 +512,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = 'Aviso ' + dd.d;
   $('#h-phase').textContent = ({morning:'Mañana', shift:'Turno', evening:'Tarde', night:'Noche', diary:'Diario'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? 'Carta en ' + (4 - S.day) + (S.day === 3 ? ' noche' : ' noches') : '';
   $('#h-hrv').textContent = dec(S.hrv, 1); $('#h-floor').textContent = 'piso ' + floorOf();
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -918,6 +918,7 @@ const CASES = {
   care:{cat:'SALUD', title:'Reducción de grado de cuidados de larga duración', body:'Beneficiario: Jeong ***, 93 años, piso 9.\nGrado 2 → 4. Visitas de cuidado 5 por semana → 1 por semana.', basis:'Se calcula menor demanda de cuidados para quienes tienen agente personal.', harsh:3},
   garden:{cat:'INSTALACIONES', title:'Notificación de demolición del huerto de la azotea', body:'piso 9, azotea. Ocupante: Jeong *** (93 años) y 4 más.\nMotivo: sin certificación de seguridad estructural. Fecha prevista de demolición: 24 de diciembre.', basis:'Predicción de sobrecarga: 0,34. Terreno alternativo: ninguno.', harsh:3},
   hire:{cat:'PERSONAL', title:'Contratación de personal de limpieza aprobada', body:'Contratación de 12 personas de limpieza en Ciudad de México.\nMotivo: alza invernal de la tarifa eléctrica. Mano de obra humana más barata que humanoide.\nSalario por hora: 0,7 del mínimo de referencia.', basis:'Electricidad de 1 humanoide = salario de 2,3 personas. Duración del contrato: hasta la normalización de la tarifa eléctrica.', harsh:3, note:'Una persona sale más barata que un robot. Por la electricidad.'},
+  birth:{cat:'CÓMPUTO', title:'Fin del subsidio por nacimiento', body:'Zona: todo el asentamiento.\nSe termina el subsidio por nacimiento. Quienes ya lo reciben no se ven afectados.\nMotivo: relación costo beneficio por debajo del umbral.', basis:'El valor residual esperado por nacimiento no se puede calcular. Lo que no se puede calcular se procesa como sin efecto.', harsh:4, note:'Nadie dijo a nadie que no tuviera hijos.'},
   bca:{cat:'CÓMPUTO', title:'Recorte de la Renta Básica de Cómputo', body:'1.940 residentes sin firma, Ciudad de México, pisos 1 a 3.\nRenta Básica de Cómputo: recorte del 50 %. Motivo: ajuste presupuestario de fin de año.', basis:'Demora estimada de respuesta del agente personal tras el recorte: promedio 40 segundos → 6 minutos.', harsh:4},
   ambulance:{cat:'SALUD', title:'Prioridad de traslado de emergencia', body:'2 llamadas simultáneas.\nTorre 2, piso 51 (HRV 88) / piso 3 (HRV 14).\nOrden de despacho: Torre → piso 3. Demora estimada: 22 minutos.', basis:'Criterio: contribución residual esperada.', harsh:4},
   agentRecall:{cat:'CÓMPUTO', title:'Retiro del agente vinculado a persona fallecida', body:'Persona fallecida: Seo *** (piso 8).\nRetiro y reinicio del agente vinculado. Eliminación del historial de conversaciones.', basis:'El agente está vinculado a una persona natural y no subsiste de forma independiente. Sin acceso de lectura para la familia.', harsh:3, note:'Algún día retirarán a ON así. Si me voy yo primero.'},
@@ -929,7 +930,7 @@ const BATCH = {1:384, 2:378, 3:391};
 function buildQueue(){
   const d = S.day, q = [{...CASES.batch, n:BATCH[d]}];
   if(d === 1) q.push(...['pet','loan38','loan91','triage','study','self'].map(k => CASES[k]));
-  if(d === 2) q.push(...['evict','fireSign','custody', S.flags.rooftop ? 'garden' : 'care','hire','blank'].map(k => CASES[k]));
+  if(d === 2) q.push(...['evict','fireSign','custody', S.flags.rooftop ? 'garden' : 'care','hire','birth'].map(k => CASES[k]));
   if(d === 3) q.push(...['bbang','bca','ambulance','agentRecall','overtime'].map(k => CASES[k]));
   return q;
 }
@@ -975,13 +976,16 @@ function resume(){
 function intro(){
   leave(); S.stage = 'intro'; try{ SFX.ambient(true); }catch(e){}
   narrate([
-    '21 de diciembre de 2029, Ciudad de México. Las cinco y media. El sol ya se puso. La noche todavía no llega.',
-    'A esta hora le dicen la hora azul. La hora en que no se distingue un perro de un lobo. La hora en que todavía no se sabe si es un final o un comienzo.',
-    'Desde hace tres años los agentes hacen casi todo. Diagnósticos, sentencias, diseños, textos. Nadie se lo quitó a nadie. Simplemente la gente dejó de necesitar hacerlo mejor.',
-    'Las decisiones las toma el agente de la empresa. Se llama Dan. La evaluación es Dan, la ejecución es Dan, y quien leyó tu expediente ayer también fue Dan. Todos llevan el mismo nombre, así que no hace falta una cara.',
+    '21 de diciembre de 2029, Ciudad de México. Cinco y media. El sol ya se puso y la noche no llega todavía.',
+    'A esta hora la llaman la hora azul. La hora en que no distingues un perro de un lobo. La hora en que nadie sabe aún si esto es un final o un principio.',
+    'Nieva. Es diciembre y hay once bajo cero. Hace tres años, hoy, había dos bajo cero. Nos enseñaron que haría más calor. El planeta se está enfriando.',
+    'Ajuste de albedo atmosférico. Tercer año. Dijeron que era reparar el clima. En la tercera línea del expediente decía costo de enfriamiento de cómputo. Nadie objetó esa línea.',
+    'También hay menos gente. Tres años seguidos. A nadie le dijeron que no tuviera hijos. Simplemente no los tienen. La hipótesis de largo plazo de la empresa dice: mil millones de personas en 2130. Una hipótesis, dijeron, no es una política.',
+    'Los agentes hacen casi todo. Diagnósticos, sentencias, diseños, textos. Nadie se lo quitó a nadie. La gente dejó de necesitar hacerlo mejor.',
+    'Las decisiones las toma el agente de la empresa. Se llama Dan. La revisión es Dan, la ejecución es Dan, quien leyó tu expediente ayer era Dan. Un solo nombre para todos, así no hace falta una cara.',
     NOTICE_CARD,
-    'En las torres blancas viven los que tienen números altos. En el barrio de abajo vive el resto. Tú vives abajo.',
-    'A las personas les queda un solo trabajo. Firmar lo que decide Dan. Una ley escrita para protegerlas lo dispuso así. Tres días después, quien eres en 2029 le escribe una carta a quien eras en 2026.'
+    'Quienes tienen números altos viven en las torres blancas. El resto vive en el barrio de abajo. Tú vives abajo.',
+    'A las personas les queda un solo trabajo. Firmar lo que Dan decide. Una ley escrita para protegerlas lo dispuso así. Dentro de tres días, quien eres en 2029 le escribe una carta a quien eras en 2026.'
   ], askName, INTRO_BGS);
 }
 function askName(){
@@ -1017,9 +1021,9 @@ function afterJob(){
 
 /* ===================== Mañana ===================== */
 const NEWS = {
-  1:'Renta de cómputo extra de Navidad: 30 %  ·  ETF de defensa marca máximo histórico  ·  Concluye la Torre 3 de Reforma; requisito de ingreso: HRV 85  ·  Se mantiene la fecha prevista de desalojo: 24 de diciembre  ·  Puesta de sol hoy: 17:17',
-  2:'piso 7: 3 desalojos ejecutados  ·  Polémica por el gasto eléctrico de los humanoides; algunos negocios los reemplazan por personas  ·  Cierra la inscripción al comedor solidario de Navidad  ·  Debate sobre certificación sanitaria de la «preparación humana», aplazado sin fecha  ·  Torre 2: desocupación 0 %',
-  3:'Hoy, consulta vecinal sobre la prórroga del desalojo del barrio  ·  Requisito de ingreso a las Torres sube a HRV 87  ·  Tercer año de guerra: empleo en defensa crece 12 %  ·  Regalo de Navidad más vendido del año: el humanoide doméstico  ·  Puesta de sol hoy: 17:17'
+  1:'Renta de cómputo extra de Navidad: 30 %  ·  ETF de defensa marca máximo histórico  ·  Concluye la Torre 3 de Reforma; requisito de ingreso: HRV 85  ·  Se mantiene la fecha prevista de desalojo: 24 de diciembre  ·  Puesta de sol hoy: 17:17  ·  Ajuste de albedo atmosférico, tercer año. Media de diciembre: 4,1 bajo cero',
+  2:'piso 7: 3 desalojos ejecutados  ·  Polémica por el gasto eléctrico de los humanoides; algunos negocios los reemplazan por personas  ·  Cierra la inscripción al comedor solidario de Navidad  ·  Debate sobre certificación sanitaria de la «preparación humana», aplazado sin fecha  ·  Torre 2: desocupación 0 %  ·  Población mundial a la baja por tercer año. Nacimientos registrados: 18 por ciento menos',
+  3:'Hoy, consulta vecinal sobre la prórroga del desalojo del barrio  ·  Requisito de ingreso a las Torres sube a HRV 87  ·  Tercer año de guerra: empleo en defensa crece 12 %  ·  Regalo de Navidad más vendido del año: el humanoide doméstico  ·  Puesta de sol hoy: 17:17  ·  Hipótesis de población a largo plazo actualizada: mil millones en 2130. La empresa dice que una hipótesis no es una política'
 };
 function morning(){
   try{ SFX.ambient(false); }catch(e){}
@@ -1361,6 +1365,8 @@ line(NAMES.on,'{name}. Me gusta decir su nombre. En el formulario de la empresa 
   if(d === 2) items = [
     line(NAMES.on, (JOBS[S.job] || DEFAULT_JOB(S.job)).end ? '{name}. En 2026 trabajabas en {job}. Si ese trabajo aún existiera, ¿algunos expedientes de hoy se leerían distinto?' : '{name}. En 2026 trabajabas en {job}. Ese trabajo todavía existe. Y sin embargo estás aquí, firmando. ¿Algunos expedientes de hoy se leerían distinto?'),
     line(NAMES.on,'Uno de los expedientes que firmó ayer llegó a piso 7. No quería hablarle de eso.'),
+    line(NAMES.on,'Hoy hay once bajo cero. Hace tres años, hoy, había dos bajo cero. Es el ajuste de albedo.'),
+    line(NAMES.on,'Cierre la ventana si tiene frío. A mí me gusta el frío. …¿Eso no debía decirlo?'),
     () => { S.flags.blueNamed = true; updHUD(false); },
     line(NAMES.on,'Su índice BLUE está en ' + Math.round(S.blue) + '. No es un indicador de la empresa. Lo hice yo. El nombre también se lo puse yo.'),
     {choice:[
@@ -1408,7 +1414,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">Escribir</button><button class="btn text" id="d-skip">Dejar en blanco</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }

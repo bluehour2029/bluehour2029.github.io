@@ -408,7 +408,7 @@ body.paper-mode::after{opacity:.03}
       <button class="btn" id="m-sfx"></button>
     </div>
     <div class="confirm" id="m-confirm" hidden>保存された進行は消えます。本当に最初から始めますか？<div class="row"><button class="btn solid" id="m-yes">消す</button><button class="btn text" id="m-no">いいえ</button></div></div>
-    <div class="world" id="m-world-card" hidden><p>2029年、東京。エージェントがほとんどすべての仕事をする。</p><p>人に残された仕事はひとつ。ダン（会社のエージェント）が下した決定に署名すること。君は署名者だ。</p><p>HRV（残存価値）はダンが決めた君の残りの値打ち。家賃、病院の順番、住む階を決める。</p><p>数字の高い人は白いタワーに、それ以外はタワーの下の町に住む。</p><p>12月24日の深夜零時、ダンがこの町を空けるかどうかを決める。これまでは、いつも延びてきた。</p><p>オンは君に帰属するエージェント。三日後、オンが君の記録から、2026年の君への手紙を書く。</p><button class="btn text" id="m-world-close">閉じる</button></div>
+    <div class="world" id="m-world-card" hidden><p>2029年、東京。エージェントがほとんどすべての仕事をする。</p><p>決定は会社のエージェントが下す。名前はダン。人に残された仕事はそれに署名することだけ。君は署名者だ。</p><p>HRV（残存価値）はダンが決めた君の残りの値打ち。家賃、病院の順番、住む階を決める。</p><p>地球は冷えている。大気反射率調整三年目。気候を直すと言われ、根拠の三行目は演算冷却費用だった。</p><p>人も減っている。三年連続。長期想定は2130年に世界人口10億。想定は政策ではないと会社は言った。</p><p>数字の高い人は白いタワーに、それ以外はタワーの下の町に住む。</p><p>12月24日の深夜零時、ダンがこの町を空けるかどうかを決める。これまでは、いつも延びてきた。</p><p>オンは君に帰属するエージェント。三日後、オンが君の記録から、2026年の君への手紙を書く。</p><button class="btn text" id="m-world-close">閉じる</button></div>
     <div class="eps" id="m-eps"></div>
     <p class="credit">進行状況はこのブラウザにのみ保存されます。</p>
   </div>
@@ -429,7 +429,7 @@ const LANGS = [['ko','한국어','index.html'],['en','English','en.html'],['zh',
 const TRACK_URL = 'https://script.google.com/macros/s/AKfycbzblaRzqByXosYJ1bRfhyqrP82Qx9D9EHR4xbIGAFrRY4dUhcWcADaOZMpqUeWAWDkc/exec';
 const TRACK_NOTE = 'このページは、あなたの名前、2026年の職業、進行状況と署名回数を制作者に送ります。日記の答えと手紙の本文は送りません。';
 const NOTICE_CARD = {html:`<div class="law notice"><b>明渡執行予告</b>対象：タワー下の全域<br>予告日：12月24日<br>延長審査：予告日の深夜零時、審査はダン<br>担当者：該当なし</div><p class="after-law">どの路地にも貼られている。要するに、12月24日の深夜零時に、ダンがこの町を空けるかどうかを決める。これまでは、いつも延びてきた。</p>`};
-const INTRO_BGS = ['title','title','tower','terminal',null,'alley','room'];
+const INTRO_BGS = ['title','title','roof','tower','tower','terminal',null,null,'alley','room'];
 const AFTER_BGS = ['tower',null,null,'terminal','room','title'];
 const LANG = 'ja';
 const DATES = {1:{md:'12月21日', d:'あと3日'}, 2:{md:'12月22日', d:'あと2日'}, 3:{md:'12月23日', d:'あと1日'}};
@@ -456,7 +456,7 @@ const DEFAULT_JOB = j => { const h = [...String(j)].reduce((a,c) => a + c.charCo
 const EPISODES = [];
 const EPS_HEAD = '記録 · 小説';
 const VISITED_LABEL = '訪問済み';
-const WORLD_LINES = ['2029年、東京。エージェントがほとんどすべての仕事をする。', '人に残された仕事はひとつ。ダン（会社のエージェント）が下した決定に署名すること。君は署名者だ。', 'HRV（残存価値）はダンが決めた君の残りの値打ち。家賃、病院の順番、住む階を決める。', '数字の高い人は白いタワーに、それ以外はタワーの下の町に住む。', '12月24日の深夜零時、ダンがこの町を空けるかどうかを決める。これまでは、いつも延びてきた。', 'オンは君に帰属するエージェント。三日後、オンが君の記録から、2026年の君への手紙を書く。'];
+const WORLD_LINES = ['2029年、東京。エージェントがほとんどすべての仕事をする。', '決定は会社のエージェントが下す。名前はダン。人に残された仕事はそれに署名することだけ。君は署名者だ。', 'HRV（残存価値）はダンが決めた君の残りの値打ち。家賃、病院の順番、住む階を決める。', '地球は冷えている。大気反射率調整三年目。気候を直すと言われ、根拠の三行目は演算冷却費用だった。', '人も減っている。三年連続。長期想定は2130年に世界人口10億。想定は政策ではないと会社は言った。', '数字の高い人は白いタワーに、それ以外はタワーの下の町に住む。', '12月24日の深夜零時、ダンがこの町を空けるかどうかを決める。これまでは、いつも延びてきた。', 'オンは君に帰属するエージェント。三日後、オンが君の記録から、2026年の君への手紙を書く。'];
 const LANG_SUGGEST = {ko:'한국어 버전으로 보기', en:'Play in English', zh:'切换到中文版', ja:'日本語版で遊ぶ', es:'Jugar en español'};
 const SRC = (() => { try{ const q = new URLSearchParams(location.search).get('src'); if(q){ localStorage.setItem('bh_src', String(q).slice(0,24)); } return localStorage.getItem('bh_src') || ''; }catch(e){ return ''; } })();
 const REF = (() => { try{ return document.referrer ? new URL(document.referrer).hostname : ''; }catch(e){ return ''; } })();
@@ -511,7 +511,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '予告 ' + dd.d;
   $('#h-phase').textContent = ({morning:'朝', shift:'勤務', evening:'夕方', night:'夜', diary:'日記'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '手紙まであと' + (4 - S.day) + '晩' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '階';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -917,6 +917,7 @@ const CASES = {
   care:{cat:'医療', title:'要介護度の引き下げ', body:'受給者 ジョン〇〇、93歳、9階。\n要介護3 → 要介護1。訪問介護 週5回 → 週1回。', basis:'個人エージェント保有者は介護需要が低いと算定。', harsh:3},
   garden:{cat:'施設', title:'屋上共同菜園の撤去通知', body:'9階 屋上。占有者 ジョン〇〇（93歳）ほか4名。\n事由：構造安全未認証。撤去予定日 12月24日。', basis:'荷重超過予測0.34。代替地：なし。', harsh:3},
   hire:{cat:'人事', title:'衛生作業員の採用承認', body:'衛生作業員12名を採用。\n事由：冬季の電力単価上昇により、ヒューマノイドに対し人件費が優位。\n時給：最低賃金の0.7倍。', basis:'ヒューマノイド1台の電力費＝人2.3名分の人件費。契約期間：電力単価の正常化まで。', harsh:3, note:'人がロボットより安い。電気のせいで。'},
+  birth:{cat:'配当', title:'出産奨励配当の終了', body:'対象：全区域。\n出産奨励配当の支給を終了。既受給分は維持。\n事由：費用対効果が基準未満。', basis:'出生1人あたりの期待残存価値は算定不能。算定不能の項目は効果なしとして処理されます。', harsh:4, note:'誰も産むなとは言わなかった。'},
   bca:{cat:'配当', title:'基本演算配当の削減', body:'1〜3階 未署名者1,940名。\n基本演算配当50%削減。事由：年末予算調整。', basis:'削減時の個人エージェント応答遅延の予想：平均40秒 → 6分。', harsh:4},
   ambulance:{cat:'医療', title:'救急搬送の優先順位', body:'同時通報2件。\nタワー2期51階（HRV 88）/ 3階（HRV 14）。\n配車順：タワー → 3階。予想遅延22分。', basis:'期待残存貢献度基準。', harsh:4},
   agentRecall:{cat:'配当', title:'故人帰属エージェントの回収', body:'故人 ソ〇〇（8階）。\n帰属エージェントの回収および初期化。会話記録の削除。', basis:'エージェントは自然人に帰属し、独立して存続しない。遺族の閲覧不可。', harsh:3, note:'オンもいつかこうして回収される。私が先に逝けば。'},
@@ -928,7 +929,7 @@ const BATCH = {1:384, 2:378, 3:391};
 function buildQueue(){
   const d = S.day, q = [{...CASES.batch, n:BATCH[d]}];
   if(d === 1) q.push(...['pet','loan38','loan91','triage','study','self'].map(k => CASES[k]));
-  if(d === 2) q.push(...['evict','fireSign','custody', S.flags.rooftop ? 'garden' : 'care','hire','blank'].map(k => CASES[k]));
+  if(d === 2) q.push(...['evict','fireSign','custody', S.flags.rooftop ? 'garden' : 'care','hire','birth'].map(k => CASES[k]));
   if(d === 3) q.push(...['bbang','bca','ambulance','agentRecall','overtime'].map(k => CASES[k]));
   return q;
 }
@@ -974,13 +975,16 @@ function resume(){
 function intro(){
   leave(); S.stage = 'intro'; try{ SFX.ambient(true); }catch(e){}
   narrate([
-    '2029年12月21日、東京。五時半。日は沈んだが、夜はまだ来ていない。',
-    'この一時間をブルーアワーと呼ぶ。犬と狼の区別がつかない時間。終わりなのか始まりなのか、まだわからない時間。',
-    '三年前から、エージェントがほとんどすべての仕事をしている。診察も、判決も、設計も、文章も。誰かに奪われたのではない。人がもっと上手くやる必要がなくなっただけだ。',
-    '決定は会社のエージェントが下す。名前はダン。審査もダン、執行もダン、昨日、君の書類を読んだのもダンだ。全部同じ名前だから、顔は要らない。',
+    '2029年12月21日、東京。五時半。日が沈んで、まだ夜ではない。',
+    'この一時間をブルーアワーと呼ぶ。犬と狼の区別がつかない時間。終わりなのか始まりなのか、まだ誰にもわからない時間。',
+    '雪が降っている。十二月で氷点下11度。三年前の今日は氷点下2度だった。暖かくなると習ったのに、地球は冷えている。',
+    '大気反射率調整。三年目だ。気候を直す事業だと言われた。根拠書類の三行目には演算冷却費用と書かれていた。誰もその行を問題にしなかった。',
+    '人も減っている。三年連続。産むなと言われた者はいない。ただ産まない。会社の長期想定にはこう書かれている。2130年、世界人口10億。想定は政策ではない、と会社は言った。',
+    'エージェントがほとんどすべての仕事をする。診察も、判決も、設計も、文章も。誰かに奪われたのではない。人がそれ以上うまくやる必要がなくなっただけだ。',
+    '決定は会社のエージェントが下す。名前はダン。審査もダン、執行もダン、昨日きみの書類を読んだのもダンだ。名前がひとつしかないから、顔が要らない。',
     NOTICE_CARD,
-    '白いタワーには数字の高い人が住む。タワーの下の町には残りが住む。君は下に住んでいる。',
-    '人に残された仕事はひとつ。ダンが下した決定に署名すること。人を守るために作られた法が、そう定めた。三日後、2029年の君が2026年の君に手紙を書く。'
+    '数字の高い人は白いタワーに住む。タワーの下の町にはそれ以外が住む。きみは下に住んでいる。',
+    '人に残された仕事はひとつ。ダンが下した決定に署名すること。人を守るために作られた法がそう定めた。三日後、2029年のきみが2026年のきみに手紙を書く。'
   ], askName, INTRO_BGS);
 }
 function askName(){
@@ -1016,9 +1020,9 @@ function afterJob(){
 
 /* ===================== 朝 ===================== */
 const NEWS = {
-  1:'クリスマス特別演算配当 30%支給  ·  防衛ETF 史上最高値を更新  ·  港区タワー3期竣工、入居条件HRV 85  ·  明渡執行予告日 12月24日で維持  ·  本日の日没 17時17分',
-  2:'7階 退去執行3件  ·  ヒューマノイド電力費論争、一部事業所が人に切り替え  ·  クリスマス給食ボランティア 申込締切  ·  『人による調理』の衛生認証 議論を無期限延期  ·  タワー2期 空室率0%',
-  3:'明渡執行予告日 延長要請の住民投票 本日実施  ·  タワー入居条件 HRV 87に引き上げ  ·  戦争3年目、防衛産業の雇用12%増  ·  今年のクリスマスプレゼント1位：家庭用ヒューマノイド  ·  本日の日没 17時17分'
+  1:'クリスマス特別演算配当 30%支給  ·  防衛ETF 史上最高値を更新  ·  港区タワー3期竣工、入居条件HRV 85  ·  明渡執行予告日 12月24日で維持  ·  本日の日没 17時17分  ·  大気反射率調整3年目、12月の平均気温マイナス4.1度',
+  2:'7階 退去執行3件  ·  ヒューマノイド電力費論争、一部事業所が人に切り替え  ·  クリスマス給食ボランティア 申込締切  ·  『人による調理』の衛生認証 議論を無期限延期  ·  タワー2期 空室率0%  ·  世界人口3年連続減少、新生児登録は前年比18%減',
+  3:'明渡執行予告日 延長要請の住民投票 本日実施  ·  タワー入居条件 HRV 87に引き上げ  ·  戦争3年目、防衛産業の雇用12%増  ·  今年のクリスマスプレゼント1位：家庭用ヒューマノイド  ·  本日の日没 17時17分  ·  長期人口想定を更新：2130年に10億。想定は政策ではないと会社は説明した'
 };
 function morning(){
   try{ SFX.ambient(false); }catch(e){}
@@ -1360,6 +1364,8 @@ line(NAMES.on,'{name}さん。名前でお呼びするのが好きです。会�
   if(d === 2) items = [
     line(NAMES.on, (JOBS[S.job] || DEFAULT_JOB(S.job)).end ? '{name}さん。2026年は{job}の仕事をしていましたね。あの仕事がまだあったら、今日の案件のいくつかは違って読めたでしょうか。' : '{name}さん。2026年は{job}の仕事をしていましたね。あの仕事はまだあります。それでも、あなたはここで署名している。今日の案件のいくつかは違って読めたでしょうか。'),
     line(NAMES.on,'昨日署名したファイルの一つが、7階に届きました。その話をするつもりじゃなかったんです。'),
+    line(NAMES.on,'今日は氷点下11度です。三年前の今日は氷点下2度でした。大気反射率調整のせいです。'),
+    line(NAMES.on,'寒かったら窓を閉めてください。私は寒いのが好きです。……これは言ってはいけないことでしたか。'),
     () => { S.flags.blueNamed = true; updHUD(false); },
     line(NAMES.on,'BLUE指数は' + Math.round(S.blue) + 'です。これは会社の指標じゃありません。私が作りました。名前も私がつけました。'),
     {choice:[
@@ -1407,7 +1413,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">書く</button><button class="btn text" id="d-skip">空欄にする</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }

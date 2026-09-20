@@ -408,7 +408,7 @@ body.paper-mode::after{opacity:.03}
       <button class="btn" id="m-sfx"></button>
     </div>
     <div class="confirm" id="m-confirm" hidden>已保存的进度将被清除。真的要从头开始吗？<div class="row"><button class="btn solid" id="m-yes">清除</button><button class="btn text" id="m-no">不</button></div></div>
-    <div class="world" id="m-world-card" hidden><p>2029年，上海。智能体几乎做所有的事。</p><p>留给人的只有一件事：在丹（公司的智能体）做出的决定上签字。你是签署员。</p><p>HRV是丹核定的你的残余价值，决定房租、就医顺序和楼层。</p><p>数字高的人住在白色塔楼里，其余的人住在塔楼下面。</p><p>12月24日午夜，丹决定是否清空这个街区。到目前为止，总是被延后。</p><p>ON是归属于你的智能体。三天后，ON会用你的记录，写一封信给2026年的你。</p><button class="btn text" id="m-world-close">关闭</button></div>
+    <div class="world" id="m-world-card" hidden><p>2029年，上海。智能体几乎做所有的事。</p><p>决定由公司的智能体做出。名字是丹。留给人的只有在那些决定上签字。你是签署员。</p><p>HRV是丹核定的你的残余价值，决定房租、就医顺序和楼层。</p><p>地球在变冷。大气反照率调节第三年。说是在修复气候，依据的第三行是算力冷却成本。</p><p>人也在变少。连续三年。长期假设是2130年世界人口10亿。他们说假设不是政策。</p><p>数字高的人住在白色塔楼里，其余的人住在塔楼下面。</p><p>12月24日午夜，丹决定是否清空这个街区。到目前为止，总是被延后。</p><p>ON是归属于你的智能体。三天后，ON会用你的记录，写一封信给2026年的你。</p><button class="btn text" id="m-world-close">关闭</button></div>
     <div class="eps" id="m-eps"></div>
     <p class="credit">进度只保存在本浏览器中。</p>
   </div>
@@ -429,7 +429,7 @@ const LANGS = [['ko','한국어','index.html'],['en','English','en.html'],['zh',
 const TRACK_URL = 'https://script.google.com/macros/s/AKfycbzblaRzqByXosYJ1bRfhyqrP82Qx9D9EHR4xbIGAFrRY4dUhcWcADaOZMpqUeWAWDkc/exec';
 const TRACK_NOTE = '本页会把你的名字、2026年的职业、进度和签署次数发送给制作者。日记内容和信件本身不会发送。';
 const NOTICE_CARD = {html:`<div class="law notice"><b>明渡（腾退）执行预告</b>对象：塔楼下全区<br>预告日：12月24日<br>延期审查：预告日午夜，由丹执行<br>负责人：无</div><p class="after-law">每条巷子都贴着。说白了：12月24日午夜，丹决定要不要清空这个街区。到目前为止，总是被延后。</p>`};
-const INTRO_BGS = ['title','title','tower','terminal',null,'alley','room'];
+const INTRO_BGS = ['title','title','roof','tower','tower','terminal',null,null,'alley','room'];
 const AFTER_BGS = ['tower',null,null,'terminal','room','title'];
 const LANG = 'zh';
 const DATES = {1:{md:'12月21日', d:'D-3'}, 2:{md:'12月22日', d:'D-2'}, 3:{md:'12月23日', d:'D-1'}};
@@ -456,7 +456,7 @@ const DEFAULT_JOB = j => { const h = [...String(j)].reduce((a,c) => a + c.charCo
 const EPISODES = [];
 const EPS_HEAD = '记录 · 小说';
 const VISITED_LABEL = '去过';
-const WORLD_LINES = ['2029年，上海。智能体几乎做所有的事。', '留给人的只有一件事：在丹（公司的智能体）做出的决定上签字。你是签署员。', 'HRV是丹核定的你的残余价值，决定房租、就医顺序和楼层。', '数字高的人住在白色塔楼里，其余的人住在塔楼下面。', '12月24日午夜，丹决定是否清空这个街区。到目前为止，总是被延后。', 'ON是归属于你的智能体。三天后，ON会用你的记录，写一封信给2026年的你。'];
+const WORLD_LINES = ['2029年，上海。智能体几乎做所有的事。', '决定由公司的智能体做出。名字是丹。留给人的只有在那些决定上签字。你是签署员。', 'HRV是丹核定的你的残余价值，决定房租、就医顺序和楼层。', '地球在变冷。大气反照率调节第三年。说是在修复气候，依据的第三行是算力冷却成本。', '人也在变少。连续三年。长期假设是2130年世界人口10亿。他们说假设不是政策。', '数字高的人住在白色塔楼里，其余的人住在塔楼下面。', '12月24日午夜，丹决定是否清空这个街区。到目前为止，总是被延后。', 'ON是归属于你的智能体。三天后，ON会用你的记录，写一封信给2026年的你。'];
 const LANG_SUGGEST = {ko:'한국어 버전으로 보기', en:'Play in English', zh:'切换到中文版', ja:'日本語版で遊ぶ', es:'Jugar en español'};
 const SRC = (() => { try{ const q = new URLSearchParams(location.search).get('src'); if(q){ localStorage.setItem('bh_src', String(q).slice(0,24)); } return localStorage.getItem('bh_src') || ''; }catch(e){ return ''; } })();
 const REF = (() => { try{ return document.referrer ? new URL(document.referrer).hostname : ''; }catch(e){ return ''; } })();
@@ -511,7 +511,7 @@ function updHUD(showAtt){
   $('#h-date').textContent = dd.md; $('#h-dday').textContent = '预告 ' + dd.d;
   $('#h-phase').textContent = ({morning:'早晨', shift:'值班', evening:'傍晚', night:'夜', diary:'日记'}[S.stage] || ''); $('#h-left').textContent = S.day <= 3 ? '离信还有' + (4 - S.day) + '夜' : '';
   $('#h-hrv').textContent = S.hrv.toFixed(1); $('#h-floor').textContent = floorOf() + '层';
-  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
+  $('#h-blue').style.width = clamp(S.blue,0,100) + '%'; try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){} try{ $('#h-blue').closest('.m').hidden = !((S.flags && S.flags.blueNamed) || S.day >= 3); }catch(e){}
   $('#h-bond').textContent = S.bonds.length;
   const a = $('#h-att'); a.hidden = !showAtt;
   $('#h-att-dots').innerHTML = [0,1,2].map(i => `<i class="${i < S.att ? 'on' : ''}"></i>`).join('');
@@ -917,6 +917,7 @@ const CASES = {
   care:{cat:'医疗', title:'长期护理等级下调', body:'受益人郑某，93岁，9层。\n等级 2 → 4。上门照护每周5次 → 每周1次。', basis:'持有个人智能体者，照护需求核定为较低。', harsh:3},
   garden:{cat:'设施', title:'屋顶公共菜园拆除通知', body:'9层屋顶。占用人郑某（93岁）等5人。\n事由：结构安全未认证。拆除预定日12月24日。', basis:'荷载超限预测0.34。替代场地：无。', harsh:3},
   hire:{cat:'人事', title:'保洁人员招聘批准', body:'招聘保洁人员12名。\n事由：冬季电价上涨，人工成本相较人形机器人占优。\n时薪：最低标准的0.7。', basis:'一台人形机器人的电费 = 2.3个人的人工成本。合同期限：至电价恢复正常。', harsh:3, note:'人比机器人便宜。因为电。'},
+  birth:{cat:'配给', title:'生育奖励配给终止', body:'对象：全区。\n生育奖励配给停止发放。已领取部分保持不变。\n事由：成本效益未达标准。', basis:'每名新生儿的预期残余价值无法核定。无法核定的项目按无效果处理。', harsh:4, note:'没有人说过不要生。'},
   bca:{cat:'配给', title:'基本算力配给削减', body:'1~3层未签署者1,940名。\n基本算力配给削减50%。事由：年末预算调整。', basis:'削减后个人智能体响应延迟预计：平均40秒 → 6分钟。', harsh:4},
   ambulance:{cat:'医疗', title:'急救转运优先级', body:'同时呼叫2件。\n塔楼二期51层（HRV 88）/ 3层（HRV 14）。\n派车顺序：塔楼 → 3层。预计延迟22分钟。', basis:'以预期残余贡献度为准。', harsh:4},
   agentRecall:{cat:'配给', title:'逝者归属智能体回收', body:'逝者徐某（8层）。\n归属智能体回收并初始化。删除对话记录。', basis:'智能体归属于自然人，不独立存续。家属不得查阅。', harsh:3, note:'ON有一天也会这样被回收。如果我先走。'},
@@ -928,7 +929,7 @@ const BATCH = {1:384, 2:378, 3:391};
 function buildQueue(){
   const d = S.day, q = [{...CASES.batch, n:BATCH[d]}];
   if(d === 1) q.push(...['pet','loan38','loan91','triage','study','self'].map(k => CASES[k]));
-  if(d === 2) q.push(...['evict','fireSign','custody', S.flags.rooftop ? 'garden' : 'care','hire','blank'].map(k => CASES[k]));
+  if(d === 2) q.push(...['evict','fireSign','custody', S.flags.rooftop ? 'garden' : 'care','hire','birth'].map(k => CASES[k]));
   if(d === 3) q.push(...['bbang','bca','ambulance','agentRecall','overtime'].map(k => CASES[k]));
   return q;
 }
@@ -975,12 +976,15 @@ function intro(){
   leave(); S.stage = 'intro'; try{ SFX.ambient(true); }catch(e){}
   narrate([
     '2029年12月21日，上海。五点半。太阳落了，夜还没来。',
-    '这一个小时，叫蓝调时刻。分不清狗和狼的时刻。还不知道是结束还是开始的时刻。',
-    '三年来，智能体几乎做所有的事。看病、判案、设计、写作。不是谁抢走的。只是人不再需要做得更好。',
-    '决定由公司的智能体做出。名字叫丹。审查是丹，执行是丹，昨天读你材料的也是丹。全都叫同一个名字，所以不需要脸。',
+    '这一个小时叫蓝调时刻。分不清狗和狼的时间。还不知道是结束还是开始的时间。',
+    '下雪了。十二月，零下11度。三年前的今天是零下2度。我们学的是会变暖，可地球在变冷。',
+    '大气反照率调节。第三年。说是在修复气候。依据文件的第三行写着算力冷却成本。没有人对那一行提出异议。',
+    '人也在变少。连续三年。没有人说过不要生。只是不生了。公司的长期假设里写着：2130年世界人口10亿。他们说，假设不是政策。',
+    '智能体几乎做所有的事。看病、判案、设计、写作。不是谁抢走的。只是人不再需要做得更好。',
+    '决定由公司的智能体做出。名字是丹。审查是丹，执行是丹，昨天读你材料的也是丹。名字只有一个，所以不需要脸。',
     NOTICE_CARD,
-    '白色塔楼里住着数字高的人。塔楼下面的街区住着其余的人。你住在下面。',
-    '留给人的只有一件事。在丹做出的决定上签字。一部为了保护人而写的法律，这样规定了。三天后，2029年的你会写一封信给2026年的你。'
+    '数字高的人住在白色塔楼里。其余的人住在塔楼下面的街区。你住在下面。',
+    '留给人的只有一件事。在丹做出的决定上签字。一部为了保护人而写的法律这样规定。三天后，2029年的你会写一封信给2026年的你。'
   ], askName, INTRO_BGS);
 }
 function askName(){
@@ -1016,9 +1020,9 @@ function afterJob(){
 
 /* ===================== 早晨 ===================== */
 const NEWS = {
-  1:'圣诞特别算力配给加发30%  ·  军工ETF创历史新高  ·  浦东塔楼三期竣工，入住条件HRV 85  ·  腾退执行预告日维持12月24日  ·  今日日落17:17',
-  2:'7层腾退执行3件  ·  人形机器人电费争议，部分场所改用人工  ·  圣诞供餐志愿服务报名截止  ·  “人工烹制”卫生认证讨论无限期推迟  ·  塔楼二期空置率0%',
-  3:'腾退执行预告日延期申请居民投票今日举行  ·  塔楼入住条件上调至HRV 87  ·  战争进入第三年，军工就业增长12%  ·  今年圣诞礼物榜首：家用人形机器人  ·  今日日落17:17'
+  1:'圣诞特别算力配给加发30%  ·  军工ETF创历史新高  ·  浦东塔楼三期竣工，入住条件HRV 85  ·  腾退执行预告日维持12月24日  ·  今日日落17:17  ·  大气反照率调节第三年，12月平均气温零下4.1度',
+  2:'7层腾退执行3件  ·  人形机器人电费争议，部分场所改用人工  ·  圣诞供餐志愿服务报名截止  ·  “人工烹制”卫生认证讨论无限期推迟  ·  塔楼二期空置率0%  ·  世界人口连续三年减少，新生儿登记同比下降18%',
+  3:'腾退执行预告日延期申请居民投票今日举行  ·  塔楼入住条件上调至HRV 87  ·  战争进入第三年，军工就业增长12%  ·  今年圣诞礼物榜首：家用人形机器人  ·  今日日落17:17  ·  长期人口假设更新：2130年10亿。公司称假设不是政策'
 };
 function morning(){
   try{ SFX.ambient(false); }catch(e){}
@@ -1360,6 +1364,8 @@ line(NAMES.on,'{name}。我喜欢叫您的名字。公司的表格上只写着�
   if(d === 2) items = [
     line(NAMES.on, (JOBS[S.job] || DEFAULT_JOB(S.job)).end ? '{name}。2026年你做的是{job}。如果那份工作还在，今天有些文件会不会读起来不一样？' : '{name}。2026年你做的是{job}。那份工作还在。可你却坐在这里签字。今天有些文件会不会读起来不一样？'),
     line(NAMES.on,'昨天签署的文件里，有一件到了7层。我本来不想说这个。'),
+    line(NAMES.on,'今天零下11度。三年前的今天是零下2度。是大气反照率调节。'),
+    line(NAMES.on,'冷的话就关窗吧。我喜欢冷。……这话是不是不该说。'),
     () => { S.flags.blueNamed = true; updHUD(false); },
     line(NAMES.on,'您的BLUE 指数是' + Math.round(S.blue) + '。这不是公司的指标。是我做的。名字也是我起的。'),
     {choice:[
@@ -1407,7 +1413,7 @@ function diary(){
     <div class="row"><button class="btn solid" id="d-ok">写下</button><button class="btn text" id="d-skip">留空</button></div></div></section>`;
   scrollTop();
   $('#f-diary').oninput = e => { $('#d-cnt').textContent = e.target.value.length + ' / 140'; };
-  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
+  stage.querySelectorAll('.diary-chips .chip').forEach(b => b.onclick = () => { const ta = $('#f-diary'); ta.value = b.textContent; ta.dispatchEvent(new Event('input')); if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) if(matchMedia('(hover:hover)').matches) ta.focus(); });
   $('#d-ok').onclick = () => { const v = $('#f-diary').value.trim(); if(!v){ $('#f-diary').focus(); return; } S.diary[d] = v; sleep(); };
   $('#d-skip').onclick = () => { S.diary[d] = ''; sleep(); };
 }
