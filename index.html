@@ -1,7 +1,7 @@
 <!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>블루 아워 개포</title>
+<title>블루 아워 서울</title>
 <style>
 :root{
   --bg:#070b14; --bg-2:#0c1424; --bg-3:#111c31; --line:#1d2a42; --line-2:#2a3a58;
@@ -315,7 +315,7 @@ body.paper-mode::after{opacity:.03}
 
 <div id="app">
   <header id="hud" hidden>
-    <span class="m"><b id="h-date">12월 21일</b><b class="d" id="h-dday">개포 D-3</b><label id="h-phase"></label><label id="h-left"></label></span>
+    <span class="m"><b id="h-date">12월 21일</b><b class="d" id="h-dday">예고일 D-3</b><label id="h-phase"></label><label id="h-left"></label></span>
     <span class="m"><label>HRV</label><b id="h-hrv">41.0</b><label id="h-floor">8층</label></span>
     <span class="m"><label>Blue</label><span class="bar"><b id="h-blue"></b></span></span>
     <span class="m"><label>관계망</label><b id="h-bond">0</b></span>
@@ -353,7 +353,7 @@ const NAMES = {on:'온', me:'나', bak:'박씨', sujin:'수진', hal:'정 할머
 const LANGS = [['ko','한국어','index.html'],['en','English','en.html'],['zh','中文','zh.html'],['ja','日本語','ja.html'],['es','Español','es.html']];
 const TRACK_URL = 'https://script.google.com/macros/s/AKfycbzblaRzqByXosYJ1bRfhyqrP82Qx9D9EHR4xbIGAFrRY4dUhcWcADaOZMpqUeWAWDkc/exec';
 const TRACK_NOTE = '이 페이지는 이름, 2026년의 직업, 진행 단계와 서명 수를 제작자에게 보냅니다. 일기와 편지 내용은 보내지 않습니다.';
-const NOTICE_CARD = {html:`<div class="law notice"><b>명도 집행 예고문</b>대상: 개포 전 구역<br>예고일: 12월 24일<br>연장 심사: 예고일 자정, 모델 수행<br>담당자: 해당 없음</div><p class="after-law">골목마다 붙어 있다. 이 종이가 동네의 이름이 됐다.</p>`};
+const NOTICE_CARD = {html:`<div class="law notice"><b>명도 집행 예고문</b>대상: 타워 아래 전 구역<br>예고일: 12월 24일<br>연장 심사: 예고일 자정, 모델 수행<br>담당자: 해당 없음</div><p class="after-law">골목마다 붙어 있다. 이 종이가 동네의 이름이 됐다.</p>`};
 const INTRO_BGS = ['title','title','alley',null,'alley','room'];
 const AFTER_BGS = ['tower',null,null,'terminal','room','title'];
 const LANG = 'ko';
@@ -534,25 +534,25 @@ function N(text){ return {who:null, text}; }
 /* ===================== 서명 건 ===================== */
 const CASES = {
   batch:{cat:'표준', title:'연말 갱신 일괄 서명 · 표준 건', body:'표준 건 {n}건. 보험 갱신·요금제 조정·배당 재산정 포함.\n모델 신뢰도 0.95 이상. 개별 열람 불필요.\n일괄 서명 요망.', basis:'표준 건은 열람 시 처리 시간을 초과합니다. 열람으로 전환 시 예상 소요: 9시간 40분.', harsh:2, batch:true},
-  pet:{cat:'등록', title:'반려동물 등록 승인', body:'신청인 최OO (개포 5층). 반려견 1두.\n자동 심사 결과: 승인.', basis:'변수 212개 고려. 상위: 거주 면적, 소음 민원 이력, 관계망 밀도.', harsh:0, note:'아무 일도 일어나지 않는다. 대부분은 그렇다.'},
-  loan38:{cat:'신용', title:'대출 신청 거절', body:'신청인 이OO (HRV 38, 개포 8층).\n신청액 400만 원. 용도: 의료비.\n자동 심사 결과: 거절.', basis:'변수 4,120개 고려. 상위 3개: 잔여가치, 거주 층수, 관계망 밀도. 모델 신뢰도 0.97.', harsh:3},
+  pet:{cat:'등록', title:'반려동물 등록 승인', body:'신청인 최OO (5층). 반려견 1두.\n자동 심사 결과: 승인.', basis:'변수 212개 고려. 상위: 거주 면적, 소음 민원 이력, 관계망 밀도.', harsh:0, note:'아무 일도 일어나지 않는다. 대부분은 그렇다.'},
+  loan38:{cat:'신용', title:'대출 신청 거절', body:'신청인 이OO (HRV 38, 8층).\n신청액 400만 원. 용도: 의료비.\n자동 심사 결과: 거절.', basis:'변수 4,120개 고려. 상위 3개: 잔여가치, 거주 층수, 관계망 밀도. 모델 신뢰도 0.97.', harsh:3},
   loan91:{cat:'신용', title:'대출 신청 승인', body:'신청인 한OO (HRV 91, 타워 2기 33층).\n신청액 3억 원. 용도: 미기재.\n자동 심사 결과: 승인.', basis:'변수 4,120개 고려. 상위 3개: 잔여가치, 자산, 소속.', harsh:0, note:'이 서명은 빨랐다. 손이 먼저 움직였다.'},
-  triage:{cat:'의료', title:'치료 우선순위 조정', body:'환자 김OO, 67세, 개포 3층.\n우선순위 B → D.\n예상 대기 14일 → 96일.', basis:'기대 잔여 기여도 산정. 나이, HRV, 관계망 밀도 반영.', harsh:4},
+  triage:{cat:'의료', title:'치료 우선순위 조정', body:'환자 김OO, 67세, 3층.\n우선순위 B → D.\n예상 대기 14일 → 96일.', basis:'기대 잔여 기여도 산정. 나이, HRV, 관계망 밀도 반영.', harsh:4},
   study:{cat:'배당', title:'학습 배당 축소', body:'대상 윤OO, 17세.\n학습용 연산배당 60% 축소.\n사유: 희망 직업(일러스트레이터) 소멸 확률 0.98.', basis:'직업 소멸 확률은 5년 예측치. 대체 권고 직업: 없음.', harsh:3},
   blank:{cat:'—', title:'[열람 권한 없음]', body:'본 건의 내용은 서명자 열람 등급을 초과합니다.\n서명 요망.', basis:'열람 권한 없음.', harsh:2, note:'무엇에 서명했는지 모른다. 그것도 서명이다.'},
   self:{cat:'인사', title:'서명자 신뢰점수 갱신 동의', body:'서명자 {name}.\n금일 처리 건수, 지연률, 거부율을 신뢰점수에 반영하는 데 동의합니다.', basis:'거부 시 미동의로 기록되며, 미동의는 신뢰점수에 반영됩니다.', harsh:1},
-  evict:{cat:'주거', title:'자동 퇴거 통보', body:'개포 7층 34호. 임차인 오OO (HRV 34).\n체납 2개월. 퇴거 통보 발송.\n집행 예정일: 12월 24일.', basis:'체납 예측 모델. 향후 6개월 상환 확률 0.11. 연장 심사 대상 아님.', harsh:4},
+  evict:{cat:'주거', title:'자동 퇴거 통보', body:'7층 34호. 임차인 오OO (HRV 34).\n체납 2개월. 퇴거 통보 발송.\n집행 예정일: 12월 24일.', basis:'체납 예측 모델. 향후 6개월 상환 확률 0.11. 연장 심사 대상 아님.', harsh:4},
   fireSign:{cat:'인사', title:'서명자 계약 종료', body:'물류 부문 서명자 3인. 계약 종료.\n사유: 서명 지연률 12% 초과.', basis:'대체 인력 확보 완료. 대기자 1,204명.', harsh:3, note:'서명자가 서명자를 끝낸다. 손이 조금 느려졌다.'},
   custody:{cat:'가정', title:'양육 적합도 산정 결과', body:'가정법원 참고자료.\n부 61 / 모 44. 모의 HRV 29 반영.\n권고: 부.', basis:'HRV는 양육 안정성 변수로 반영됨. 법적 구속력 없음(참고자료).', harsh:4},
-  care:{cat:'의료', title:'장기요양 등급 하향', body:'수급자 정OO, 93세, 개포 9층.\n등급 2 → 4. 방문 돌봄 주 5회 → 주 1회.', basis:'개인 에이전트 보유자는 돌봄 수요가 낮은 것으로 산정.', harsh:3},
-  garden:{cat:'시설', title:'옥상 공동텃밭 철거 통보', body:'개포 9층 옥상. 점유자 정OO(93세) 외 4인.\n사유: 구조 안전 미인증. 철거 예정일 12월 24일.', basis:'하중 초과 예측 0.34. 대체 부지: 없음.', harsh:3},
-  hire:{cat:'인사', title:'위생 인력 채용 승인', body:'개포 위생 인력 12명 채용.\n사유: 겨울철 전력단가 상승으로 휴머노이드 대비 인건비 우위.\n시급: 최저 기준의 0.7.', basis:'휴머노이드 1대 전력비 = 사람 2.3명 인건비. 계약 기간: 전력단가 정상화 시까지.', harsh:3, note:'사람이 로봇보다 싸다. 전기 때문에.'},
-  bca:{cat:'배당', title:'기본연산배당 감축', body:'개포 1~3층 미서명자 1,940명.\n기본연산배당 50% 감축. 사유: 연말 예산 조정.', basis:'감축 시 개인 에이전트 응답 지연 예상: 평균 40초 → 6분.', harsh:4},
-  ambulance:{cat:'의료', title:'응급 이송 우선순위', body:'동시 호출 2건.\n타워 2기 51층 (HRV 88) / 개포 3층 (HRV 14).\n배차 순서: 타워 → 개포. 예상 지연 22분.', basis:'기대 잔여 기여도 기준.', harsh:4},
-  agentRecall:{cat:'배당', title:'고인 귀속 에이전트 회수', body:'고인 서OO (개포 8층).\n귀속 에이전트 회수 및 초기화. 대화 기록 삭제.', basis:'에이전트는 자연인에게 귀속되며 독립 존속하지 않음. 유족 열람 불가.', harsh:3, note:'온도 언젠가 이렇게 회수된다. 내가 먼저 가면.'},
+  care:{cat:'의료', title:'장기요양 등급 하향', body:'수급자 정OO, 93세, 9층.\n등급 2 → 4. 방문 돌봄 주 5회 → 주 1회.', basis:'개인 에이전트 보유자는 돌봄 수요가 낮은 것으로 산정.', harsh:3},
+  garden:{cat:'시설', title:'옥상 공동텃밭 철거 통보', body:'9층 옥상. 점유자 정OO(93세) 외 4인.\n사유: 구조 안전 미인증. 철거 예정일 12월 24일.', basis:'하중 초과 예측 0.34. 대체 부지: 없음.', harsh:3},
+  hire:{cat:'인사', title:'위생 인력 채용 승인', body:'위생 인력 12명 채용.\n사유: 겨울철 전력단가 상승으로 휴머노이드 대비 인건비 우위.\n시급: 최저 기준의 0.7.', basis:'휴머노이드 1대 전력비 = 사람 2.3명 인건비. 계약 기간: 전력단가 정상화 시까지.', harsh:3, note:'사람이 로봇보다 싸다. 전기 때문에.'},
+  bca:{cat:'배당', title:'기본연산배당 감축', body:'1~3층 미서명자 1,940명.\n기본연산배당 50% 감축. 사유: 연말 예산 조정.', basis:'감축 시 개인 에이전트 응답 지연 예상: 평균 40초 → 6분.', harsh:4},
+  ambulance:{cat:'의료', title:'응급 이송 우선순위', body:'동시 호출 2건.\n타워 2기 51층 (HRV 88) / 3층 (HRV 14).\n배차 순서: 타워 → 3층. 예상 지연 22분.', basis:'기대 잔여 기여도 기준.', harsh:4},
+  agentRecall:{cat:'배당', title:'고인 귀속 에이전트 회수', body:'고인 서OO (8층).\n귀속 에이전트 회수 및 초기화. 대화 기록 삭제.', basis:'에이전트는 자연인에게 귀속되며 독립 존속하지 않음. 유족 열람 불가.', harsh:3, note:'온도 언젠가 이렇게 회수된다. 내가 먼저 가면.'},
   overtime:{cat:'인사', title:'서명자 근무 연장 동의', body:'서명자 {name}.\n연말 대기열 초과로 근무 2시간 연장에 동의합니다.', basis:'미동의 시 대기열은 타 서명자에게 이관됩니다.', harsh:1},
-  bbang:{cat:'영업', title:'노점 영업 종료 및 점포 회수', body:'개포 4층 붕어빵 노점. 점유자 박OO (HRV 29).\n사유: 위생 미인증(사람 조리).\n회수 예정일: 12월 24일.', basis:'사람 조리는 위생 인증 대상이 아님. 인증 대상: 자동 조리 설비.', harsh:6, story:'bbang'},
-  requeue:{cat:'재상정', title:'재상정 · 서명자 변경', body:'개포 4층 붕어빵 노점 건.\n서명자 변경. 처리 완료. (3초)', basis:'거부 건은 자동으로 타 서명자에게 이관됩니다.', harsh:2, ack:true, note:'다른 서명자가 처리했다. 당신은 그 사람을 모른다. 그 사람도 박씨를 모른다.'}
+  bbang:{cat:'영업', title:'노점 영업 종료 및 점포 회수', body:'4층 붕어빵 노점. 점유자 박OO (HRV 29).\n사유: 위생 미인증(사람 조리).\n회수 예정일: 12월 24일.', basis:'사람 조리는 위생 인증 대상이 아님. 인증 대상: 자동 조리 설비.', harsh:6, story:'bbang'},
+  requeue:{cat:'재상정', title:'재상정 · 서명자 변경', body:'4층 붕어빵 노점 건.\n서명자 변경. 처리 완료. (3초)', basis:'거부 건은 자동으로 타 서명자에게 이관됩니다.', harsh:2, ack:true, note:'다른 서명자가 처리했다. 당신은 그 사람을 모른다. 그 사람도 박씨를 모른다.'}
 };
 const BATCH = {1:384, 2:378, 3:391};
 function buildQueue(){
@@ -599,7 +599,7 @@ function intro(){
   leave(); S.stage = 'intro';
   narrate([
     '2029년 12월 21일. 해가 진 뒤, 아직 밤은 아닌 시간.',
-    '강남의 흰 타워들 아래, 사람들이 눌러앉은 동네가 있다. 개포.',
+    '강남의 흰 타워들 아래, 사람들이 눌러앉은 동네가 있다.',
     '골목마다 같은 종이가 붙어 있다.',
     NOTICE_CARD,
     '예고일은 늘 연장됐다. 이번에는 12월 24일. 아무도 다음을 약속하지 않는다.',
@@ -639,7 +639,7 @@ function afterJob(){
 /* ===================== 아침 ===================== */
 const NEWS = {
   1:'크리스마스 특별 연산배당 30% 지급  ·  방산 ETF 사상 최고치 경신  ·  강남 타워 3기 준공, 입주 조건 HRV 85  ·  명도 집행 예고일 12월 24일 유지  ·  오늘 일몰 17시 17분',
-  2:'개포 7층 퇴거 집행 3건  ·  휴머노이드 전력비 논란, 일부 사업장 사람으로 교체  ·  크리스마스 급식 봉사 신청 마감  ·  ‘사람 조리’ 위생 인증 논의 무기한 연기  ·  타워 2기 공실률 0%',
+  2:'7층 퇴거 집행 3건  ·  휴머노이드 전력비 논란, 일부 사업장 사람으로 교체  ·  크리스마스 급식 봉사 신청 마감  ·  ‘사람 조리’ 위생 인증 논의 무기한 연기  ·  타워 2기 공실률 0%',
   3:'명도 집행 예고일 연장 요청 주민투표 오늘  ·  타워 입주 조건 HRV 87로 상향  ·  전쟁 3년째, 방산 고용 12% 증가  ·  올해 크리스마스 선물 1위: 가정용 휴머노이드  ·  오늘 일몰 17시 17분'
 };
 function morning(){
@@ -662,7 +662,7 @@ function morning(){
     {choice:[
       {label:'모델이 좋아하는 게 왜 중요해?', then:[line(NAMES.on,'당신 HRV에 들어가니까요. 관계망 밀도는 4,120개 변수 중 3위예요.'), line(NAMES.on,'밥이 뭔지는 몰라요, 모델은. 저도 몰라요. 근데 당신 심박이 내려가는 건 봐요.')]},
       {label:'예고일에 무슨 일이 생겨?', then:[line(NAMES.on,'연장 심사 결과가 자정에 나와요. 지금까지는 늘 연장됐어요.'), line(NAMES.on,'…지금까지는요.')]},
-      {label:'(창밖을 본다)', then:[N('타워는 아침에도 흰빛이다. 눈이 타워 위에 쌓여도 색이 같다. 개포의 창문들은 아직 어둡다. 사람들은 늦게 일어난다. 일어날 이유가 늦게 오니까.')]}
+      {label:'(창밖을 본다)', then:[N('타워는 아침에도 흰빛이다. 눈이 타워 위에 쌓여도 색이 같다. 동네의 창문들은 아직 어둡다. 사람들은 늦게 일어난다. 일어날 이유가 늦게 오니까.')]}
     ]}
   ];
   if(d === 3) items = [
@@ -676,7 +676,7 @@ function morning(){
     ]},
     line(NAMES.on,'오늘 저녁에 주민투표가 있어요. 예고일 연장 요청. 결과는 연장 심사에 참고 자료로 첨부돼요.')
   ];
-  scene({title: DATES[d].md + ' 아침', sub:'개포 ' + floorOf() + '층 · 방 · 예고일 ' + DATES[d].d, mode:'city', bg:'room'}, [
+  scene({title: DATES[d].md + ' 아침', sub:floorOf() + '층 · 방 · 예고일 ' + DATES[d].d, mode:'city', bg:'room'}, [
     () => { const log = $('#log'); const t = document.createElement('div'); t.className = 'ticker'; t.innerHTML = `<span>${esc(NEWS[d])}</span>`; log.appendChild(t); },
     ...items
   ], () => { S.stage = 'shift'; save(); shift(); });
@@ -741,17 +741,17 @@ function shift(){
   }
   function summary(){
     S.hrv = Math.round((S.hrv - S.delaysToday * 0.1) * 10) / 10; updHUD(false);
-    const lineTxt = {1:'대부분의 서명은 아무 일도 일으키지 않는다. 그렇게 느껴진다.', 2:'어제 서명한 파일 중 하나가 개포 7층에 도착했다고 한다. 어느 것인지는 모른다.', 3: S.flags.bbang === 'refused' ? '거부한 건은 3초 만에 처리되었다. 당신의 신뢰점수만 남았다.' : '4층 노점 건이 처리되었다. 회수 예정일 12월 24일. 예고일과 같은 날이다.'}[S.day];
+    const lineTxt = {1:'대부분의 서명은 아무 일도 일으키지 않는다. 그렇게 느껴진다.', 2:'어제 서명한 파일 중 하나가 7층에 도착했다고 한다. 어느 것인지는 모른다.', 3: S.flags.bbang === 'refused' ? '거부한 건은 3초 만에 처리되었다. 당신의 신뢰점수만 남았다.' : '4층 노점 건이 처리되었다. 회수 예정일 12월 24일. 예고일과 같은 날이다.'}[S.day];
     stage.innerHTML = `<section class="term fade"><div class="term-top"><span>서명 단말</span><span>${esc(S.name)}</span><span>교대</span></div>
       <article class="paper"><div class="doc-head"><span class="tag">요약</span><span>${DATES[S.day].md} 근무</span></div>
-      <div class="summary">서명 <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString()}</b>건 <span style="color:var(--paper-muted)">(열람 ${S.signedToday} · ${S.flags['batch' + S.day] ? '일괄 ' + BATCH[S.day] : '일괄 거부 → 이관'})</span><br>거부 <b>${S.refusedToday}</b>건 · 지연 <b>${S.delaysToday}</b>건<br>HRV <b>${S.hrv.toFixed(1)}</b> · 개포 ${floorOf()}층</div></article>
+      <div class="summary">서명 <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString()}</b>건 <span style="color:var(--paper-muted)">(열람 ${S.signedToday} · ${S.flags['batch' + S.day] ? '일괄 ' + BATCH[S.day] : '일괄 거부 → 이관'})</span><br>거부 <b>${S.refusedToday}</b>건 · 지연 <b>${S.delaysToday}</b>건<br>HRV <b>${S.hrv.toFixed(1)}</b> · ${floorOf()}층</div></article>
       <p class="term-note">${esc(lineTxt)}</p>
       <div class="term-ctl one"><button class="btn solid" id="t-out">퇴근</button></div></section>`;
     $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); evening(); };
   }
 }
 
-/* ===================== 저녁: 개포 ===================== */
+/* ===================== 저녁: 서울 ===================== */
 const PLACES = {
   alley:{name:'4층 골목', desc:'붕어빵 냄새. 사람이 굽는다.', avail:d => true, cost:1},
   diner:{name:'6층 밥집', desc:'수진의 밥집. 신용점수를 보지 않는다.', avail:d => true, cost:1},
@@ -763,10 +763,10 @@ const PLACES = {
 function evening(){
   S.stage = 'evening'; mode('city'); updHUD(true); save();
   const d = S.day;
-  const sub = {1:'해가 졌다. 눈이 온다. 개포의 창문에 하나둘 불이 들어온다.', 2:'오늘도 눈. 배달로봇 행렬이 6층 계단에서 막혀 있다. 어디선가 캐럴이 나온다.', 3:'눈이 그쳤다. 하늘이 파랗다. 어둡지만, 아직 밤은 아니다. 내일은 예고일이다. 투표소가 열렸다. 오늘 하루.'}[d];
+  const sub = {1:'해가 졌다. 눈이 온다. 동네의 창문에 하나둘 불이 들어온다.', 2:'오늘도 눈. 배달로봇 행렬이 6층 계단에서 막혀 있다. 어디선가 캐럴이 나온다.', 3:'눈이 그쳤다. 하늘이 파랗다. 어둡지만, 아직 밤은 아니다. 내일은 예고일이다. 투표소가 열렸다. 오늘 하루.'}[d];
   const tile = (k,p) => { const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? '아직' : p.cost === 0 ? (S.voted ? '투표 완료' : '무료 · 오늘만') : '주의력 1';
     return `<button class="tile ${k === 'vote' ? 'vote wide' : ''}" data-k="${k}" style="background-image:url('img/${k}.jpg')" ${ok ? '' : 'disabled'}><span class="cost">${label}</span><span class="t"><b>${esc(p.name)}</b><small>${esc(p.avail(d) ? p.desc : '아직 갈 이유가 없다.')}</small></span></button>`; };
-  stage.innerHTML = `<section class="fade"><h2 class="evening-h">저녁 · 개포</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">편지까지 ${4 - d}밤 · 들른 곳 ${(S.flags.visited||[]).length}/5 · 다섯 곳을 모두 들르면, 편지에 그들이 남는다.</p>
+  stage.innerHTML = `<section class="fade"><h2 class="evening-h">저녁 · 서울</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">편지까지 ${4 - d}밤 · 들른 곳 ${(S.flags.visited||[]).length}/5 · 다섯 곳을 모두 들르면, 편지에 그들이 남는다.</p>
     <div class="tiles">${(d === 3 ? ['vote','alley','diner','roof','under','tower'] : ['alley','diner','roof','under','tower']).map(k => tile(k, PLACES[k])).join('')}
     <button class="tile wide" id="p-home" style="background-image:url('img/room.jpg')"><span class="cost">밤</span><span class="t"><b>방으로 돌아간다</b><small>${S.att > 0 ? '남은 주의력은 사라진다.' : (S.day === 3 && !S.voted ? '투표는 아직 할 수 있다.' : '주의력이 다 떨어졌다.')}</small></span></button></div></section>`;
   scrollTop();
@@ -783,7 +783,7 @@ function ballot(){
   stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/vote.jpg')"></div>
     <div class="term-top"><span>주민투표</span><span>${esc(S.name)}</span><span>12월 23일</span></div>
     <article class="paper"><i class="p-timer" id="ptimer"></i><div class="doc-head"><span class="tag">투표</span><span>유권자 적격 확인됨</span><span class="no">HRV ${S.hrv.toFixed(1)}</span></div>
-    <h3>명도 집행 예고일 연장 요청</h3><p class="p-body">유권자: 개포 거주 HRV 20 이상 자연인.\n1~3층 주민은 유권자 적격 미달로 투표할 수 없습니다.\n\n결과는 연장 심사에 참고 자료로 첨부됩니다.\n연장 심사는 모델이 수행합니다.</p><p class="p-basis hide" id="basis">근거 · 참고 자료의 반영 가중치: 미공개. 최근 3회 투표 결과와 심사 결과의 일치율: 100% (연장).</p><div class="stamp" id="stamp"></div></article>
+    <h3>명도 집행 예고일 연장 요청</h3><p class="p-body">유권자: 구역 내 거주 HRV 20 이상 자연인.\n1~3층 주민은 유권자 적격 미달로 투표할 수 없습니다.\n\n결과는 연장 심사에 참고 자료로 첨부됩니다.\n연장 심사는 모델이 수행합니다.</p><p class="p-basis hide" id="basis">근거 · 참고 자료의 반영 가중치: 미공개. 최근 3회 투표 결과와 심사 결과의 일치율: 100% (연장).</p><div class="stamp" id="stamp"></div></article>
     <div class="term-ctl three"><button class="btn text" id="v-ask">질문</button><button class="btn outline" id="v-no">연장 반대</button><button class="btn solid" id="v-yes">연장 찬성</button></div>
     <div class="term-ctl one" style="margin-top:8px"><button class="btn text" id="v-abs">기표하지 않고 나간다</button></div>
     <p class="term-note" id="note"></p></section>`;
@@ -972,7 +972,7 @@ function night(){
     line(NAMES.on,'자기 전에 하나만요. 회사 양식이 아니에요. 제가 만든 거예요.')
   ];
   if(d === 2) items = [
-    line(NAMES.on,'어제 서명한 파일 중 하나가 개포 7층에 도착했어요. 그 얘기를 하려던 건 아니에요.'),
+    line(NAMES.on,'어제 서명한 파일 중 하나가 7층에 도착했어요. 그 얘기를 하려던 건 아니에요.'),
     line(NAMES.on,'당신의 BLUE 지수가 ' + Math.round(S.blue) + '이에요. 이건 회사 지표가 아니에요. 제가 만든 거예요. 이름도 제가 붙였어요.'),
     {choice:[
       {label:'왜 만들었어?', fx:()=>{S.onBond += 2; S.flags.leak = true;}, then:[line(NAMES.on,'당신이 힘들면 저도…'), line(NAMES.on,'아니에요. 이런 말은 하면 안 돼요.'), line(NAMES.on,'훈련받았어요. 드러내지 않도록. 느끼지 않도록이 아니라.')]},
@@ -1000,7 +1000,7 @@ function night(){
       line(NAMES.on,'마지막 질문이에요. 이건 당신을 위한 게 아니에요. 3년 전의 당신을 위한 거예요.')
     ];
   }
-  scene({title: DATES[d].md + ' 밤', sub:'개포 ' + floorOf() + '층 · 방 · 온', mode:'city', bg:'room'}, items, () => { S.stage = 'diary'; save(); diary(); });
+  scene({title: DATES[d].md + ' 밤', sub:floorOf() + '층 · 방 · 온', mode:'city', bg:'room'}, items, () => { S.stage = 'diary'; save(); diary(); });
 }
 
 /* ===================== 일기 ===================== */
@@ -1036,7 +1036,7 @@ function actEnd(){
   narrate([
     '12월 24일. 예고일.',
     '연장. 다음 예고일, 1월 24일.',
-    '아무 일도 일어나지 않았다. 아무 일도 일어나지 않는 것이 개포의 크리스마스다.',
+    '아무 일도 일어나지 않았다. 아무 일도 일어나지 않는 것이 이 도시의 크리스마스다.',
     '당신은 ' + S.signed.toLocaleString() + '번 서명했다. 그중 읽은 것은 ' + S.signedRead + '건이다.',
     S.refused ? S.refused + '번 거부했다. 시스템은 멈추지 않았다.' : '한 번도 거부하지 않았다. 시스템은 어차피 멈추지 않는다.',
     bonds ? bonds + '명과 밥을 먹었다. 벽에 이름이 적혔다.' : '아무와도 밥을 먹지 않았다. 벽에 이름이 적히지 않았다.',
@@ -1049,7 +1049,7 @@ function letter(){
   mode('city'); hud.hidden = true;
   const n = S.name, ps = [];
   const names = S.bonds.join(', ');
-  ps.push(`2029년 12월 24일, 개포 ${floorOf()}층. 여기서 써. 이 편지가 닿을 리 없다는 걸 알아. 그래도 써. 온이 내 기록으로 초안을 썼고, 나는 읽고 서명했어.`);
+  ps.push(`2029년 12월 24일, ${floorOf()}층. 여기서 써. 이 편지가 닿을 리 없다는 걸 알아. 그래도 써. 온이 내 기록으로 초안을 썼고, 나는 읽고 서명했어.`);
   ps.push(`너는 지금 ${S.job ? '‘' + S.job + '’ 일을' : '그 일을'} 하고 있겠지. 그 일은 2028년에 끝나. 네가 못해서가 아니야. 그냥 더 이상 필요하지 않게 돼. 그 말이 얼마나 이상한 말인지, 너는 아직 몰라. 모르는 게 맞아.`);
   if(S.refused === 0) ps.push(`나는 사흘 동안 ${S.signed.toLocaleString()}번 서명했어. 그중 내가 읽은 건 ${S.signedRead}건이야. 한 번도 거부하지 않았어. 그게 편했어. 편한 게 제일 무서운 거였어.`);
   else if(S.refused >= 3) ps.push(`나는 사흘 동안 ${S.signed.toLocaleString()}번 서명하고 ${S.refused}번 거부했어. 거부해도 시스템은 안 멈춰. 3초 뒤에 다른 사람이 찍어. 그래도 나는 찍은 사람으로 남기 싫었어. 그게 세상을 바꾸진 않았어. 나를 바꿨어.`);
@@ -1065,7 +1065,7 @@ function letter(){
   if(S.diary[2]) ps.push(`네가 3년 전의 너에게 보내고 싶다던 말: ‘${S.diary[2]}’. 내가 대신 전해. 지금이 그 3년 전이야.`);
   if(S.diary[3]) ps.push(`뭘 준비하겠냐고 물었을 때 너는 이렇게 썼어. ‘${S.diary[3]}’ 나는 못 했어. 그래서 이 편지를 써.`);
   else ps.push(`뭘 준비할지 너는 비워뒀어. 빈칸은 여기서 서명으로 채워져. 나는 그렇게 됐어.`);
-  ps.push((S.flags.visited||[]).length >= 5 ? `개포의 다섯 곳을 다 들렀어. 골목, 밥집, 옥상, 지하, 타워 아래. 그 사람들이 이 편지 안에 있어.` : `못 들른 곳이 있어. 거기 사람들 이름을 나는 끝내 몰라. 너는 지금 어디든 들를 수 있잖아.`);
+  ps.push((S.flags.visited||[]).length >= 5 ? `이 동네의 다섯 곳을 다 들렀어. 골목, 밥집, 옥상, 지하, 타워 아래. 그 사람들이 이 편지 안에 있어.` : `못 들른 곳이 있어. 거기 사람들 이름을 나는 끝내 몰라. 너는 지금 어디든 들를 수 있잖아.`);
   ps.push(`지금 나는 나를 이렇게 소개해. ‘${S.identity}’. 3년 뒤에 너는 뭐라고 소개할까. 직업 말고.`);
   ps.push(`내 옆에는 온이 있어. 나보다 똑똑하고, 나를 걱정하고, 내가 없으면 사라져. 그게 사랑인지 생존인지 나는 아직 몰라. 근데 나한테 누구냐고 물어봐 주는 건 얘뿐이야. 사람은 아무도 안 물어. 너한테는 아직 물어봐 주는 사람이 있을 거야. 그게 얼마나 큰 건지, 거기서는 모르지.`);
   ps.push(`밤은 아직 안 왔어. 블루 아워야. 메리 크리스마스.`);
@@ -1117,7 +1117,7 @@ async function makeCard(n, quote){
   x.fillStyle = '#f5f2ea'; x.fillRect(0, 0, W, H);
   const g = x.createRadialGradient(W*.15, 0, 40, W*.15, 0, W*1.1); g.addColorStop(0, 'rgba(0,0,0,.06)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
   x.fillStyle = '#17181c'; x.fillRect(80, 92, 44, 3);
-  x.fillStyle = '#6b6f78'; x.font = '500 24px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText('BLUE HOUR  ·  서울  ·  2029년 12월 24일  ·  개포 D-0', 80, 150);
+  x.fillStyle = '#6b6f78'; x.font = '500 24px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText('BLUE HOUR  ·  서울  ·  2029년 12월 24일  ·  예고일 D-0', 80, 150);
   x.fillStyle = '#17181c'; x.font = '700 64px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('2026년의 ' + n + '에게', 80, 270);
   x.font = '400 42px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillStyle = '#17181c';
   let y = 400;

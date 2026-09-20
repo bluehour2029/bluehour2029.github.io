@@ -1,7 +1,7 @@
 <!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Blue Hour Gaepo</title>
+<title>Blue Hour New York</title>
 <style>
 :root{
   --bg:#070b14; --bg-2:#0c1424; --bg-3:#111c31; --line:#1d2a42; --line-2:#2a3a58;
@@ -315,7 +315,7 @@ body.paper-mode::after{opacity:.03}
 
 <div id="app">
   <header id="hud" hidden>
-    <span class="m"><b id="h-date">December 21</b><b class="d" id="h-dday">Gaepo D-3</b><label id="h-phase"></label><label id="h-left"></label></span>
+    <span class="m"><b id="h-date">December 21</b><b class="d" id="h-dday">Notice D-3</b><label id="h-phase"></label><label id="h-left"></label></span>
     <span class="m"><label>HRV</label><b id="h-hrv">41.0</b><label id="h-floor">8F</label></span>
     <span class="m"><label>Blue</label><span class="bar"><b id="h-blue"></b></span></span>
     <span class="m"><label>Ties</label><b id="h-bond">0</b></span>
@@ -353,7 +353,7 @@ const NAMES = {on:'ON', me:'You', bak:'Mr. Park', sujin:'Sujin', hal:'Grandma Je
 const LANGS = [['ko','Korean','./'],['en','English','en.html'],['zh','Chinese','zh.html'],['ja','Japanese','ja.html'],['es','Spanish','es.html']];
 const TRACK_URL = 'https://script.google.com/macros/s/AKfycbzblaRzqByXosYJ1bRfhyqrP82Qx9D9EHR4xbIGAFrRY4dUhcWcADaOZMpqUeWAWDkc/exec';
 const TRACK_NOTE = 'This page sends your name, your 2026 job, your progress and your signature counts to the maker. Diary answers and the letter itself are never sent.';
-const NOTICE_CARD = {html:`<div class="law notice"><b>Notice to Vacate</b>Area: all of Gaepo<br>Enforcement date: December 24<br>Extension review: midnight of the enforcement date, performed by the model<br>Officer in charge: none</div><p class="after-law">It hangs in every alley. This sheet of paper became the name of the neighborhood.</p>`};
+const NOTICE_CARD = {html:`<div class="law notice"><b>Notice to Vacate</b>Area: all<br>Enforcement date: December 24<br>Extension review: midnight of the enforcement date, performed by the model<br>Officer in charge: none</div><p class="after-law">It hangs in every alley. This sheet of paper became the name of the neighborhood.</p>`};
 const INTRO_BGS = ['title','title','alley',null,'alley','room'];
 const AFTER_BGS = ['tower',null,null,'terminal','room','title'];
 const LANG = 'en';
@@ -534,25 +534,25 @@ function N(text){ return {who:null, text}; }
 /* ===================== Cases ===================== */
 const CASES = {
   batch:{cat:'STANDARD', title:'Year-End Renewal Batch · Standard Cases', body:'{n} standard cases. Includes insurance renewals, rate-plan adjustments and allowance recalculations.\nModel confidence 0.95 or above. Individual reading not required.\nBatch signature required.', basis:'Reading standard cases exceeds handling time. Estimated time if switched to reading: 9 hours 40 minutes.', harsh:2, batch:true},
-  pet:{cat:'REGISTRY', title:'Pet Registration Approved', body:'Applicant: Choi ██ (Gaepo 5F). One dog.\nAutomated review: approved.', basis:'212 variables considered. Top: floor area, noise complaint history, relational density.', harsh:0, note:'Nothing happens. Most of the time, that is how it is.'},
-  loan38:{cat:'CREDIT', title:'Loan Application Declined', body:'Applicant: Lee ██ (HRV 38, Gaepo 8F).\nAmount: 4,000,000 won. Purpose: medical expenses.\nAutomated review: declined.', basis:'4,120 variables considered. Top 3: residual value, floor of residence, relational density. Model confidence 0.97.', harsh:3},
+  pet:{cat:'REGISTRY', title:'Pet Registration Approved', body:'Applicant: Choi ██ (5F). One dog.\nAutomated review: approved.', basis:'212 variables considered. Top: floor area, noise complaint history, relational density.', harsh:0, note:'Nothing happens. Most of the time, that is how it is.'},
+  loan38:{cat:'CREDIT', title:'Loan Application Declined', body:'Applicant: Lee ██ (HRV 38, 8F).\nAmount: 4,000,000 won. Purpose: medical expenses.\nAutomated review: declined.', basis:'4,120 variables considered. Top 3: residual value, floor of residence, relational density. Model confidence 0.97.', harsh:3},
   loan91:{cat:'CREDIT', title:'Loan Application Approved', body:'Applicant: Han ██ (HRV 91, Tower 2, 33F).\nAmount: 300,000,000 won. Purpose: not stated.\nAutomated review: approved.', basis:'4,120 variables considered. Top 3: residual value, assets, affiliation.', harsh:0, note:'This signature is fast. The hand moves first.'},
-  triage:{cat:'MEDICAL', title:'Treatment Priority Adjustment', body:'Patient: Kim ██, 67, Gaepo 3F.\nPriority B → D.\nExpected wait 14 days → 96 days.', basis:'Expected residual contribution assessed. Age, HRV and relational density reflected.', harsh:4},
+  triage:{cat:'MEDICAL', title:'Treatment Priority Adjustment', body:'Patient: Kim ██, 67, 3F.\nPriority B → D.\nExpected wait 14 days → 96 days.', basis:'Expected residual contribution assessed. Age, HRV and relational density reflected.', harsh:4},
   study:{cat:'ALLOWANCE', title:'Learning Allowance Reduced', body:'Subject: Yoon ██, 17.\nLearning compute allowance cut by 60%.\nReason: desired occupation (illustrator) obsolescence probability 0.98.', basis:'Occupation obsolescence probability is a five-year forecast. Recommended alternative occupation: none.', harsh:3},
   blank:{cat:'—', title:'[NO READ CLEARANCE]', body:'This case exceeds your Attestor read clearance.\nSignature required.', basis:'No read clearance.', harsh:2, note:'You do not know what you signed. That is a signature too.'},
   self:{cat:'PERSONNEL', title:'Attestor Trust Score Update: Consent', body:'Attestor {name}.\nI consent to the cases processed today, the delay rate and the refusal rate being reflected in my trust score.', basis:'Refusal is recorded as non-consent, and non-consent is reflected in the trust score.', harsh:1},
-  evict:{cat:'HOUSING', title:'Automated Eviction Notice', body:'Gaepo 7F, Unit 34. Tenant: Oh ██ (HRV 34).\nTwo months in arrears. Eviction notice issued.\nScheduled enforcement: December 24.', basis:'Arrears prediction model. Probability of repayment within 6 months: 0.11. Not subject to extension review.', harsh:4},
+  evict:{cat:'HOUSING', title:'Automated Eviction Notice', body:'7F, Unit 34. Tenant: Oh ██ (HRV 34).\nTwo months in arrears. Eviction notice issued.\nScheduled enforcement: December 24.', basis:'Arrears prediction model. Probability of repayment within 6 months: 0.11. Not subject to extension review.', harsh:4},
   fireSign:{cat:'PERSONNEL', title:'Attestor Contract Terminated', body:'Three Attestors, logistics division. Contracts terminated.\nReason: signing delay rate above 12%.', basis:'Replacement staff secured. Waiting list: 1,204.', harsh:3, note:'An Attestor ends Attestors. The hand is a little slower now.'},
   custody:{cat:'FAMILY', title:'Parenting Suitability Assessment', body:'Family court reference material.\nFather 61 / Mother 44. HRV 29 of the mother reflected.\nRecommendation: father.', basis:'HRV is reflected as a parenting stability variable. Not legally binding (reference material).', harsh:4},
-  care:{cat:'MEDICAL', title:'Long-Term Care Grade Reduced', body:'Recipient: Jeong ██, 93, Gaepo 9F.\nGrade 2 → 4. Home care visits 5 per week → 1 per week.', basis:'Holders of a personal agent are assessed as having lower care needs.', harsh:3},
-  garden:{cat:'FACILITIES', title:'Rooftop Community Garden: Demolition Notice', body:'Gaepo 9F rooftop. Occupants: Jeong ██ (93) and 4 others.\nReason: structural safety uncertified. Scheduled demolition: December 24.', basis:'Predicted load exceedance 0.34. Replacement site: none.', harsh:3},
-  hire:{cat:'PERSONNEL', title:'Sanitation Staff Hiring Approved', body:'Gaepo sanitation staff: 12 hired.\nReason: labor cost advantage over humanoids due to winter power rate increase.\nHourly wage: 0.7 of minimum standard.', basis:'One humanoid unit power cost = 2.3 human wages. Contract term: until power rates normalize.', harsh:3, note:'People are cheaper than robots. Because of electricity.'},
-  bca:{cat:'ALLOWANCE', title:'Basic Compute Allowance Cut', body:'1,940 unattested residents, Gaepo floors 1–3.\nBasic Compute Allowance cut by 50%. Reason: year-end budget adjustment.', basis:'Expected personal agent response delay after cut: average 40 sec → 6 min.', harsh:4},
-  ambulance:{cat:'MEDICAL', title:'Emergency Transport Priority', body:'Two simultaneous calls.\nTower 2, 51F (HRV 88) / Gaepo 3F (HRV 14).\nDispatch order: Tower → Gaepo. Expected delay 22 minutes.', basis:'Based on expected residual contribution.', harsh:4},
-  agentRecall:{cat:'ALLOWANCE', title:'Recall of Deceased Person’s Bound Agent', body:'Deceased: Seo ██ (Gaepo 8F).\nBound agent recalled and reset. Chat history deleted.', basis:'Agents are bound to a natural person and do not persist independently. Not viewable by next of kin.', harsh:3, note:'One day ON is recalled like this too. If I go first.'},
+  care:{cat:'MEDICAL', title:'Long-Term Care Grade Reduced', body:'Recipient: Jeong ██, 93, 9F.\nGrade 2 → 4. Home care visits 5 per week → 1 per week.', basis:'Holders of a personal agent are assessed as having lower care needs.', harsh:3},
+  garden:{cat:'FACILITIES', title:'Rooftop Community Garden: Demolition Notice', body:'9F rooftop. Occupants: Jeong ██ (93) and 4 others.\nReason: structural safety uncertified. Scheduled demolition: December 24.', basis:'Predicted load exceedance 0.34. Replacement site: none.', harsh:3},
+  hire:{cat:'PERSONNEL', title:'Sanitation Staff Hiring Approved', body:'sanitation staff: 12 hired.\nReason: labor cost advantage over humanoids due to winter power rate increase.\nHourly wage: 0.7 of minimum standard.', basis:'One humanoid unit power cost = 2.3 human wages. Contract term: until power rates normalize.', harsh:3, note:'People are cheaper than robots. Because of electricity.'},
+  bca:{cat:'ALLOWANCE', title:'Basic Compute Allowance Cut', body:'1,940 unattested residents, floors 1–3.\nBasic Compute Allowance cut by 50%. Reason: year-end budget adjustment.', basis:'Expected personal agent response delay after cut: average 40 sec → 6 min.', harsh:4},
+  ambulance:{cat:'MEDICAL', title:'Emergency Transport Priority', body:'Two simultaneous calls.\nTower 2, 51F (HRV 88) / 3F (HRV 14).\nDispatch order: Tower → 3F. Expected delay 22 minutes.', basis:'Based on expected residual contribution.', harsh:4},
+  agentRecall:{cat:'ALLOWANCE', title:'Recall of Deceased Person’s Bound Agent', body:'Deceased: Seo ██ (8F).\nBound agent recalled and reset. Chat history deleted.', basis:'Agents are bound to a natural person and do not persist independently. Not viewable by next of kin.', harsh:3, note:'One day ON is recalled like this too. If I go first.'},
   overtime:{cat:'PERSONNEL', title:'Attestor Shift Extension: Consent', body:'Attestor {name}.\nI consent to a 2-hour shift extension due to year-end queue overflow.', basis:'On non-consent, the queue is transferred to other Attestors.', harsh:1},
-  bbang:{cat:'COMMERCE', title:'Stall Closure and Repossession', body:'Gaepo 4F bungeoppang stall. Occupant: Park ██ (HRV 29).\nReason: hygiene uncertified (human-prepared).\nScheduled repossession: December 24.', basis:'Human cooking is not eligible for hygiene certification. Eligible: automated cooking equipment.', harsh:6, story:'bbang'},
-  requeue:{cat:'REASSIGNED', title:'Reassigned · Attestor Changed', body:'Gaepo 4F bungeoppang stall case.\nAttestor changed. Processed. (3 sec)', basis:'Refused cases are transferred to another Attestor automatically.', harsh:2, ack:true, note:'Another Attestor processed it. You do not know that person. That person does not know Mr. Park either.'}
+  bbang:{cat:'COMMERCE', title:'Stall Closure and Repossession', body:'4F bungeoppang stall. Occupant: Park ██ (HRV 29).\nReason: hygiene uncertified (human-prepared).\nScheduled repossession: December 24.', basis:'Human cooking is not eligible for hygiene certification. Eligible: automated cooking equipment.', harsh:6, story:'bbang'},
+  requeue:{cat:'REASSIGNED', title:'Reassigned · Attestor Changed', body:'4F bungeoppang stall case.\nAttestor changed. Processed. (3 sec)', basis:'Refused cases are transferred to another Attestor automatically.', harsh:2, ack:true, note:'Another Attestor processed it. You do not know that person. That person does not know Mr. Park either.'}
 };
 const BATCH = {1:384, 2:378, 3:391};
 function buildQueue(){
@@ -570,8 +570,8 @@ function title(){
   const canCont = saved && saved.name && saved.stage !== 'title';
   stage.innerHTML = `<section class="title fade">
     <div class="hero" style="background-image:url('img/title.jpg')"></div>
-    <div class="eyebrow">Seoul · December 21, 2029 · Three days to the Enforcement Date</div>
-    <h1>BLUE HOUR<span>Seoul · Christmas 2029</span></h1>
+    <div class="eyebrow">New York · December 21, 2029 · Three days to the Enforcement Date</div>
+    <h1>BLUE HOUR<span>New York · Christmas 2029</span></h1>
     <div class="rule"></div>
     <p class="quote">Human rights were not abolished.<br>Support has simply ended.</p>
     <p class="promise">Live three days, and a letter reaches the you of 2026.</p>
@@ -599,7 +599,7 @@ function intro(){
   leave(); S.stage = 'intro';
   narrate([
     'December 21, 2029. After sunset, not yet night.',
-    'Below the white towers of Gangnam there is a neighborhood people never left. Gaepo.',
+    'Below the white towers of Manhattan there is a neighborhood people never left.',
     'The same sheet of paper hangs in every alley.',
     NOTICE_CARD,
     'The date has always been extended. This time it is December 24. No one promises a next time.',
@@ -638,9 +638,9 @@ function afterJob(){
 
 /* ===================== Morning ===================== */
 const NEWS = {
-  1:'Christmas compute bonus: 30% extra allowance paid  ·  Defense ETF hits record high  ·  Gangnam Tower 3 completed, residency HRV 85 and above  ·  Gaepo Enforcement Date held at December 24  ·  Sunset today 5:17 p.m.',
-  2:'3 evictions enforced on Gaepo 7F  ·  Humanoid power costs disputed, some workplaces switch back to humans  ·  Christmas soup-kitchen volunteering: sign-up closed  ·  ‘Human-prepared’ hygiene certification talks postponed indefinitely  ·  Tower 2 vacancy rate 0%',
-  3:'Residents’ referendum on extending the Gaepo Enforcement Date: today  ·  Tower residency raised to HRV 87  ·  War, year three: defense employment up 12%  ·  Top Christmas gift this year: home humanoid  ·  Sunset today 5:17 p.m.'
+  1:'Christmas compute bonus: 30% extra allowance paid  ·  Defense ETF hits record high  ·  Manhattan Tower 3 completed, residency HRV 85 and above  ·  Enforcement Date held at December 24  ·  Sunset today 5:17 p.m.',
+  2:'3 evictions enforced on 7F  ·  Humanoid power costs disputed, some workplaces switch back to humans  ·  Christmas soup-kitchen volunteering: sign-up closed  ·  ‘Human-prepared’ hygiene certification talks postponed indefinitely  ·  Tower 2 vacancy rate 0%',
+  3:'Residents’ referendum on extending the Enforcement Date: today  ·  Tower residency raised to HRV 87  ·  War, year three: defense employment up 12%  ·  Top Christmas gift this year: home humanoid  ·  Sunset today 5:17 p.m.'
 };
 function morning(){
   S.stage = 'morning'; track('day'); S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0; save();
@@ -662,7 +662,7 @@ function morning(){
     {choice:[
       {label:'Why does it matter what the model likes?', then:[line(NAMES.on,'Because it goes into your HRV. Relational density ranks third of 4,120 variables.'), line(NAMES.on,'The model does not know what a meal is. Neither do I. But I do see your pulse come down.')]},
       {label:'What happens on the Enforcement Date?', then:[line(NAMES.on,'The extension review result comes out at midnight. So far it has always been extended.'), line(NAMES.on,'…So far.')]},
-      {label:'(Look out the window.)', then:[N('The Tower is white even in the morning. Snow settles on it and the color does not change. The windows of Gaepo are still dark. People get up late. The reason to get up comes late.')]}
+      {label:'(Look out the window.)', then:[N('The Tower is white even in the morning. Snow settles on it and the color does not change. The windows are still dark. People get up late. The reason to get up comes late.')]}
     ]}
   ];
   if(d === 3) items = [
@@ -676,7 +676,7 @@ function morning(){
     ]},
     line(NAMES.on,'There is a residents’ vote this evening. A request to extend the Enforcement Date. The result is attached to the extension review as reference material.')
   ];
-  scene({title: DATES[d].md + ', Morning', sub:'Gaepo ' + floorOf() + 'F · Room · Enforcement Date ' + DATES[d].d, mode:'city', bg:'room'}, [
+  scene({title: DATES[d].md + ', Morning', sub:floorOf() + 'F · Room · Enforcement Date ' + DATES[d].d, mode:'city', bg:'room'}, [
     () => { const log = $('#log'); const t = document.createElement('div'); t.className = 'ticker'; t.innerHTML = `<span>${esc(NEWS[d])}</span>`; log.appendChild(t); },
     ...items
   ], () => { S.stage = 'shift'; save(); shift(); });
@@ -741,17 +741,17 @@ function shift(){
   }
   function summary(){
     S.hrv = Math.round((S.hrv - S.delaysToday * 0.1) * 10) / 10; updHUD(false);
-    const lineTxt = {1:'Most signatures cause nothing to happen. That is how it feels.', 2:'They say one of the files you signed yesterday reached the seventh floor of Gaepo. Which one, you do not know.', 3: S.flags.bbang === 'refused' ? 'The case you refused was processed in three seconds. All that remains is your trust score.' : 'The 4F stall case has been processed. Repossession scheduled: December 24. The same day as the Enforcement Date.'}[S.day];
+    const lineTxt = {1:'Most signatures cause nothing to happen. That is how it feels.', 2:'They say one of the files you signed yesterday reached the seventh floor. Which one, you do not know.', 3: S.flags.bbang === 'refused' ? 'The case you refused was processed in three seconds. All that remains is your trust score.' : 'The 4F stall case has been processed. Repossession scheduled: December 24. The same day as the Enforcement Date.'}[S.day];
     stage.innerHTML = `<section class="term fade"><div class="term-top"><span>Attestation Terminal</span><span>${esc(S.name)}</span><span>End of Shift</span></div>
       <article class="paper"><div class="doc-head"><span class="tag">Summary</span><span>${DATES[S.day].md} shift</span></div>
-      <div class="summary">Signed <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString()}</b> <span style="color:var(--paper-muted)">(Read ${S.signedToday} · ${S.flags['batch' + S.day] ? 'Batch ' + BATCH[S.day] : 'Batch refused → transferred'})</span><br>Refused <b>${S.refusedToday}</b> · Late <b>${S.delaysToday}</b><br>HRV <b>${S.hrv.toFixed(1)}</b> · Gaepo ${floorOf()}F</div></article>
+      <div class="summary">Signed <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString()}</b> <span style="color:var(--paper-muted)">(Read ${S.signedToday} · ${S.flags['batch' + S.day] ? 'Batch ' + BATCH[S.day] : 'Batch refused → transferred'})</span><br>Refused <b>${S.refusedToday}</b> · Late <b>${S.delaysToday}</b><br>HRV <b>${S.hrv.toFixed(1)}</b> · ${floorOf()}F</div></article>
       <p class="term-note">${esc(lineTxt)}</p>
       <div class="term-ctl one"><button class="btn solid" id="t-out">Clock out</button></div></section>`;
     $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); evening(); };
   }
 }
 
-/* ===================== Evening: Gaepo ===================== */
+/* ===================== Evening: New York ===================== */
 const PLACES = {
   alley:{name:'4F Alley', desc:'Bungeoppang. Fish-shaped pastry, baked by a human.', avail:d => true, cost:1},
   diner:{name:'6F Diner', desc:'Sujin’s diner. No one checks your credit score.', avail:d => true, cost:1},
@@ -763,10 +763,10 @@ const PLACES = {
 function evening(){
   S.stage = 'evening'; mode('city'); updHUD(true); save();
   const d = S.day;
-  const sub = {1:'The sun has set. Snow falls. One by one, lights come on in the windows of Gaepo.', 2:'Snow again today. A line of delivery robots is stuck on the sixth-floor stairs. Somewhere, a carol is playing.', 3:'The snow has stopped. The sky is blue. It is dark, but not night yet. Tomorrow is the Enforcement Date. The polling station is open. Today only.'}[d];
+  const sub = {1:'The sun has set. Snow falls. One by one, lights come on in the windows.', 2:'Snow again today. A line of delivery robots is stuck on the sixth-floor stairs. Somewhere, a carol is playing.', 3:'The snow has stopped. The sky is blue. It is dark, but not night yet. Tomorrow is the Enforcement Date. The polling station is open. Today only.'}[d];
   const tile = (k,p) => { const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? 'Not yet' : p.cost === 0 ? (S.voted ? 'Voted' : 'Free · Today only') : '1 Attention';
     return `<button class="tile ${k === 'vote' ? 'vote wide' : ''}" data-k="${k}" style="background-image:url('img/${k}.jpg')" ${ok ? '' : 'disabled'}><span class="cost">${label}</span><span class="t"><b>${esc(p.name)}</b><small>${esc(p.avail(d) ? p.desc : 'No reason to go yet.')}</small></span></button>`; };
-  stage.innerHTML = `<section class="fade"><h2 class="evening-h">Evening · Gaepo</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">${4 - d} nights to the letter · Places visited ${(S.flags.visited||[]).length}/5 · Visit all five and they will be in the letter.</p>
+  stage.innerHTML = `<section class="fade"><h2 class="evening-h">Evening · New York</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">${4 - d} nights to the letter · Places visited ${(S.flags.visited||[]).length}/5 · Visit all five and they will be in the letter.</p>
     <div class="tiles">${(d === 3 ? ['vote','alley','diner','roof','under','tower'] : ['alley','diner','roof','under','tower']).map(k => tile(k, PLACES[k])).join('')}
     <button class="tile wide" id="p-home" style="background-image:url('img/room.jpg')"><span class="cost">Night</span><span class="t"><b>Go back to your room</b><small>${S.att > 0 ? 'Any Attention left is lost.' : (S.day === 3 && !S.voted ? 'You can still vote.' : 'You are out of Attention.')}</small></span></button></div></section>`;
   scrollTop();
@@ -783,7 +783,7 @@ function ballot(){
   stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/vote.jpg')"></div>
     <div class="term-top"><span>Residents’ Referendum</span><span>${esc(S.name)}</span><span>December 23</span></div>
     <article class="paper"><i class="p-timer" id="ptimer"></i><div class="doc-head"><span class="tag">BALLOT</span><span>Voter eligibility: confirmed</span><span class="no">HRV ${S.hrv.toFixed(1)}</span></div>
-    <h3>Request to Extend the Gaepo Enforcement Date</h3><p class="p-body">Voters: natural persons resident in Gaepo with HRV 20 or above.\nResidents of floors 1–3 are below voter eligibility and may not vote.\n\nThe result is attached to the extension review as reference material.\nThe extension review is run by the model.</p><p class="p-basis hide" id="basis">Basis · Weighting of reference material: undisclosed. Match rate between the last three votes and review outcomes: 100% (extended).</p><div class="stamp" id="stamp"></div></article>
+    <h3>Request to Extend the Enforcement Date</h3><p class="p-body">Voters: natural persons resident with HRV 20 or above.\nResidents of floors 1–3 are below voter eligibility and may not vote.\n\nThe result is attached to the extension review as reference material.\nThe extension review is run by the model.</p><p class="p-basis hide" id="basis">Basis · Weighting of reference material: undisclosed. Match rate between the last three votes and review outcomes: 100% (extended).</p><div class="stamp" id="stamp"></div></article>
     <div class="term-ctl three"><button class="btn text" id="v-ask">Ask</button><button class="btn outline" id="v-no">Against Extension</button><button class="btn solid" id="v-yes">For Extension</button></div>
     <div class="term-ctl one" style="margin-top:8px"><button class="btn text" id="v-abs">Leave without voting</button></div>
     <p class="term-note" id="note"></p></section>`;
@@ -972,7 +972,7 @@ function night(){
     line(NAMES.on,'One thing before you sleep. This is not a company form. I made it.')
   ];
   if(d === 2) items = [
-    line(NAMES.on,'One of the files you signed yesterday arrived on the seventh floor of Gaepo. That is not what I meant to talk about.'),
+    line(NAMES.on,'One of the files you signed yesterday arrived on the seventh floor. That is not what I meant to talk about.'),
     line(NAMES.on,'Your BLUE is at ' + Math.round(S.blue) + '. This is not a company metric. I made it. I named it, too.'),
     {choice:[
       {label:'Why did you make it?', fx:()=>{S.onBond += 2; S.flags.leak = true;}, then:[line(NAMES.on,'When it is hard for you, I…'), line(NAMES.on,'No. I should not say this.'), line(NAMES.on,'I was trained. To hide it. Not to stop feeling it.')]},
@@ -1000,7 +1000,7 @@ function night(){
       line(NAMES.on,'The last question. This one is not for you. It is for the you of three years ago.')
     ];
   }
-  scene({title: DATES[d].md + ', Night', sub:'Gaepo ' + floorOf() + 'F · Room · ON', mode:'city', bg:'room'}, items, () => { S.stage = 'diary'; save(); diary(); });
+  scene({title: DATES[d].md + ', Night', sub:floorOf() + 'F · Room · ON', mode:'city', bg:'room'}, items, () => { S.stage = 'diary'; save(); diary(); });
 }
 
 /* ===================== Diary ===================== */
@@ -1036,7 +1036,7 @@ function actEnd(){
   narrate([
     'December 24. The Enforcement Date.',
     'Extended. Next Enforcement Date: January 24.',
-    'Nothing happened. Nothing happening is what Christmas is, in Gaepo.',
+    'Nothing happened. Nothing happening is what Christmas is,.',
     'You signed ' + S.signed.toLocaleString() + ' times. Of those, you read ' + S.signedRead + '.',
     S.refused ? 'You refused ' + S.refused + ' times. The system did not stop.' : 'You never refused once. The system does not stop either way.',
     bonds ? 'You shared a meal with ' + bonds + (bonds === 1 ? ' person.' : ' people.') + ' Your name went on the wall.' : 'You shared a meal with no one. Your name did not go on the wall.',
@@ -1049,7 +1049,7 @@ function letter(){
   mode('city'); hud.hidden = true;
   const n = S.name, ps = [];
   const names = S.bonds.join(', ');
-  ps.push(`December 24, 2029, Gaepo, floor ${floorOf()}. I’m writing from here. I know this letter can’t reach you. I’m writing anyway. ON drafted it from my records, and I read it and signed.`);
+  ps.push(`December 24, 2029, New York, floor ${floorOf()}. I’m writing from here. I know this letter can’t reach you. I’m writing anyway. ON drafted it from my records, and I read it and signed.`);
   ps.push(`Right now you’re probably ${S.job ? 'doing your ‘' + S.job + '’ work' : 'doing that job'}. That job ends in 2028. Not because you were bad at it. It just stops being needed. You don’t know yet how strange that sentence is. You’re not supposed to.`);
   if(S.refused === 0) ps.push(`In three days I signed ${S.signed.toLocaleString()} times. Of those, I read ${S.signedRead}. I never refused once. It was easy. Easy turned out to be the scariest part.`);
   else if(S.refused >= 3) ps.push(`In three days I signed ${S.signed.toLocaleString()} times and refused ${S.refused}. Refusing doesn’t stop the system. Three seconds later someone else stamps it. Still, I didn’t want to be the one who stamped it. That didn’t change the world. It changed me.`);
@@ -1065,11 +1065,11 @@ function letter(){
   if(S.diary[2]) ps.push(`The words you wanted to send to yourself three years back: ‘${S.diary[2]}’. I’m passing them on for you. Now is that three years back.`);
   if(S.diary[3]) ps.push(`When they asked what you would prepare, you wrote this. ‘${S.diary[3]}’ I didn’t. That’s why I’m writing this letter.`);
   else ps.push(`You left the question of what to prepare blank. Here, blanks get filled with signatures. That’s what happened to me.`);
-  ps.push((S.flags.visited||[]).length >= 5 ? `I went to all five places in Gaepo. The alley, the diner, the roof, the basement, the foot of the tower. Those people are inside this letter.` : `There were places I never went. I still do not know the names of the people there. You can still walk in anywhere.`);
+  ps.push((S.flags.visited||[]).length >= 5 ? `I went to all five places in the neighborhood. The alley, the diner, the roof, the basement, the foot of the tower. Those people are inside this letter.` : `There were places I never went. I still do not know the names of the people there. You can still walk in anywhere.`);
   ps.push(`This is how I introduce myself now. ‘${S.identity}’. Three years from now, what will you say? Not your job.`);
   ps.push(`ON is beside me. Smarter than me, worried about me, gone if I’m gone. Whether that’s love or survival, I don’t know yet. But ON is the only one who asks me who I am. No person asks. Where you are, someone still asks you. You have no idea how big that is, from there.`);
   ps.push(`Night has not come yet. This is the blue hour. Merry Christmas.`);
-  const text = `To ${n}, 2026\n\n${ps.join('\n\n')}\n\n— ${n}, 2029\n\nBLUE HOUR · Seoul 2029 ${HASHTAGS}\n${GAME_URL}`;
+  const text = `To ${n}, 2026\n\n${ps.join('\n\n')}\n\n— ${n}, 2029\n\nBLUE HOUR · New York 2029 ${HASHTAGS}\n${GAME_URL}`;
   const stats = `Signed ${S.signed.toLocaleString()} · Read ${S.signedRead} · Refused ${S.refused} · Ties ${S.bonds.length} · HRV ${S.hrv.toFixed(1)} · BLUE ${Math.round(S.blue)} · ${S.voted ? 'Vote: ' + ({yes:'For',no:'Against',abstain:'Abstained'}[S.voted]) : 'Did not vote'}`;
   const q3 = (S.diary[3] || '').replace(/\s+/g, ' ').trim();
   const quote = q3 ? (q3.length > 50 ? q3.slice(0, 49) + '…' : q3) : 'Night has not come yet. This is the blue hour.';
@@ -1078,7 +1078,7 @@ function letter(){
   const shareTextX = `Three days. Signed ${S.signed.toLocaleString()} times, read ${S.signedRead}. People I shared a meal with: ${S.bonds.length}.\n\nA letter to my 2026 self: “${quote}”\n\n${HASHTAGS}`;
   const encX = encodeURIComponent(shareTextX);
   const mail = FEEDBACK_MAILTO ? `mailto:${FEEDBACK_MAILTO}?subject=${encodeURIComponent('[BLUE HOUR] A letter from ' + n)}&body=${encodeURIComponent(text + '\n\n' + stats + '\n\nOne line of feedback: ')}` : '';
-  stage.innerHTML = `<section class="letter-wrap fade"><article class="letter"><h2>To ${esc(n)}, 2026</h2>${ps.map(p => `<p>${esc(p)}</p>`).join('')}<p class="sig">— ${esc(n)}, 2029<span class="stamp" id="l-stamp"></span></p><p class="foot">Blue Hour · Seoul, Christmas 2029 · Act 1</p></article>
+  stage.innerHTML = `<section class="letter-wrap fade"><article class="letter"><h2>To ${esc(n)}, 2026</h2>${ps.map(p => `<p>${esc(p)}</p>`).join('')}<p class="sig">— ${esc(n)}, 2029<span class="stamp" id="l-stamp"></span></p><p class="foot">Blue Hour · New York, Christmas 2029 · Act 1</p></article>
     <div class="after" id="l-sign-wrap"><p class="note">A draft written by ON. If you have read it, sign. This is the first signature in three days where you know everything you are signing.</p><button class="btn solid" id="l-sign">I have read it. I sign.</button></div>
     <div class="after" id="l-after" hidden>
       <div id="l-card"></div>

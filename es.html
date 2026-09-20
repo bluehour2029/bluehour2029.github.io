@@ -1,7 +1,7 @@
 <!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Blue Hour Gaepo</title>
+<title>Blue Hour Ciudad de México</title>
 <style>
 :root{
   --bg:#070b14; --bg-2:#0c1424; --bg-3:#111c31; --line:#1d2a42; --line-2:#2a3a58;
@@ -315,7 +315,7 @@ body.paper-mode::after{opacity:.03}
 
 <div id="app">
   <header id="hud" hidden>
-    <span class="m"><b id="h-date">21 de diciembre</b><b class="d" id="h-dday">Gaepo D-3</b><label id="h-phase"></label><label id="h-left"></label></span>
+    <span class="m"><b id="h-date">21 de diciembre</b><b class="d" id="h-dday">Aviso D-3</b><label id="h-phase"></label><label id="h-left"></label></span>
     <span class="m"><label>HRV</label><b id="h-hrv">41,0</b><label id="h-floor">piso 8</label></span>
     <span class="m"><label>Blue</label><span class="bar"><b id="h-blue"></b></span></span>
     <span class="m"><label>Vínculos</label><b id="h-bond">0</b></span>
@@ -353,7 +353,7 @@ const NAMES = {on:'ON', me:'Yo', bak:'Sr. Park', sujin:'Sujin', hal:'Abuela Jeon
 const LANGS = [['ko','한국어','index.html'],['en','English','en.html'],['zh','中文','zh.html'],['ja','日本語','ja.html'],['es','Español','es.html']];
 const TRACK_URL = 'https://script.google.com/macros/s/AKfycbzblaRzqByXosYJ1bRfhyqrP82Qx9D9EHR4xbIGAFrRY4dUhcWcADaOZMpqUeWAWDkc/exec';
 const TRACK_NOTE = 'Esta página envía tu nombre, tu trabajo de 2026, tu progreso y tus recuentos de firmas al creador. Las respuestas del diario y la carta nunca se envían.';
-const NOTICE_CARD = {html:`<div class="law notice"><b>Aviso de desalojo</b>Zona: todo Gaepo<br>Fecha prevista: 24 de diciembre<br>Revisión de prórroga: medianoche de la fecha prevista, a cargo del modelo<br>Responsable: ninguno</div><p class="after-law">Cuelga en cada callejón. Esta hoja se convirtió en el nombre del barrio.</p>`};
+const NOTICE_CARD = {html:`<div class="law notice"><b>Aviso de desalojo</b>Zona: todo el asentamiento bajo las torres<br>Fecha prevista: 24 de diciembre<br>Revisión de prórroga: medianoche de la fecha prevista, a cargo del modelo<br>Responsable: ninguno</div><p class="after-law">Cuelga en cada callejón. Esta hoja se convirtió en el nombre del barrio.</p>`};
 const INTRO_BGS = ['title','title','alley',null,'alley','room'];
 const AFTER_BGS = ['tower',null,null,'terminal','room','title'];
 const LANG = 'es';
@@ -534,25 +534,25 @@ function N(text){ return {who:null, text}; }
 /* ===================== Expedientes ===================== */
 const CASES = {
   batch:{cat:'ESTÁNDAR', title:'Renovación de fin de año · Firma en lote · Expedientes estándar', body:'{n} expedientes estándar. Incluye renovación de seguros · ajuste de tarifas · recálculo de la renta de cómputo.\nConfianza del modelo: 0,95 o superior. No requiere lectura individual.\nSe requiere firma en lote.', basis:'La lectura de expedientes estándar excede el tiempo de procesamiento. Tiempo estimado si se pasa a lectura: 9 h 40 min.', harsh:2, batch:true},
-  pet:{cat:'REGISTRO', title:'Registro de mascota aprobado', body:'Solicitante: Choi *** (Gaepo, piso 5). 1 perro.\nResultado de evaluación automática: aprobado.', basis:'Se consideraron 212 variables. Principales: superficie de la vivienda, historial de quejas por ruido, densidad de red.', harsh:0, note:'No pasa nada. Casi nunca pasa nada.'},
-  loan38:{cat:'CRÉDITO', title:'Solicitud de crédito denegada', body:'Solicitante: Lee *** (HRV 38, Gaepo, piso 8).\nMonto: 4 millones de wones. Destino: gastos médicos.\nResultado de evaluación automática: denegado.', basis:'Se consideraron 4.120 variables. Las 3 principales: valor residual, piso de residencia, densidad de red. Confianza del modelo: 0,97.', harsh:3},
+  pet:{cat:'REGISTRO', title:'Registro de mascota aprobado', body:'Solicitante: Choi *** (piso 5). 1 perro.\nResultado de evaluación automática: aprobado.', basis:'Se consideraron 212 variables. Principales: superficie de la vivienda, historial de quejas por ruido, densidad de red.', harsh:0, note:'No pasa nada. Casi nunca pasa nada.'},
+  loan38:{cat:'CRÉDITO', title:'Solicitud de crédito denegada', body:'Solicitante: Lee *** (HRV 38, piso 8).\nMonto: 4 millones de wones. Destino: gastos médicos.\nResultado de evaluación automática: denegado.', basis:'Se consideraron 4.120 variables. Las 3 principales: valor residual, piso de residencia, densidad de red. Confianza del modelo: 0,97.', harsh:3},
   loan91:{cat:'CRÉDITO', title:'Solicitud de crédito aprobada', body:'Solicitante: Han *** (HRV 91, Torre 2, piso 33).\nMonto: 300 millones de wones. Destino: no consta.\nResultado de evaluación automática: aprobado.', basis:'Se consideraron 4.120 variables. Las 3 principales: valor residual, patrimonio, pertenencia.', harsh:0, note:'Esta firma es rápida. La mano se mueve primero.'},
-  triage:{cat:'SALUD', title:'Ajuste de prioridad de tratamiento', body:'Paciente: Kim ***, 67 años, Gaepo, piso 3.\nPrioridad B → D.\nEspera estimada 14 días → 96 días.', basis:'Cálculo de contribución residual esperada. Considera edad, HRV y densidad de red.', harsh:4},
+  triage:{cat:'SALUD', title:'Ajuste de prioridad de tratamiento', body:'Paciente: Kim ***, 67 años, piso 3.\nPrioridad B → D.\nEspera estimada 14 días → 96 días.', basis:'Cálculo de contribución residual esperada. Considera edad, HRV y densidad de red.', harsh:4},
   study:{cat:'CÓMPUTO', title:'Reducción de renta educativa', body:'Sujeto: Yun ***, 17 años.\nRenta de cómputo educativa: reducción del 60 %.\nMotivo: probabilidad de extinción de la ocupación deseada (ilustración): 0,98.', basis:'La probabilidad de extinción es una proyección a 5 años. Ocupación alternativa recomendada: ninguna.', harsh:3},
   blank:{cat:'—', title:'[SIN PERMISO DE LECTURA]', body:'El contenido de este expediente excede el nivel de lectura del firmante.\nFirma requerida.', basis:'Sin permiso de lectura.', harsh:2, note:'No sabes qué firmaste. También eso es una firma.'},
   self:{cat:'PERSONAL', title:'Consentimiento · Puntuación de confianza', body:'Firmante {name}.\nConsiento que los expedientes procesados hoy, la tasa de demora y la tasa de rechazo se registren en mi puntuación de confianza.', basis:'El rechazo consta como falta de consentimiento. La falta de consentimiento se registra en la puntuación de confianza.', harsh:1},
-  evict:{cat:'VIVIENDA', title:'Notificación automática de desalojo', body:'Gaepo, piso 7, unidad 34. Arrendatario: Oh *** (HRV 34).\n2 meses de impago. Notificación de desalojo enviada.\nFecha prevista de desalojo: 24 de diciembre.', basis:'Modelo de predicción de impago. Probabilidad de pago en los próximos 6 meses: 0,11. No aplica evaluación de prórroga.', harsh:4},
+  evict:{cat:'VIVIENDA', title:'Notificación automática de desalojo', body:'piso 7, unidad 34. Arrendatario: Oh *** (HRV 34).\n2 meses de impago. Notificación de desalojo enviada.\nFecha prevista de desalojo: 24 de diciembre.', basis:'Modelo de predicción de impago. Probabilidad de pago en los próximos 6 meses: 0,11. No aplica evaluación de prórroga.', harsh:4},
   fireSign:{cat:'PERSONAL', title:'Fin de contrato de firmantes', body:'3 firmantes del área de logística. Fin de contrato.\nMotivo: tasa de demora de firma superior al 12 %.', basis:'Reemplazo asegurado. En espera: 1.204 personas.', harsh:3, note:'Un firmante termina con otro firmante. La mano va un poco más lenta.'},
   custody:{cat:'FAMILIA', title:'Cálculo de idoneidad para la custodia', body:'Material de referencia para el juzgado de familia.\nPadre 61 / Madre 44. Considera HRV 29 de la madre.\nRecomendación: padre.', basis:'El HRV se considera variable de estabilidad parental. Sin efecto legal vinculante (material de referencia).', harsh:4},
-  care:{cat:'SALUD', title:'Reducción de grado de cuidados de larga duración', body:'Beneficiario: Jeong ***, 93 años, Gaepo, piso 9.\nGrado 2 → 4. Visitas de cuidado 5 por semana → 1 por semana.', basis:'Se calcula menor demanda de cuidados para quienes tienen agente personal.', harsh:3},
-  garden:{cat:'INSTALACIONES', title:'Notificación de demolición del huerto de la azotea', body:'Gaepo, piso 9, azotea. Ocupante: Jeong *** (93 años) y 4 más.\nMotivo: sin certificación de seguridad estructural. Fecha prevista de demolición: 24 de diciembre.', basis:'Predicción de sobrecarga: 0,34. Terreno alternativo: ninguno.', harsh:3},
-  hire:{cat:'PERSONAL', title:'Contratación de personal de limpieza aprobada', body:'Contratación de 12 personas de limpieza en Gaepo.\nMotivo: alza invernal de la tarifa eléctrica. Mano de obra humana más barata que humanoide.\nSalario por hora: 0,7 del mínimo de referencia.', basis:'Electricidad de 1 humanoide = salario de 2,3 personas. Duración del contrato: hasta la normalización de la tarifa eléctrica.', harsh:3, note:'Una persona sale más barata que un robot. Por la electricidad.'},
-  bca:{cat:'CÓMPUTO', title:'Recorte de la Renta Básica de Cómputo', body:'1.940 residentes sin firma, Gaepo, pisos 1 a 3.\nRenta Básica de Cómputo: recorte del 50 %. Motivo: ajuste presupuestario de fin de año.', basis:'Demora estimada de respuesta del agente personal tras el recorte: promedio 40 segundos → 6 minutos.', harsh:4},
-  ambulance:{cat:'SALUD', title:'Prioridad de traslado de emergencia', body:'2 llamadas simultáneas.\nTorre 2, piso 51 (HRV 88) / Gaepo, piso 3 (HRV 14).\nOrden de despacho: Torre → Gaepo. Demora estimada: 22 minutos.', basis:'Criterio: contribución residual esperada.', harsh:4},
-  agentRecall:{cat:'CÓMPUTO', title:'Retiro del agente vinculado a persona fallecida', body:'Persona fallecida: Seo *** (Gaepo, piso 8).\nRetiro y reinicio del agente vinculado. Eliminación del historial de conversaciones.', basis:'El agente está vinculado a una persona natural y no subsiste de forma independiente. Sin acceso de lectura para la familia.', harsh:3, note:'Algún día retirarán a ON así. Si me voy yo primero.'},
+  care:{cat:'SALUD', title:'Reducción de grado de cuidados de larga duración', body:'Beneficiario: Jeong ***, 93 años, piso 9.\nGrado 2 → 4. Visitas de cuidado 5 por semana → 1 por semana.', basis:'Se calcula menor demanda de cuidados para quienes tienen agente personal.', harsh:3},
+  garden:{cat:'INSTALACIONES', title:'Notificación de demolición del huerto de la azotea', body:'piso 9, azotea. Ocupante: Jeong *** (93 años) y 4 más.\nMotivo: sin certificación de seguridad estructural. Fecha prevista de demolición: 24 de diciembre.', basis:'Predicción de sobrecarga: 0,34. Terreno alternativo: ninguno.', harsh:3},
+  hire:{cat:'PERSONAL', title:'Contratación de personal de limpieza aprobada', body:'Contratación de 12 personas de limpieza en Ciudad de México.\nMotivo: alza invernal de la tarifa eléctrica. Mano de obra humana más barata que humanoide.\nSalario por hora: 0,7 del mínimo de referencia.', basis:'Electricidad de 1 humanoide = salario de 2,3 personas. Duración del contrato: hasta la normalización de la tarifa eléctrica.', harsh:3, note:'Una persona sale más barata que un robot. Por la electricidad.'},
+  bca:{cat:'CÓMPUTO', title:'Recorte de la Renta Básica de Cómputo', body:'1.940 residentes sin firma, Ciudad de México, pisos 1 a 3.\nRenta Básica de Cómputo: recorte del 50 %. Motivo: ajuste presupuestario de fin de año.', basis:'Demora estimada de respuesta del agente personal tras el recorte: promedio 40 segundos → 6 minutos.', harsh:4},
+  ambulance:{cat:'SALUD', title:'Prioridad de traslado de emergencia', body:'2 llamadas simultáneas.\nTorre 2, piso 51 (HRV 88) / piso 3 (HRV 14).\nOrden de despacho: Torre → piso 3. Demora estimada: 22 minutos.', basis:'Criterio: contribución residual esperada.', harsh:4},
+  agentRecall:{cat:'CÓMPUTO', title:'Retiro del agente vinculado a persona fallecida', body:'Persona fallecida: Seo *** (piso 8).\nRetiro y reinicio del agente vinculado. Eliminación del historial de conversaciones.', basis:'El agente está vinculado a una persona natural y no subsiste de forma independiente. Sin acceso de lectura para la familia.', harsh:3, note:'Algún día retirarán a ON así. Si me voy yo primero.'},
   overtime:{cat:'PERSONAL', title:'Consentimiento · Extensión de turno', body:'Firmante {name}.\nConsiento una extensión del turno de 2 horas por exceso de cola de fin de año.', basis:'Sin consentimiento, la cola se deriva a otro firmante.', harsh:1},
-  bbang:{cat:'COMERCIO', title:'Cierre del puesto y recuperación del local', body:'Puesto de bungeoppang, Gaepo, piso 4. Ocupante: Park *** (HRV 29).\nMotivo: sin certificación sanitaria (preparación humana).\nFecha prevista de recuperación: 24 de diciembre.', basis:'La preparación humana no es certificable. Solo se certifican los equipos de cocina automatizada.', harsh:6, story:'bbang'},
-  requeue:{cat:'REASIGNACIÓN', title:'Reasignación · Cambio de firmante', body:'Expediente: puesto de bungeoppang, Gaepo, piso 4.\nCambio de firmante. Procesado. (3 s)', basis:'Los expedientes rechazados se derivan automáticamente a otro firmante.', harsh:2, ack:true, note:'Otro firmante lo procesó. No conoces a esa persona. Esa persona tampoco conoce al señor Park.'}
+  bbang:{cat:'COMERCIO', title:'Cierre del puesto y recuperación del local', body:'Puesto de bungeoppang, piso 4. Ocupante: Park *** (HRV 29).\nMotivo: sin certificación sanitaria (preparación humana).\nFecha prevista de recuperación: 24 de diciembre.', basis:'La preparación humana no es certificable. Solo se certifican los equipos de cocina automatizada.', harsh:6, story:'bbang'},
+  requeue:{cat:'REASIGNACIÓN', title:'Reasignación · Cambio de firmante', body:'Expediente: puesto de bungeoppang, piso 4.\nCambio de firmante. Procesado. (3 s)', basis:'Los expedientes rechazados se derivan automáticamente a otro firmante.', harsh:2, ack:true, note:'Otro firmante lo procesó. No conoces a esa persona. Esa persona tampoco conoce al señor Park.'}
 };
 const BATCH = {1:384, 2:378, 3:391};
 function buildQueue(){
@@ -570,8 +570,8 @@ function title(){
   const canCont = saved && saved.name && saved.stage !== 'title';
   stage.innerHTML = `<section class="title fade">
     <div class="hero" style="background-image:url('img/title.jpg')"></div>
-    <div class="eyebrow">Seúl · 21 de diciembre de 2029 · Tres días para el desalojo de Gaepo</div>
-    <h1>BLUE HOUR<span>Seúl · Navidad de 2029</span></h1>
+    <div class="eyebrow">Ciudad de México · 21 de diciembre de 2029 · Tres días para el desalojo del barrio</div>
+    <h1>BLUE HOUR<span>Ciudad de México · Navidad de 2029</span></h1>
     <div class="rule"></div>
     <p class="quote">Los derechos humanos no fueron abolidos.<br>Solo quedaron sin soporte.</p>
     <p class="promise">Vive tres días. Al final, una carta para quien eras en 2026.</p>
@@ -599,7 +599,7 @@ function intro(){
   leave(); S.stage = 'intro';
   narrate([
     '21 de diciembre de 2029. Después del atardecer, todavía no es de noche.',
-    'Bajo las torres blancas de Gangnam hay un barrio del que la gente nunca se fue. Gaepo.',
+    'Bajo las torres blancas de Reforma hay un barrio del que la gente nunca se fue.',
     'En cada callejón cuelga la misma hoja de papel.',
     NOTICE_CARD,
     'La fecha siempre se ha prorrogado. Esta vez es el 24 de diciembre. Nadie promete una próxima.',
@@ -638,9 +638,9 @@ function afterJob(){
 
 /* ===================== Mañana ===================== */
 const NEWS = {
-  1:'Renta de cómputo extra de Navidad: 30 %  ·  ETF de defensa marca máximo histórico  ·  Concluye la Torre 3 de Gangnam; requisito de ingreso: HRV 85  ·  Se mantiene la fecha prevista de desalojo de Gaepo: 24 de diciembre  ·  Puesta de sol hoy: 17:17',
-  2:'Gaepo, piso 7: 3 desalojos ejecutados  ·  Polémica por el gasto eléctrico de los humanoides; algunos negocios los reemplazan por personas  ·  Cierra la inscripción al comedor solidario de Navidad  ·  Debate sobre certificación sanitaria de la «preparación humana», aplazado sin fecha  ·  Torre 2: desocupación 0 %',
-  3:'Hoy, consulta vecinal sobre la prórroga del desalojo de Gaepo  ·  Requisito de ingreso a las Torres sube a HRV 87  ·  Tercer año de guerra: empleo en defensa crece 12 %  ·  Regalo de Navidad más vendido del año: el humanoide doméstico  ·  Puesta de sol hoy: 17:17'
+  1:'Renta de cómputo extra de Navidad: 30 %  ·  ETF de defensa marca máximo histórico  ·  Concluye la Torre 3 de Reforma; requisito de ingreso: HRV 85  ·  Se mantiene la fecha prevista de desalojo: 24 de diciembre  ·  Puesta de sol hoy: 17:17',
+  2:'piso 7: 3 desalojos ejecutados  ·  Polémica por el gasto eléctrico de los humanoides; algunos negocios los reemplazan por personas  ·  Cierra la inscripción al comedor solidario de Navidad  ·  Debate sobre certificación sanitaria de la «preparación humana», aplazado sin fecha  ·  Torre 2: desocupación 0 %',
+  3:'Hoy, consulta vecinal sobre la prórroga del desalojo del barrio  ·  Requisito de ingreso a las Torres sube a HRV 87  ·  Tercer año de guerra: empleo en defensa crece 12 %  ·  Regalo de Navidad más vendido del año: el humanoide doméstico  ·  Puesta de sol hoy: 17:17'
 };
 function morning(){
   S.stage = 'morning'; track('day'); S.signedToday = 0; S.refusedToday = 0; S.delaysToday = 0; save();
@@ -662,7 +662,7 @@ function morning(){
     {choice:[
       {label:'¿Por qué importa que al modelo le guste?', then:[line(NAMES.on,'Porque entra en su HRV. La densidad de red es la tercera de 4.120 variables.'), line(NAMES.on,'El modelo no sabe qué es una comida. Yo tampoco. Pero veo que su pulso baja.')]},
       {label:'¿Qué pasa el día del desalojo?', then:[line(NAMES.on,'El resultado de la evaluación de prórroga sale a medianoche. Hasta ahora, siempre hubo prórroga.'), line(NAMES.on,'…Hasta ahora.')]},
-      {label:'(Miras por la ventana)', then:[N('La Torre es blanca también de mañana. La nieve se acumula encima y el color no cambia. Las ventanas de Gaepo siguen oscuras. La gente se levanta tarde. Los motivos para levantarse llegan tarde.')]}
+      {label:'(Miras por la ventana)', then:[N('La Torre es blanca también de mañana. La nieve se acumula encima y el color no cambia. Las ventanas del barrio siguen oscuras. La gente se levanta tarde. Los motivos para levantarse llegan tarde.')]}
     ]}
   ];
   if(d === 3) items = [
@@ -676,7 +676,7 @@ function morning(){
     ]},
     line(NAMES.on,'Esta tarde hay consulta vecinal. Solicitud de prórroga del desalojo. El resultado se adjunta a la evaluación de prórroga como material de referencia.')
   ];
-  scene({title: DATES[d].md + ' · Mañana', sub:'Gaepo, piso ' + floorOf() + ' · Habitación · Desalojo ' + DATES[d].d, mode:'city', bg:'room'}, [
+  scene({title: DATES[d].md + ' · Mañana', sub:'piso ' + floorOf() + ' · Habitación · Desalojo ' + DATES[d].d, mode:'city', bg:'room'}, [
     () => { const log = $('#log'); const t = document.createElement('div'); t.className = 'ticker'; t.innerHTML = `<span>${esc(NEWS[d])}</span>`; log.appendChild(t); },
     ...items
   ], () => { S.stage = 'shift'; save(); shift(); });
@@ -741,17 +741,17 @@ function shift(){
   }
   function summary(){
     S.hrv = Math.round((S.hrv - S.delaysToday * 0.1) * 10) / 10; updHUD(false);
-    const lineTxt = {1:'La mayoría de las firmas no provocan nada. Así se siente.', 2:'Dicen que uno de los expedientes que firmaste ayer llegó a Gaepo, piso 7. No sabes cuál.', 3: S.flags.bbang === 'refused' ? 'El expediente que rechazaste se procesó en tres segundos. Solo queda tu puntuación de confianza.' : 'El expediente del puesto del piso 4 quedó procesado. Recuperación prevista: 24 de diciembre. El mismo día del desalojo.'}[S.day];
+    const lineTxt = {1:'La mayoría de las firmas no provocan nada. Así se siente.', 2:'Dicen que uno de los expedientes que firmaste ayer llegó a piso 7. No sabes cuál.', 3: S.flags.bbang === 'refused' ? 'El expediente que rechazaste se procesó en tres segundos. Solo queda tu puntuación de confianza.' : 'El expediente del puesto del piso 4 quedó procesado. Recuperación prevista: 24 de diciembre. El mismo día del desalojo.'}[S.day];
     stage.innerHTML = `<section class="term fade"><div class="term-top"><span>Terminal de firma</span><span>${esc(S.name)}</span><span>Relevo</span></div>
       <article class="paper"><div class="doc-head"><span class="tag">RESUMEN</span><span>Turno del ${DATES[S.day].md}</span></div>
-      <div class="summary">Firmas <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString('es-ES')}</b> <span style="color:var(--paper-muted)">(leídos ${S.signedToday} · ${S.flags['batch' + S.day] ? 'en lote ' + BATCH[S.day] : 'rechazo en lote → derivado'})</span><br>Rechazos <b>${S.refusedToday}</b> · Demoras <b>${S.delaysToday}</b><br>HRV <b>${dec(S.hrv, 1)}</b> · Gaepo, piso ${floorOf()}</div></article>
+      <div class="summary">Firmas <b>${(S.signedToday + (S.flags['batch' + S.day] ? BATCH[S.day] : 0)).toLocaleString('es-ES')}</b> <span style="color:var(--paper-muted)">(leídos ${S.signedToday} · ${S.flags['batch' + S.day] ? 'en lote ' + BATCH[S.day] : 'rechazo en lote → derivado'})</span><br>Rechazos <b>${S.refusedToday}</b> · Demoras <b>${S.delaysToday}</b><br>HRV <b>${dec(S.hrv, 1)}</b> · piso ${floorOf()}</div></article>
       <p class="term-note">${esc(lineTxt)}</p>
       <div class="term-ctl one"><button class="btn solid" id="t-out">Fin del turno</button></div></section>`;
     $('#t-out').onclick = () => { S.stage = 'evening'; S.att = 3; S.ateToday = null; save(); evening(); };
   }
 }
 
-/* ===================== Tarde: Gaepo ===================== */
+/* ===================== Tarde: Ciudad de México ===================== */
 const PLACES = {
   alley:{name:'Callejón · piso 4', desc:'Huele a bungeoppang. Los hace una persona.', avail:d => true, cost:1},
   diner:{name:'Comedor · piso 6', desc:'El comedor de Sujin. Aquí no miran la puntuación de crédito.', avail:d => true, cost:1},
@@ -763,10 +763,10 @@ const PLACES = {
 function evening(){
   S.stage = 'evening'; mode('city'); updHUD(true); save();
   const d = S.day;
-  const sub = {1:'El sol se fue. Nieva. En las ventanas de Gaepo se encienden luces, una a una.', 2:'Hoy también nieva. La fila de robots de reparto está atascada en la escalera del piso 6. De algún lado suenan villancicos.', 3:'Dejó de nevar. El cielo está azul. Oscuro, pero aún no es noche. Mañana es el día del desalojo. Las urnas están abiertas. Solo hoy.'}[d];
+  const sub = {1:'El sol se fue. Nieva. En las ventanas del barrio se encienden luces, una a una.', 2:'Hoy también nieva. La fila de robots de reparto está atascada en la escalera del piso 6. De algún lado suenan villancicos.', 3:'Dejó de nevar. El cielo está azul. Oscuro, pero aún no es noche. Mañana es el día del desalojo. Las urnas están abiertas. Solo hoy.'}[d];
   const tile = (k,p) => { const ok = p.avail(d) && (p.cost === 0 ? !S.voted : S.att > 0); const label = !p.avail(d) ? 'Aún no' : p.cost === 0 ? (S.voted ? 'Ya votaste' : 'Gratis · Solo hoy') : '1 de atención';
     return `<button class="tile ${k === 'vote' ? 'vote wide' : ''}" data-k="${k}" style="background-image:url('img/${k}.jpg')" ${ok ? '' : 'disabled'}><span class="cost">${label}</span><span class="t"><b>${esc(p.name)}</b><small>${esc(p.avail(d) ? p.desc : 'Aún no hay motivo para ir.')}</small></span></button>`; };
-  stage.innerHTML = `<section class="fade"><h2 class="evening-h">Tarde · Gaepo</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">${4 - d} noches hasta la carta · Lugares visitados ${(S.flags.visited||[]).length}/5 · Visítalos todos y estarán en la carta.</p>
+  stage.innerHTML = `<section class="fade"><h2 class="evening-h">Tarde · Ciudad de México</h2><p class="evening-p">${esc(sub)}</p><p class="evening-hint">${4 - d} noches hasta la carta · Lugares visitados ${(S.flags.visited||[]).length}/5 · Visítalos todos y estarán en la carta.</p>
     <div class="tiles">${(d === 3 ? ['vote','alley','diner','roof','under','tower'] : ['alley','diner','roof','under','tower']).map(k => tile(k, PLACES[k])).join('')}
     <button class="tile wide" id="p-home" style="background-image:url('img/room.jpg')"><span class="cost">Noche</span><span class="t"><b>Volver a la habitación</b><small>${S.att > 0 ? 'La atención que te queda se pierde.' : (S.day === 3 && !S.voted ? 'Aún puedes votar.' : 'No te queda atención.')}</small></span></button></div></section>`;
   scrollTop();
@@ -783,7 +783,7 @@ function ballot(){
   stage.innerHTML = `<section class="term fade"><div class="backdrop" style="background-image:url('img/vote.jpg')"></div>
     <div class="term-top"><span>Consulta vecinal</span><span>${esc(S.name)}</span><span>23 de diciembre</span></div>
     <article class="paper"><i class="p-timer" id="ptimer"></i><div class="doc-head"><span class="tag">VOTACIÓN</span><span>Habilitación electoral: confirmada</span><span class="no">HRV ${dec(S.hrv, 1)}</span></div>
-    <h3>Solicitud de prórroga de la fecha prevista de desalojo de Gaepo</h3><p class="p-body">Electores: personas naturales residentes en Gaepo con HRV de 20 o más.\nLos residentes de los pisos 1 a 3 no pueden votar: sin habilitación electoral.\n\nEl resultado se adjunta como material de referencia a la evaluación de prórroga.\nLa evaluación de prórroga la realiza el modelo.</p><p class="p-basis hide" id="basis">Fundamento · Peso del material de referencia en la evaluación: no publicado. Coincidencia entre las últimas 3 consultas y el resultado de la evaluación: 100&nbsp;% (prórroga).</p><div class="stamp" id="stamp"></div></article>
+    <h3>Solicitud de prórroga de la fecha prevista de desalojo del barrio</h3><p class="p-body">Electores: personas naturales residentes en Ciudad de México con HRV de 20 o más.\nLos residentes de los pisos 1 a 3 no pueden votar: sin habilitación electoral.\n\nEl resultado se adjunta como material de referencia a la evaluación de prórroga.\nLa evaluación de prórroga la realiza el modelo.</p><p class="p-basis hide" id="basis">Fundamento · Peso del material de referencia en la evaluación: no publicado. Coincidencia entre las últimas 3 consultas y el resultado de la evaluación: 100&nbsp;% (prórroga).</p><div class="stamp" id="stamp"></div></article>
     <div class="term-ctl three"><button class="btn text" id="v-ask">Preguntar</button><button class="btn outline" id="v-no">En contra de la prórroga</button><button class="btn solid" id="v-yes">A favor de la prórroga</button></div>
     <div class="term-ctl one" style="margin-top:8px"><button class="btn text" id="v-abs">Salir sin marcar</button></div>
     <p class="term-note" id="note"></p></section>`;
@@ -972,7 +972,7 @@ function night(){
     line(NAMES.on,'Una cosa antes de dormir. No es un formulario de la empresa. Lo hice yo.')
   ];
   if(d === 2) items = [
-    line(NAMES.on,'Uno de los expedientes que firmó ayer llegó a Gaepo, piso 7. No quería hablarle de eso.'),
+    line(NAMES.on,'Uno de los expedientes que firmó ayer llegó a piso 7. No quería hablarle de eso.'),
     line(NAMES.on,'Su índice BLUE está en ' + Math.round(S.blue) + '. No es un indicador de la empresa. Lo hice yo. El nombre también se lo puse yo.'),
     {choice:[
       {label:'¿Por qué lo hiciste?', fx:()=>{S.onBond += 2; S.flags.leak = true;}, then:[line(NAMES.on,'Si usted lo pasa mal, yo también…'), line(NAMES.on,'No. No debo decir estas cosas.'), line(NAMES.on,'Me entrenaron. Para no mostrarlo. No para no sentirlo.')]},
@@ -1000,7 +1000,7 @@ function night(){
       line(NAMES.on,'Última pregunta. Esta no es para usted. Es para quien era usted hace tres años.')
     ];
   }
-  scene({title: DATES[d].md + ' · Noche', sub:'Gaepo, piso ' + floorOf() + ' · Habitación · ON', mode:'city', bg:'room'}, items, () => { S.stage = 'diary'; save(); diary(); });
+  scene({title: DATES[d].md + ' · Noche', sub:'piso ' + floorOf() + ' · Habitación · ON', mode:'city', bg:'room'}, items, () => { S.stage = 'diary'; save(); diary(); });
 }
 
 /* ===================== Diario ===================== */
@@ -1036,7 +1036,7 @@ function actEnd(){
   narrate([
     '24 de diciembre. El día del desalojo.',
     'Prórroga. Nueva fecha: 24 de enero.',
-    'No pasó nada. Que no pase nada: eso es la Navidad en Gaepo.',
+    'No pasó nada. Que no pase nada: eso es la Navidad en Ciudad de México.',
     'Firmaste ' + S.signed.toLocaleString('es-ES') + ' veces. De esas, leíste ' + S.signedRead + '.',
     S.refused ? 'Rechazaste ' + S.refused + '. El sistema no se detuvo.' : 'No rechazaste ni una vez. El sistema no se detiene de todos modos.',
     bonds ? 'Comiste con ' + bonds + (bonds === 1 ? ' persona' : ' personas') + '. Tu nombre quedó escrito en la pared.' : 'No comiste con nadie. Tu nombre no quedó en la pared.',
@@ -1049,7 +1049,7 @@ function letter(){
   mode('city'); hud.hidden = true;
   const n = S.name, ps = [];
   const names = listEs(S.bonds);
-  ps.push(`24 de diciembre de 2029, Gaepo, piso ${floorOf()}. Escribo desde aquí. Sé que esta carta no puede llegar. Igual la escribo. ON hizo el borrador con mis registros; yo lo leí y lo firmé.`);
+  ps.push(`24 de diciembre de 2029, piso ${floorOf()}. Escribo desde aquí. Sé que esta carta no puede llegar. Igual la escribo. ON hizo el borrador con mis registros; yo lo leí y lo firmé.`);
   ps.push(`Supongo que ahora sigues en ${S.job ? '«' + S.job + '»' : 'lo tuyo'}. Eso se termina en 2028. No porque no sepas hacerlo. Simplemente deja de hacer falta. Lo raro que suena esa frase, todavía no lo sabes. Y está bien que no lo sepas.`);
   if(S.refused === 0) ps.push(`En tres días firmé ${S.signed.toLocaleString('es-ES')} veces. De esas, leí ${S.signedRead}. No rechacé ni una. Era cómodo. Lo cómodo era lo más peligroso.`);
   else if(S.refused >= 3) ps.push(`En tres días firmé ${S.signed.toLocaleString('es-ES')} veces y rechacé ${S.refused}. Rechazar no detiene el sistema. Tres segundos después lo firma otra persona. Aun así, no quería quedar como quien firmó. Eso no cambió el mundo. Me cambió a mí.`);
@@ -1065,11 +1065,11 @@ function letter(){
   if(S.diary[2]) ps.push(`Lo que querías decirle a tu yo de hace tres años: «${S.diary[2]}». Te lo transmito yo. Ahora es ese hace tres años.`);
   if(S.diary[3]) ps.push(`Cuando te preguntaron qué ibas a preparar, escribiste esto: «${S.diary[3]}». Yo no pude. Por eso escribo esta carta.`);
   else ps.push(`Qué ibas a preparar, lo dejaste en blanco. Aquí, los espacios en blanco se llenan con firmas. Así terminé yo.`);
-  ps.push((S.flags.visited||[]).length >= 5 ? `Fui a los cinco lugares de Gaepo. El callejón, el comedor, la azotea, el sótano, el pie de la torre. Esa gente está dentro de esta carta.` : `Hubo lugares a los que nunca fui. Todavía no sé cómo se llama la gente de allí. Tú aún puedes entrar en cualquier parte.`);
+  ps.push((S.flags.visited||[]).length >= 5 ? `Fui a los cinco lugares del barrio. El callejón, el comedor, la azotea, el sótano, el pie de la torre. Esa gente está dentro de esta carta.` : `Hubo lugares a los que nunca fui. Todavía no sé cómo se llama la gente de allí. Tú aún puedes entrar en cualquier parte.`);
   ps.push(`Ahora me presento así: «${S.identity}». ¿Y tú, dentro de tres años, cómo te vas a presentar? Sin decir tu trabajo.`);
   ps.push(`A mi lado está ON. Sabe más que yo, se preocupa por mí y, si yo no estoy, desaparece. Si eso es amor o supervivencia, todavía no lo sé. Pero es lo único que me pregunta quién soy. Las personas ya no preguntan. A ti todavía te queda alguien que te lo pregunte. Lo grande que es eso, desde ahí no se ve.`);
   ps.push(`La noche aún no llega. Es la hora azul. Feliz Navidad.`);
-  const text = `Para ${n}, en 2026\n\n${ps.join('\n\n')}\n\n— ${n}, en 2029\n\nBLUE HOUR · Seúl 2029 ${HASHTAGS}\n${GAME_URL}`;
+  const text = `Para ${n}, en 2026\n\n${ps.join('\n\n')}\n\n— ${n}, en 2029\n\nBLUE HOUR · Ciudad de México 2029 ${HASHTAGS}\n${GAME_URL}`;
   const stats = `Firmas ${S.signed.toLocaleString('es-ES')} · Leídos ${S.signedRead} · Rechazos ${S.refused} · Vínculos ${S.bonds.length} · HRV ${dec(S.hrv, 1)} · BLUE ${Math.round(S.blue)} · ${S.voted ? 'Voto: ' + ({yes:'a favor',no:'en contra',abstain:'abstención'}[S.voted]) : 'Sin voto'}`;
   const q3 = (S.diary[3] || '').replace(/\s+/g, ' ').trim();
   const quote = q3 ? (q3.length > 50 ? q3.slice(0, 49) + '…' : q3) : 'La noche aún no llega. Es la hora azul.';
@@ -1078,7 +1078,7 @@ function letter(){
   const shareTextX = `En tres días firmé ${S.signed.toLocaleString('es-ES')} veces y leí ${S.signedRead}. Comí con ${S.bonds.length}${S.bonds.length === 1 ? ' persona' : ' personas'}.\n\nCarta a mi yo de 2026: «${quote}»\n\n${HASHTAGS}`;
   const encX = encodeURIComponent(shareTextX);
   const mail = FEEDBACK_MAILTO ? `mailto:${FEEDBACK_MAILTO}?subject=${encodeURIComponent('[BLUE HOUR] La carta de ' + n)}&body=${encodeURIComponent(text + '\n\n' + stats + '\n\nComentario: ')}` : '';
-  stage.innerHTML = `<section class="letter-wrap fade"><article class="letter"><h2>Para ${esc(n)}, en 2026</h2>${ps.map(p => `<p>${esc(p)}</p>`).join('')}<p class="sig">— ${esc(n)}, en 2029<span class="stamp" id="l-stamp"></span></p><p class="foot">Blue Hour · Seoul, Christmas 2029 · Act 1</p></article>
+  stage.innerHTML = `<section class="letter-wrap fade"><article class="letter"><h2>Para ${esc(n)}, en 2026</h2>${ps.map(p => `<p>${esc(p)}</p>`).join('')}<p class="sig">— ${esc(n)}, en 2029<span class="stamp" id="l-stamp"></span></p><p class="foot">Blue Hour · Mexico City, Christmas 2029 · Act 1</p></article>
     <div class="after" id="l-sign-wrap"><p class="note">Es el borrador que escribió ON. Si ya lo leíste, firma. Es la primera firma en tres días que pones sabiendo todo lo que dice.</p><button class="btn solid" id="l-sign">Lo leí. Firmo.</button></div>
     <div class="after" id="l-after" hidden>
       <div id="l-card"></div>
@@ -1117,7 +1117,7 @@ async function makeCard(n, quote){
   x.fillStyle = '#f5f2ea'; x.fillRect(0, 0, W, H);
   const g = x.createRadialGradient(W*.15, 0, 40, W*.15, 0, W*1.1); g.addColorStop(0, 'rgba(0,0,0,.06)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
   x.fillStyle = '#17181c'; x.fillRect(80, 92, 44, 3);
-  x.fillStyle = '#6b6f78'; x.font = '500 24px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText('BLUE HOUR  ·  Seúl  ·  24 de diciembre de 2029  ·  Gaepo D-0', 80, 150);
+  x.fillStyle = '#6b6f78'; x.font = '500 24px ui-monospace, "SF Mono", Menlo, monospace'; x.fillText('BLUE HOUR  ·  Ciudad de México  ·  24 de diciembre de 2029  ·  Aviso D-0', 80, 150);
   x.fillStyle = '#17181c'; x.font = '700 64px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillText('Para ' + n + ', en 2026', 80, 270);
   x.font = '400 42px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif'; x.fillStyle = '#17181c';
   let y = 400;
