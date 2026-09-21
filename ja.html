@@ -1047,7 +1047,7 @@ function afterJob(){
   const J = JOBS[S.job] || DEFAULT_JOB(S.job); S.hrv = J.hrv;
   narrate([
     J.end ? '{job}。いい仕事だった。' + J.end + '年に終わった。君のせいではない。' : '{job}。まだある仕事だ。手が要るから。だが仕事はタワーへ行き、タワーは人の手を受け付けない。',
-    {html:`<div class="law"><b>人間残存価値指数 算定結果 · 2029.12.21</b>2026年の職種：${esc(S.job)}<br>初期HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">この数字がHRV。ダンが決めた君の残りの値打ち。タワーの入居条件は85。君が入った年には条件がなかった。${J.hrv < 57 ? '下の町の配管工は57だ。' : '下の町の数字は君より低い。今は。'}</p><p class="after-law"><a id="hrv-notice" href="notice.html?src=hrv&lang=${LANG}&job=${encodeURIComponent(S.job)}" target="_blank" rel="noopener" style="color:#f0aa68;text-decoration:underline;text-underline-offset:3px" onclick="event.stopPropagation(); try{track('hrv_notice')}catch(e){}">この数字で通知を作る &rarr;</a></p>`}
+    {html:`<div class="law"><b>人間残存価値指数 算定結果 · 2029.12.21</b>2026年の職種：${esc(S.job)}<br>初期HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">この数字がHRV。ダンが決めた君の残りの値打ち。タワーの入居条件は85。君が入った年には条件がなかった。${J.hrv < 57 ? '下の町の配管工は57だ。' : '下の町の数字は君より低い。今は。'}</p>`}
   ], intro, AFTER_BGS.slice(0, 2));
 }
 function preShift(){

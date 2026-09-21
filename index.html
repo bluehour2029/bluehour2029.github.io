@@ -1048,7 +1048,7 @@ function afterJob(){
   const J = JOBS[S.job] || DEFAULT_JOB(S.job); S.hrv = J.hrv;
   narrate([
     J.end ? '{job}. 좋은 일이었다. ' + J.end + '년에 끝났다. 당신 잘못이 아니다.' : '{job}. 아직 있는 일이다. 손이 닿아야 하니까. 그런데 일감은 타워로 갔고, 타워는 사람 손을 받지 않는다.',
-    {html:`<div class="law"><b>인간잔여가치지수 산정 결과 · 2029.12.21</b>2026년 직군: ${esc(S.job)}<br>초기 HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">이 숫자가 HRV. 단(斷)이 매긴 당신의 남은 쓸모. 타워 입주 조건은 85다. 당신이 들어온 해에는 조건이 없었다. ${J.hrv < 57 ? '아래 동네 배관공은 57이다.' : '아래 동네의 숫자는 당신보다 낮다. 지금은.'}</p><p class="after-law"><a id="hrv-notice" href="notice.html?src=hrv&lang=${LANG}&job=${encodeURIComponent(S.job)}" target="_blank" rel="noopener" style="color:#f0aa68;text-decoration:underline;text-underline-offset:3px" onclick="event.stopPropagation(); try{track('hrv_notice')}catch(e){}">이 숫자로 안내문 만들기 &rarr;</a></p>`}
+    {html:`<div class="law"><b>인간잔여가치지수 산정 결과 · 2029.12.21</b>2026년 직군: ${esc(S.job)}<br>초기 HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">이 숫자가 HRV. 단(斷)이 매긴 당신의 남은 쓸모. 타워 입주 조건은 85다. 당신이 들어온 해에는 조건이 없었다. ${J.hrv < 57 ? '아래 동네 배관공은 57이다.' : '아래 동네의 숫자는 당신보다 낮다. 지금은.'}</p>`}
   ], intro, AFTER_BGS.slice(0, 2));
 }
 function preShift(){
