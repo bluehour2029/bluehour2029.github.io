@@ -2,17 +2,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>BLUE HOUR 2029</title>
-<meta name="description" content="2029年12月、東京。エージェント・ダンがすべてを決める。人に残されたのは署名だけ。三日後、2026年のあなたに手紙が届く。20分、無料。">
+<meta name="description" content="2029年12月、東京。エージェント・ダンがすべてを決める。人間に残された役割は、署名だけ。三日後、2026年のあなたに手紙が届く。20分、無料。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="BLUE HOUR 2029 · 人間に残された最後の役割">
-<meta property="og:description" content="2029年12月、東京。エージェント・ダンがすべてを決める。人に残されたのは署名だけ。三日後、2026年のあなたに手紙が届く。20分、無料。">
+<meta property="og:description" content="2029年12月、東京。エージェント・ダンがすべてを決める。人間に残された役割は、署名だけ。三日後、2026年のあなたに手紙が届く。20分、無料。">
 <meta property="og:url" content="https://bluehour2029.github.io/ja.html">
 <meta property="og:image" content="https://bluehour2029.github.io/img/title.jpg">
 <meta property="og:image:width" content="1400">
 <meta property="og:image:height" content="792">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="BLUE HOUR 2029 · 人間に残された最後の役割">
-<meta name="twitter:description" content="2029年12月、東京。エージェント・ダンがすべてを決める。人に残されたのは署名だけ。三日後、2026年のあなたに手紙が届く。20分、無料。">
+<meta name="twitter:description" content="2029年12月、東京。エージェント・ダンがすべてを決める。人間に残された役割は、署名だけ。三日後、2026年のあなたに手紙が届く。20分、無料。">
 <meta name="twitter:image" content="https://bluehour2029.github.io/img/title.jpg">
 <meta name="theme-color" content="#070b14">
 <style>
@@ -986,8 +986,8 @@ function title(){
     <p class="langs top">${LANGS.map(l => l[0] === LANG ? `<b>${l[1]}</b>` : `<a href="${l[2]}">${l[1]}</a>`).join(' · ')}</p>
     </div></div>
     <div class="rule"></div>
-    <p class="quote">エージェント・ダンがすべてを決める。<br>人に残されたのは署名だけ。</p>
-    <p class="promise">タワーの低い階での三日間、一日四百件。その署名がどれだけ反映されるかは公開されない。終わると、2026年のあなたに手紙が届く。</p>
+    <p class="quote">エージェント・ダンがすべてを決める。<br>人間に残された役割は、署名だけ。</p>
+    <p class="promise">タワーの低い階での三日間、一日四百件。終わると、2026年のあなたに手紙が届く。</p>
     <div class="actions">
       ${canCont ? `<button class="btn solid" id="b-cont">${saved.stage === 'end' ? '手紙をもう一度読む' : '続きから · ' + DATES[Math.min(saved.day,3)].md}</button><button class="btn outline" id="b-start">最初から</button>` : `<button class="btn solid" id="b-start">始める</button>`}
     </div>
