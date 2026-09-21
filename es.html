@@ -575,7 +575,10 @@ addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
 
 /* ===================== Herramientas de render ===================== */
 const SID = Math.random().toString(36).slice(2, 10);   // 페이지를 연 한 번의 id. open 행과 그 뒤 행을 잇는다
-function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), sid:SID, lang:LANG, src:SRC, ref:REF, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length}, extra||{})); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
+const VER = 'o2';
+let _t0 = Date.now(), _lastEv = Date.now(), _exited = false;
+addEventListener('pagehide', () => { if(_exited) return; _exited = true; try{ track('exit'); }catch(e){} });
+function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), sid:SID, lang:LANG, src:SRC, ref:REF, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length, delays:S.delays||0, blue:Math.round(S.blue||0), onbond:S.onBond||0, meals:(S.meals||[]).length, dt:Math.round((Date.now()-_lastEv)/1000), el:Math.round((Date.now()-_t0)/1000), ver:VER}, extra||{})); _lastEv = Date.now(); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
 function narrate(lines, done, bgs){
   let i = 0; mode('dark'); hud.hidden = true;
   const render = () => {
@@ -998,7 +1001,7 @@ function title(){
   try{ SFX.ambient(true); }catch(e){}
   try{ const nav = (navigator.language||'').slice(0,2).toLowerCase(); const alt = LANGS.find(l => l[0] === nav); if(alt && nav !== LANG){ const a = document.createElement('a'); a.className = 'lang-suggest'; a.href = alt[2]; a.textContent = LANG_SUGGEST[nav] || alt[1]; const lg = stage.querySelector('.langs'); if(lg) lg.before(a); } }catch(e){}
   if(EPISODES.length){ const ep = document.createElement('p'); ep.className = 'fine eps-line'; ep.innerHTML = EPS_HEAD + ' · <a href="' + EPISODES[0].url + '" target="_blank" rel="noopener">' + esc(EPISODES[0].title) + '</a>'; const lg = stage.querySelector('.langs'); if(lg) lg.before(ep); }
-  $('#b-start').onclick = e => { const go = () => { S = fresh(); clearSave(); intro(); }; if(canCont) return confirmTap(e.currentTarget, go); go(); };
+  $('#b-start').onclick = e => { const go = () => { S = fresh(); clearSave(); askJob(); }; if(canCont) return confirmTap(e.currentTarget, go); go(); };
   const c = $('#b-cont'); if(c) c.onclick = () => { S = saved; resume(); };
 }
 function resume(){
@@ -1027,7 +1030,7 @@ function askName(){
   stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">¿Tu nombre?</p>
     <div class="field"><input id="f-name" placeholder="Nombre" maxlength="12" autocomplete="off"><div class="row"><button class="btn solid" id="f-ok">Con este nombre</button></div></div></section>`;
   const inp = $('#f-name'); inp.focus();
-  const go = () => { const v = inp.value.trim(); if(!v){ inp.focus(); return; } S.name = v; askJob(); };
+  const go = () => { const v = inp.value.trim(); if(!v){ inp.focus(); return; } S.name = v; preShift(); };
   $('#f-ok').onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
 }
 function askJob(){
@@ -1045,10 +1048,14 @@ function afterJob(){
   const J = JOBS[S.job] || DEFAULT_JOB(S.job); S.hrv = J.hrv;
   narrate([
     J.end ? '{job}. Era un buen trabajo. Terminó en ' + J.end + '. No fue culpa tuya.' : '{job}. Ese trabajo todavía existe. Hacen falta manos. Pero el trabajo se fue a las torres, y las torres no admiten manos humanas.',
-    {html:`<div class="law"><b>Índice de Valor Residual Humano (HRV) · Resultado · 21/12/2029</b>Ocupación en 2026: ${esc(S.job)}<br>HRV inicial <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">Este número es tu HRV: lo que Dan dice que todavía vales. Para entrar a la torre hacen falta 85. El año en que entraste no había requisito. ${J.hrv < 57 ? 'El plomero de abajo tiene 57.' : 'Los números de abajo son más bajos que el tuyo. Por ahora.'}</p>`},
+    {html:`<div class="law"><b>Índice de Valor Residual Humano (HRV) · Resultado · 21/12/2029</b>Ocupación en 2026: ${esc(S.job)}<br>HRV inicial <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">Este número es tu HRV: lo que Dan dice que todavía vales. Para entrar a la torre hacen falta 85. El año en que entraste no había requisito. ${J.hrv < 57 ? 'El plomero de abajo tiene 57.' : 'Los números de abajo son más bajos que el tuyo. Por ahora.'}</p><p class="after-law"><a id="hrv-notice" href="notice.html?src=hrv&lang=${LANG}&job=${encodeURIComponent(S.job)}" target="_blank" rel="noopener" style="color:#f0aa68;text-decoration:underline;text-underline-offset:3px" onclick="event.stopPropagation(); try{track('hrv_notice')}catch(e){}">Haz un aviso con este número &rarr;</a></p>`}
+  ], intro, AFTER_BGS.slice(0, 2));
+}
+function preShift(){
+  narrate([
     'Cuatrocientos al día. Casi todos son expedientes de abajo. No hace falta leerlos. Puedes incluso oponerte. Solo firmar, en veinte segundos.',
     'En tu cuarto está ON. Un agente vinculado a ti. Más listo que tú, y preocupado por ti. En tres días, ON escribe una carta para quien eras en 2026, a partir de tu registro.'
-  ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS);
+  ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS.slice(2));
 }
 
 /* ===================== Mañana ===================== */

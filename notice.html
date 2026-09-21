@@ -199,6 +199,9 @@ $('#share').onclick = async () => { if(!cur) return; track('notice_share', {job:
 $('#save').onclick = async () => { if(!cur) return; track('notice_save', {job: cur}); const b = await getBlob(); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'blue-hour-notice.png'; document.body.appendChild(a); a.click(); a.remove(); toast(T[L].saved); };
 $('#play').onclick = () => { track('notice_go', {job: cur || ''}); };
 ui();
+const PREJOB = (() => { try{ return new URLSearchParams(location.search).get('job') || ''; }catch(e){ return ''; } })();
+if(PREJOB){ try{ const el = document.getElementById('job'); if(el) el.value = PREJOB; render(PREJOB); const c = document.getElementById('card'); if(c) c.scrollIntoView({block:'nearest'}); }catch(e){} }
+
 track('notice_open');
 </script>
 </body>

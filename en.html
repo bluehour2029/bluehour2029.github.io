@@ -575,7 +575,10 @@ addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
 
 /* ===================== Render tools ===================== */
 const SID = Math.random().toString(36).slice(2, 10);   // 페이지를 연 한 번의 id. open 행과 그 뒤 행을 잇는다
-function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), sid:SID, lang:LANG, src:SRC, ref:REF, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length}, extra||{})); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
+const VER = 'o2';
+let _t0 = Date.now(), _lastEv = Date.now(), _exited = false;
+addEventListener('pagehide', () => { if(_exited) return; _exited = true; try{ track('exit'); }catch(e){} });
+function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), sid:SID, lang:LANG, src:SRC, ref:REF, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length, delays:S.delays||0, blue:Math.round(S.blue||0), onbond:S.onBond||0, meals:(S.meals||[]).length, dt:Math.round((Date.now()-_lastEv)/1000), el:Math.round((Date.now()-_t0)/1000), ver:VER}, extra||{})); _lastEv = Date.now(); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
 function narrate(lines, done, bgs){
   let i = 0; mode('dark'); hud.hidden = true;
   const render = () => {
@@ -998,7 +1001,7 @@ function title(){
   try{ SFX.ambient(true); }catch(e){}
   try{ const nav = (navigator.language||'').slice(0,2).toLowerCase(); const alt = LANGS.find(l => l[0] === nav); if(alt && nav !== LANG){ const a = document.createElement('a'); a.className = 'lang-suggest'; a.href = alt[2]; a.textContent = LANG_SUGGEST[nav] || alt[1]; const lg = stage.querySelector('.langs'); if(lg) lg.before(a); } }catch(e){}
   if(EPISODES.length){ const ep = document.createElement('p'); ep.className = 'fine eps-line'; ep.innerHTML = EPS_HEAD + ' · <a href="' + EPISODES[0].url + '" target="_blank" rel="noopener">' + esc(EPISODES[0].title) + '</a>'; const lg = stage.querySelector('.langs'); if(lg) lg.before(ep); }
-  $('#b-start').onclick = e => { const go = () => { S = fresh(); clearSave(); intro(); }; if(canCont) return confirmTap(e.currentTarget, go); go(); };
+  $('#b-start').onclick = e => { const go = () => { S = fresh(); clearSave(); askJob(); }; if(canCont) return confirmTap(e.currentTarget, go); go(); };
   const c = $('#b-cont'); if(c) c.onclick = () => { S = saved; resume(); };
 }
 function resume(){
@@ -1027,7 +1030,7 @@ function askName(){
   stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">Your name?</p>
     <div class="field"><input id="f-name" placeholder="Name" maxlength="12" autocomplete="off"><div class="row"><button class="btn solid" id="f-ok">Use this name</button></div></div></section>`;
   const inp = $('#f-name'); inp.focus();
-  const go = () => { const v = inp.value.trim(); if(!v){ inp.focus(); return; } S.name = v; askJob(); };
+  const go = () => { const v = inp.value.trim(); if(!v){ inp.focus(); return; } S.name = v; preShift(); };
   $('#f-ok').onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
 }
 function askJob(){
@@ -1045,10 +1048,14 @@ function afterJob(){
   const J = JOBS[S.job] || DEFAULT_JOB(S.job); S.hrv = J.hrv;
   narrate([
     J.end ? '{job}. It was good work. It ended in ' + J.end + '. Not your fault.' : '{job}. The work still exists. It needs hands. But the work moved to the towers, and the towers do not admit human hands.',
-    {html:`<div class="law"><b>Human Residual Value Assessment · 2029-12-21</b>Occupation, 2026: ${esc(S.job)}<br>Initial HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">This number is your HRV: what Dan says you are still worth. Tower entry requires 85. There was no requirement the year you moved in. ${J.hrv < 57 ? 'The plumber below is a 57.' : 'The numbers below are lower than yours. For now.'}</p>`},
+    {html:`<div class="law"><b>Human Residual Value Assessment · 2029-12-21</b>Occupation, 2026: ${esc(S.job)}<br>Initial HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">This number is your HRV: what Dan says you are still worth. Tower entry requires 85. There was no requirement the year you moved in. ${J.hrv < 57 ? 'The plumber below is a 57.' : 'The numbers below are lower than yours. For now.'}</p><p class="after-law"><a id="hrv-notice" href="notice.html?src=hrv&lang=${LANG}&job=${encodeURIComponent(S.job)}" target="_blank" rel="noopener" style="color:#f0aa68;text-decoration:underline;text-underline-offset:3px" onclick="event.stopPropagation(); try{track('hrv_notice')}catch(e){}">Make a notice with this number &rarr;</a></p>`}
+  ], intro, AFTER_BGS.slice(0, 2));
+}
+function preShift(){
+  narrate([
     'Four hundred a day. Most of them are files from below. You do not have to read them. You may even object. You only have to sign, within twenty seconds.',
     'In your room there is ON. An agent bound to you. Smarter than you, and worried about you. In three days, ON writes a letter to the you of 2026, from your record.'
-  ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS);
+  ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS.slice(2));
 }
 
 /* ===================== Morning ===================== */

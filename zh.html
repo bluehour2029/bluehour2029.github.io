@@ -574,7 +574,10 @@ addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
 
 /* ===================== 渲染工具 ===================== */
 const SID = Math.random().toString(36).slice(2, 10);   // 페이지를 연 한 번의 id. open 행과 그 뒤 행을 잇는다
-function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), sid:SID, lang:LANG, src:SRC, ref:REF, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length}, extra||{})); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
+const VER = 'o2';
+let _t0 = Date.now(), _lastEv = Date.now(), _exited = false;
+addEventListener('pagehide', () => { if(_exited) return; _exited = true; try{ track('exit'); }catch(e){} });
+function track(ev, extra){ if(!TRACK_URL) return; try{ const body = JSON.stringify(Object.assign({ev, t:Date.now(), sid:SID, lang:LANG, src:SRC, ref:REF, name:S.name, job:S.job, hrv:Math.round(S.hrv*10)/10, day:S.day, stage:S.stage, signed:S.signed, read:S.signedRead, refused:S.refused, bonds:S.bonds.length, voted:S.voted, identity:S.identity, visited:(S.flags.visited||[]).length, delays:S.delays||0, blue:Math.round(S.blue||0), onbond:S.onBond||0, meals:(S.meals||[]).length, dt:Math.round((Date.now()-_lastEv)/1000), el:Math.round((Date.now()-_t0)/1000), ver:VER}, extra||{})); _lastEv = Date.now(); if(navigator.sendBeacon){ navigator.sendBeacon(TRACK_URL, new Blob([body], {type:'text/plain'})); } else { fetch(TRACK_URL, {method:'POST', mode:'no-cors', body, keepalive:true}); } }catch(e){} }
 function narrate(lines, done, bgs){
   let i = 0; mode('dark'); hud.hidden = true;
   const render = () => {
@@ -997,7 +1000,7 @@ function title(){
   try{ SFX.ambient(true); }catch(e){}
   try{ const nav = (navigator.language||'').slice(0,2).toLowerCase(); const alt = LANGS.find(l => l[0] === nav); if(alt && nav !== LANG){ const a = document.createElement('a'); a.className = 'lang-suggest'; a.href = alt[2]; a.textContent = LANG_SUGGEST[nav] || alt[1]; const lg = stage.querySelector('.langs'); if(lg) lg.before(a); } }catch(e){}
   if(EPISODES.length){ const ep = document.createElement('p'); ep.className = 'fine eps-line'; ep.innerHTML = EPS_HEAD + ' · <a href="' + EPISODES[0].url + '" target="_blank" rel="noopener">' + esc(EPISODES[0].title) + '</a>'; const lg = stage.querySelector('.langs'); if(lg) lg.before(ep); }
-  $('#b-start').onclick = e => { const go = () => { S = fresh(); clearSave(); intro(); }; if(canCont) return confirmTap(e.currentTarget, go); go(); };
+  $('#b-start').onclick = e => { const go = () => { S = fresh(); clearSave(); askJob(); }; if(canCont) return confirmTap(e.currentTarget, go); go(); };
   const c = $('#b-cont'); if(c) c.onclick = () => { S = saved; resume(); };
 }
 function resume(){
@@ -1026,7 +1029,7 @@ function askName(){
   stage.innerHTML = `<section class="narr fade" style="cursor:default"><p class="narr-text">你的名字是？</p>
     <div class="field"><input id="f-name" placeholder="名字" maxlength="12" autocomplete="off"><div class="row"><button class="btn solid" id="f-ok">就用这个名字</button></div></div></section>`;
   const inp = $('#f-name'); inp.focus();
-  const go = () => { const v = inp.value.trim(); if(!v){ inp.focus(); return; } S.name = v; askJob(); };
+  const go = () => { const v = inp.value.trim(); if(!v){ inp.focus(); return; } S.name = v; preShift(); };
   $('#f-ok').onclick = go; inp.addEventListener('keydown', e => { if(e.key === 'Enter') go(); });
 }
 function askJob(){
@@ -1044,10 +1047,14 @@ function afterJob(){
   const J = JOBS[S.job] || DEFAULT_JOB(S.job); S.hrv = J.hrv;
   narrate([
     J.end ? '{job}。是份好工作。' + J.end + '年结束了。不是你的错。' : '{job}。这份工作还在。因为需要人手。可活儿都去了塔楼，塔楼不收人手。',
-    {html:`<div class="law"><b>人类残余价值指数核定结果 · 2029.12.21</b>2026年职业：${esc(S.job)}<br>初始 HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">这个数字就是HRV，丹核定的你剩下的用处。塔楼入住条件是85。你搬进来的那年还没有条件。${J.hrv < 57 ? '楼下的管道工是57。' : '楼下的数字比你低。暂时。'}</p>`},
+    {html:`<div class="law"><b>人类残余价值指数核定结果 · 2029.12.21</b>2026年职业：${esc(S.job)}<br>初始 HRV <strong>${J.hrv}</strong> / 100<span class="law-note">${esc(J.why)}</span></div><p class="after-law">这个数字就是HRV，丹核定的你剩下的用处。塔楼入住条件是85。你搬进来的那年还没有条件。${J.hrv < 57 ? '楼下的管道工是57。' : '楼下的数字比你低。暂时。'}</p><p class="after-law"><a id="hrv-notice" href="notice.html?src=hrv&lang=${LANG}&job=${encodeURIComponent(S.job)}" target="_blank" rel="noopener" style="color:#f0aa68;text-decoration:underline;text-underline-offset:3px" onclick="event.stopPropagation(); try{track('hrv_notice')}catch(e){}">用这个数字做一张通知 &rarr;</a></p>`}
+  ], intro, AFTER_BGS.slice(0, 2));
+}
+function preShift(){
+  narrate([
     '一天四百件。大多是楼下的材料。不必读。反对也行。二十秒内签了就行。',
     '房间里有ON。归属于你的智能体。比你聪明，也为你担心。三天后，ON会用你的记录，写一封信给2026年的你。'
-  ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS);
+  ], () => { S.stage = 'morning'; save(); track('start'); morning(); }, AFTER_BGS.slice(2));
 }
 
 /* ===================== 早晨 ===================== */
